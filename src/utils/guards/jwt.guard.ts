@@ -4,6 +4,7 @@ import { PrismaService } from 'database/prisma.service';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { Role } from '../interceptor/role.interceptor';
 import { Jsonwebtoken } from '../jwt';
+import { Admin, Host, User } from '@prisma/client';
 
 export interface JwtUser {
   id: string;
@@ -31,11 +32,13 @@ export class JwtAuthGuard implements CanActivate {
 
     if (decoded instanceof JsonWebTokenError) throw new UnauthorizedException('TOKEN_EXPIRED');
 
-    const isExist = await this.database.user.findUnique({
-      where: {
-        id: decoded.id,
-      },
-    });
+    let isExist: User | Host | Admin | null = null;
+
+    if (decoded.userType === Role.USER) isExist = await this.database.user.findUnique({ where: { id: decoded.id } });
+    else if (decoded.userType === Role.HOST)
+      isExist = await this.database.host.findUnique({ where: { id: decoded.id } });
+    else if (decoded.userType === Role.ADMIN)
+      isExist = await this.database.admin.findUnique({ where: { id: decoded.id } });
 
     if (!isExist) throw new ForbiddenException('권한이 없습니다.');
 

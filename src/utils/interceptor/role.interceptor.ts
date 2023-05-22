@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 export const Role = {
   USER: 'USER',
   ADMIN: 'ADMIN',
+  HOST: 'HOST',
 } as const;
 
 export const RoleInterceptorAPI = (role?: keyof typeof Role, nullable?: boolean) => {
@@ -16,9 +17,10 @@ export const RoleInterceptorAPI = (role?: keyof typeof Role, nullable?: boolean)
       if (role && !nullable) {
         if (role === Role.ADMIN) {
           if (req.user.userType !== Role.ADMIN) throw new UnauthorizedException('권한이 없습니다.');
-        } else {
-          if (req.user.userType !== Role.USER || req.user.userType !== Role.ADMIN)
-            throw new UnauthorizedException('권한이 없습니다.');
+        } else if (role === Role.HOST) {
+          if (req.user.userType !== Role.HOST) throw new UnauthorizedException('권한이 없습니다.');
+        } else if (role === Role.USER) {
+          if (req.user.userType !== Role.USER) throw new UnauthorizedException('권한이 없습니다.');
         }
       }
 
