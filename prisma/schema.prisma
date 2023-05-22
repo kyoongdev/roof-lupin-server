@@ -8,6 +8,7 @@ generator client {
 generator erd {
   provider = "prisma-erd-generator"
   output   = "../erd.png"
+  theme    = "forest"
 }
 
 generator docs {

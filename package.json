@@ -24,7 +24,8 @@
     "config:dev": "cp ./env/.env.dev .env",
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "docker-compose:local": "yarn config:local &&  docker-compose up --build -d",
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node src/seed.ts",
+    "docs": "yarn prisma-docs-generator serve -p 8001"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
