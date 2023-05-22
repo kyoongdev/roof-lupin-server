@@ -20,9 +20,8 @@ services:
         ENV: local
     container_name: roof-server
     restart: always
-
     depends_on:
-      - mysql-practice
+      - mysql
     ports:
       - 8000:8000
     networks:
