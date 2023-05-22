@@ -10,51 +10,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Image{ 
-  id String @id @default(uuid())
-  url String  
+model Image {
+  id  String @id @default(uuid())
+  url String
 }
 
-model Space{
-  id String @id @default(uuid())
-  title String @db.VarChar(120)
-  description String 
-  size Int @db.SmallInt
-  rooftopType Int @db.TinyInt
-  buildingType Int @db.TinyInt
-  spaceIntroduction String @db.MediumText
+model Space {
+  id                   String @id @default(uuid())
+  title                String @db.VarChar(120)
+  description          String
+  size                 Int    @db.SmallInt
+  rooftopType          Int    @db.TinyInt
+  buildingType         Int    @db.TinyInt
+  spaceIntroduction    String @db.MediumText
   facilityIntroduction String @db.MediumText
-  minUser Int @db.TinyInt
-  maxUser Int @db.TinyInt
-  overflowUserCost Int @db.MediumInt
+  minUser              Int    @db.TinyInt
+  maxUser              Int    @db.TinyInt
+  overflowUserCost     Int    @db.MediumInt
 
-  createdAt DateTime @default(now())  
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime? @db.DateTime
-  
-  hostId String @db.VarChar(120) @unique
-  host Host @relation(fields: [hostId], references: [id])
+
+  hostId String @unique @db.VarChar(120)
+  host   Host   @relation(fields: [hostId], references: [id])
+
+  reviews       SpaceReview[]
+  reports       SpaceReport[]
+  userInterests SpaceInterest[]
+}
+
+model SpaceReport {
+  id           String @id @default(uuid())
+  reportType   Int    @db.TinyInt
+  reoirtStatus Int    @db.TinyInt
+  title        String @db.VarChar(120)
+  content      String @db.MediumText
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? @db.DateTime
+}
+
+model SpaceReview {
+  id      String @id @default(uuid())
+  content String @db.MediumText
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? @db.DateTime
+}
+
+model SpaceInterest {
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@id([userId, spaceId])
 }
 
 model Host {
-  id String @id @default(uuid())
+  id     String @id @default(uuid())
   userId String @db.VarChar(120)
+  name   String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime? @db.DateTime
 
   space Space[]
 }
 
-model User{
-  id String @id @default(uuid())
-  name String @db.VarChar(120)
-  nickname String 
-  email String 
+model User {
+  id          String @id @default(uuid())
+  name        String @db.VarChar(120)
+  nickname    String
+  email       String
   phoneNumber String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime? @db.DateTime
+
+  spaceReviews   SpaceReview[]
+  spaceReports   SpaceReport[]
+  spaceInterests SpaceInterest[]
 }
