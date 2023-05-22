@@ -46,3 +46,15 @@ model Host {
 
   space Space[]
 }
+
+model User{
+  id String @id @default(uuid())
+  name String @db.VarChar(120)
+  nickname String 
+  email String 
+  phoneNumber String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? @db.DateTime
+}

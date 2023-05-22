@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: 1234user
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     ports:
-      - 3306:3306
+      - 3306:3307
     networks:
       - roof-server-local-mysql-net
     container_name: mysql
@@ -21,7 +21,7 @@ services:
     container_name: roof-server
     restart: always
     depends_on:
-      - mysql
+      - mysql-practice
     ports:
       - 8000:8000
     networks:
