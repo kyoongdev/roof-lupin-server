@@ -10,6 +10,10 @@ generator erd {
   output   = "../erd.png"
 }
 
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
