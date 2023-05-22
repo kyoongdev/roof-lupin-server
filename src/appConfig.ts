@@ -10,9 +10,9 @@ class AppConfig {
     this.app = app;
   }
   async init() {
-    await this.configureDatabase();
     this.configureSwagger();
-    await this.app.listen(3000);
+    await this.configureDatabase();
+    await this.app.listen(8000);
   }
   enableCors(options?: CorsOptions | CorsOptionsDelegate<any>) {
     this.app.enableCors(options);

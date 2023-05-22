@@ -1,5 +1,9 @@
 import { Global, Module } from '@nestjs/common';
+import { PrismaModule } from 'database/prisma.module';
 
 @Global()
-@Module({})
-export class GloablModule {}
+@Module({
+  imports: [PrismaModule],
+  exports: [PrismaModule],
+})
+export class GlobalModule {}

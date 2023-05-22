@@ -1,13 +1,35 @@
 version: '3.8'
 services:
-  education-server:
+  mysql-practice:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: roof
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234user
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - 3306:3306
+    networks:
+      - roof-server-local-mysql-net
+    container_name: mysql
+  roof-server:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: education-server
+      dockerfile: Dockerfile.local
+      args:
+        ENV: local
+    container_name: roof-server
     restart: always
+
+    depends_on:
+      - mysql-practice
     ports:
       - 8000:8000
-
+    networks:
+      - roof-server-local-mysql-net
     env_file:
       - .env
+
+networks:
+  roof-server-local-mysql-net:
+    driver: bridge
