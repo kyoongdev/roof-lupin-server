@@ -1,5 +1,5 @@
-import { INestApplication, PipeTransform } from '@nestjs/common';
-import { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces/external/cors-options.interface';
+import type { INestApplication, PipeTransform } from '@nestjs/common';
+import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaService } from 'database/prisma.service';
 
@@ -20,12 +20,12 @@ class AppConfig {
   }
 
   configureMiddleware(...middlewares: any[]) {
-    this.app.use(...middlewares);
+    middlewares.length > 0 && this.app.use(...middlewares);
     return this;
   }
 
   configurePipes(...pipes: PipeTransform<any, any>[]) {
-    this.app.useGlobalPipes(...pipes);
+    pipes.length > 0 && this.app.useGlobalPipes(...pipes);
     return this;
   }
 

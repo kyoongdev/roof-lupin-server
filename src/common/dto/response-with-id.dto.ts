@@ -1,4 +1,4 @@
-import { Property } from 'kyoongdev-nestjs';
+import { Property } from 'wemacu-nestjs';
 
 export class ResponseWithIdDTO {
   @Property({ apiProperty: { type: 'string' } })
