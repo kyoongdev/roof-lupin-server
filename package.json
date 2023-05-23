@@ -28,7 +28,7 @@
     "docker-compose:dev": "yarn config:dev &&  docker-compose up --build -d",
     "seed": "ts-node src/seed.ts",
     "docs": "yarn prisma-docs-generator serve -p 8001",
-    "docker:dev": "yarn config:dev && docker build  -t roof . "
+    "docker:dev": "yarn config:dev && docker buildx build --platform linux/amd64,linux/arm64 -t roof . "
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",

@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16 AS base
+FROM   node:18-alpine AS base
 
 # INSTALL DEPENDENCIES FOR DEVELOPMENT (FOR NEST)
 FROM base AS deps
@@ -35,7 +35,6 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/.env ./
 COPY --chown=node:node --from=build /usr/src/app/package.json ./package.json
 COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
-
 
 ENV SEED false
 
