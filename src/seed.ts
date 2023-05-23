@@ -4,6 +4,7 @@ export const seedDatabase = async (database: PrismaService) => {
     await database.host.create({
       data: {
         userId: 'host' + i,
+        name: 'asdf',
       },
     });
   }

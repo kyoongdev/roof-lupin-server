@@ -47,12 +47,14 @@ class AppConfig {
       )
       .build();
     const document = SwaggerModule.createDocument(this.app, swaggerConfig);
+
     SwaggerModule.setup('api-docs', this.app, document);
   }
 
   private async configureDatabase() {
     const config = this.app.get(ConfigService);
     const database = this.app.get(PrismaService);
+
     config.get('NODE_ENV') === 'local' && (await seedDatabase(database));
     await database.enableShutdownHooks(this.app);
   }

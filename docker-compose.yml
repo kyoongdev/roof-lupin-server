@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: 1234user
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     ports:
-      - 3306:3307
+      - 3306:3306
     networks:
       - roof-server-local-mysql-net
     container_name: mysql
@@ -16,7 +16,7 @@ services:
   roof-server:
     build:
       context: .
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile
       args:
         ENV: local
     container_name: roof-server

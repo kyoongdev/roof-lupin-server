@@ -2,12 +2,14 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
+Project "roof" {
+  database_type: 'mysql'
+  Note: ''
+}
+
 Table Image {
   id String [pk]
   url String [not null]
-  spaceUsageImages SpaceUsageImage [not null]
-  spaceImages SpaceImage [not null]
-  spaceReviewImages SpaceReviewImage [not null]
 }
 
 Table Space {
@@ -26,23 +28,6 @@ Table Space {
   updatedAt DateTime [not null]
   deletedAt DateTime
   hostId String [unique, not null]
-  host Host [not null]
-  reviews SpaceReview [not null]
-  reports SpaceReport [not null]
-  userInterests SpaceInterest [not null]
-  userLikes SpaceLike [not null]
-  usageImages SpaceUsageImage [not null]
-  images SpaceImage [not null]
-  guideLines SpaceGuideLine [not null]
-  cautions SpaceCaution [not null]
-  discountInfo SpaceDiscountInfo [not null]
-  rentalType RentalType [not null]
-  location SpaceLocation
-  facilities SpaceFacility [not null]
-  services SpaceService [not null]
-  usageCategories SpaceUsageCategory [not null]
-  hashTags SpaceHashTag [not null]
-  spaceQnAs SpaceQnA [not null]
 }
 
 Table SpaceReport {
@@ -52,9 +37,7 @@ Table SpaceReport {
   title String [not null]
   content String [not null]
   spaceId String [not null]
-  space Space [not null]
   userId String [not null]
-  user User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
@@ -65,42 +48,32 @@ Table SpaceQnA {
   title String [not null]
   content String [not null]
   spaceId String [not null]
-  space Space [not null]
   userId String [not null]
-  user User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
-  answers SpaceQnAAnswer [not null]
 }
 
 Table SpaceQnAAnswer {
   id String [pk]
   content String [not null]
   spaceQnAId String [not null]
-  spaceQnA SpaceQnA [not null]
   hostId String [not null]
-  host Host [not null]
 }
 
 Table SpaceReview {
   id String [pk]
   content String [not null]
   spaceId String [not null]
-  space Space [not null]
   userId String [not null]
-  user User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
-  images SpaceReviewImage [not null]
 }
 
 Table SpaceReviewImage {
   spaceReviewId String [not null]
-  spaceReview SpaceReview [not null]
   imageId String [not null]
-  image Image [not null]
 
   indexes {
     (spaceReviewId, imageId) [pk]
@@ -109,9 +82,7 @@ Table SpaceReviewImage {
 
 Table SpaceInterest {
   spaceId String [not null]
-  space Space [not null]
   userId String [not null]
-  user User [not null]
 
   indexes {
     (userId, spaceId) [pk]
@@ -120,9 +91,7 @@ Table SpaceInterest {
 
 Table SpaceLike {
   spaceId String [not null]
-  space Space [not null]
   userId String [not null]
-  user User [not null]
 
   indexes {
     (userId, spaceId) [pk]
@@ -131,9 +100,7 @@ Table SpaceLike {
 
 Table SpaceUsageImage {
   spaceId String [not null]
-  space Space [not null]
   imageId String [not null]
-  image Image [not null]
 
   indexes {
     (spaceId, imageId) [pk]
@@ -142,9 +109,7 @@ Table SpaceUsageImage {
 
 Table SpaceImage {
   spaceId String [not null]
-  space Space [not null]
   imageId String [not null]
-  image Image [not null]
 
   indexes {
     (spaceId, imageId) [pk]
@@ -155,14 +120,12 @@ Table SpaceGuideLine {
   id String [pk]
   content String [not null]
   spaceId String [not null]
-  space Space [not null]
 }
 
 Table SpaceCaution {
   id String [pk]
   content String [not null]
   spaceId String [not null]
-  space Space [not null]
 }
 
 Table SpaceDiscountInfo {
@@ -173,7 +136,6 @@ Table SpaceDiscountInfo {
   content String [not null]
   description String [not null]
   spaceId String [not null]
-  space Space [not null]
 }
 
 Table RentalType {
@@ -185,14 +147,11 @@ Table RentalType {
   startAt Int [not null]
   endAt Int [not null]
   spaceId String [not null]
-  space Space [not null]
 }
 
 Table SpaceLocation {
   spaceId String [unique, not null]
-  space Space [not null]
   locationId String [unique, not null]
-  location Location [not null]
 
   indexes {
     (spaceId, locationId) [pk]
@@ -201,9 +160,7 @@ Table SpaceLocation {
 
 Table SpaceFacility {
   spaceId String [not null]
-  space Space [not null]
   facilityId String [not null]
-  facility Facility [not null]
 
   indexes {
     (spaceId, facilityId) [pk]
@@ -212,9 +169,7 @@ Table SpaceFacility {
 
 Table SpaceService {
   spaceId String [not null]
-  space Space [not null]
   serviceId String [not null]
-  service Service [not null]
 
   indexes {
     (spaceId, serviceId) [pk]
@@ -223,9 +178,7 @@ Table SpaceService {
 
 Table SpaceUsageCategory {
   spaceId String [not null]
-  space Space [not null]
   usageCategoryId String [not null]
-  usageCategory UsageCategory [not null]
 
   indexes {
     (spaceId, usageCategoryId) [pk]
@@ -234,9 +187,7 @@ Table SpaceUsageCategory {
 
 Table SpaceHashTag {
   spaceId String [not null]
-  space Space [not null]
   hashTagId String [not null]
-  hashTag HashTag [not null]
 
   indexes {
     (spaceId, hashTagId) [pk]
@@ -250,8 +201,6 @@ Table Host {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
-  spaces Space [not null]
-  spaceQnAAnswers SpaceQnAAnswer [not null]
 }
 
 Table Admin {
@@ -271,21 +220,12 @@ Table User {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
-  spaceReviews SpaceReview [not null]
-  spaceReports SpaceReport [not null]
-  spaceInterests SpaceInterest [not null]
-  spaceLikes SpaceLike [not null]
-  spaceQnAs SpaceQnA [not null]
-  locations UserLocation [not null]
-  coupons UserCoupon [not null]
 }
 
 Table UserLocation {
   id String [pk]
   userId String [not null]
-  user User [not null]
   locationId String [not null]
-  location Location [not null]
   isDefault Boolean [not null, default: false]
 }
 
@@ -295,42 +235,34 @@ Table Location {
   lng String [not null]
   roadAddress String [not null]
   jibunAddress String [not null]
-  spaceLocation SpaceLocation
-  userLocations UserLocation [not null]
 }
 
 Table Facility {
   id String [pk]
   iconPath String [not null]
   name String [not null]
-  spaceFacilities SpaceFacility [not null]
 }
 
 Table Service {
   id String [pk]
   iconPath String [not null]
   name String [not null]
-  spaceServices SpaceService [not null]
 }
 
 Table UsageCategory {
   id String [pk]
   name String [not null]
-  spaceUsageCategories SpaceUsageCategory [not null]
 }
 
 Table HashTag {
   id String [pk]
   name String [not null]
-  spaceHashTags SpaceHashTag [not null]
 }
 
 Table UserCoupon {
   id String [pk]
   userId String [not null]
-  user User [not null]
   couponId String [not null]
-  coupon Coupon [not null]
   count Int [not null, default: 1]
   code String [unique, not null]
   createdAt DateTime [default: `now()`, not null]
@@ -342,7 +274,6 @@ Table Coupon {
   discountType Int [not null]
   discountValue Int [not null]
   description String [not null]
-  userCoupons UserCoupon [not null]
 }
 
 Ref: Space.hostId > Host.id
