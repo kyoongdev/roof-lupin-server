@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller('space')
-export class SpaceController {}
+export class SpaceController {
+  @Get()
+  getSpaces(): string {
+    return 'getSpaces';
+  }
+}
