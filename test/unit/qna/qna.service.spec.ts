@@ -1,4 +1,6 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from 'database/prisma.service';
 import { QnaService } from 'modules/qna/qna.service';
 
 describe('QnaService', () => {
@@ -6,7 +8,8 @@ describe('QnaService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [QnaService],
+      imports: [ConfigModule.forRoot()],
+      providers: [QnaService, PrismaService],
     }).compile();
 
     service = module.get<QnaService>(QnaService);
