@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('host')
+@ApiController('host')
 export class HostController {}
