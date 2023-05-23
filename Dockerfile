@@ -1,4 +1,4 @@
-FROM   node:18-alpine AS base
+FROM node:18-alpine3.16 AS base
 
 # INSTALL DEPENDENCIES FOR DEVELOPMENT (FOR NEST)
 FROM base AS deps
@@ -20,7 +20,8 @@ COPY --chown=node:node --from=deps /usr/src/app/.env ./
 COPY --chown=node:node . .
 ENV NODE_ENV production
 
-RUN yarn build;\
+RUN yarn prisma generate;\
+    yarn build;\
     yarn --frozen-lockfile --production; \
     rm -rf ./.next/cache;
 
@@ -36,8 +37,9 @@ COPY --chown=node:node --from=build /usr/src/app/.env ./
 COPY --chown=node:node --from=build /usr/src/app/package.json ./package.json
 COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
+
 ENV SEED false
 
 EXPOSE 8000
 
-CMD [ "yarn", "deploy:docker" ]
+CMD [ "yarn", "start:docker" ]
