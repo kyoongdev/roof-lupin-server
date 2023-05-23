@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class ReviewController {
   @Get()
   getReviews(): string {
-    return 'getReviews';
+    return 'getReviews~';
   }
 }
