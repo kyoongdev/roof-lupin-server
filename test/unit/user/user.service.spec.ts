@@ -24,7 +24,13 @@ describe('UserService', () => {
         email: 'testUser@naver.com',
         name: 'testUser1',
         nickname: 'testUser',
-        phoneNumber: '010-4040-4040',
+        phoneNumber: '01040404040',
+      },
+      {
+        email: 'testUser@naver.com',
+        name: 'testUser1',
+        nickname: 'testUser',
+        phoneNumber: '01040404040',
       },
     ];
     await Promise.all(users.map((user) => database.user.create({ data: user })));
