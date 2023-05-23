@@ -16,6 +16,6 @@ phases:
       - docker tag roof:latest 766738930863.dkr.ecr.ap-northeast-2.amazonaws.com/roof:latest
       - docker push 766738930863.dkr.ecr.ap-northeast-2.amazonaws.com/roof:latest
       - echo Writing image definitions file...
-      - printf '[{"name":"roof-container","imageUri":"%s"}]' 766738930863.dkr.ecr.ap-northeast-2.amazonaws.com/roof:latest > imagedefinitions.json
+      - printf '[{"name":"ecs-fargate-app","imageUri":"%s"}]' 766738930863.dkr.ecr.ap-northeast-2.amazonaws.com/roof:latest > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
