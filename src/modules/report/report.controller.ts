@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('report')
+@ApiController('report', '공간 신고')
 export class ReportController {}

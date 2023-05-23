@@ -6,6 +6,7 @@ import { AdminModule } from './admin/admin.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
 import { QnaModule } from './qna/qna.module';
+import { AuthModule } from './auth/auth.module';
 
 export const Modules = [
   GlobalModule,
@@ -16,4 +17,5 @@ export const Modules = [
   ReportModule,
   ReviewModule,
   QnaModule,
+  AuthModule,
 ];

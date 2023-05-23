@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('qna')
+@ApiController('qna', '공간 Q&A')
 export class QnaController {}
