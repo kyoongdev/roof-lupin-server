@@ -72,4 +72,33 @@ export class UserRepository {
     }
     return user;
   }
+
+  async createUser(data: Prisma.UserCreateInput) {
+    const user = await this.database.user.create({
+      data,
+    });
+
+    return user;
+  }
+
+  async updateUser(id: string, data: Prisma.UserUpdateInput) {
+    await this.findUser(id);
+
+    await this.database.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteUser(id: string) {
+    await this.findUser(id);
+
+    await this.database.user.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
