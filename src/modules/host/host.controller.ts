@@ -1,4 +1,4 @@
 import { ApiController } from 'utils';
 
-@ApiController('host')
+@ApiController('host', '옥상 공급자')
 export class HostController {}

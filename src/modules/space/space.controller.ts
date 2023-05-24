@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('space')
+@ApiController('space', '공간')
 export class SpaceController {
   @Get()
   getSpaces(): string {

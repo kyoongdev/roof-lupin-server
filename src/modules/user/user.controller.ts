@@ -1,7 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+import { ApiController } from 'utils';
 import { RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-@Controller('user')
+@ApiController('user', '유저')
 export class UserController {
   @Get('')
   @RequestApi({})

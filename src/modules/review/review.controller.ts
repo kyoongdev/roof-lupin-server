@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Get } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('review')
+@ApiController('review', '공간 리뷰')
 export class ReviewController {
   @Get()
   getReviews(): string {

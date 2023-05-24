@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from 'utils';
 
-@Controller('admin')
+@ApiController('admin', '통합관리자')
 export class AdminController {}
