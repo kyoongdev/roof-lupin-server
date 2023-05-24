@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   getHello() {
-    return 'healthy';
+    return { healthy: 'healthy' };
   }
 
   @Get('/test')
