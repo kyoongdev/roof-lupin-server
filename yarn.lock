@@ -7548,10 +7548,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-wemacu-nestjs@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/wemacu-nestjs/-/wemacu-nestjs-1.2.2.tgz#dd5f3b05ef2dbe9864bd83b3974cbb5de215fdae"
-  integrity sha512-nWWA1cmyAuTbD2zO44EWzYViqcGp3k+4EuISEXDm/ghwTgyJPCFFCQzskAiBPg7OlJOnJ63suMHa/d1XUn4XHA==
+wemacu-nestjs@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/wemacu-nestjs/-/wemacu-nestjs-1.2.3.tgz#c5df764b24af92353b8726afb7235852fd4daf5e"
+  integrity sha512-ZGCrjcxXs863UVhI1oflFX+PmEgvMkhWqoB7JNPBrFIJXCoFyqiPmT295Eo88XeC9vm9349vS+WNsrlvRpviEQ==
   dependencies:
     "@nestjs/common" "^9.0.0"
     "@nestjs/config" "^2.2.0"
@@ -7569,6 +7569,7 @@ wemacu-nestjs@^1.2.2:
     dotenv "^16.0.1"
     exceljs "^4.3.0"
     firebase-admin "^11.0.1"
+    form-data "^4.0.0"
     hangul-js "^0.2.6"
     jsonwebtoken "^8.5.1"
     lodash "^4.17.21"
