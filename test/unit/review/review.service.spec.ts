@@ -1,7 +1,8 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'database/prisma.service';
-import { ReviewService } from 'modules/review/review.service';
+
+import { PrismaService } from '@/database/prisma.service';
+import { ReviewService } from '@/modules/review/review.service';
 
 describe('ReviewService', () => {
   let service: ReviewService;

@@ -27,6 +27,7 @@ export class AuthService {
     private readonly jwt: Jsonwebtoken,
     private readonly kakaoService: KakaoLogin
   ) {}
+
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
 
@@ -44,6 +45,12 @@ export class AuthService {
     // }
     const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
     return token;
+  }
+
+  async adminRegister(email: string, password: string) {
+    // const admin = await this.adminRepository.createAdmin(email, password);
+    // const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
+    // return token;
   }
 
   // async hostLogin() {

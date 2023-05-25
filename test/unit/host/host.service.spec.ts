@@ -1,7 +1,8 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'database/prisma.service';
-import { HostService } from 'modules/host/host.service';
+
+import { PrismaService } from '@/database/prisma.service';
+import { HostService } from '@/modules/host/host.service';
 
 describe('HostService', () => {
   let service: HostService;

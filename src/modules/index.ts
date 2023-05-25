@@ -1,5 +1,6 @@
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { CouponModule } from './coupon/coupon.module';
 import { GlobalModule } from './global';
 import { HostModule } from './host/host.module';
 import { QnaModule } from './qna/qna.module';
@@ -18,4 +19,5 @@ export const Modules = [
   ReviewModule,
   QnaModule,
   AuthModule,
+  CouponModule,
 ];

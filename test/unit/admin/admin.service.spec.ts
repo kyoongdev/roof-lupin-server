@@ -1,7 +1,8 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'database/prisma.service';
-import { AdminService } from 'modules/admin/admin.service';
+
+import { PrismaService } from '@/database/prisma.service';
+import { AdminService } from '@/modules/admin/admin.service';
 
 describe('AdminService', () => {
   let service: AdminService;

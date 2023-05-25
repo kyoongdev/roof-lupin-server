@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SpaceController } from 'modules/space/space.controller';
+
+import { SpaceController } from '@/modules/space/space.controller';
 
 describe('SpaceController', () => {
   let controller: SpaceController;

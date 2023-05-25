@@ -5,6 +5,7 @@ import { Modules } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
+import { CouponModule } from './coupon/coupon.module';
 
 const providers: Provider[] = [...Filters, ...Interceptors];
 
@@ -14,6 +15,7 @@ const providers: Provider[] = [...Filters, ...Interceptors];
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CouponModule,
   ],
   controllers: [AppController],
   providers,

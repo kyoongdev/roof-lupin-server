@@ -2,18 +2,18 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PrismaService } from '@/database/prisma.service';
-import { QnAService } from '@/modules/qna/qna.service';
+import { CouponService } from '@/modules/coupon/coupon.service';
 
-describe('QnaService', () => {
-  let service: QnAService;
+describe('CouponService', () => {
+  let service: CouponService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
-      providers: [QnAService, PrismaService],
+      providers: [CouponService, PrismaService],
     }).compile();
 
-    service = module.get<QnAService>(QnAService);
+    service = module.get<CouponService>(CouponService);
   });
 
   it('should be defined', () => {

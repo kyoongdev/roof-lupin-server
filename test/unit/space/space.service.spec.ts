@@ -1,7 +1,8 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'database/prisma.service';
-import { SpaceService } from 'modules/space/space.service';
+
+import { PrismaService } from '@/database/prisma.service';
+import { SpaceService } from '@/modules/space/space.service';
 
 describe('SpaceService', () => {
   let service: SpaceService;
