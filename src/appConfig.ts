@@ -40,6 +40,7 @@ class AppConfig {
       .setTitle('Roof Server API')
       .setDescription('Roof Server - ~~의 API 문서입니다.')
       .setVersion('0.1')
+      .addServer('http://localhost:8000')
       .addBearerAuth(
         {
           type: 'http',

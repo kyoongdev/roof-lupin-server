@@ -13,4 +13,9 @@ export class AppController {
   test() {
     return 'test';
   }
+
+  @Get('')
+  redirectSwagger(@Response() response: ResponseType) {
+    response.redirect('/api-docs');
+  }
 }
