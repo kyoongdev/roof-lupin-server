@@ -41,7 +41,7 @@ export class QnARepository {
       },
     });
     if (!qna) {
-      throw new QnAException(QNA_ERROR_CODE.NOT_FOUND);
+      throw new QnAException(QNA_ERROR_CODE.NOT_FOUND());
     }
 
     return qna;

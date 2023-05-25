@@ -41,7 +41,7 @@ export class ReviewRepository {
       },
     });
     if (!review) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND);
+      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
     }
 
     return review;

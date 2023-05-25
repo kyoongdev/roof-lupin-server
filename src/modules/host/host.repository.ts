@@ -41,7 +41,7 @@ export class HostRepository {
       },
     });
     if (!host) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND);
+      throw new HostException(HOST_ERROR_CODE.NOT_FOUND());
     }
 
     return host;

@@ -9,6 +9,10 @@ import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
+import { TokenDTO } from './dto';
+import { AuthException } from './exception/auth.exception';
+import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
+
 @Injectable()
 export class AuthService {
   private readonly accessTokenExpiresIn = '2h' as const;
@@ -30,6 +34,24 @@ export class AuthService {
     // }
     const token = await this.jwt.signJwt({ id: admin.id, role: 'admin' });
     return token;
+  }
+
+  async refresh(tokens: TokenDTO) {
+    const { accessToken, refreshToken } = tokens;
+    const accessTokenPayload = this.jwt.verifyJwt<TokenPayload>(accessToken, {
+      ignoreExpiration: true,
+    });
+    const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken);
+
+    if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
+    if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
+
+    if (accessTokenPayload.key !== refreshTokenPayload.key)
+      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_KEY));
+    if (accessTokenPayload.id !== refreshTokenPayload.id)
+      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
+
+    return this.createTokens(refreshTokenPayload.id, refreshTokenPayload.userType);
   }
 
   async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {

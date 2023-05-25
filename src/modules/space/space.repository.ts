@@ -42,7 +42,7 @@ export class SpaceRepository {
     });
 
     if (!space) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND);
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
     }
 
     return space;

@@ -42,7 +42,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND);
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
     }
 
     return admin;
@@ -56,7 +56,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND);
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
     }
 
     return admin;

@@ -40,7 +40,7 @@ export class ReportRepository {
       },
     });
     if (!report) {
-      throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND);
+      throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND());
     }
 
     return report;

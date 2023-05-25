@@ -42,7 +42,7 @@ export class UserRepository {
     });
 
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND);
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
     return user;
@@ -55,7 +55,7 @@ export class UserRepository {
       },
     });
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND);
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
     return user;
   }
@@ -67,7 +67,7 @@ export class UserRepository {
       },
     });
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND);
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
     return user;
   }
@@ -79,7 +79,7 @@ export class UserRepository {
       },
     });
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND);
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
     return user;
   }
