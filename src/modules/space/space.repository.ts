@@ -15,7 +15,7 @@ export class SpaceRepository {
     return spaces;
   }
 
-  async findSpacesWithPaging(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
+  async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.database.space.count({
       where: args.where,
