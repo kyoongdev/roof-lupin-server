@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "local": "yarn config:local && nest start --watch",
     "dev": "yarn config:dev &&  nest start --watch",
@@ -51,6 +50,10 @@
     "winston": "^3.8.2"
   },
   "lint-staged": {
+    "src/**/*.**.{js,ts}": [
+      "yarn prettier:fix",
+      "yarn lint:fix"
+    ],
     "src/**/*.{js,ts}": [
       "yarn prettier:fix",
       "yarn lint:fix"
