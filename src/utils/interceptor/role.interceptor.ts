@@ -1,13 +1,10 @@
 import { CallHandler, ExecutionContext, mixin, NestInterceptor, UnauthorizedException } from '@nestjs/common';
+
 import { Observable } from 'rxjs';
 
-export const Role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-  HOST: 'HOST',
-} as const;
+import { Role, type RoleType } from '@/interface/token.interface';
 
-export const RoleInterceptorAPI = (role?: keyof typeof Role, nullable?: boolean) => {
+export const RoleInterceptorAPI = (role?: RoleType, nullable?: boolean) => {
   class RoleInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
       const req = context.switchToHttp().getRequest();

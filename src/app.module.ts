@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { Modules } from 'modules';
+import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { Filters, Interceptors } from 'utils';
 
-const providers = [...Filters, ...Interceptors];
+import { Modules } from '@/modules';
+import { Filters, Interceptors } from '@/utils';
+
+import { AppController } from './app.controller';
+
+const providers: Provider[] = [...Filters, ...Interceptors];
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ const providers = [...Filters, ...Interceptors];
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, ...providers],
+  providers,
 })
 export class AppModule {}

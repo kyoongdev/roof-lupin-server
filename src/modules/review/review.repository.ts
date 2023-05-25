@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import type { Prisma } from '@prisma/client';
-import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { ReviewException } from './exception/review.exception';
+
+import { PrismaService } from '@/database/prisma.service';
+
 import { REVIEW_ERROR_CODE } from './exception/errorCode';
+import { ReviewException } from './exception/review.exception';
 
 @Injectable()
 export class ReviewRepository {

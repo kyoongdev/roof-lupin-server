@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
+
+import { PrismaService } from '@/database/prisma.service';
 
 import { USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';

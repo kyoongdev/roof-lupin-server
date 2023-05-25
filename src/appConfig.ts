@@ -2,8 +2,10 @@ import type { INestApplication, PipeTransform } from '@nestjs/common';
 import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { PrismaService } from 'database/prisma.service';
-import { seedDatabase } from 'seed';
+
+import { PrismaService } from '@/database/prisma.service';
+
+import { seedDatabase } from './seed';
 
 class AppConfig {
   private app: INestApplication;

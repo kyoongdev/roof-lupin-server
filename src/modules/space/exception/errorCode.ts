@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import type { ErrorCode } from 'wemacu-nestjs';
 
 export const SPACE_ERROR_CODE: ErrorCode<'NOT_FOUND'> = {

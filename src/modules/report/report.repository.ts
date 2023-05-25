@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import type { Prisma } from '@prisma/client';
-import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { ReportException } from './exception/report.exception';
+
+import { PrismaService } from '@/database/prisma.service';
+
 import { REPORT_ERROR_CODE } from './exception/errorCode';
+import { ReportException } from './exception/report.exception';
 
 @Injectable()
 export class ReportRepository {

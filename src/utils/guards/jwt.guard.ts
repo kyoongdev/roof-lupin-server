@@ -1,15 +1,13 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from 'database/prisma.service';
-import { JsonWebTokenError } from 'jsonwebtoken';
-import { Role } from '../interceptor/role.interceptor';
-import { Jsonwebtoken } from '../jwt';
-import { Admin, Host, User } from '@prisma/client';
 
-export interface JwtUser {
-  id: string;
-  userType: keyof typeof Role;
-}
+import { Admin, Host, User } from '@prisma/client';
+import { JsonWebTokenError } from 'jsonwebtoken';
+
+import { PrismaService } from '@/database/prisma.service';
+import { Role, TokenPayload } from '@/interface/token.interface';
+
+import { Jsonwebtoken } from '../jwt';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -28,7 +26,7 @@ export class JwtAuthGuard implements CanActivate {
     const splittedHeader = authorization.split(' ');
     if (splittedHeader.length !== 2 && splittedHeader[0] !== 'Bearer') throw new UnauthorizedException();
 
-    const decoded = this.jwt.verifyJwt<JwtUser>(splittedHeader[1]);
+    const decoded = this.jwt.verifyJwt<TokenPayload>(splittedHeader[1]);
 
     if (decoded instanceof JsonWebTokenError) throw new UnauthorizedException('TOKEN_EXPIRED');
 

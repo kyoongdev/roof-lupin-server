@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { HostException } from './exception/host.exception';
+
+import { PrismaService } from '@/database/prisma.service';
+
 import { HOST_ERROR_CODE } from './exception/errorCode';
+import { HostException } from './exception/host.exception';
 
 @Injectable()
 export class HostRepository {

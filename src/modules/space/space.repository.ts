@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { SpaceException } from './exception/space.exception';
+
+import { PrismaService } from '@/database/prisma.service';
+
 import { SPACE_ERROR_CODE } from './exception/errorCode';
+import { SpaceException } from './exception/space.exception';
 
 @Injectable()
 export class SpaceRepository {

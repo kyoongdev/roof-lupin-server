@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import type { SignOptions, VerifyOptions } from 'jsonwebtoken';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 

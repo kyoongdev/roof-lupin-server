@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 
 import type { SignOptions } from 'jsonwebtoken';
-import { AdminRepository } from 'modules/admin/admin.repository';
-import { HostRepository } from 'modules/host/host.repository';
-import { UserRepository } from 'modules/user/user.repository';
-import { Jsonwebtoken } from 'utils/jwt';
+import { nanoid } from 'nanoid';
+
+import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
+import { AdminRepository } from '@/modules/admin/admin.repository';
+import { HostRepository } from '@/modules/host/host.repository';
+import { UserRepository } from '@/modules/user/user.repository';
+import { Jsonwebtoken } from '@/utils/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly accessTokenExpiresIn = '2h' as const;
+  private readonly refreshTokenExpiresIn = '14d' as const;
+
   constructor(
     private readonly userRepository: UserRepository,
     private readonly adminRepository: AdminRepository,
@@ -26,5 +32,17 @@ export class AuthService {
     return token;
   }
 
-  async createTokens<T extends object>(value: T, options?: SignOptions) {}
+  async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
+    const key = nanoid();
+    const accessToken = this.jwt.signJwt<TokenPayload>(
+      { ...value, key },
+      { ...options, expiresIn: this.accessTokenExpiresIn }
+    );
+    const refreshToken = this.jwt.signJwt<TokenPayload>(
+      { ...value, key },
+      { ...options, expiresIn: this.refreshTokenExpiresIn }
+    );
+
+    return { accessToken, refreshToken };
+  }
 }

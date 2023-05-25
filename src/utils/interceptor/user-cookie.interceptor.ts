@@ -1,7 +1,8 @@
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
+
 import { Request, Response } from 'express';
 import { getClientIp } from 'request-ip';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 export class UserCookieInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<Request>();

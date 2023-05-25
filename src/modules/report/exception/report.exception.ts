@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+
 import type { BaseErrorCode } from 'wemacu-nestjs';
 
 export class ReportException extends HttpException {
