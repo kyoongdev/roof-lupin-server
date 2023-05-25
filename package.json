@@ -50,11 +50,11 @@
     "winston": "^3.8.2"
   },
   "lint-staged": {
-    "src/**/*.**.{js,ts}": [
+    "./src/**/*.**.{js,ts}": [
       "yarn prettier:fix",
       "yarn lint:fix"
     ],
-    "src/**/*.{js,ts}": [
+    "./src/**/*.{js,ts}": [
       "yarn prettier:fix",
       "yarn lint:fix"
     ]
