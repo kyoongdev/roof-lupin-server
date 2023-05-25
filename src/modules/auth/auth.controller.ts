@@ -1,6 +1,7 @@
-import { Body, Post } from '@nestjs/common';
+import { Body, Get, Post, Query, Response } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'wemacu-nestjs';
+import type { Response as ResponseType } from 'express';
+import { KakaoLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 
@@ -9,7 +10,21 @@ import { TokenDTO } from './dto';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly kakaoService: KakaoLogin) {}
+
+  @Get('social/kakao')
+  @RequestApi({})
+  @ResponseApi({})
+  kakaoLogin(@Response() res: ResponseType) {
+    this.kakaoService.getRest(res);
+  }
+
+  @Get('social/kakao/callback')
+  @RequestApi({})
+  @ResponseApi({})
+  async kakaoLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
+    await this.authService.kakaoLoginCallback(code, res);
+  }
 
   @Post('refresh')
   @RequestApi({

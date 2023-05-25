@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
+import { KakaoLogin } from 'wemacu-nestjs';
 
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
@@ -22,8 +24,15 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly adminRepository: AdminRepository,
     private readonly hostRepository: HostRepository,
-    private readonly jwt: Jsonwebtoken
+    private readonly jwt: Jsonwebtoken,
+    private readonly kakaoService: KakaoLogin
   ) {}
+  async kakaoLoginCallback(code: string, res: Response) {
+    const result = await this.kakaoService.getRestCallback(code);
+    console.log(result);
+    //TODO: social 연동을 어떤 방식으로 할 것인지
+    // const user = await this.userRepository.findUserByUserId(result.id);
+  }
 
   async adminLogin(email: string, password: string) {
     const admin = await this.adminRepository.findAdminByUserId(email);
@@ -32,9 +41,13 @@ export class AuthService {
     // if (!isMatch) {
     //   return null;
     // }
-    const token = await this.jwt.signJwt({ id: admin.id, role: 'admin' });
+    const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
     return token;
   }
+
+  // async hostLogin() {
+
+  // }
 
   async refresh(tokens: TokenDTO) {
     const { accessToken, refreshToken } = tokens;
