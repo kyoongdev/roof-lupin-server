@@ -65,6 +65,6 @@ export class AuthService {
       { ...options, expiresIn: this.refreshTokenExpiresIn }
     );
 
-    return { accessToken, refreshToken };
+    return new TokenDTO({ accessToken, refreshToken });
   }
 }
