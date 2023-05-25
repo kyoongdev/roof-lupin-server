@@ -284,8 +284,10 @@ model Host {
 
 //INFO: 통합 관리자
 model Admin {
-  id   String @id @default(uuid())
-  name String
+  id       String @id @default(uuid())
+  name     String
+  userId   String
+  password String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

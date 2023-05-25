@@ -18,13 +18,14 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-
     "esModuleInterop": true,
     "moduleResolution": "node",
     "noLib": false,
-
     "resolveJsonModule": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["src/**/*.json", "src/**/*.ts", "node_modules/multer", "test/**/*.ts", "test/*.ts"],
   "exclude": ["node_modules", "dist"]

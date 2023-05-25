@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { UserException } from './exception/user.exception';
+
 import { USER_ERROR_CODE } from './exception/errorCode';
+import { UserException } from './exception/user.exception';
 
 @Injectable()
 export class UserRepository {
@@ -44,6 +46,7 @@ export class UserRepository {
 
     return user;
   }
+
   async findUserByEmail(email: string) {
     const user = await this.database.user.findFirst({
       where: {
@@ -77,6 +80,16 @@ export class UserRepository {
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND);
     }
+    return user;
+  }
+
+  async checkUserByPhoneNumber(phoneNumber: string) {
+    const user = await this.database.user.findFirst({
+      where: {
+        phoneNumber,
+      },
+    });
+
     return user;
   }
 

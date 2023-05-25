@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { AdminException } from './exception/host.exception';
+
 import { ADMIN_ERROR_CODE } from './exception/errorCode';
+import { AdminException } from './exception/host.exception';
 
 @Injectable()
 export class AdminRepository {
@@ -37,9 +39,34 @@ export class AdminRepository {
         id,
       },
     });
+
     if (!admin) {
       throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND);
     }
+
+    return admin;
+  }
+
+  async findAdminByUserId(userId: string) {
+    const admin = await this.database.admin.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (!admin) {
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND);
+    }
+
+    return admin;
+  }
+
+  async checkAdminByUserId(userId: string) {
+    const admin = await this.database.admin.findFirst({
+      where: {
+        userId,
+      },
+    });
 
     return admin;
   }

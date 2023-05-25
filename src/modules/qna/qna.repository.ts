@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'database/prisma.service';
 import { PagingDTO } from 'wemacu-nestjs';
-import { QnAException } from './exception/qna.exception';
+
 import { QNA_ERROR_CODE } from './exception/errorCode';
+import { QnAException } from './exception/qna.exception';
 
 @Injectable()
 export class QnARepository {

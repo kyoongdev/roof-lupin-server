@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+
 import { BaseErrorCode } from 'wemacu-nestjs';
 
 export class HostException extends HttpException {

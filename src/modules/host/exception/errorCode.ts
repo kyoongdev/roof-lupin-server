@@ -1,4 +1,5 @@
 import { HttpCode, HttpStatus } from '@nestjs/common';
+
 import { ErrorCode } from 'wemacu-nestjs';
 
 export const HOST_ERROR_CODE: ErrorCode<'NOT_FOUND'> = {
