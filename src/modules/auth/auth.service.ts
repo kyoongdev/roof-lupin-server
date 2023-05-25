@@ -29,9 +29,10 @@ export class AuthService {
   ) {}
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
-    console.log(result);
+
     //TODO: social 연동을 어떤 방식으로 할 것인지
     // const user = await this.userRepository.findUserByUserId(result.id);
+    // res.redirect('http://localhost:3000');
   }
 
   async adminLogin(email: string, password: string) {
