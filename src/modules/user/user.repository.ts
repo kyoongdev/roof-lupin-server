@@ -16,10 +16,18 @@ export class UserRepository {
   }
 
   async findUsersWithPaging(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
     const count = await this.database.user.count({
       where: args.where,
     });
-    const rows = await this.database.user.findMany(args);
+    const rows = await this.database.user.findMany({
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+      skip,
+      take,
+    });
 
     return { count, rows };
   }

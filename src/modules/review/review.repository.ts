@@ -16,10 +16,18 @@ export class ReviewRepository {
   }
 
   async findReviewsWithPaging(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
     const count = await this.database.spaceReview.count({
       where: args.where,
     });
-    const rows = await this.database.spaceReview.findMany(args);
+    const rows = await this.database.spaceReview.findMany({
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+      skip,
+      take,
+    });
 
     return { count, rows };
   }
