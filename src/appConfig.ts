@@ -14,7 +14,9 @@ class AppConfig {
   async init() {
     this.configureSwagger();
     await this.configureDatabase();
-    await this.app.listen(8000);
+    await this.app.listen(8000, () => {
+      console.log('server start at 8000');
+    });
   }
   enableCors(options?: CorsOptions | CorsOptionsDelegate<any>) {
     this.app.enableCors(options);
