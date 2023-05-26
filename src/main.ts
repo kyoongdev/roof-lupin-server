@@ -9,6 +9,7 @@ import { AppModule } from './app.module';
   const app = await NestFactory.create(AppModule, {
     logger: winstonLogger,
   });
+
   await new AppConfig(app)
     .enableCors({
       origin: '*',
