@@ -295,11 +295,13 @@ model Admin {
 }
 
 model User {
-  id          String @id @default(uuid())
-  name        String @db.VarChar(120)
+  id          String  @id @default(uuid())
+  name        String? @db.VarChar(120)
   nickname    String
   email       String
-  phoneNumber String @unique @db.Char(11)
+  phoneNumber String  @unique @db.Char(11)
+  birth       String
+  gender      Int     @db.TinyInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
