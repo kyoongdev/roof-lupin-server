@@ -1,7 +1,8 @@
 import { Body, Get, Post, Query, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
-import { KakaoLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { nanoid } from 'nanoid';
+import { KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 
@@ -10,7 +11,11 @@ import { TokenDTO } from './dto';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly kakaoService: KakaoLogin) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly kakaoService: KakaoLogin,
+    private readonly naverService: NaverLogin
+  ) {}
 
   @Get('social/kakao')
   @RequestApi({})
@@ -24,6 +29,21 @@ export class AuthController {
   @ResponseApi({})
   async kakaoLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.kakaoLoginCallback(code, res);
+  }
+
+  @Get('social/naver')
+  @RequestApi({})
+  @ResponseApi({})
+  naverLogin(@Response() res: ResponseType) {
+    const code = nanoid(5);
+    this.naverService.getRest(res, code);
+  }
+
+  @Get('social/naver/callback')
+  @RequestApi({})
+  @ResponseApi({})
+  async naverLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
+    await this.authService.naverLoginCallback(code, res);
   }
 
   @Post('refresh')

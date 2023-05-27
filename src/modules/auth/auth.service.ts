@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
-import { KakaoLogin } from 'wemacu-nestjs';
+import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
@@ -25,7 +25,8 @@ export class AuthService {
     private readonly adminRepository: AdminRepository,
     private readonly hostRepository: HostRepository,
     private readonly jwt: Jsonwebtoken,
-    private readonly kakaoService: KakaoLogin
+    private readonly kakaoService: KakaoLogin,
+    private readonly naverService: NaverLogin
   ) {}
 
   async kakaoLoginCallback(code: string, res: Response) {
@@ -34,6 +35,10 @@ export class AuthService {
     //TODO: social 연동을 어떤 방식으로 할 것인지
     // const user = await this.userRepository.findUserByUserId(result.id);
     // res.redirect('http://localhost:3000');
+  }
+
+  async naverLoginCallback(code: string, res: Response) {
+    const result = await this.naverService.getRestCallback(code);
   }
 
   async adminLogin(email: string, password: string) {

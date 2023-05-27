@@ -22,6 +22,11 @@ console.log(config.get('KAKAO_REDIRECT_URL'));
         restKey: config.get('KAKAO_REST_KEY'),
         secretKey: config.get('KAKAO_SECRET_KEY'),
       },
+      naver: {
+        clientId: config.get('NAVER_CLIENT_ID'),
+        clientSecret: config.get('NAVER_CLIENT_SECRET'),
+        redirectUrl: config.get('NAVER_REDIRECT_URL'),
+      },
     }),
   ],
   providers: [AuthService, UserRepository, AdminRepository, HostRepository, Jsonwebtoken],
