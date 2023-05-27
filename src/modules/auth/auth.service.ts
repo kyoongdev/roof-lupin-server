@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
+import axios from 'axios';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
+import queryString from 'querystring';
 import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
@@ -26,7 +29,8 @@ export class AuthService {
     private readonly hostRepository: HostRepository,
     private readonly jwt: Jsonwebtoken,
     private readonly kakaoService: KakaoLogin,
-    private readonly naverService: NaverLogin
+    private readonly naverService: NaverLogin,
+    private readonly configService: ConfigService
   ) {}
 
   async kakaoLoginCallback(code: string, res: Response) {

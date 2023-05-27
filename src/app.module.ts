@@ -1,8 +1,6 @@
 import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import {} from '@adminjs/express';
-
 import { Modules } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
 
