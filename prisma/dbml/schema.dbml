@@ -66,6 +66,7 @@ Table SpaceReview {
   content String [not null]
   spaceId String [not null]
   userId String [not null]
+  score Int [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
@@ -206,6 +207,8 @@ Table Host {
 Table Admin {
   id String [pk]
   name String [not null]
+  userId String [not null]
+  password String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
@@ -213,13 +216,23 @@ Table Admin {
 
 Table User {
   id String [pk]
-  name String [not null]
+  name String
   nickname String [not null]
-  email String [not null]
-  phoneNumber String [unique, not null]
+  email String
+  phoneNumber String
+  birth String
+  gender Int
+  profileImage String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   deletedAt DateTime
+}
+
+Table UserSocial {
+  id String [pk]
+  userId String [not null]
+  socialId String [unique, not null]
+  socialType Int [not null]
 }
 
 Table UserLocation {
@@ -274,6 +287,7 @@ Table Coupon {
   discountType Int [not null]
   discountValue Int [not null]
   description String [not null]
+  dueDate DateTime [not null]
 }
 
 Ref: Space.hostId > Host.id
@@ -341,6 +355,8 @@ Ref: SpaceUsageCategory.usageCategoryId > UsageCategory.id
 Ref: SpaceHashTag.spaceId > Space.id
 
 Ref: SpaceHashTag.hashTagId > HashTag.id
+
+Ref: UserSocial.userId > User.id [delete: Cascade]
 
 Ref: UserLocation.userId > User.id
 

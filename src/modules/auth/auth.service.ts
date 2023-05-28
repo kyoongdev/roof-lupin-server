@@ -18,8 +18,10 @@ import { Jsonwebtoken } from '@/utils/jwt';
 import { TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
 import {
+  ALREADY_EXIST_USER,
   AUTH_ERROR_CODE,
   CALLBACK_ERROR,
+  SOCIAL_USER_ERROR,
   WRONG_ACCESS_TOKEN,
   WRONG_ID,
   WRONG_KEY,
@@ -42,7 +44,7 @@ export class AuthService {
   ) {}
 
   async socialCallback(socialId: string, path: SocialPath, token: string, res: Response) {
-    const isExistUser = await this.userRepository.findUserBySocialId(socialId);
+    const isExistUser = await this.userRepository.checkUserByPhoneNumber(socialId);
     let query: string | null = null;
 
     if (isExistUser && !isExistUser.deletedAt) {
@@ -63,6 +65,7 @@ export class AuthService {
     if (!query) {
       throw new AuthException(AUTH_ERROR_CODE.INTERNAL_SERVER_ERROR(CALLBACK_ERROR));
     }
+    console.log({ isExistUser }, this.configService.get('CLIENT_URL'));
 
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
   }
@@ -76,7 +79,24 @@ export class AuthService {
   async naverLoginCallback(code: string, res: Response) {
     const result = await this.naverService.getRestCallback(code);
 
-    this.socialCallback(result.user.id, 'kakao', result.token, res);
+    this.socialCallback(result.user.id, 'naver', result.token, res);
+  }
+
+  async naverUser(code: string) {
+    const naverUser = await NaverLogin.getUser(code);
+    if (!naverUser) {
+      throw new AuthException(AUTH_ERROR_CODE.INTERNAL_SERVER_ERROR(SOCIAL_USER_ERROR));
+    }
+
+    const isExist = await this.userRepository.checkUserBySocialId(naverUser.id);
+
+    if (isExist) {
+      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_USER));
+    }
+
+    // const newUser = await this.userRepository.createUser()
+
+    // return
   }
 
   async adminLogin(email: string, password: string) {

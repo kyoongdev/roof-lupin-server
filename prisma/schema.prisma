@@ -3,12 +3,12 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
-// generator dbml {
-//   provider              = "prisma-dbml-generator"
-//   includeRelationFields = false
-//   projectDatabaseType   = "mysql"
-//   projectName           = "roof"
-// }
+generator dbml {
+  provider              = "prisma-dbml-generator"
+  includeRelationFields = false
+  projectDatabaseType   = "mysql"
+  projectName           = "roof"
+}
 
 // generator docs {
 //   provider = "node node_modules/prisma-docs-generator"
@@ -124,6 +124,7 @@ model SpaceReview {
   space   Space  @relation(fields: [spaceId], references: [id])
   userId  String
   user    User   @relation(fields: [userId], references: [id])
+  score   Int    @db.TinyInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -295,13 +296,14 @@ model Admin {
 }
 
 model User {
-  id          String  @id @default(uuid())
-  name        String? @db.VarChar(120)
-  nickname    String
-  email       String?
-  phoneNumber String? @db.Char(11)
-  birth       String?
-  gender      Int?    @db.TinyInt
+  id           String  @id @default(uuid())
+  name         String? @db.VarChar(120)
+  nickname     String
+  email        String?
+  phoneNumber  String? @db.Char(11)
+  birth        String?
+  gender       Int?    @db.TinyInt
+  profileImage String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -397,5 +399,6 @@ model Coupon {
   discountType  Int          @db.TinyInt
   discountValue Int          @db.MediumInt
   description   String       @db.VarChar(100)
+  dueDate       DateTime     @db.DateTime
   userCoupons   UserCoupon[]
 }
