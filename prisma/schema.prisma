@@ -298,10 +298,10 @@ model User {
   id          String  @id @default(uuid())
   name        String? @db.VarChar(120)
   nickname    String
-  email       String
-  phoneNumber String  @unique @db.Char(11)
-  birth       String
-  gender      Int     @db.TinyInt
+  email       String?
+  phoneNumber String? @db.Char(11)
+  birth       String?
+  gender      Int?    @db.TinyInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -314,6 +314,16 @@ model User {
   spaceQnAs      SpaceQnA[]
   locations      UserLocation[]
   coupons        UserCoupon[]
+  socials        UserSocial[]
+}
+
+model UserSocial {
+  id         String @id @default(uuid())
+  userId     String
+  socialId   String @unique
+  socialType Int    @db.TinyInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 유저는 여러 위치를 지정 가능
