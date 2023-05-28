@@ -5,7 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { USER_ERROR_CODE } from './exception/errorCode';
+import { SOCIAL_USER_NOT_FOUND, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
 @Injectable()
@@ -95,7 +95,24 @@ export class UserRepository {
     });
 
     if (!socialUser) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND('해당 소셜 ID에 해당하는 유저가 없습니다.'));
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND(SOCIAL_USER_NOT_FOUND));
+    }
+
+    return socialUser.user;
+  }
+
+  async checkUserBySocialId(socialId: string) {
+    const socialUser = await this.database.userSocial.findUnique({
+      where: {
+        socialId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!socialUser) {
+      return undefined;
     }
 
     return socialUser.user;

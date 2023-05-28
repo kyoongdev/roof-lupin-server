@@ -8,6 +8,7 @@ import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
+import { SocialPath } from '@/interface/social.interface';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
@@ -16,7 +17,14 @@ import { Jsonwebtoken } from '@/utils/jwt';
 
 import { TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
-import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
+import {
+  AUTH_ERROR_CODE,
+  CALLBACK_ERROR,
+  WRONG_ACCESS_TOKEN,
+  WRONG_ID,
+  WRONG_KEY,
+  WRONG_REFRESH_TOKEN,
+} from './exception/errorCode';
 
 @Injectable()
 export class AuthService {
@@ -33,16 +41,42 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
+  async socialCallback(socialId: string, path: SocialPath, token: string, res: Response) {
+    const isExistUser = await this.userRepository.findUserBySocialId(socialId);
+    let query: string | null = null;
+
+    if (isExistUser && !isExistUser.deletedAt) {
+      const { accessToken, refreshToken } = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+      query = queryString.stringify({
+        status: 200,
+        accessToken,
+        refreshToken,
+      });
+    } else {
+      query = queryString.stringify({
+        status: 404,
+        [`${path}AccessToken`]: token,
+        message: 'NotFoundUser',
+      });
+    }
+
+    if (!query) {
+      throw new AuthException(AUTH_ERROR_CODE.INTERNAL_SERVER_ERROR(CALLBACK_ERROR));
+    }
+
+    res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
+  }
+
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
 
-    //TODO: social 연동을 어떤 방식으로 할 것인지
-    // const user = await this.userRepository.findUserByUserId(result.id);
-    // res.redirect('http://localhost:3000');
+    this.socialCallback(result.user.id, 'kakao', result.token, res);
   }
 
   async naverLoginCallback(code: string, res: Response) {
     const result = await this.naverService.getRestCallback(code);
+
+    this.socialCallback(result.user.id, 'kakao', result.token, res);
   }
 
   async adminLogin(email: string, password: string) {
