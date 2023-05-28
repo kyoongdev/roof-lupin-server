@@ -84,6 +84,23 @@ export class UserRepository {
     return user;
   }
 
+  async findUserBySocialId(socialId: string) {
+    const socialUser = await this.database.userSocial.findUnique({
+      where: {
+        socialId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!socialUser) {
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND('해당 소셜 ID에 해당하는 유저가 없습니다.'));
+    }
+
+    return socialUser.user;
+  }
+
   async checkUserByPhoneNumber(phoneNumber: string) {
     const user = await this.database.user.findFirst({
       where: {
