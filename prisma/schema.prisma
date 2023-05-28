@@ -3,12 +3,12 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
-generator dbml {
-  provider              = "prisma-dbml-generator"
-  includeRelationFields = false
-  projectDatabaseType   = "mysql"
-  projectName           = "roof"
-}
+// generator dbml {
+//   provider              = "prisma-dbml-generator"
+//   includeRelationFields = false
+//   projectDatabaseType   = "mysql"
+//   projectName           = "roof"
+// }
 
 // generator docs {
 //   provider = "node node_modules/prisma-docs-generator"

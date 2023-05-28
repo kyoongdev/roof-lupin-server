@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import AppConfig from '@/appConfig';
@@ -15,6 +16,12 @@ import { AppModule } from './app.module';
       origin: '*',
     })
     .configureMiddleware()
-    .configurePipes()
+    .configurePipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      })
+    )
     .init();
 })();

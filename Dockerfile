@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16 AS base
+FROM node:18-alpine AS base
 
 # INSTALL DEPENDENCIES FOR DEVELOPMENT (FOR NEST)
 FROM base AS deps

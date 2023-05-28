@@ -24,7 +24,7 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   birth?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, example: '남성 | 여성' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, example: '남성 | 여성 | undefined' } })
   gender?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })

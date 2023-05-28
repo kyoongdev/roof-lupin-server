@@ -12,7 +12,6 @@ services:
     networks:
       - roof-server-local-mysql-net
     container_name: mysql
-
   roof-server:
     build:
       context: .

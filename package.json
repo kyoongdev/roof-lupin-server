@@ -12,7 +12,7 @@
     "dev": "yarn config:dev &&  nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:docker": "yarn prisma db push && node dist/main.js",
+    "start:docker": "yarn prisma db push --skip-generate && node dist/main.js",
     "deploy:docker": "yarn prisma db push && node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier:fix": "prettier **/*.ts   --write",
@@ -26,10 +26,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "config:local": "cp ./env/.env.local .env && cp ./env/docker/Dockerfile.local Dockerfile",
     "config:dev": "cp ./env/.env.dev .env && cp ./env/docker/Dockerfile.dev Dockerfile",
+    "config:docker": "cp ./env/.env.docker .env && cp ./env/docker/Dockerfile.local Dockerfile",
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "migrate:local": "yarn config:local && yarn prisma migrate dev",
-    "docker-compose:local": "yarn config:local &&  docker-compose up --build -d",
-    "docker-compose:dev": "yarn config:dev &&  docker-compose up --build -d",
+    "docker-compose:local": "yarn config:docker &&  docker-compose up --build -d",
     "seed": "ts-node src/seed.ts",
     "docs": "yarn prisma-docs-generator serve -p 8001",
     "docker:dev": "yarn config:dev && docker buildx build --platform linux/amd64,linux/arm64 -t roof . "
@@ -42,6 +42,7 @@
     "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^4.14.1",
     "axios": "^1.4.0",
+    "class-validator": "^0.14.0",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.0",
     "nanoid": "3.3.4",
@@ -50,7 +51,7 @@
     "reflect-metadata": "^0.1.13",
     "request-ip": "^3.3.0",
     "rxjs": "^7.2.0",
-    "wemacu-nestjs": "^1.5.0",
+    "wemacu-nestjs": "^1.5.1",
     "winston": "^3.8.2"
   },
   "lint-staged": {
