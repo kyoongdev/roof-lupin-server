@@ -5,12 +5,15 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { REVIEW_ERROR_CODE } from './exception/errorCode';
+import { SpaceRepository } from '../space/space.repository';
+
+import { CreateReviewDTO } from './dto/create-review.dto';
+import { REVIEW_ERROR_CODE, SCORE_BAD_REQUEST } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
 export class ReviewRepository {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
     const reviews = await this.database.spaceReview.findMany(args);
@@ -70,5 +73,42 @@ export class ReviewRepository {
     });
 
     return { count, reviews };
+  }
+  async createReview(props: CreateReviewDTO, userId: string) {
+    const { content, score, spaceId, images } = props;
+
+    if (score < 1 || score > 5) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(SCORE_BAD_REQUEST));
+    }
+
+    await this.spaceRepository.findSpace(spaceId);
+
+    const review = await this.database.spaceReview.create({
+      data: {
+        content,
+        score,
+        space: {
+          connect: {
+            id: spaceId,
+          },
+        },
+        images: {
+          create: images.map((url) => ({
+            image: {
+              create: {
+                url,
+              },
+            },
+          })),
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    return review.id;
   }
 }

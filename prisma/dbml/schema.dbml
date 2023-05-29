@@ -1,0 +1,368 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Project "roof" {
+  database_type: 'mysql'
+  Note: ''
+}
+
+Table Image {
+  id String [pk]
+  url String [not null]
+}
+
+Table Space {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  size Int [not null]
+  rooftopType Int [not null]
+  buildingType Int [not null]
+  spaceIntroduction String [not null]
+  facilityIntroduction String [not null]
+  minUser Int [not null]
+  maxUser Int [not null]
+  overflowUserCost Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  hostId String [unique, not null]
+}
+
+Table SpaceReport {
+  id String [pk]
+  reportType Int [not null]
+  reoirtStatus Int [not null]
+  title String [not null]
+  content String [not null]
+  spaceId String [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table SpaceQnA {
+  id String [pk]
+  title String [not null]
+  content String [not null]
+  spaceId String [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table SpaceQnAAnswer {
+  id String [pk]
+  content String [not null]
+  spaceQnAId String [not null]
+  hostId String [not null]
+}
+
+Table SpaceReview {
+  id String [pk]
+  content String [not null]
+  spaceId String [not null]
+  userId String [not null]
+  score Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table SpaceReviewImage {
+  spaceReviewId String [not null]
+  imageId String [not null]
+
+  indexes {
+    (spaceReviewId, imageId) [pk]
+  }
+}
+
+Table SpaceInterest {
+  spaceId String [not null]
+  userId String [not null]
+
+  indexes {
+    (userId, spaceId) [pk]
+  }
+}
+
+Table SpaceLike {
+  spaceId String [not null]
+  userId String [not null]
+
+  indexes {
+    (userId, spaceId) [pk]
+  }
+}
+
+Table SpaceUsageImage {
+  spaceId String [not null]
+  imageId String [not null]
+
+  indexes {
+    (spaceId, imageId) [pk]
+  }
+}
+
+Table SpaceImage {
+  spaceId String [not null]
+  imageId String [not null]
+
+  indexes {
+    (spaceId, imageId) [pk]
+  }
+}
+
+Table SpaceGuideLine {
+  id String [pk]
+  content String [not null]
+  spaceId String [not null]
+}
+
+Table SpaceCaution {
+  id String [pk]
+  content String [not null]
+  spaceId String [not null]
+}
+
+Table SpaceDiscountInfo {
+  id String [pk]
+  discountType Int [not null]
+  discountValue Int [not null]
+  name String [not null]
+  content String [not null]
+  description String [not null]
+  spaceId String [not null]
+}
+
+Table RentalType {
+  id String [pk]
+  name String [not null]
+  cost Int [not null]
+  costType Int [not null]
+  baseHour Int
+  startAt Int [not null]
+  endAt Int [not null]
+  spaceId String [not null]
+}
+
+Table SpaceLocation {
+  spaceId String [unique, not null]
+  locationId String [unique, not null]
+
+  indexes {
+    (spaceId, locationId) [pk]
+  }
+}
+
+Table SpaceFacility {
+  spaceId String [not null]
+  facilityId String [not null]
+
+  indexes {
+    (spaceId, facilityId) [pk]
+  }
+}
+
+Table SpaceService {
+  spaceId String [not null]
+  serviceId String [not null]
+
+  indexes {
+    (spaceId, serviceId) [pk]
+  }
+}
+
+Table SpaceUsageCategory {
+  spaceId String [not null]
+  usageCategoryId String [not null]
+
+  indexes {
+    (spaceId, usageCategoryId) [pk]
+  }
+}
+
+Table SpaceHashTag {
+  spaceId String [not null]
+  hashTagId String [not null]
+
+  indexes {
+    (spaceId, hashTagId) [pk]
+  }
+}
+
+Table Host {
+  id String [pk]
+  userId String [not null]
+  name String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table Admin {
+  id String [pk]
+  name String [not null]
+  userId String [not null]
+  password String [not null]
+  isAccepted Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table User {
+  id String [pk]
+  name String
+  nickname String [not null]
+  email String
+  phoneNumber String
+  birth String
+  gender Int
+  profileImage String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table UserSocial {
+  id String [pk]
+  userId String [not null]
+  socialId String [unique, not null]
+  socialType Int [not null]
+}
+
+Table UserLocation {
+  id String [pk]
+  userId String [not null]
+  locationId String [not null]
+  isDefault Boolean [not null, default: false]
+}
+
+Table Location {
+  id String [pk]
+  lat String [not null]
+  lng String [not null]
+  roadAddress String [not null]
+  jibunAddress String [not null]
+}
+
+Table Facility {
+  id String [pk]
+  iconPath String [not null]
+  name String [not null]
+}
+
+Table Service {
+  id String [pk]
+  iconPath String [not null]
+  name String [not null]
+}
+
+Table UsageCategory {
+  id String [pk]
+  name String [not null]
+}
+
+Table HashTag {
+  id String [pk]
+  name String [not null]
+}
+
+Table UserCoupon {
+  id String [pk]
+  userId String [not null]
+  couponId String [not null]
+  count Int [not null, default: 1]
+  code String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table Coupon {
+  id String [pk]
+  name String [not null]
+  discountType Int [not null]
+  discountValue Int [not null]
+  description String [not null]
+  dueDate DateTime [not null]
+}
+
+Ref: Space.hostId > Host.id
+
+Ref: SpaceReport.spaceId > Space.id
+
+Ref: SpaceReport.userId > User.id
+
+Ref: SpaceQnA.spaceId > Space.id
+
+Ref: SpaceQnA.userId > User.id
+
+Ref: SpaceQnAAnswer.spaceQnAId > SpaceQnA.id
+
+Ref: SpaceQnAAnswer.hostId > Host.id
+
+Ref: SpaceReview.spaceId > Space.id
+
+Ref: SpaceReview.userId > User.id
+
+Ref: SpaceReviewImage.spaceReviewId > SpaceReview.id
+
+Ref: SpaceReviewImage.imageId > Image.id
+
+Ref: SpaceInterest.spaceId > Space.id
+
+Ref: SpaceInterest.userId > User.id
+
+Ref: SpaceLike.spaceId > Space.id
+
+Ref: SpaceLike.userId > User.id
+
+Ref: SpaceUsageImage.spaceId > Space.id
+
+Ref: SpaceUsageImage.imageId > Image.id
+
+Ref: SpaceImage.spaceId > Space.id
+
+Ref: SpaceImage.imageId > Image.id
+
+Ref: SpaceGuideLine.spaceId > Space.id
+
+Ref: SpaceCaution.spaceId > Space.id
+
+Ref: SpaceDiscountInfo.spaceId > Space.id
+
+Ref: RentalType.spaceId > Space.id
+
+Ref: SpaceLocation.spaceId - Space.id
+
+Ref: SpaceLocation.locationId - Location.id
+
+Ref: SpaceFacility.spaceId > Space.id
+
+Ref: SpaceFacility.facilityId > Facility.id
+
+Ref: SpaceService.spaceId > Space.id
+
+Ref: SpaceService.serviceId > Service.id
+
+Ref: SpaceUsageCategory.spaceId > Space.id
+
+Ref: SpaceUsageCategory.usageCategoryId > UsageCategory.id
+
+Ref: SpaceHashTag.spaceId > Space.id
+
+Ref: SpaceHashTag.hashTagId > HashTag.id
+
+Ref: UserSocial.userId > User.id [delete: Cascade]
+
+Ref: UserLocation.userId > User.id
+
+Ref: UserLocation.locationId > Location.id
+
+Ref: UserCoupon.userId > User.id
+
+Ref: UserCoupon.couponId > Coupon.id

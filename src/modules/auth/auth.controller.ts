@@ -20,7 +20,12 @@ export class AuthController {
   ) {}
 
   @Get('social/kakao')
-  @RequestApi({})
+  @RequestApi({
+    summary: {
+      description: '카카오 로그인',
+      summary: '카카오 로그인',
+    },
+  })
   @ResponseApi({})
   kakaoLogin(@Response() res: ResponseType) {
     this.kakaoService.getRest(res);
@@ -35,7 +40,12 @@ export class AuthController {
   }
 
   @Get('social/naver')
-  @RequestApi({})
+  @RequestApi({
+    summary: {
+      description: '네이버 로그인',
+      summary: '네이버 로그인',
+    },
+  })
   @ResponseApi({})
   naverLogin(@Response() res: ResponseType) {
     const code = nanoid(5);

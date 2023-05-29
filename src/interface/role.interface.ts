@@ -1,15 +1,15 @@
 import type { Admin, Host, User } from '@prisma/client';
 
-export interface ReqUser extends User {
+export interface RequestUser extends User {
   userType: 'USER';
 }
 
-export interface ReqAdmin extends Admin {
+export interface RequestAdmin extends Admin {
   userType: 'ADMIN';
 }
 
-export interface ReqHost extends Host {
+export interface RequestHost extends Host {
   userType: 'HOST';
 }
 
-export type ReqUserType = ReqUser | ReqAdmin | ReqHost;
+export type ReqUserType = RequestUser | RequestAdmin | RequestHost;

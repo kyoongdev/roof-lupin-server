@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Role, type RoleType } from '@/interface/token.interface';
 
-export const RoleInterceptorAPI = (role?: RoleType, nullable?: boolean) => {
+export const RoleInterceptorAPI = (role?: RoleType, nullable = false) => {
   class RoleInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
       const req = context.switchToHttp().getRequest();

@@ -20,9 +20,9 @@ datasource db {
 }
 
 model Image {
-  id                String             @id @default(uuid())
-  url               String
-  spaceUsageImages  SpaceUsageImage[]
+  id  String @id @default(uuid())
+  url String
+
   spaceImages       SpaceImage[]
   spaceReviewImages SpaceReviewImage[]
 }
@@ -32,7 +32,7 @@ model Space {
   title                String @db.VarChar(120)
   description          String
   size                 Int    @db.SmallInt
-  rooftopType          Int    @db.TinyInt
+  spaceType            Int    @db.TinyInt
   buildingType         Int    @db.TinyInt
   spaceIntroduction    String @db.MediumText
   facilityIntroduction String @db.MediumText
@@ -51,7 +51,6 @@ model Space {
   reports         SpaceReport[]
   userInterests   SpaceInterest[]
   userLikes       SpaceLike[]
-  usageImages     SpaceUsageImage[]
   images          SpaceImage[]
   guideLines      SpaceGuideLine[]
   cautions        SpaceCaution[]
@@ -161,16 +160,6 @@ model SpaceLike {
   user    User   @relation(fields: [userId], references: [id])
 
   @@id([userId, spaceId])
-}
-
-//INFO: 공간 실제 이용 사진 (리뷰와 다른 점?)
-model SpaceUsageImage {
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
-  imageId String
-  image   Image  @relation(fields: [imageId], references: [id])
-
-  @@id([spaceId, imageId])
 }
 
 //INFO: 공간 사진
