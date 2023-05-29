@@ -120,9 +120,9 @@ model SpaceReview {
   id      String @id @default(uuid())
   content String @db.MediumText
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   score   Int    @db.TinyInt
 
   createdAt DateTime  @default(now())
@@ -135,9 +135,9 @@ model SpaceReview {
 //INFO: 공간 리뷰 이미지
 model SpaceReviewImage {
   spaceReviewId String
-  spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id])
+  spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   imageId       String
-  image         Image       @relation(fields: [imageId], references: [id])
+  image         Image       @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceReviewId, imageId])
 }
