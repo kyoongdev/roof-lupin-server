@@ -5,10 +5,8 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { SpaceRepository } from '../space/space.repository';
-
-import { CreateReviewDTO } from './dto/create-review.dto';
-import { REVIEW_ERROR_CODE, SCORE_BAD_REQUEST } from './exception/errorCode';
+import { CreateReviewDTO, UpdateReviewDTO } from './dto';
+import { REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -104,5 +102,33 @@ export class ReviewRepository {
     });
 
     return review.id;
+  }
+  async updateReview(id: string, props: UpdateReviewDTO) {
+    await this.database.spaceReview.update({
+      where: {
+        id,
+      },
+      data: {
+        content: props.content,
+        score: props.score,
+        images: props.images && {
+          deleteMany: {},
+          create: props.images.map((url) => ({
+            image: {
+              create: {
+                url,
+              },
+            },
+          })),
+        },
+      },
+    });
+  }
+  async deleteReview(id: string) {
+    await this.database.spaceReview.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
