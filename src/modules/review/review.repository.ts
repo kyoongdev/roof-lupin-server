@@ -13,7 +13,7 @@ import { ReviewException } from './exception/review.exception';
 
 @Injectable()
 export class ReviewRepository {
-  constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
+  constructor(private readonly database: PrismaService) {}
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
     const reviews = await this.database.spaceReview.findMany(args);
@@ -76,12 +76,6 @@ export class ReviewRepository {
   }
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
-
-    if (score < 1 || score > 5) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(SCORE_BAD_REQUEST));
-    }
-
-    await this.spaceRepository.findSpace(spaceId);
 
     const review = await this.database.spaceReview.create({
       data: {
