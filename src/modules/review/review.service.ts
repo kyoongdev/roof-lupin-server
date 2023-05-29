@@ -32,4 +32,14 @@ export class ReviewService {
 
     await this.reviewRepository.updateReview(reviewId, props);
   }
+
+  async deleteReview(reviewId: string, userId: string) {
+    const review = await this.reviewRepository.findReview(reviewId);
+
+    if (review.userId !== userId) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_DELETE_FORBIDDEN));
+    }
+
+    await this.reviewRepository.deleteReview(reviewId);
+  }
 }

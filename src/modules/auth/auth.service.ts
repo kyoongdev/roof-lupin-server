@@ -20,15 +20,7 @@ import { CreateSocialUserDTO } from '../user/dto';
 
 import { AdminAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
-import {
-  ALREADY_EXIST_USER,
-  AUTH_ERROR_CODE,
-  SOCIAL_USER_ERROR,
-  WRONG_ACCESS_TOKEN,
-  WRONG_ID,
-  WRONG_KEY,
-  WRONG_REFRESH_TOKEN,
-} from './exception/errorCode';
+import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
 
 @Injectable()
 export class AuthService {
@@ -45,6 +37,13 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
+  async testUserLogin() {
+    const user = await this.userRepository.findUserByNickname('testUser');
+
+    const tokens = await this.createTokens({ id: user.id, role: 'USER' });
+    return tokens;
+  }
+
   async socialCallback(props: CreateSocialUserDTO, socialId: string, path: SocialType, token: string, res: Response) {
     const isExistUser = await this.userRepository.checkUserBySocialId(socialId);
 
@@ -53,7 +52,7 @@ export class AuthService {
     }
 
     const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
-    console.log(tokens);
+
     const query = queryString.stringify({
       status: 200,
       accessToken: tokens.accessToken,

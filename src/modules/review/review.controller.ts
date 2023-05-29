@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -56,5 +56,21 @@ export class ReviewController {
   })
   async updateReview(@Body() body: UpdateReviewDTO, @Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
     await this.reviewService.updateReview(reviewId, user.id, body);
+  }
+
+  @Delete(':reviewId')
+  @Auth(JwtAuthGuard)
+  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @RequestApi({
+    summary: {
+      description: '공간 리뷰 삭제',
+      summary: '공간 리뷰를 삭제합니다. 리뷰 작성자만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteReview(@Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
+    await this.reviewService.deleteReview(reviewId, user.id);
   }
 }

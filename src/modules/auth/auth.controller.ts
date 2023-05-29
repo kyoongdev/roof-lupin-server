@@ -19,6 +19,20 @@ export class AuthController {
     private readonly naverService: NaverLogin
   ) {}
 
+  @Get('test')
+  @RequestApi({
+    summary: {
+      description: '테스트 로그인',
+      summary: '테스트 로그인입니다. 개발 환경에서만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: TokenDTO,
+  })
+  async test() {
+    return await this.authService.testUserLogin();
+  }
+
   @Get('social/kakao')
   @RequestApi({
     summary: {
