@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import { SpaceRepository } from '../space/space.repository';
 
+import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
-import { REVIEW_ERROR_CODE, SCORE_BAD_REQUEST } from './exception/errorCode';
+import { REVIEW_DELETE_FORBIDDEN, REVIEW_ERROR_CODE, SCORE_BAD_REQUEST } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 import { ReviewRepository } from './review.repository';
 
@@ -20,5 +21,15 @@ export class ReviewService {
 
     await this.spaceRepository.findSpace(spaceId);
     return await this.reviewRepository.createReview(props, userId);
+  }
+
+  async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
+    const review = await this.reviewRepository.findReview(reviewId);
+
+    if (review.userId !== userId) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_DELETE_FORBIDDEN));
+    }
+
+    await this.reviewRepository.updateReview(reviewId, props);
   }
 }
