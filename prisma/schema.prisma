@@ -44,7 +44,7 @@ model Space {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? @db.DateTime
 
-  hostId String @unique @db.VarChar(120)
+  hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
 
   reviews         SpaceReview[]
