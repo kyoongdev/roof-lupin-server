@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import axios from 'axios';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
-import { SocialPath } from '@/interface/social.interface';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
+import type { SocialType } from '@/interface/user.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
@@ -20,7 +19,6 @@ import { AuthException } from './exception/auth.exception';
 import {
   ALREADY_EXIST_USER,
   AUTH_ERROR_CODE,
-  CALLBACK_ERROR,
   SOCIAL_USER_ERROR,
   WRONG_ACCESS_TOKEN,
   WRONG_ID,
@@ -43,29 +41,19 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
-  async socialCallback(socialId: string, path: SocialPath, token: string, res: Response) {
+  async socialCallback(socialId: string, path: SocialType, token: string, res: Response) {
     const isExistUser = await this.userRepository.checkUserByPhoneNumber(socialId);
-    let query: string | null = null;
 
-    if (isExistUser && !isExistUser.deletedAt) {
-      const { accessToken, refreshToken } = await this.createTokens({ id: isExistUser.id, role: 'USER' });
-      query = queryString.stringify({
-        status: 200,
-        accessToken,
-        refreshToken,
-      });
-    } else {
-      query = queryString.stringify({
-        status: 404,
-        [`${path}AccessToken`]: token,
-        message: 'NotFoundUser',
-      });
+    if (!isExistUser) {
+      // await this.userRepository.createUser()
     }
 
-    if (!query) {
-      throw new AuthException(AUTH_ERROR_CODE.INTERNAL_SERVER_ERROR(CALLBACK_ERROR));
-    }
-    console.log({ isExistUser }, this.configService.get('CLIENT_URL'));
+    const { accessToken, refreshToken } = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+    const query = queryString.stringify({
+      status: 200,
+      accessToken,
+      refreshToken,
+    });
 
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
   }

@@ -5,6 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { CreateSocialUserDTO } from './dto';
 import { SOCIAL_USER_NOT_FOUND, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
@@ -134,6 +135,23 @@ export class UserRepository {
     });
 
     return user;
+  }
+  async createSocialUser(props: CreateSocialUserDTO) {
+    const { socialId, socialType, ...rest } = props;
+    await this.findUserBySocialId(socialId);
+    const newUser = await this.database.user.create({
+      data: {
+        ...rest,
+        socials: {
+          create: {
+            socialId,
+            socialType,
+          },
+        },
+      },
+    });
+
+    return newUser.id;
   }
 
   async updateUser(id: string, data: Prisma.UserUpdateInput) {
