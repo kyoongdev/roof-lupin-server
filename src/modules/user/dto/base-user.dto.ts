@@ -1,6 +1,5 @@
 import { DateDTO } from '@/common';
-
-import type { UserGender } from '../utils';
+import type { UserGender } from '@/interface/user.interface';
 
 export class BaseUserDTO extends DateDTO {
   //INFO: 1 = 남성, 2 = 여성

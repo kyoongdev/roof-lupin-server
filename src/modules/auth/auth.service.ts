@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import axios from 'axios';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
-import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
+import { type KakaoGetRestCallback, KakaoLogin, type NaverGetRestCallback, NaverLogin } from 'wemacu-nestjs';
 
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
@@ -13,6 +14,8 @@ import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
+
+import { CreateSocialUserDTO } from '../user/dto';
 
 import { TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
@@ -41,18 +44,19 @@ export class AuthService {
     private readonly configService: ConfigService
   ) {}
 
-  async socialCallback(socialId: string, path: SocialType, token: string, res: Response) {
-    const isExistUser = await this.userRepository.checkUserByPhoneNumber(socialId);
+  async socialCallback(props: CreateSocialUserDTO, socialId: string, path: SocialType, token: string, res: Response) {
+    const isExistUser = await this.userRepository.checkUserBySocialId(socialId);
 
     if (!isExistUser) {
-      // await this.userRepository.createUser()
+      await this.userRepository.createSocialUser(props);
     }
 
-    const { accessToken, refreshToken } = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+    const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+    console.log(tokens);
     const query = queryString.stringify({
       status: 200,
-      accessToken,
-      refreshToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     });
 
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
@@ -60,14 +64,47 @@ export class AuthService {
 
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
+    const { user } = result;
 
-    this.socialCallback(result.user.id, 'kakao', result.token, res);
+    this.socialCallback(
+      new CreateSocialUserDTO({
+        nickname: user.properties.nickname ?? '',
+        socialId: user.id,
+        socialType: 'kakao',
+        birth: user.kakaoAccount.birthday,
+        email: user.kakaoAccount.email,
+        gender: user.kakaoAccount.gender ?? user.kakaoAccount.gender === 'male' ? 1 : 2,
+        name: user.kakaoAccount.name,
+        phoneNumber: user.kakaoAccount.phone_number,
+        profileImage: user.properties.profile_image,
+      }),
+      user.id,
+      'kakao',
+      result.token,
+      res
+    );
   }
 
   async naverLoginCallback(code: string, res: Response) {
     const result = await this.naverService.getRestCallback(code);
-
-    this.socialCallback(result.user.id, 'naver', result.token, res);
+    const { user } = result;
+    this.socialCallback(
+      new CreateSocialUserDTO({
+        nickname: user.name,
+        socialId: user.id,
+        socialType: 'naver',
+        birth: user.birthday,
+        email: user.email,
+        gender: user.gender === 'M' ? 1 : 2,
+        name: user.name,
+        phoneNumber: user.mobile,
+        profileImage: user.profile_image,
+      }),
+      user.id,
+      'naver',
+      result.token,
+      res
+    );
   }
 
   async naverUser(code: string) {
@@ -136,6 +173,7 @@ export class AuthService {
       { ...value, key },
       { ...options, expiresIn: this.refreshTokenExpiresIn }
     );
+    console.log({ accessToken, refreshToken });
 
     return new TokenDTO({ accessToken, refreshToken });
   }

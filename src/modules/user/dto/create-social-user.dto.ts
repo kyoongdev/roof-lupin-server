@@ -46,6 +46,7 @@ export class CreateSocialUserDTO {
 
   constructor(props?: Props) {
     if (props) {
+      if (props.phoneNumber && props.phoneNumber.includes('-')) props.phoneNumber = props.phoneNumber.replace(/-/g, '');
       this.name = props.name;
       this.nickname = props.nickname;
       this.email = props.email;

@@ -29,6 +29,7 @@ export class AuthController {
   @ResponseApi({})
   async kakaoLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.kakaoLoginCallback(code, res);
+    return { hello: 'hello' };
   }
 
   @Get('social/naver')

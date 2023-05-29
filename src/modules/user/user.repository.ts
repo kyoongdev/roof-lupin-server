@@ -6,7 +6,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateSocialUserDTO } from './dto';
-import { SOCIAL_USER_NOT_FOUND, USER_ERROR_CODE } from './exception/errorCode';
+import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
 @Injectable()
@@ -138,7 +138,11 @@ export class UserRepository {
   }
   async createSocialUser(props: CreateSocialUserDTO) {
     const { socialId, socialType, ...rest } = props;
-    await this.findUserBySocialId(socialId);
+    const isExist = await this.checkUserBySocialId(socialId);
+
+    if (isExist) {
+      throw new UserException(USER_ERROR_CODE.CONFLICT(USER_ALREADY_EXIST));
+    }
     const newUser = await this.database.user.create({
       data: {
         ...rest,
