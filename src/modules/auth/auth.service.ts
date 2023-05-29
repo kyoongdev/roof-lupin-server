@@ -17,7 +17,7 @@ import { Jsonwebtoken } from '@/utils/jwt';
 
 import { CreateSocialUserDTO } from '../user/dto';
 
-import { TokenDTO } from './dto';
+import { AdminAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
 import {
   ALREADY_EXIST_USER,
@@ -107,38 +107,20 @@ export class AuthService {
     );
   }
 
-  async naverUser(code: string) {
-    const naverUser = await NaverLogin.getUser(code);
-    if (!naverUser) {
-      throw new AuthException(AUTH_ERROR_CODE.INTERNAL_SERVER_ERROR(SOCIAL_USER_ERROR));
+  async adminLogin(props: AdminAuthDTO) {
+    const admin = await this.adminRepository.findAdminByUserId(props.userId);
+    const isMatch = await props.comparePassword(admin.password);
+    if (!isMatch) {
+      return null;
     }
-
-    const isExist = await this.userRepository.checkUserBySocialId(naverUser.id);
-
-    if (isExist) {
-      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_USER));
-    }
-
-    // const newUser = await this.userRepository.createUser()
-
-    // return
-  }
-
-  async adminLogin(email: string, password: string) {
-    const admin = await this.adminRepository.findAdminByUserId(email);
-    //TODO: password check logic
-    // const isMatch = await admin.comparePassword(password);
-    // if (!isMatch) {
-    //   return null;
-    // }
     const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
     return token;
   }
 
   async adminRegister(email: string, password: string) {
-    // const admin = await this.adminRepository.createAdmin(email, password);
-    // const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
-    // return token;
+    const admin = await this.adminRepository.createAdmin(email, password);
+    const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
+    return token;
   }
 
   // async hostLogin() {

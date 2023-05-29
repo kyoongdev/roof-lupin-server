@@ -5,6 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { CreateAdminDTO } from './dto/create-admin.dto';
 import { ADMIN_ERROR_CODE } from './exception/errorCode';
 import { AdminException } from './exception/host.exception';
 
@@ -70,5 +71,15 @@ export class AdminRepository {
     });
 
     return admin;
+  }
+
+  async createAdmin(props: CreateAdminDTO) {
+    const admin = await this.database.admin.create({
+      data: {
+        ...props,
+      },
+    });
+
+    return admin.id;
   }
 }
