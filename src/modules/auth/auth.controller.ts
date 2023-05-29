@@ -7,7 +7,7 @@ import { KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 import { ApiController } from '@/utils';
 
 import { AuthService } from './auth.service';
-import { TokenDTO } from './dto';
+import { AdminAuthDTO, TokenDTO } from './dto';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
@@ -62,5 +62,22 @@ export class AuthController {
   })
   async refresh(@Body() body: TokenDTO) {
     return await this.authService.refresh(body);
+  }
+
+  @Post('admin/login')
+  @RequestApi({
+    summary: {
+      description: '관리자 로그인',
+      summary: '관리자 로그인을 합니다.',
+    },
+    body: {
+      type: AdminAuthDTO,
+    },
+  })
+  @ResponseApi({
+    type: TokenDTO,
+  })
+  async adminLogin(@Body() body: AdminAuthDTO) {
+    return await this.authService.adminLogin(body);
   }
 }

@@ -15,6 +15,7 @@ import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
+import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
 import { CreateSocialUserDTO } from '../user/dto';
 
 import { AdminAuthDTO, TokenDTO } from './dto';
@@ -117,15 +118,11 @@ export class AuthService {
     return token;
   }
 
-  async adminRegister(email: string, password: string) {
-    const admin = await this.adminRepository.createAdmin(email, password);
-    const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
+  async adminRegister(props: CreateAdminDTO) {
+    const admin = await this.adminRepository.createAdmin(props);
+    const token = await this.createTokens({ id: admin, role: 'ADMIN' });
     return token;
   }
-
-  // async hostLogin() {
-
-  // }
 
   async refresh(tokens: TokenDTO) {
     const { accessToken, refreshToken } = tokens;
