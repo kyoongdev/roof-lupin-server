@@ -1,8 +1,16 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { Space, SpaceReview, User } from '@prisma/client';
+
 import { PrismaService } from '@/database/prisma.service';
 import { UpdateReviewDTO } from '@/modules/review/dto';
+import {
+  REVIEW_DELETE_FORBIDDEN,
+  REVIEW_ERROR_CODE,
+  REVIEW_UPDATE_FORBIDDEN,
+} from '@/modules/review/exception/errorCode';
+import { ReviewException } from '@/modules/review/exception/review.exception';
 import { ReviewRepository } from '@/modules/review/review.repository';
 import { ReviewService } from '@/modules/review/review.service';
 import { SpaceRepository } from '@/modules/space/space.repository';
@@ -32,11 +40,14 @@ describe('ReviewService', () => {
   });
 
   describe('Review Update', () => {
-    it('리뷰 수정 (성공)', async () => {
-      const space = await database.space.findFirst({});
-      const user = await database.user.findFirst({});
+    let newReview: SpaceReview;
+    let space: Space;
+    let user: User;
+    beforeEach(async () => {
+      space = await database.space.findFirst({});
+      user = await database.user.findFirst({});
 
-      const newReview = await database.spaceReview.create({
+      newReview = await database.spaceReview.create({
         data: {
           score: 5,
           content: 'test',
@@ -52,16 +63,51 @@ describe('ReviewService', () => {
           },
         },
       });
-
+    });
+    it('리뷰 수정 (성공)', async () => {
       expect(newReview).toBeDefined();
       expect(newReview.userId).toEqual(user.id);
 
-      const updatedReview = await service.updateReview(
+      await service.updateReview(
         newReview.id,
         user.id,
         new UpdateReviewDTO({
           content: 'hello',
         })
+      );
+      const updatedReview = await service.findReview(newReview.id);
+
+      expect(updatedReview).toBeDefined();
+      expect(updatedReview.userId).toEqual(user.id);
+      expect(updatedReview.content).toEqual('hello');
+      expect(updatedReview.score).toEqual(5);
+    });
+
+    it('리뷰 수정 (실패)', async () => {
+      expect(newReview).toBeDefined();
+
+      expect(
+        async () => await service.updateReview(newReview.id, 'wrongId', new UpdateReviewDTO({ content: 'hello' }))
+      ).rejects.toThrowError(new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_UPDATE_FORBIDDEN)));
+    });
+
+    it('리뷰 삭제 (성공)', async () => {
+      expect(newReview).toBeDefined();
+      expect(newReview.userId).toEqual(user.id);
+
+      await service.deleteReview(newReview.id, user.id);
+
+      expect(async () => await service.findReview(newReview.id)).rejects.toThrowError(
+        new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND())
+      );
+    });
+
+    it('리뷰 삭제 (실패)', async () => {
+      expect(newReview).toBeDefined();
+      expect(newReview.userId).toEqual(user.id);
+
+      expect(async () => await service.deleteReview(newReview.id, 'wrongId')).rejects.toThrowError(
+        new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_DELETE_FORBIDDEN))
       );
     });
   });
