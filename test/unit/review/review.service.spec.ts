@@ -2,6 +2,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PrismaService } from '@/database/prisma.service';
+import { UpdateReviewDTO } from '@/modules/review/dto';
 import { ReviewRepository } from '@/modules/review/review.repository';
 import { ReviewService } from '@/modules/review/review.service';
 import { SpaceRepository } from '@/modules/space/space.repository';
@@ -54,6 +55,14 @@ describe('ReviewService', () => {
 
       expect(newReview).toBeDefined();
       expect(newReview.userId).toEqual(user.id);
+
+      const updatedReview = await service.updateReview(
+        newReview.id,
+        user.id,
+        new UpdateReviewDTO({
+          content: 'hello',
+        })
+      );
     });
   });
 

@@ -27,6 +27,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.json", "src/**/*.ts", "node_modules/multer", "test/**/*.ts", "test/*.ts"],
+  "include": ["src/**/*.json", "src/**/*.ts", "test/**/*.ts", "test/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

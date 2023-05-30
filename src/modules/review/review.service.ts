@@ -12,6 +12,12 @@ import { ReviewRepository } from './review.repository';
 export class ReviewService {
   constructor(private readonly reviewRepository: ReviewRepository, private readonly spaceRepository: SpaceRepository) {}
 
+  async findReview(id: string) {
+    const review = await this.reviewRepository.findReview(id);
+
+    return review;
+  }
+
   async createReview(props: CreateReviewDTO, userId: string) {
     const { score, spaceId } = props;
 

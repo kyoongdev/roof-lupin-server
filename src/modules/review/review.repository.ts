@@ -6,6 +6,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateReviewDTO, UpdateReviewDTO } from './dto';
+import { ReviewDTO } from './dto/review.dto';
 import { REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
@@ -45,7 +46,7 @@ export class ReviewRepository {
       throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
     }
 
-    return review;
+    return new ReviewDTO(review);
   }
 
   async findReviewsWithSpaceId(spaceId: string) {
