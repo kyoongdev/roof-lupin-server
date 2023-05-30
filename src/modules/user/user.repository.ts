@@ -5,7 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateSocialUserDTO } from './dto';
+import { CreateSocialUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
 import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
@@ -130,7 +130,7 @@ export class UserRepository {
     return user;
   }
 
-  async createUser(data: Prisma.UserCreateInput) {
+  async createUser(data: CreateUserDTO) {
     const user = await this.database.user.create({
       data,
     });
@@ -159,9 +159,7 @@ export class UserRepository {
     return newUser.id;
   }
 
-  async updateUser(id: string, data: Prisma.UserUpdateInput) {
-    await this.findUser(id);
-
+  async updateUser(id: string, data: UpdateUserDTO) {
     await this.database.user.update({
       where: {
         id,
@@ -171,8 +169,6 @@ export class UserRepository {
   }
 
   async deleteUser(id: string) {
-    await this.findUser(id);
-
     await this.database.user.delete({
       where: {
         id,

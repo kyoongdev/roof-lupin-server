@@ -12,7 +12,7 @@ import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewService } from './review.service';
 
-@ApiController('review', '공간 리뷰')
+@ApiController('reviews', '공간 리뷰')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
   @Get()
