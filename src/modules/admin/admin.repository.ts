@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PagingDTO } from 'wemacu-nestjs';
 
+import { Encrypt } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateAdminDTO } from './dto/create-admin.dto';
@@ -74,9 +75,12 @@ export class AdminRepository {
   }
 
   async createAdmin(props: CreateAdminDTO) {
+    const salt = Encrypt.createSalt();
     const admin = await this.database.admin.create({
       data: {
         ...props,
+        password: Encrypt.hashPassword(salt, props.password),
+        salt,
       },
     });
 

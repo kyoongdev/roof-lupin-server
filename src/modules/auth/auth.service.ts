@@ -8,6 +8,7 @@ import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 import { type KakaoGetRestCallback, KakaoLogin, type NaverGetRestCallback, NaverLogin } from 'wemacu-nestjs';
 
+import { Encrypt } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
@@ -112,7 +113,7 @@ export class AuthService {
 
   async adminLogin(props: AdminAuthDTO) {
     const admin = await this.adminRepository.findAdminByUserId(props.userId);
-    const isMatch = await props.comparePassword(admin.password);
+    const isMatch = await Encrypt.comparePassword(admin.salt, props.password, admin.password);
     if (!isMatch) {
       return null;
     }

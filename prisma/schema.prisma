@@ -43,7 +43,7 @@ model Space {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 
   hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
@@ -82,7 +82,7 @@ model SpaceReport {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 }
 
 //INFO: 공간 QnA
@@ -100,7 +100,7 @@ model SpaceQnA {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 
   answers SpaceQnAAnswer[]
 }
@@ -128,7 +128,7 @@ model SpaceReview {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 
   images SpaceReviewImage[]
 }
@@ -267,7 +267,7 @@ model Host {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 
   spaces          Space[]
   spaceQnAAnswers SpaceQnAAnswer[]
@@ -279,11 +279,12 @@ model Admin {
   name       String
   userId     String
   password   String
+  salt       String
   isAccepted Boolean @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 }
 
 model User {
@@ -298,7 +299,7 @@ model User {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime? @db.DateTime
+  deletedAt DateTime?
 
   spaceReviews   SpaceReview[]
   spaceReports   SpaceReport[]
