@@ -1,6 +1,6 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Req, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
@@ -10,15 +10,12 @@ import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
 
 import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
+import { ReviewDTO } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
 @ApiController('reviews', '공간 리뷰')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
-  @Get()
-  getReviews(): string {
-    return 'getReviews~~';
-  }
 
   @Post()
   @Auth(JwtAuthGuard)

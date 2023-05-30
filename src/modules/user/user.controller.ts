@@ -4,7 +4,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 
 import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
-import { ApiController, ReqUser, ResponseWithId } from '@/utils';
+import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
 
@@ -73,7 +73,7 @@ export class UserController {
 
   @Post('')
   @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @UseInterceptors(RoleInterceptorAPI('ADMIN'), ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '유저 생성',

@@ -1,9 +1,12 @@
-import { SpaceReview } from '@prisma/client';
+import { SpaceReview, User } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
 
 import { DateDTO } from '@/common';
+import { CommonUserDTO } from '@/modules/user/dto';
 
-type Props = Partial<SpaceReview>;
+interface Props extends Partial<SpaceReview> {
+  user: Partial<User>;
+}
 
 export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string' } })
@@ -14,15 +17,15 @@ export class ReviewDTO extends DateDTO {
   })
   score: number;
 
-  @Property({ apiProperty: { type: 'string' } })
-  userId: string;
+  @Property({ apiProperty: { type: CommonUserDTO } })
+  user: CommonUserDTO;
 
   //TODO: user dto 생성 시 수정
   constructor(props: Props) {
     super();
     this.content = props.content;
     this.score = props.score;
-    this.userId = props.userId;
+    this.user = new CommonUserDTO(props.user);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;

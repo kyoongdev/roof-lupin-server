@@ -5,7 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateSocialUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
+import { CommonUserDTO, CreateSocialUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
 import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
@@ -16,7 +16,7 @@ export class UserRepository {
   async findUsers(args = {} as Prisma.UserFindManyArgs) {
     const users = await this.database.user.findMany(args);
 
-    return users;
+    return users.map((user) => new CommonUserDTO(user));
   }
 
   async findPagingUsers(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
@@ -47,7 +47,7 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
-    return user;
+    return new CommonUserDTO(user);
   }
 
   async findUserByEmail(email: string) {
@@ -59,7 +59,8 @@ export class UserRepository {
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
-    return user;
+
+    return new CommonUserDTO(user);
   }
 
   async findUserByName(name: string) {
@@ -71,7 +72,7 @@ export class UserRepository {
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
-    return user;
+    return new CommonUserDTO(user);
   }
 
   async findUserByNickname(nickname: string) {
@@ -83,7 +84,7 @@ export class UserRepository {
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
-    return user;
+    return new CommonUserDTO(user);
   }
 
   async findUserBySocialId(socialId: string) {
@@ -100,7 +101,7 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND(SOCIAL_USER_NOT_FOUND));
     }
 
-    return socialUser.user;
+    return new CommonUserDTO(socialUser.user);
   }
 
   async checkUserBySocialId(socialId: string) {
@@ -117,7 +118,7 @@ export class UserRepository {
       return undefined;
     }
 
-    return socialUser.user;
+    return new CommonUserDTO(socialUser.user);
   }
 
   async checkUserByPhoneNumber(phoneNumber: string) {
