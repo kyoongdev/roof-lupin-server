@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { ScoreValidation } from './validation';
+
 interface Props {
   content: string;
   images: string[];
@@ -15,6 +17,7 @@ export class CreateReviewDTO {
   images: string[];
 
   @Property({ apiProperty: { type: 'number', description: '별점' } })
+  @ScoreValidation({ message: '별점은 0~5 사이의 정수만 가능합니다.' })
   score: number;
 
   @Property({ apiProperty: { type: 'string', description: '공간 아이디' } })
