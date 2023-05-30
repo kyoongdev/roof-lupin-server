@@ -17,6 +17,78 @@ import { ReviewService } from './review.service';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
+  @Get(':spaceId')
+  @RequestApi({
+    summary: {
+      description: '공강늬  리뷰 목록',
+      summary: '공간의 리뷰 목록을 불러옵니다. 유저만 사용이 가능합니다.',
+    },
+    params: {
+      name: 'spaceId',
+      type: 'string',
+      description: '공간 아이디',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isArray: true,
+  })
+  async getSpaceReviews(@Param('spaceId') spaceId: string, @Paging() paging: PagingDTO) {
+    return await this.reviewService.findPagingReviews(paging, {
+      where: {
+        spaceId,
+      },
+    });
+  }
+
+  @Get('me/list')
+  @Auth(JwtAuthGuard)
+  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @RequestApi({
+    summary: {
+      description: '내가 작성한 리뷰 목록',
+      summary: '내가 작성한 리뷰 목록을 불러옵니다. 유저만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isArray: true,
+  })
+  async getMyReviews(@ReqUser() user: RequestUser) {
+    return await this.reviewService.findReviews({
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
+  @Get('me/paging')
+  @Auth(JwtAuthGuard)
+  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @RequestApi({
+    summary: {
+      description: '내가 작성한 리뷰 목록',
+      summary: '내가 작성한 리뷰 목록을 불러옵니다. 유저만 사용이 가능합니다.',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isPaging: true,
+  })
+  async getMyReviewsPaging(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
+    return await this.reviewService.findPagingReviews(paging, {
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
   @Post()
   @Auth(JwtAuthGuard)
   @UseInterceptors(RoleInterceptorAPI('USER'), ResponseWithIdInterceptor)

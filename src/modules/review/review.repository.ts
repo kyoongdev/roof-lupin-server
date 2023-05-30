@@ -21,6 +21,16 @@ export class ReviewRepository {
       },
       include: {
         user: true,
+        images: {
+          select: {
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -29,6 +39,35 @@ export class ReviewRepository {
     }
 
     return new ReviewDTO(review);
+  }
+
+  async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
+    const reviews = await this.database.spaceReview.findMany({
+      where: {
+        ...args.where,
+      },
+      include: {
+        user: true,
+        images: {
+          select: {
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+      skip: args.skip,
+      take: args.take,
+    });
+
+    return reviews.map((review) => new ReviewDTO(review));
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {

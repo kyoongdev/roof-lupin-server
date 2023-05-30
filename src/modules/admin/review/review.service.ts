@@ -23,6 +23,16 @@ export class AdminReviewService {
       },
       include: {
         user: true,
+        images: {
+          select: {
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

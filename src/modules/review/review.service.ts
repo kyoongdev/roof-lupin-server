@@ -33,30 +33,20 @@ export class ReviewService {
     return review;
   }
 
+  async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
+    return await this.findReviews(args);
+  }
+
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.database.spaceReview.count({
       where: args.where,
     });
-    const rows = await this.database.spaceReview.findMany({
-      where: {
-        ...args.where,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
+    const rows = await this.reviewRepository.findReviews({
       skip,
       take,
     });
-
-    return new PaginationDTO(
-      rows.map((review) => new ReviewDTO(review)),
-      { count, paging }
-    );
+    return new PaginationDTO<ReviewDTO>(rows, { count, paging });
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {
