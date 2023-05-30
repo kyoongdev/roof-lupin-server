@@ -1,7 +1,6 @@
-import { Validate } from 'class-validator';
 import { Property } from 'wemacu-nestjs';
 
-import { CustomTextLength, IsUserAlreadyExist } from './validate/gender.validate';
+import { EmailNotRegistered } from './validate/gender.validate';
 
 interface Props {
   name?: string;
@@ -29,16 +28,10 @@ export class CreateUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   birth?: string;
 
-  // @Validate(CustomTextLength, { always: true })
   @Property({
     apiProperty: { type: 'number', nullable: true, example: '1 = 남성, 2 = 여성' },
-    validation: {
-      context: (value: any) => {
-        console.log({ value });
-      },
-    },
   })
-  @IsUserAlreadyExist()
+  @EmailNotRegistered({ message: 'error message 등록이 왜 안될까?', always: true })
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })

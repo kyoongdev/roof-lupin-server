@@ -4,7 +4,6 @@ export const ReflectTarget = {
 };
 
 export function ResponseWithId(target: object, key: string | symbol, descriptor: TypedPropertyDescriptor<any>) {
-  console.log({ target, key, descriptor });
   Reflect.defineMetadata(RESPONSE_WITH_ID, 'class', descriptor.value);
   return descriptor;
 }

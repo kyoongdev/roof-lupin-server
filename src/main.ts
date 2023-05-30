@@ -1,5 +1,7 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+
+import { useContainer, ValidationError } from 'class-validator';
 
 import AppConfig from '@/appConfig';
 import { winstonLogger } from '@/log';
@@ -19,7 +21,7 @@ import { AppModule } from './app.module';
     .configurePipes(
       new ValidationPipe({
         whitelist: true,
-        forbidNonWhitelisted: true,
+        forbidUnknownValues: true,
         transform: true,
       })
     )

@@ -151,7 +151,6 @@ export class AuthService {
       { ...value, key },
       { ...options, expiresIn: this.refreshTokenExpiresIn }
     );
-    console.log({ accessToken, refreshToken });
 
     return new TokenDTO({ accessToken, refreshToken });
   }

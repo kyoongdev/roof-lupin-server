@@ -9,7 +9,9 @@ export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string' } })
   content: string;
 
-  @Property({ apiProperty: { type: 'number' } })
+  @Property({
+    apiProperty: { type: 'number' },
+  })
   score: number;
 
   @Property({ apiProperty: { type: 'string' } })

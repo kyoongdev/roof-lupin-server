@@ -16,7 +16,6 @@ export class Jsonwebtoken {
 
       return jwt.sign(value, this.configService.get<string>('JWT_KEY') as string, options ?? {});
     } catch (error) {
-      console.log(error);
       return new JsonWebTokenError('sign Failed');
     }
   }

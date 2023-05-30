@@ -1,4 +1,4 @@
-import { Get, Post } from '@nestjs/common';
+import { Body, Get, Post } from '@nestjs/common';
 
 import { RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -23,7 +23,7 @@ export class UserController {
     },
   })
   @ResponseApi({})
-  createUser() {
+  createUser(@Body() body: CreateUserDTO) {
     return [];
   }
 }

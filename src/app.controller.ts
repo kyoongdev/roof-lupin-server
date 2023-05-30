@@ -9,11 +9,6 @@ export class AppController {
     response.status(200).json({ status: 'HEALTHY' });
   }
 
-  @Get('/test')
-  test() {
-    return 'test';
-  }
-
   @Get('')
   redirectSwagger(@Response() response: ResponseType) {
     response.redirect('/api-docs');

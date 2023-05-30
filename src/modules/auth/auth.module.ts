@@ -12,7 +12,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 const config = new ConfigService();
-console.log(config.get('KAKAO_REDIRECT_URL'));
+
 @Module({
   imports: [
     SocialLoginModule.forRoot({
