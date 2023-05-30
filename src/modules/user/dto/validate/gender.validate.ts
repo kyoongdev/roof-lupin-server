@@ -1,25 +1,15 @@
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { type ValidationArguments, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
+
+import { BaseValidator } from '@/utils/decorator/base-validator';
 
 @ValidatorConstraint()
-export class IsEmailNotRegistered implements ValidatorConstraintInterface {
-  validate(email: any, args: any) {
-    return false;
+export class IsGenderValidateConstraint implements ValidatorConstraintInterface {
+  validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    if (!Number.isInteger(value)) return false;
+    if (value !== 1 && value !== 2) return false;
+
+    return true;
   }
 }
 
-export function EmailNotRegistered(validationOptions?: ValidationOptions) {
-  return function (object: object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [],
-      validator: IsEmailNotRegistered,
-    });
-  };
-}
+export const GenderValidation = BaseValidator(IsGenderValidateConstraint);

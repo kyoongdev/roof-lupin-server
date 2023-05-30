@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { EmailNotRegistered } from './validate/gender.validate';
+import { GenderValidation } from './validate/gender.validate';
 
 interface Props {
   name?: string;
@@ -31,7 +31,7 @@ export class CreateUserDTO {
   @Property({
     apiProperty: { type: 'number', nullable: true, example: '1 = 남성, 2 = 여성' },
   })
-  @EmailNotRegistered({ message: 'error message 등록이 왜 안될까?', always: true })
+  @GenderValidation({ message: '1과 2 중에서만 입력해주세요.' })
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })
