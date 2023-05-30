@@ -1,4 +1,3 @@
-import { compare } from 'bcrypt';
 import { Property } from 'wemacu-nestjs';
 
 interface Props {
@@ -23,9 +22,5 @@ export class CreateAdminDTO {
       this.password = props.password;
       this.name = props.name;
     }
-  }
-
-  async comparePassword(password: string) {
-    return await compare(password, this.password);
   }
 }

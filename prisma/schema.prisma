@@ -293,7 +293,7 @@ model User {
   nickname     String
   email        String?
   phoneNumber  String? @db.Char(11)
-  birth        String?
+  birth        String? @db.Char(8)
   gender       Int?    @db.TinyInt
   profileImage String?
 

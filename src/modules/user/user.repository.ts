@@ -24,6 +24,7 @@ export class UserRepository {
     const count = await this.database.user.count({
       where: args.where,
     });
+
     const rows = await this.database.user.findMany({
       where: {
         ...args.where,
