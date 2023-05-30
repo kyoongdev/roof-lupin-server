@@ -151,6 +151,7 @@ export class UserRepository {
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {
+    await this.findUser(id);
     await this.database.user.update({
       where: {
         id,
@@ -173,6 +174,8 @@ export class UserRepository {
   }
 
   async deleteUser(id: string) {
+    await this.findUser(id);
+
     await this.database.user.update({
       where: {
         id,

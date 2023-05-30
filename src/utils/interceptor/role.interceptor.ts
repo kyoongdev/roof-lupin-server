@@ -14,11 +14,11 @@ export const RoleInterceptorAPI = (role?: RoleType, nullable = false) => {
 
       if (role && !nullable) {
         if (role === Role.ADMIN) {
-          if (req.user.role !== Role.ADMIN) throw new UnauthorizedException('권한이 없습니다.');
+          if (req.user.role !== Role.ADMIN) throw new UnauthorizedException('관리자 권한이 없습니다.');
         } else if (role === Role.HOST) {
-          if (req.user.role !== Role.HOST) throw new UnauthorizedException('권한이 없습니다.');
+          if (req.user.role !== Role.HOST) throw new UnauthorizedException('호스트 권한이 없습니다.');
         } else if (role === Role.USER) {
-          if (req.user.role !== Role.USER) throw new UnauthorizedException('권한이 없습니다.');
+          if (req.user.role !== Role.USER) throw new UnauthorizedException('유저 권한이 없습니다.');
         }
       }
 

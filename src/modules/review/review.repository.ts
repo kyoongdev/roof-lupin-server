@@ -122,6 +122,7 @@ export class ReviewRepository {
       },
     });
   }
+
   async deleteReview(id: string) {
     await this.database.spaceReview.delete({
       where: {

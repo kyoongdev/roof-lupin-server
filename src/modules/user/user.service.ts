@@ -41,12 +41,10 @@ export class UserService {
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {
-    await this.findUser(id);
     await this.userRepository.updateUser(id, data);
   }
 
   async deleteUser(id: string) {
-    await this.findUser(id);
     await this.userRepository.deleteUser(id);
   }
 

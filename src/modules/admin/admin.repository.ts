@@ -6,6 +6,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 import { Encrypt } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
+import { AdminDetailDTO, AdminDTO, UpdateAdminDTO } from './dto';
 import { CreateAdminDTO } from './dto/create-admin.dto';
 import { ADMIN_ERROR_CODE } from './exception/errorCode';
 import { AdminException } from './exception/host.exception';
@@ -15,25 +16,19 @@ export class AdminRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findAdmins(args = {} as Prisma.AdminFindManyArgs) {
-    const admins = await this.database.admin.findMany(args);
+    const admins = await this.database.admin.findMany({
+      ...args,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+    });
 
-    return admins;
+    return admins.map((admin) => new AdminDTO(admin));
   }
 
-  async findPagingAdmins(paging: PagingDTO, args = {} as Prisma.AdminFindManyArgs) {
-    const { skip, take } = paging.getSkipTake();
-    const count = await this.database.admin.count({
-      where: args.where,
-    });
-    const rows = await this.database.admin.findMany({
-      where: {
-        ...args.where,
-      },
-      skip,
-      take,
-    });
-
-    return { count, rows };
+  async countAdmins(args = {} as Prisma.AdminCountArgs) {
+    return await this.database.admin.count(args);
   }
 
   async findAdmin(id: string) {
@@ -46,8 +41,20 @@ export class AdminRepository {
     if (!admin) {
       throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
     }
+    return new AdminDTO(admin);
+  }
 
-    return admin;
+  async findAdminDetail(id: string) {
+    const admin = await this.database.admin.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!admin) {
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
+    }
+    return new AdminDetailDTO(admin);
   }
 
   async findAdminByUserId(userId: string) {
@@ -61,7 +68,7 @@ export class AdminRepository {
       throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
     }
 
-    return admin;
+    return new AdminDetailDTO(admin);
   }
 
   async checkAdminByUserId(userId: string) {
@@ -71,19 +78,55 @@ export class AdminRepository {
       },
     });
 
-    return admin;
+    return new AdminDetailDTO(admin);
   }
 
-  async createAdmin(props: CreateAdminDTO) {
+  async createAdmin(data: CreateAdminDTO, byAdmin = false) {
     const salt = Encrypt.createSalt();
     const admin = await this.database.admin.create({
       data: {
-        ...props,
-        password: Encrypt.hashPassword(salt, props.password),
+        ...data,
+        password: Encrypt.hashPassword(salt, data.password),
         salt,
+        isAccepted: byAdmin,
       },
     });
 
     return admin.id;
+  }
+  async updateAdmin(id: string, data: UpdateAdminDTO) {
+    const admin = await this.findAdminDetail(id);
+    if (data.password) {
+      data.password = Encrypt.hashPassword(admin.salt, data.password);
+    }
+    await this.database.admin.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
+  }
+
+  async deleteAdmin(id: string) {
+    await this.findAdmin(id);
+    await this.database.admin.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteAdmin(id: string) {
+    await this.findAdmin(id);
+    await this.database.admin.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
