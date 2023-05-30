@@ -25,6 +25,7 @@ model Image {
 
   spaceImages       SpaceImage[]
   spaceReviewImages SpaceReviewImage[]
+  loginBackground   LoginBackground[]
 }
 
 model Space {
@@ -391,4 +392,14 @@ model Coupon {
   description   String       @db.VarChar(100)
   dueDate       DateTime     @db.DateTime
   userCoupons   UserCoupon[]
+}
+
+//INFO: 로그인 페이지 배경
+model LoginBackground {
+  id String @id @default(uuid())
+
+  isDefault Boolean @default(false)
+
+  imageId String
+  image   Image  @relation(fields: [imageId], references: [id])
 }

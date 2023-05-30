@@ -21,7 +21,7 @@ describe('ReviewService', () => {
   let service: ReviewService;
   let database: PrismaService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
       providers: [ReviewService, PrismaService, ReviewRepository, SpaceRepository],
