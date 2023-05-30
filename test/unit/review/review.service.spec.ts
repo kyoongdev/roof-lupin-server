@@ -6,6 +6,8 @@ import { ReviewRepository } from '@/modules/review/review.repository';
 import { ReviewService } from '@/modules/review/review.service';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
+import { seedSpace } from '../seed/space';
+
 describe('ReviewService', () => {
   let service: ReviewService;
   let database: PrismaService;
@@ -21,39 +23,7 @@ describe('ReviewService', () => {
   });
 
   beforeEach(async () => {
-    const host = await database.host.create({
-      data: {
-        name: 'testHost',
-        userId: 'testHost',
-      },
-    });
-
-    await database.user.create({
-      data: {
-        nickname: 'testUser',
-      },
-    });
-    for (let i = 0; i < 100; i++) {
-      await database.space.create({
-        data: {
-          buildingType: 1,
-          description: 'test',
-          title: `테스트 공간${i + 1}`,
-          facilityIntroduction: 'facilityIntroduction',
-          maxUser: 20,
-          minUser: 1,
-          overflowUserCost: i * 1000,
-          spaceType: 1,
-          size: i + 20,
-          spaceIntroduction: 'spaceIntroduction',
-          host: {
-            connect: {
-              id: host.id,
-            },
-          },
-        },
-      });
-    }
+    await seedSpace(database);
   });
 
   it('should be defined', () => {
