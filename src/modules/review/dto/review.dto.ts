@@ -25,7 +25,6 @@ export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO } })
   user: CommonUserDTO;
 
-  //TODO: user dto 생성 시 수정
   constructor(props: Props) {
     super();
     this.content = props.content;

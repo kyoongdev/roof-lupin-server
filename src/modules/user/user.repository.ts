@@ -14,26 +14,16 @@ export class UserRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findUsers(args = {} as Prisma.UserFindManyArgs) {
-    const users = await this.database.user.findMany(args);
+    const users = await this.database.user.findMany({
+      ...args,
+      include: {},
+    });
 
     return users.map((user) => new CommonUserDTO(user));
   }
 
-  async findPagingUsers(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
-    const { skip, take } = paging.getSkipTake();
-    const count = await this.database.user.count({
-      where: args.where,
-    });
-
-    const rows = await this.database.user.findMany({
-      where: {
-        ...args.where,
-      },
-      skip,
-      take,
-    });
-
-    return { count, rows };
+  async countUsers(args = {} as Prisma.UserCountArgs) {
+    return await this.database.user.count(args);
   }
 
   async findUser(id: string) {

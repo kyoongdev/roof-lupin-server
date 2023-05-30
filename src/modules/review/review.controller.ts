@@ -20,8 +20,8 @@ export class ReviewController {
   @Get(':spaceId')
   @RequestApi({
     summary: {
-      description: '공강늬  리뷰 목록',
-      summary: '공간의 리뷰 목록을 불러옵니다. 유저만 사용이 가능합니다.',
+      description: '공강의 리뷰 목록',
+      summary: '공간의 리뷰 목록을 불러옵니다.',
     },
     params: {
       name: 'spaceId',

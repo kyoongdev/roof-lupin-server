@@ -3,23 +3,37 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { PrismaService } from '@/database/prisma.service';
+
 import { CommonUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly database: PrismaService, private readonly userRepository: UserRepository) {}
 
   async findUser(id: string) {
     return await this.userRepository.findUser(id);
   }
 
   async findPagingUser(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
-    const { count, rows } = await this.userRepository.findPagingUsers(paging, args);
-    return new PaginationDTO(
-      rows.map((user) => new CommonUserDTO(user)),
-      { paging, count }
-    );
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.userRepository.countUsers({
+      where: args.where,
+    });
+    const users = await this.userRepository.findUsers({
+      where: {
+        ...args.where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+      skip,
+      take,
+    });
+
+    return new PaginationDTO<CommonUserDTO>(users, { paging, count });
   }
 
   async createUser(data: CreateUserDTO) {
