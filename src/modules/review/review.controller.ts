@@ -32,9 +32,12 @@ export class ReviewController {
       type: CreateReviewDTO,
     },
   })
-  @ResponseApi({
-    type: ResponseWithIdDTO,
-  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
   async createReview(@Body() body: CreateReviewDTO, @ReqUser() user: RequestUser) {
     return await this.reviewService.createReview(body, user.id);
   }
@@ -51,9 +54,12 @@ export class ReviewController {
       type: UpdateReviewDTO,
     },
   })
-  @ResponseApi({
-    type: EmptyResponseDTO,
-  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
   async updateReview(@Body() body: UpdateReviewDTO, @Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
     await this.reviewService.updateReview(reviewId, user.id, body);
   }
@@ -67,9 +73,12 @@ export class ReviewController {
       summary: '공간 리뷰를 삭제합니다. 리뷰 작성자만 사용이 가능합니다.',
     },
   })
-  @ResponseApi({
-    type: EmptyResponseDTO,
-  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
   async deleteReview(@Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
     await this.reviewService.deleteReview(reviewId, user.id);
   }
