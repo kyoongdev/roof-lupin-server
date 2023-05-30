@@ -36,4 +36,8 @@ export class UserService {
     await this.findUser(id);
     await this.userRepository.deleteUser(id);
   }
+
+  async hardDeleteUser(id: string) {
+    await this.userRepository.deleteUser(id);
+  }
 }

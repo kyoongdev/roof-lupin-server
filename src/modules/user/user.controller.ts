@@ -167,6 +167,30 @@ export class UserController {
     await this.userService.deleteUser(userId);
   }
 
+  @Delete(':userId/hard')
+  @Auth(JwtAuthGuard)
+  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @RequestApi({
+    summary: {
+      description: '유저 삭제 [hard delete]',
+      summary: '유저 삭제하기 (사용 시 유저가 DB에서 사라집니다.) - 로그인 필요, 관리자만 사용 가능',
+    },
+    params: {
+      name: 'userId',
+      type: 'string',
+      description: '유저 아이디',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async hardDeleteUser(@Param('userId') userId: string) {
+    await this.userService.hardDeleteUser(userId);
+  }
+
   @Delete('')
   @Auth(JwtAuthGuard)
   @UseInterceptors(RoleInterceptorAPI('USER'))

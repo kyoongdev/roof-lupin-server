@@ -6,7 +6,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateSocialUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
-import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
+import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
 @Injectable()
@@ -168,10 +168,26 @@ export class UserRepository {
     });
   }
 
-  async deleteUser(id: string) {
+  async hardDeleteUser(id: string) {
+    const user = await this.findUser(id);
+
+    if (user.deletedAt) {
+      throw new UserException(USER_ERROR_CODE.FORBIDDEN(HARD_DELETE_FAILED));
+    }
     await this.database.user.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async deleteUser(id: string) {
+    await this.database.user.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }
