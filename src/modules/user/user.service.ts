@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { CommonUserDTO, UpdateUserDTO } from './dto';
+import { CommonUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -21,6 +21,10 @@ export class UserService {
       rows.map((user) => new CommonUserDTO(user)),
       { paging, count }
     );
+  }
+
+  async createUser(data: CreateUserDTO) {
+    return await this.userRepository.createUser(data);
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {
