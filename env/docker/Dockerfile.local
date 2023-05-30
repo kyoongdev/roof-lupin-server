@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:18 AS base
 
 # INSTALL DEPENDENCIES FOR DEVELOPMENT (FOR NEST)
 FROM base AS deps
@@ -6,7 +6,9 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node package.json yarn.lock .env ./
 COPY --chown=node:node prisma ./prisma
-RUN yarn --frozen-lockfile;
+
+RUN yarn --frozen-lockfile 
+     
 
 USER node
 
@@ -30,6 +32,8 @@ USER node
 # PRODUCTION IMAGE
 FROM base AS production
 WORKDIR /usr/src/app
+
+
 
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist

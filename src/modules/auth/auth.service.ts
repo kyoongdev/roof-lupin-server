@@ -51,7 +51,9 @@ export class AuthService {
       await this.userRepository.createSocialUser(props);
     }
 
-    const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+    const user = await this.userRepository.findUserBySocialId(socialId);
+
+    const tokens = await this.createTokens({ id: user.id, role: 'USER' });
 
     const query = queryString.stringify({
       status: 200,
@@ -64,12 +66,13 @@ export class AuthService {
 
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
+
     const { user } = result;
 
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.properties.nickname ?? '',
-        socialId: user.id,
+        socialId: `${user.id}`,
         socialType: 'kakao',
         birth: user.kakaoAccount.birthday,
         email: user.kakaoAccount.email,
@@ -78,7 +81,7 @@ export class AuthService {
         phoneNumber: user.kakaoAccount.phone_number,
         profileImage: user.properties.profile_image,
       }),
-      user.id,
+      `${user.id}`,
       'kakao',
       result.token,
       res
@@ -91,7 +94,7 @@ export class AuthService {
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.name,
-        socialId: user.id,
+        socialId: `${user.id}`,
         socialType: 'naver',
         birth: user.birthday,
         email: user.email,
@@ -100,7 +103,7 @@ export class AuthService {
         phoneNumber: user.mobile,
         profileImage: user.profile_image,
       }),
-      user.id,
+      `${user.id}`,
       'naver',
       result.token,
       res
