@@ -1,3 +1,3 @@
 export * from './event';
 export * from './constants';
-export * from './target';
+export * from './provider';

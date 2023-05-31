@@ -6,8 +6,9 @@ import { Modules } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
+import { EventProviders } from './event';
 
-const providers: Provider[] = [...Filters, ...Interceptors];
+const providers: Provider[] = [...Filters, ...Interceptors, ...EventProviders];
 
 @Module({
   imports: [
