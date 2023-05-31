@@ -55,22 +55,22 @@ export class ReviewService {
   }
 
   async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
-    const review = await this.reviewRepository.findReview(reviewId);
-
-    if (review.user.id !== userId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_UPDATE_FORBIDDEN));
-    }
+    await this.checkIsUserValid(reviewId, userId);
 
     await this.reviewRepository.updateReview(reviewId, props);
   }
 
   async deleteReview(reviewId: string, userId: string) {
+    await this.checkIsUserValid(reviewId, userId);
+
+    await this.reviewRepository.deleteReview(reviewId);
+  }
+
+  async checkIsUserValid(reviewId: string, userId: string) {
     const review = await this.reviewRepository.findReview(reviewId);
 
     if (review.user.id !== userId) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_DELETE_FORBIDDEN));
     }
-
-    await this.reviewRepository.deleteReview(reviewId);
   }
 }
