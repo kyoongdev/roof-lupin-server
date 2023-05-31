@@ -259,9 +259,10 @@ model SpaceHashTag {
 
 //INFO: 공간주인
 model Host {
-  id     String @id @default(uuid())
-  userId String @db.VarChar(120)
-  name   String
+  id           String  @id @default(uuid())
+  userId       String  @db.VarChar(120)
+  name         String
+  profileImage String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
