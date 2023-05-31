@@ -3,10 +3,10 @@ import { Property } from 'wemacu-nestjs';
 
 import { DateDTO } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
-import { CommonUserDTO } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 interface Props extends Partial<SpaceReview> {
-  user: Partial<User>;
+  user: CommonUserProps;
   images: { image: Image }[];
 }
 

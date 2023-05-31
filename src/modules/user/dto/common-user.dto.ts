@@ -3,7 +3,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { BaseUserDTO } from './base-user.dto';
 
-type Props = Partial<User>;
+export type CommonUserProps = Partial<User>;
 
 export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string' } })
@@ -30,7 +30,7 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   profileImage?: string;
 
-  constructor(props: Props) {
+  constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
     this.name = props.name;
