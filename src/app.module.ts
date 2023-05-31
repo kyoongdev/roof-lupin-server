@@ -1,5 +1,6 @@
 import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { Modules } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
@@ -13,6 +14,9 @@ const providers: Provider[] = [...Filters, ...Interceptors];
     ...Modules,
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    EventEmitterModule.forRoot({
+      global: true,
     }),
   ],
   controllers: [AppController],
