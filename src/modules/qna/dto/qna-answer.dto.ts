@@ -6,7 +6,7 @@ import { HostDTO, type HostProps } from '@/modules/host/dto/host.dto';
 interface QnAAnswerProps extends DateProps {
   id: string;
   content: string;
-  qnaId: string;
+  spaceQnAId: string;
   host: HostProps;
 }
 
@@ -27,7 +27,7 @@ export class QnAAnswerDTO extends DateDTO {
     super();
     this.id = props.id;
     this.content = props.content;
-    this.qnaId = props.qnaId;
+    this.qnaId = props.spaceQnAId;
     this.host = new HostDTO(props.host);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;

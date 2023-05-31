@@ -7,6 +7,8 @@ export const seedDatabase = async (database: PrismaService) => {
     data: {
       name: 'testHost',
       userId: 'testHost',
+      gender: 1,
+      phoneNumber: '01012341234',
     },
   });
 
