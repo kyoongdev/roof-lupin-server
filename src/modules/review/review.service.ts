@@ -8,12 +8,7 @@ import { SpaceRepository } from '../space/space.repository';
 import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
-import {
-  REVIEW_DELETE_FORBIDDEN,
-  REVIEW_ERROR_CODE,
-  REVIEW_UPDATE_FORBIDDEN,
-  SCORE_BAD_REQUEST,
-} from './exception/errorCode';
+import { REVIEW_ERROR_CODE, REVIEW_MUTATION_FORBIDDEN, SCORE_BAD_REQUEST } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 import { ReviewRepository } from './review.repository';
 
@@ -55,12 +50,14 @@ export class ReviewService {
   }
 
   async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
+    await this.findReview(reviewId);
     await this.checkIsUserValid(reviewId, userId);
 
     await this.reviewRepository.updateReview(reviewId, props);
   }
 
   async deleteReview(reviewId: string, userId: string) {
+    await this.findReview(reviewId);
     await this.checkIsUserValid(reviewId, userId);
 
     await this.reviewRepository.deleteReview(reviewId);
@@ -70,7 +67,7 @@ export class ReviewService {
     const review = await this.reviewRepository.findReview(reviewId);
 
     if (review.user.id !== userId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_DELETE_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_MUTATION_FORBIDDEN));
     }
   }
 }
