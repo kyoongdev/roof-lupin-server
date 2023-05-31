@@ -71,7 +71,7 @@ model Space {
 model SpaceReport {
   id           String @id @default(uuid())
   reportType   Int    @db.TinyInt
-  reportStatus Int    @db.TinyInt
+  reportStatus Int    @default(1) @db.TinyInt
   title        String @db.VarChar(120)
   content      String @db.MediumText
 
