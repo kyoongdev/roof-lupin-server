@@ -1,12 +1,16 @@
 import { Property } from 'wemacu-nestjs';
 
-interface QnAAnswerProps {
+import { DateDTO, type DateProps } from '@/common';
+import { HostDTO, type HostProps } from '@/modules/host/dto/host.dto';
+
+interface QnAAnswerProps extends DateProps {
   id: string;
   content: string;
   qnaId: string;
+  host: HostProps;
 }
 
-export class QnAAnswerDTO {
+export class QnAAnswerDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: '답변 ID' } })
   id: string;
 
@@ -16,9 +20,17 @@ export class QnAAnswerDTO {
   @Property({ apiProperty: { type: 'string', description: 'qna ID' } })
   qnaId: string;
 
+  @Property({ apiProperty: { type: HostDTO, description: '호스트' } })
+  host: HostDTO;
+
   constructor(props: QnAAnswerProps) {
+    super();
     this.id = props.id;
     this.content = props.content;
     this.qnaId = props.qnaId;
+    this.host = new HostDTO(props.host);
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.deletedAt = props.deletedAt;
   }
 }

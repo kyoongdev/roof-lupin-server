@@ -108,6 +108,10 @@ model SpaceQnAAnswer {
   id      String @id @default(uuid())
   content String @db.MediumText
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
   spaceQnAId String
   spaceQnA   SpaceQnA @relation(fields: [spaceQnAId], references: [id])
   hostId     String
@@ -263,6 +267,8 @@ model Host {
   userId       String  @db.VarChar(120)
   name         String
   profileImage String?
+  phoneNumber  String  @db.Char(11)
+  gender       Int     @db.TinyInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

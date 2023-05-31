@@ -1,9 +1,9 @@
 import { Property } from 'wemacu-nestjs';
 
-import { DateDTO } from '@/common';
+import { DateDTO, DateProps } from '@/common';
 import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
 
-export interface QnAProps {
+export interface QnAProps extends DateProps {
   id: string;
   content: string;
   user: CommonUserProps;
@@ -25,5 +25,8 @@ export class QnADTO extends DateDTO {
     this.id = props.id;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.deletedAt = props.deletedAt;
   }
 }
