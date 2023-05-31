@@ -5,7 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 import { EmptyResponseDTO } from '@/common';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
-import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminReviewDTO } from '../dto/review/admin-review.dto';
 
@@ -16,8 +16,7 @@ export class AdminReviewController {
   constructor(private readonly reviewService: AdminReviewService) {}
 
   @Get()
-  @Auth([JwtAuthGuard])
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '공간 리뷰 조회',
@@ -36,8 +35,7 @@ export class AdminReviewController {
   }
 
   @Delete(':id')
-  @Auth([JwtAuthGuard])
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '[관리자]리뷰 삭제',

@@ -18,7 +18,7 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   email?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '-을 제외한 11자리 입니다.' } })
   phoneNumber?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })

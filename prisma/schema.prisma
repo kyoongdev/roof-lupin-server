@@ -89,8 +89,6 @@ model SpaceReport {
 model SpaceQnA {
   id String @id @default(uuid())
 
-  //INFO: title이 필요할 지
-  title   String @db.VarChar(120)
   content String @db.MediumText
 
   spaceId String

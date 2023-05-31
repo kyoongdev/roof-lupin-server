@@ -53,13 +53,13 @@ export class AuthService {
     }
 
     const user = await this.userRepository.findUserBySocialId(socialId);
-
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
 
     const query = queryString.stringify({
       status: 200,
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
+      [`${path}Token`]: token,
     });
 
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
@@ -67,19 +67,19 @@ export class AuthService {
 
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
-
     const { user } = result;
+    const account = user.kakaoAccount;
 
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.properties.nickname ?? '',
         socialId: `${user.id}`,
         socialType: 'kakao',
-        birth: user.kakaoAccount.birthday,
-        email: user.kakaoAccount.email,
-        gender: user.kakaoAccount.gender ?? user.kakaoAccount.gender === 'male' ? 1 : 2,
-        name: user.kakaoAccount.name,
-        phoneNumber: user.kakaoAccount.phone_number,
+        birth: account.birthday && account.birthyear && account.birthyear + account.birthday,
+        email: account.email,
+        gender: account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined,
+        name: account.name,
+        phoneNumber: account.phone_number,
         profileImage: user.properties.profile_image,
       }),
       `${user.id}`,
@@ -92,6 +92,7 @@ export class AuthService {
   async naverLoginCallback(code: string, res: Response) {
     const result = await this.naverService.getRestCallback(code);
     const { user } = result;
+
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.name,
@@ -99,7 +100,7 @@ export class AuthService {
         socialType: 'naver',
         birth: user.birthday,
         email: user.email,
-        gender: user.gender === 'M' ? 1 : 2,
+        gender: user.gender === 'M' ? 1 : user.gender === 'F' ? 2 : undefined,
         name: user.name,
         phoneNumber: user.mobile,
         profileImage: user.profile_image,
