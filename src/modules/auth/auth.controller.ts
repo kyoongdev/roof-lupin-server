@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query, Response } from '@nestjs/common';
+import { Body, Get, Post, Query, Redirect, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
 import { nanoid } from 'nanoid';
@@ -50,7 +50,6 @@ export class AuthController {
   @ResponseApi({})
   async kakaoLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.kakaoLoginCallback(code, res);
-    return { hello: 'hello' };
   }
 
   @Get('social/naver')
