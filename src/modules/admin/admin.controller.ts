@@ -5,7 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
-import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminService } from './admin.service';
 import { AdminDTO, CreateAdminDTO, UpdateAdminDTO } from './dto';
@@ -15,8 +15,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get()
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 목록 조회',
@@ -35,8 +34,7 @@ export class AdminController {
   }
 
   @Get(':adminId/detail')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 조회',
@@ -56,8 +54,8 @@ export class AdminController {
   }
 
   @Post('')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'), ResponseWithIdInterceptor)
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '통합관리자 생성',
@@ -78,8 +76,7 @@ export class AdminController {
   }
 
   @Patch(':adminId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 수정',
@@ -106,8 +103,7 @@ export class AdminController {
   }
 
   @Delete(':adminId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 삭제',
@@ -130,8 +126,7 @@ export class AdminController {
   }
 
   @Delete(':adminId/hard')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 삭제 [하드]',

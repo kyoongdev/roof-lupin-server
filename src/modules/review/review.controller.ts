@@ -6,7 +6,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
-import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
@@ -45,8 +45,7 @@ export class ReviewController {
   }
 
   @Get('me/list')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내가 작성한 리뷰 목록',
@@ -66,8 +65,7 @@ export class ReviewController {
   }
 
   @Get('me/paging')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내가 작성한 리뷰 목록',
@@ -90,8 +88,8 @@ export class ReviewController {
   }
 
   @Post()
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'), ResponseWithIdInterceptor)
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '공간 리뷰 생성',
@@ -112,8 +110,7 @@ export class ReviewController {
   }
 
   @Patch(':reviewId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '공간 리뷰 수정',
@@ -134,8 +131,7 @@ export class ReviewController {
   }
 
   @Delete(':reviewId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '공간 리뷰 삭제',

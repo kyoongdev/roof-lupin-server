@@ -16,7 +16,7 @@ export class AdminReviewController {
   constructor(private readonly reviewService: AdminReviewService) {}
 
   @Get()
-  @Auth(JwtAuthGuard)
+  @Auth([JwtAuthGuard])
   @UseInterceptors(RoleInterceptorAPI('ADMIN'))
   @RequestApi({
     summary: {
@@ -36,7 +36,7 @@ export class AdminReviewController {
   }
 
   @Delete(':id')
-  @Auth(JwtAuthGuard)
+  @Auth([JwtAuthGuard])
   @UseInterceptors(RoleInterceptorAPI('ADMIN'))
   @RequestApi({
     summary: {

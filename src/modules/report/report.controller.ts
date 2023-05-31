@@ -6,7 +6,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
-import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { ReviewDTO } from '../review/dto/review.dto';
 
@@ -18,8 +18,7 @@ export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
   @Get('me/paging')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '나의 공간 신고 목록 불러오기 - 유저만 사용 가능합니다.',
@@ -38,8 +37,8 @@ export class ReportController {
   }
 
   @Post()
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'), ResponseWithIdInterceptor)
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       summary: '공간 신고 생성하기 - 유저만 사용 가능합니다.',
@@ -60,8 +59,8 @@ export class ReportController {
   }
 
   @Patch(':reportId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors()
   @RequestApi({
     summary: {
       summary: '나의 공간 신고 수정하기 - 나의 신고만 수정이 가능합니다.',
@@ -87,8 +86,7 @@ export class ReportController {
   }
 
   @Delete(':reportId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '나의 공간 신고 삭제하기  - 나의 신고만 삭제가 가능합니다.',

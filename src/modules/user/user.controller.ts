@@ -6,7 +6,7 @@ import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
-import { RoleInterceptorAPI } from '@/utils/interceptor/role.interceptor';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateUserDTO, UpdateUserDTO } from './dto';
 import { CommonUserDTO } from './dto/common-user.dto';
@@ -17,8 +17,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '유저 목록',
@@ -56,8 +55,7 @@ export class UserController {
   }
 
   @Get('me')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보',
@@ -72,8 +70,8 @@ export class UserController {
   }
 
   @Post('')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'), ResponseWithIdInterceptor)
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '유저 생성',
@@ -94,8 +92,7 @@ export class UserController {
   }
 
   @Patch(':userId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '유저 수정',
@@ -121,8 +118,7 @@ export class UserController {
   }
 
   @Patch('')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보 수정',
@@ -144,8 +140,7 @@ export class UserController {
   }
 
   @Delete(':userId')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '유저 삭제',
@@ -168,8 +163,7 @@ export class UserController {
   }
 
   @Delete(':userId/hard')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('ADMIN'))
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '유저 삭제 [hard delete]',
@@ -192,8 +186,7 @@ export class UserController {
   }
 
   @Delete('')
-  @Auth(JwtAuthGuard)
-  @UseInterceptors(RoleInterceptorAPI('USER'))
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보 삭제',
