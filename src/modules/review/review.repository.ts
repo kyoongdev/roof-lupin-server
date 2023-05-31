@@ -41,6 +41,10 @@ export class ReviewRepository {
     return new ReviewDTO(review);
   }
 
+  async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
+    return await this.database.spaceReview.count(args);
+  }
+
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
     const reviews = await this.database.spaceReview.findMany({
       where: {
