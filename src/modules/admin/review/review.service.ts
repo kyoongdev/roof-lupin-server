@@ -12,6 +12,10 @@ import { AdminReviewDTO } from '../dto/review/admin-review.dto';
 export class AdminReviewService {
   constructor(private readonly reviewRepository: ReviewRepository, private readonly database: PrismaService) {}
 
+  async findReview(id: string) {
+    return await this.reviewRepository.findReview(id);
+  }
+
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.database.spaceReview.count({

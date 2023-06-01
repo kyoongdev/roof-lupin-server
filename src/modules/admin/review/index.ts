@@ -11,12 +11,31 @@ import { AdminReviewDTO } from '../dto/review/admin-review.dto';
 
 import { AdminReviewService } from './review.service';
 
+@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins/reviews', '관리자 리뷰 관리')
 export class AdminReviewController {
   constructor(private readonly reviewService: AdminReviewService) {}
 
+  @Get(':reviewId/detail')
+  @RequestApi({
+    summary: {
+      description: '[관리자]리뷰 조회',
+      summary: '리뷰를 조회합니다. 관리자만 사용 가능합니다.',
+    },
+    params: {
+      name: 'reviewId',
+      description: '리뷰 id',
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: AdminReviewDTO,
+  })
+  async getReview(@Param('reviewId') reviewId: string) {
+    return await this.reviewService.findReview(reviewId);
+  }
+
   @Get()
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '공간 리뷰 조회',
@@ -35,7 +54,6 @@ export class AdminReviewController {
   }
 
   @Delete(':id')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '[관리자]리뷰 삭제',

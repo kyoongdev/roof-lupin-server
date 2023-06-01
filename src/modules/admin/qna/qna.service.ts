@@ -10,6 +10,10 @@ import { QnARepository } from '@/modules/qna/qna.repository';
 export class AdminQnAService {
   constructor(private readonly qnaRepository: QnARepository) {}
 
+  async findQnA(qnaId: string) {
+    return await this.qnaRepository.findQnA(qnaId);
+  }
+
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.qnaRepository.countQna();

@@ -1,16 +1,38 @@
 import { Delete, Get, Param } from '@nestjs/common';
 
-import { Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
 import { QnADTO } from '@/modules/qna/dto';
 import { ApiController } from '@/utils';
+import { JwtAuthGuard } from '@/utils/guards';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminQnAService } from './qna.service';
 
-@ApiController('admin/qnas', '관리자 Q&A 관리')
+@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+@ApiController('admins/qnas', '관리자 Q&A 관리')
 export class AdminQnAController {
   constructor(private readonly adminQnAService: AdminQnAService) {}
+
+  @Get(':qnaId/detail')
+  @RequestApi({
+    summary: {
+      description: 'Q&A 상세 조회',
+      summary: 'Q&A 상세 조회',
+    },
+    params: {
+      name: 'qnaId',
+      type: 'string',
+      description: 'Q&A 아이디',
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+  })
+  async findQnA(@Param('qnaId') qnaId: string) {
+    return await this.adminQnAService.findQnA(qnaId);
+  }
 
   @Get()
   @RequestApi({
