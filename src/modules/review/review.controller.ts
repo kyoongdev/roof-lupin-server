@@ -17,7 +17,7 @@ import { ReviewService } from './review.service';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Get(':spaceId')
+  @Get(':spaceId/paging')
   @RequestApi({
     summary: {
       description: '공강의 리뷰 목록',
@@ -34,10 +34,34 @@ export class ReviewController {
   })
   @ResponseApi({
     type: ReviewDTO,
+    isPaging: true,
+  })
+  async getPagingSpaceReviews(@Param('spaceId') spaceId: string, @Paging() paging: PagingDTO) {
+    return await this.reviewService.findPagingReviews(paging, {
+      where: {
+        spaceId,
+      },
+    });
+  }
+
+  @Get(':spaceId/list')
+  @RequestApi({
+    summary: {
+      description: '공강의 리뷰 목록',
+      summary: '공간의 리뷰 목록을 불러옵니다.',
+    },
+    params: {
+      name: 'spaceId',
+      type: 'string',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
     isArray: true,
   })
-  async getSpaceReviews(@Param('spaceId') spaceId: string, @Paging() paging: PagingDTO) {
-    return await this.reviewService.findPagingReviews(paging, {
+  async getSpaceReviews(@Param('spaceId') spaceId: string) {
+    return await this.reviewService.findReviews({
       where: {
         spaceId,
       },

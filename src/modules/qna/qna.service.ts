@@ -29,6 +29,9 @@ export class QnAService {
     });
     return new PaginationDTO<QnADTO>(qnas, { count, paging });
   }
+  async findQnAs(args = {} as Prisma.SpaceQnAFindManyArgs) {
+    return await this.qnaRepository.findQnAs(args);
+  }
 
   async createQnA(userId: string, data: CreateQnADTO) {
     return await this.qnaRepository.createQnA(userId, data);
