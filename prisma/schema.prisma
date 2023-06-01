@@ -28,6 +28,18 @@ model Image {
   loginBackground   LoginBackground[]
 }
 
+model HomeImage {
+  id        String  @id @default(uuid())
+  url       String
+  isDefault Boolean @default(false)
+}
+
+model Slogan {
+  id        String  @id @default(uuid())
+  content   String
+  isDefault Boolean @default(false)
+}
+
 model Space {
   id                   String @id @default(uuid())
   title                String @db.VarChar(120)

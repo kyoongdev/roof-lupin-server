@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { REVIEW_UPDATE_FORBIDDEN } from '../review/exception/errorCode';
+import { REVIEW_MUTATION_FORBIDDEN } from '../review/exception/errorCode';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
@@ -73,7 +73,7 @@ export class ReportService {
     const report = await this.reportRepository.findReport(reportId);
 
     if (report.user.id !== userId) {
-      throw new ReportException(REPORT_ERROR_CODE.FORBIDDEN(REVIEW_UPDATE_FORBIDDEN));
+      throw new ReportException(REPORT_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
     }
   }
 }
