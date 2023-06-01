@@ -4,7 +4,15 @@ import { HomeImage, Prisma, Slogan } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateHomeImageDTO, CreateSloganDTO, HomeDTO, UpdateHomeImageDTO, UpdateSloganDTO } from './dto';
+import {
+  CreateHomeImageDTO,
+  CreateSloganDTO,
+  HomeDTO,
+  HomeImageDTO,
+  SloganDTO,
+  UpdateHomeImageDTO,
+  UpdateSloganDTO,
+} from './dto';
 import {
   HOME_ERROR_CODE,
   HOME_IMAGE_NO_DEFAULT,
@@ -57,6 +65,15 @@ export class HomeService {
       throw new HomeException(HOME_ERROR_CODE.NOT_FOUND(HOME_IMAGE_NOT_FOUND));
     }
     return homeImage;
+  }
+
+  async findHomeImages(args = {} as Prisma.HomeImageFindManyArgs) {
+    const homeImages = await this.database.homeImage.findMany(args);
+    return homeImages.map((homeImage) => new HomeImageDTO(homeImage));
+  }
+
+  async countHomeImages(args = {} as Prisma.HomeImageCountArgs) {
+    return await this.database.homeImage.count(args);
   }
 
   async createHomeImage(data: CreateHomeImageDTO) {
@@ -127,6 +144,14 @@ export class HomeService {
       },
     });
   }
+  async findSlogans(args = {} as Prisma.SloganFindManyArgs) {
+    const slogans = await this.database.slogan.findMany(args);
+    return slogans.map((slogan) => new SloganDTO(slogan));
+  }
+
+  async countSlogans(args = {} as Prisma.SloganCountArgs) {
+    return await this.database.slogan.count(args);
+  }
 
   async createSlogan(data: CreateSloganDTO) {
     const count = await this.countDefaultSlogan();
@@ -152,6 +177,7 @@ export class HomeService {
   async updateSlogan(id: string, data: UpdateSloganDTO) {
     const slogan = await this.findSlogan(id);
     const count = await this.countDefaultSlogan();
+
     //INFO: 현재 변경하려는 대상이 default인데, false로 바꾸는 경우
     if (count === 1 && slogan.isDefault === true && data.isDefault === false) {
       throw new HomeException(HOME_ERROR_CODE.CONFLICT(SLOGAN_NO_DEFAULT));
