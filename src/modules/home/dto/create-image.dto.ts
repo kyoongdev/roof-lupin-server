@@ -9,7 +9,7 @@ export class CreateHomeImageDTO {
   @Property({ apiProperty: { type: 'string', description: '홈 배경 이미지 url' } })
   url: string;
 
-  @Property({ apiProperty: { type: 'boolean', description: '기본 배경 설정 유무' } })
+  @Property({ apiProperty: { type: 'boolean', description: '기본 배경 설정 유무', nullable: true } })
   isDefault?: boolean;
 
   constructor(props?: Props) {
