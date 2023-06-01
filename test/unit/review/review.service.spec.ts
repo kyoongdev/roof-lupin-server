@@ -5,11 +5,7 @@ import { Space, SpaceReview, User } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 import { UpdateReviewDTO } from '@/modules/review/dto';
-import {
-  REVIEW_DELETE_FORBIDDEN,
-  REVIEW_ERROR_CODE,
-  REVIEW_UPDATE_FORBIDDEN,
-} from '@/modules/review/exception/errorCode';
+import { REVIEW_ERROR_CODE, REVIEW_MUTATION_FORBIDDEN } from '@/modules/review/exception/errorCode';
 import { ReviewException } from '@/modules/review/exception/review.exception';
 import { ReviewRepository } from '@/modules/review/review.repository';
 import { ReviewService } from '@/modules/review/review.service';
@@ -78,7 +74,7 @@ describe('ReviewService', () => {
       const updatedReview = await service.findReview(newReview.id);
 
       expect(updatedReview).toBeDefined();
-      expect(updatedReview.userId).toEqual(user.id);
+      expect(updatedReview.user.id).toEqual(user.id);
       expect(updatedReview.content).toEqual('hello');
       expect(updatedReview.score).toEqual(5);
     });
@@ -88,7 +84,7 @@ describe('ReviewService', () => {
 
       expect(
         async () => await service.updateReview(newReview.id, 'wrongId', new UpdateReviewDTO({ content: 'hello' }))
-      ).rejects.toThrowError(new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_UPDATE_FORBIDDEN)));
+      ).rejects.toThrowError(new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN)));
     });
 
     it('리뷰 삭제 (성공)', async () => {
@@ -107,12 +103,12 @@ describe('ReviewService', () => {
       expect(newReview.userId).toEqual(user.id);
 
       expect(async () => await service.deleteReview(newReview.id, 'wrongId')).rejects.toThrowError(
-        new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_DELETE_FORBIDDEN))
+        new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN))
       );
     });
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await database.space.deleteMany({});
     await database.host.deleteMany({});
     await database.user.deleteMany({});
