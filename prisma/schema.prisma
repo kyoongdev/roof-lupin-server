@@ -83,7 +83,7 @@ model Space {
 model SpaceReport {
   id           String @id @default(uuid())
   reportType   Int    @db.TinyInt
-  reportStatus Int    @default(1) @db.TinyInt
+  reportStatus Int    @default(1) @db.TinyInt // 1 = 처리중, 2 = 처리완료
   title        String @db.VarChar(120)
   content      String @db.MediumText
 

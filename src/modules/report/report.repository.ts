@@ -100,6 +100,17 @@ export class ReportRepository {
     });
   }
 
+  async updateReportStatus(id: string, status: number) {
+    await this.database.spaceReport.update({
+      where: {
+        id,
+      },
+      data: {
+        reportStatus: status,
+      },
+    });
+  }
+
   async deleteReport(id: string) {
     await this.database.spaceReport.delete({
       where: {
