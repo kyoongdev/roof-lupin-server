@@ -5,7 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateQnAAnswerDTO, CreateQnADTO, QnADTO, UpdateQnAAnswerDTO, UpdateQnADTO } from './dto';
+import { CreateQnAAnswerDTO, CreateQnADTO, QnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
 
@@ -103,6 +103,22 @@ export class QnARepository {
         id,
       },
     });
+  }
+
+  async findQnAAnswer(id: string) {
+    const qnaAnswer = await this.database.spaceQnAAnswer.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        host: true,
+      },
+    });
+    if (!qnaAnswer) {
+      throw new QnAException(QNA_ERROR_CODE.NOT_FOUND());
+    }
+
+    return new QnAAnswerDTO(qnaAnswer);
   }
 
   async createQnAAnswer(hostId: string, data: CreateQnAAnswerDTO) {

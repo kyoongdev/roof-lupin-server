@@ -13,17 +13,19 @@ import { QnARepository } from './qna.repository';
 
 @Injectable()
 export class QnAService {
-  constructor(
-    private readonly spaceRepository: SpaceRepository,
-    private readonly qnaRepository: QnARepository,
-    private readonly hostRepository: HostRepository
-  ) {}
+  constructor(private readonly qnaRepository: QnARepository) {}
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.qnaRepository.countQna();
     const qnas = await this.qnaRepository.findQnAs({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+        user: {
+          deletedAt: null,
+        },
+      },
       skip,
       take,
     });
