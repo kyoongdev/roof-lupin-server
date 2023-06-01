@@ -9,7 +9,7 @@ import { SpaceRepository } from './space.repository';
 import { SpaceService } from './space.service';
 
 @Module({
-  providers: [SpaceService, SpaceRepository, ClientRevalidateEvent, UserRepository],
+  providers: [SpaceService, SpaceRepository],
   controllers: [SpaceController],
 })
 export class SpaceModule {}

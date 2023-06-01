@@ -8,7 +8,7 @@ import { SpaceRepository } from './space.repository';
 
 @Injectable()
 export class SpaceService {
-  constructor(private readonly userRepository: UserRepository, private readonly spaceRepository: SpaceRepository) {}
+  constructor(private readonly spaceRepository: SpaceRepository) {}
 
   async findSpace(id: string) {
     return await this.spaceRepository.findSpace(id);

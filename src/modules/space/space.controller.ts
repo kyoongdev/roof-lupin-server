@@ -1,13 +1,101 @@
-import { Get } from '@nestjs/common';
+import { Delete, Get, Param, Post } from '@nestjs/common';
 
-import { ClientRevalidateEvent } from '@/event/client';
-import { ApiController } from '@/utils';
+import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+
+import { EmptyResponseDTO } from '@/common';
+import { RequestUser } from '@/interface/role.interface';
+import { ApiController, ReqUser } from '@/utils';
+import { JwtAuthGuard } from '@/utils/guards';
+import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { SpaceService } from './space.service';
+
 @ApiController('spaces', '공간')
 export class SpaceController {
-  constructor(private readonly clientEmitter: ClientRevalidateEvent) {}
+  constructor(private readonly spaceService: SpaceService) {}
+
   @Get()
   getSpaces(): string {
-    this.clientEmitter.revalidateClient();
     return 'getSpaces';
+  }
+
+  @Post(':spaceId/like')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 좋아요 생성하기',
+      summary: '공간 좋아요 생성하기 - 유저만 사용가능합니다.',
+    },
+    params: {
+      type: 'string',
+      name: 'spaceId',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async createSpaceLike(@Param('spaceId') spaceId: string, @ReqUser() user: RequestUser) {
+    await this.spaceService.createLike(user.id, spaceId);
+  }
+
+  @Delete(':spaceId/like')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 좋아요 삭제하기',
+      summary: '공간 좋아요 삭제하기 - 유저만 사용가능합니다.',
+    },
+    params: {
+      type: 'string',
+      name: 'spaceId',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteSpaceLike(@Param('spaceId') spaceId: string, @ReqUser() user: RequestUser) {
+    await this.spaceService.deleteLike(user.id, spaceId);
+  }
+
+  @Post(':spaceId/interest')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 찜 생성하기',
+      summary: '공간 찜 생성하기 - 유저만 사용가능합니다.',
+    },
+    params: {
+      type: 'string',
+      name: 'spaceId',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async createSpaceInterest(@Param('spaceId') spaceId: string, @ReqUser() user: RequestUser) {
+    await this.spaceService.createInterest(user.id, spaceId);
+  }
+
+  @Delete(':spaceId/interest')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 찜 삭제하기',
+      summary: '공간 찜 삭제하기 - 유저만 사용가능합니다.',
+    },
+    params: {
+      type: 'string',
+      name: 'spaceId',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteSpaceInterest(@Param('spaceId') spaceId: string, @ReqUser() user: RequestUser) {
+    await this.spaceService.deleteInterest(user.id, spaceId);
   }
 }
