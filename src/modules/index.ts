@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { CouponModule } from './coupon/coupon.module';
 import { FileModule } from './file/file.module';
 import { GlobalModule } from './global';
+import { HomeModule } from './home/home.module';
 import { HostModule } from './host/host.module';
 import { QnaModule } from './qna/qna.module';
 import { ReportModule } from './report/report.module';
@@ -22,4 +23,5 @@ export const Modules = [
   AuthModule,
   CouponModule,
   FileModule,
+  HomeModule,
 ];

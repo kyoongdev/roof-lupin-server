@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { HomeImage, Prisma, Slogan } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -74,6 +75,19 @@ export class HomeService {
 
   async countHomeImages(args = {} as Prisma.HomeImageCountArgs) {
     return await this.database.homeImage.count(args);
+  }
+
+  async findPagingHomeImages(paging: PagingDTO, args = {} as Prisma.HomeImageFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const homeImages = await this.findHomeImages({
+      where: args.where,
+      skip,
+      take,
+    });
+    const count = await this.countHomeImages({
+      where: args.where,
+    });
+    return new PaginationDTO<HomeImageDTO>(homeImages, { count, paging });
   }
 
   async createHomeImage(data: CreateHomeImageDTO) {
@@ -153,6 +167,17 @@ export class HomeService {
     return await this.database.slogan.count(args);
   }
 
+  async findPagingSlogans(paging: PagingDTO, args = {} as Prisma.SloganFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const slogans = await this.findSlogans({
+      where: args.where,
+      skip,
+      take,
+    });
+    const count = await this.countSlogans({ where: args.where });
+    return new PaginationDTO<SloganDTO>(slogans, { count, paging });
+  }
+
   async createSlogan(data: CreateSloganDTO) {
     const count = await this.countDefaultSlogan();
     const transactionArgs: Prisma.PromiseType<any>[] = [];
@@ -197,6 +222,21 @@ export class HomeService {
       })
     );
     await this.database.$transaction(transactionArgs);
+  }
+
+  async deleteSlogan(id: string) {
+    const slogan = await this.findSlogan(id);
+    const count = await this.countDefaultSlogan();
+
+    if (count === 1 && slogan.isDefault === true) {
+      throw new HomeException(HOME_ERROR_CODE.CONFLICT(SLOGAN_NO_DEFAULT));
+    }
+
+    await this.database.slogan.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async countDefaultHome() {
