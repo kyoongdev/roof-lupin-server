@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
+import { HomeImage, Prisma, Slogan } from '@prisma/client';
+
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateHomeImageDTO, HomeDTO, UpdateHomeImageDTO } from './dto';
-import { HOME_ERROR_CODE, HOME_IMAGE_NO_DEFAULT, HOME_IMAGE_NOT_FOUND, SLOGAN_NOT_FOUND } from './exception/errorCode';
+import { CreateHomeImageDTO, CreateSloganDTO, HomeDTO, UpdateHomeImageDTO, UpdateSloganDTO } from './dto';
+import {
+  HOME_ERROR_CODE,
+  HOME_IMAGE_NO_DEFAULT,
+  HOME_IMAGE_NOT_FOUND,
+  SLOGAN_NO_DEFAULT,
+  SLOGAN_NOT_FOUND,
+} from './exception/errorCode';
 import { HomeException } from './exception/home.exception';
 
 @Injectable()
@@ -53,20 +61,26 @@ export class HomeService {
 
   async createHomeImage(data: CreateHomeImageDTO) {
     const count = await this.countDefaultHome();
-
+    const transactionArgs: Prisma.PromiseType<any>[] = [];
     if (count === 0) {
       data.isDefault = true;
+    } else if (count !== 0 && data.isDefault === true) {
+      transactionArgs.push(this.updateHomeImageDefaultToFalse());
     }
 
-    const home = await this.database.homeImage.create({
-      data,
-    });
+    transactionArgs.push(
+      this.database.homeImage.create({
+        data,
+      })
+    );
+    const result = await this.database.$transaction(transactionArgs);
+    const home: HomeImage = result.find((query) => !query['id']);
+
     return home.id;
   }
 
   async updateHomeImage(id: string, data: UpdateHomeImageDTO) {
     const homeImage = await this.findHomeImage(id);
-
     const count = await this.countDefaultHome();
 
     //INFO: 현재 변경하려는 대상이 default인데, false로 바꾸는 경우
@@ -74,23 +88,89 @@ export class HomeService {
       throw new HomeException(HOME_ERROR_CODE.CONFLICT(HOME_IMAGE_NO_DEFAULT));
     }
 
+    const transactionArgs: Prisma.PromiseType<any>[] = [];
+
     if (data.isDefault === true) {
-      await this.database.homeImage.updateMany({
-        where: {
-          isDefault: true,
-        },
-        data: {
-          isDefault: false,
-        },
-      });
+      transactionArgs.push(this.updateHomeImageDefaultToFalse());
     }
 
-    await this.database.homeImage.update({
+    transactionArgs.push(
+      this.database.homeImage.update({
+        where: {
+          id,
+        },
+        data,
+      })
+    );
+
+    await this.database.$transaction(transactionArgs);
+  }
+  async deleteHomeImage(id: string) {
+    const homeImage = await this.findHomeImage(id);
+    const count = await this.countDefaultHome();
+
+    if (count === 1 && homeImage.isDefault === true) {
+      throw new HomeException(HOME_ERROR_CODE.CONFLICT(HOME_IMAGE_NO_DEFAULT));
+    }
+
+    await this.database.homeImage.delete({
       where: {
         id,
       },
-      data,
     });
+  }
+
+  async findSlogan(id: string) {
+    return await this.database.slogan.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async createSlogan(data: CreateSloganDTO) {
+    const count = await this.countDefaultSlogan();
+    const transactionArgs: Prisma.PromiseType<any>[] = [];
+    if (count === 0) {
+      data.isDefault = true;
+    } else if (count !== 0 && data.isDefault === true) {
+      transactionArgs.push(this.updateSloganDefaultToFalse());
+    }
+
+    transactionArgs.push(
+      this.database.slogan.create({
+        data,
+      })
+    );
+    const result = await this.database.$transaction(transactionArgs);
+
+    const slogan: Slogan = result.find((query) => !query['id']);
+
+    return slogan.id;
+  }
+
+  async updateSlogan(id: string, data: UpdateSloganDTO) {
+    const slogan = await this.findSlogan(id);
+    const count = await this.countDefaultSlogan();
+    //INFO: 현재 변경하려는 대상이 default인데, false로 바꾸는 경우
+    if (count === 1 && slogan.isDefault === true && data.isDefault === false) {
+      throw new HomeException(HOME_ERROR_CODE.CONFLICT(SLOGAN_NO_DEFAULT));
+    }
+    const transactionArgs: Prisma.PromiseType<any>[] = [];
+
+    if (data.isDefault === true) {
+      transactionArgs.push(this.updateSloganDefaultToFalse());
+    }
+
+    transactionArgs.push(
+      this.database.slogan.update({
+        where: {
+          id,
+        },
+        data,
+      })
+    );
+    await this.database.$transaction(transactionArgs);
   }
 
   async countDefaultHome() {
@@ -101,10 +181,32 @@ export class HomeService {
     });
   }
 
+  updateHomeImageDefaultToFalse() {
+    return this.database.homeImage.updateMany({
+      where: {
+        isDefault: true,
+      },
+      data: {
+        isDefault: false,
+      },
+    });
+  }
+
   async countDefaultSlogan() {
     return await this.database.slogan.count({
       where: {
         isDefault: true,
+      },
+    });
+  }
+
+  updateSloganDefaultToFalse() {
+    return this.database.slogan.updateMany({
+      where: {
+        isDefault: true,
+      },
+      data: {
+        isDefault: false,
       },
     });
   }

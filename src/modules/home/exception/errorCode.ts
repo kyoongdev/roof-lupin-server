@@ -1,7 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from 'wemacu-nestjs';
-import { Http } from 'winston/lib/winston/transports';
 
 export const HOME_IMAGE_NOT_FOUND = '홈 화면 이미지를 찾을 수 없습니다.' as const;
 export const SLOGAN_NOT_FOUND = '슬로건을 찾을 수 없습니다.' as const;
