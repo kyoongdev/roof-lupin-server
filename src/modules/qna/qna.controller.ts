@@ -15,6 +15,49 @@ import { QnAService } from './qna.service';
 export class QnAController {
   constructor(private readonly qnaService: QnAService) {}
 
+  @Get('me/list')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '내 Q&A 조회',
+      summary: '내 Q&A 조회 - 유저만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+    isArray: true,
+  })
+  async getMyQnA(@ReqUser() user: RequestUser) {
+    return this.qnaService.findQnAs({
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
+  @Get('me/paging')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '내 Q&A 조회',
+      summary: '내 Q&A 조회 - 유저만 사용 가능합니다.',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+    isPaging: true,
+  })
+  async getMyPagingQnA(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
+    return this.qnaService.findPagingQnAs(paging, {
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
   @Get(':spaceId/list')
   @RequestApi({
     summary: {
