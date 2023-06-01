@@ -17,6 +17,10 @@ export class UserRepository {
     const users = await this.database.user.findMany({
       ...args,
       include: {},
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
     });
 
     return users.map((user) => new CommonUserDTO(user));

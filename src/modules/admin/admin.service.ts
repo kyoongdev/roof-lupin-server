@@ -24,6 +24,10 @@ export class AdminService {
         ...args.where,
         deletedAt: null,
       },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
       skip,
       take,
     });

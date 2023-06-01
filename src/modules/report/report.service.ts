@@ -31,7 +31,10 @@ export class ReportService {
     });
     const reports = await this.reportRepository.findReports({
       where: args.where,
-      orderBy: args.orderBy,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
       skip,
       take,
     });
@@ -39,7 +42,13 @@ export class ReportService {
   }
 
   async findReports(args = {} as Prisma.SpaceReportFindManyArgs) {
-    const reports = await this.reportRepository.findReports(args);
+    const reports = await this.reportRepository.findReports({
+      where: args.where,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+    });
 
     return reports;
   }

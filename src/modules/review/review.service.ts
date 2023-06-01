@@ -23,13 +23,25 @@ export class ReviewService {
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
-    return await this.findReviews(args);
+    return await this.findReviews({
+      where: {
+        ...args.where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+    });
   }
 
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reviewRepository.countReviews({
       where: args.where,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
     });
     const rows = await this.reviewRepository.findReviews({
       skip,

@@ -17,6 +17,10 @@ export class AdminQnAService {
       where: {
         ...args.where,
       },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
       skip,
       take,
     });

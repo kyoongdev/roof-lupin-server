@@ -26,13 +26,23 @@ export class QnAService {
           deletedAt: null,
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
       skip,
       take,
     });
     return new PaginationDTO<QnADTO>(qnas, { count, paging });
   }
   async findQnAs(args = {} as Prisma.SpaceQnAFindManyArgs) {
-    return await this.qnaRepository.findQnAs(args);
+    return await this.qnaRepository.findQnAs({
+      where: args.where,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+    });
   }
 
   async createQnA(userId: string, data: CreateQnADTO) {

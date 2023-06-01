@@ -13,7 +13,15 @@ export class HostRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findHosts(args = {} as Prisma.HostFindManyArgs) {
-    const hosts = await this.database.host.findMany(args);
+    const hosts = await this.database.host.findMany({
+      where: {
+        ...args.where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+    });
 
     return hosts;
   }
@@ -26,6 +34,10 @@ export class HostRepository {
     const rows = await this.database.host.findMany({
       where: {
         ...args.where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
       },
       skip,
       take,
