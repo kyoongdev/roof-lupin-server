@@ -21,7 +21,14 @@ import { CreateSocialUserDTO } from '../user/dto';
 
 import { AdminAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
-import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
+import {
+  AUTH_ERROR_CODE,
+  WRONG_ACCESS_TOKEN,
+  WRONG_ID,
+  WRONG_KEY,
+  WRONG_PASSWORD,
+  WRONG_REFRESH_TOKEN,
+} from './exception/errorCode';
 
 @Injectable()
 export class AuthService {
@@ -114,9 +121,9 @@ export class AuthService {
 
   async adminLogin(props: AdminAuthDTO) {
     const admin = await this.adminRepository.findAdminByUserId(props.userId);
-    const isMatch = await Encrypt.comparePassword(admin.salt, props.password, admin.password);
+    const isMatch = Encrypt.comparePassword(admin.salt, props.password, admin.password);
     if (!isMatch) {
-      return null;
+      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
     }
     const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
     return token;

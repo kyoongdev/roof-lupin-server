@@ -49,9 +49,6 @@ export class HomeController {
       description: '로그인 홈 화면 배경 이미지 리스트 조회 ',
       summary: '로그인 홈 화면 배경 이미지 리스트 조회 - 관리자만 사용 가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({ type: HomeDTO })
   async getHomeImages() {
@@ -153,9 +150,6 @@ export class HomeController {
     summary: {
       description: '로그인 홈 화면 슬로건 리스트 조회 ',
       summary: '로그인 홈 화면 슬로건 리스트 조회 - 관리자만 사용 가능합니다.',
-    },
-    query: {
-      type: PagingDTO,
     },
   })
   @ResponseApi({ type: HomeDTO })

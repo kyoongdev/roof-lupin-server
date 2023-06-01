@@ -105,8 +105,9 @@ export class HomeService {
       })
     );
     const result = await this.database.$transaction(transactionArgs);
-    const home: HomeImage = result.find((query) => !query['id']);
-
+    console.log({ result });
+    const home: HomeImage = result.find((query) => !!query['id']);
+    console.log({ home });
     return home.id;
   }
 
@@ -194,7 +195,7 @@ export class HomeService {
     );
     const result = await this.database.$transaction(transactionArgs);
 
-    const slogan: Slogan = result.find((query) => !query['id']);
+    const slogan: Slogan = result.find((query) => !!query['id']);
 
     return slogan.id;
   }
@@ -210,7 +211,7 @@ export class HomeService {
     const transactionArgs: Prisma.PromiseType<any>[] = [];
 
     if (data.isDefault === true) {
-      transactionArgs.push(this.updateSloganDefaultToFalse());
+      // transactionArgs.push(this.updateSloganDefaultToFalse());
     }
 
     transactionArgs.push(
