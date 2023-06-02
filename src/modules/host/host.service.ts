@@ -11,6 +11,10 @@ export class HostService {
     return await this.hostRepository.findHost(id);
   }
 
+  async findHostDetail(id: string) {
+    return await this.hostRepository.findHostDetail(id);
+  }
+
   async findHostAccount(id: string) {
     return await this.hostRepository.findHostAccount(id);
   }

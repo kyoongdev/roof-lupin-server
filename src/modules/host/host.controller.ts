@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateHostAccountDTO, HostAccountDTO, HostDTO, UpdateHostAccountDTO, UpdateHostDTO } from './dto';
+import { HostDetailDTO } from './dto/host-detail.dto';
 import { HostService } from './host.service';
 
 @ApiController('hosts', '호스트')
@@ -28,6 +29,20 @@ export class HostController {
   })
   async getMe(@ReqUser() user: RequestHost) {
     return await this.hostService.findHost(user.id);
+  }
+
+  @Get('me/detail')
+  @RequestApi({
+    summary: {
+      description: '내 정보 상세 조회',
+      summary: '내 정보 상세 조회 - 호스트만 사용 가능',
+    },
+  })
+  @ResponseApi({
+    type: HostDetailDTO,
+  })
+  async getMeDetail(@ReqUser() user: RequestHost) {
+    return await this.hostService.findHostDetail(user.id);
   }
 
   @Get('accounts/me')

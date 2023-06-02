@@ -1,13 +1,13 @@
 import { Property } from 'wemacu-nestjs';
 
 import { DateDTO, type DateProps } from '@/common';
-import { HostDTO, type HostProps } from '@/modules/host/dto/host.dto';
+import { HostDTO, type HostDTOProps } from '@/modules/host/dto/host.dto';
 
 export interface QnAAnswerProps extends DateProps {
   id: string;
   content: string;
   spaceQnAId: string;
-  host: HostProps;
+  host: HostDTOProps;
 }
 
 export class QnAAnswerDTO extends DateDTO {

@@ -12,7 +12,7 @@ import { AdminReviewDTO } from '../dto/review/admin-review.dto';
 import { AdminReviewService } from './review.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/reviews', '관리자 리뷰 관리')
+@ApiController('admins/reviews', '[관리자] 리뷰 관리')
 export class AdminReviewController {
   constructor(private readonly reviewService: AdminReviewService) {}
 
