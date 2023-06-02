@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { GenderValidation } from './validate/gender.validate';
+import { GenderValidation } from '../../../utils/validation/gender.validate';
 
 interface Props {
   name?: string;
@@ -29,7 +29,7 @@ export class UpdateUserDTO {
   birth?: string;
 
   @Property({ apiProperty: { type: 'string', description: '성별', nullable: true } })
-  @GenderValidation({ message: '성별은 1,2만 가능합니다.' })
+  @GenderValidation()
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', description: '프로필 사진', nullable: true } })

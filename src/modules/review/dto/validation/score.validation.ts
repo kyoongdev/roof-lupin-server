@@ -1,6 +1,6 @@
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
-import { BaseValidator } from '@/utils/decorator/base-validator';
+import { BaseValidator } from '@/utils/validation/base-validator';
 
 @ValidatorConstraint()
 export class IsScoreValidateConstraint implements ValidatorConstraintInterface {

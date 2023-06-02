@@ -1,9 +1,9 @@
 import { type ValidationArguments, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
 
-import { BaseValidator } from '@/utils/decorator/base-validator';
+import { BaseValidator } from '@/utils/validation';
 
 @ValidatorConstraint()
-export class IsGenderValidateConstraint implements ValidatorConstraintInterface {
+export class PhoneNumberValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
     if (!Number.isInteger(value)) return false;
     if (value !== 1 && value !== 2) return false;
@@ -12,4 +12,7 @@ export class IsGenderValidateConstraint implements ValidatorConstraintInterface 
   }
 }
 
-export const GenderValidation = BaseValidator(IsGenderValidateConstraint);
+export const PhoneNumberValidation = BaseValidator(
+  PhoneNumberValidateConstraint,
+  "핸드폰 번호는 11자리로 입력해주세요. '-' 제외"
+);

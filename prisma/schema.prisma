@@ -312,12 +312,13 @@ model SpaceHashTag {
 model Host {
   id String @id @default(uuid())
 
-  userId       String  @db.VarChar(120)
   name         String  @db.VarChar(20)
-  email        String
+  email        String  @unique
   profileImage String?
   phoneNumber  String  @db.Char(11)
   gender       Int     @db.TinyInt
+  password     String
+  salt         String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -326,8 +327,7 @@ model Host {
   spaces          Space[]
   spaceQnAAnswers SpaceQnAAnswer[]
 
-  hostAccount   HostAccount @relation(fields: [hostAccountId], references: [id])
-  hostAccountId String      @unique
+  hostAccount HostAccount?
 }
 
 //INFO: 공간주 사업자 및 계좌 정보
@@ -340,13 +340,14 @@ model HostAccount {
   account                    String @db.VarChar(40)
   accountOwner               String @db.VarChar(20)
 
-  host Host?
+  hostId String @unique
+  host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 통합 관리자
 model Admin {
   id         String  @id @default(uuid())
-  name       String
+  name       String  @db.VarChar(20)
   userId     String
   password   String
   salt       String
@@ -359,7 +360,7 @@ model Admin {
 
 model User {
   id           String  @id @default(uuid())
-  name         String? @db.VarChar(120)
+  name         String? @db.VarChar(20)
   nickname     String
   email        String?
   phoneNumber  String? @db.Char(11)
