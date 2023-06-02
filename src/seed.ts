@@ -1,14 +1,20 @@
 import { PrismaService } from '@/database/prisma.service';
+
+import { Encrypt } from './common/encrypt';
 export const seedDatabase = async (database: PrismaService) => {
   await database.space.deleteMany({});
   await database.host.deleteMany({});
   await database.user.deleteMany({});
+  const salt = Encrypt.createSalt();
+  const password = Encrypt.hashPassword('1234', salt);
   const host = await database.host.create({
     data: {
       name: 'testHost',
-      userId: 'testHost',
+      email: 'test@gmail.com',
       gender: 1,
       phoneNumber: '01012341234',
+      password,
+      salt,
     },
   });
 
@@ -23,7 +29,8 @@ export const seedDatabase = async (database: PrismaService) => {
         buildingType: 1,
         description: 'test',
         title: `테스트 공간${i + 1}`,
-        facilityIntroduction: 'facilityIntroduction',
+        minHour: 1,
+        overflowUserCount: 5,
         maxUser: 20,
         minUser: 1,
         overflowUserCost: i * 1000,
