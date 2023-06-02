@@ -41,17 +41,24 @@ model Slogan {
 }
 
 model Space {
-  id                   String @id @default(uuid())
-  title                String @db.VarChar(120)
-  description          String
-  size                 Int    @db.SmallInt
-  spaceType            Int    @db.TinyInt
-  buildingType         Int    @db.TinyInt
-  spaceIntroduction    String @db.MediumText
-  facilityIntroduction String @db.MediumText
-  minUser              Int    @db.TinyInt
-  maxUser              Int    @db.TinyInt
-  overflowUserCost     Int    @db.MediumInt
+  id                String @id @default(uuid())
+  title             String @db.VarChar(120)
+  description       String
+  size              Int    @db.SmallInt
+  spaceType         Int    @db.TinyInt
+  buildingType      Int    @db.TinyInt
+  //NOTE: 공간 소개글
+  spaceIntroduction String @db.MediumText
+  //NOTE: 최소 인원
+  minUser           Int    @db.TinyInt
+  //NOTE: 최대 인원
+  maxUser           Int    @db.TinyInt
+  //NOTE: 초과 인원당 추가 비용
+  overflowUserCost  Int    @db.MediumInt
+  //NOTE: 초과 인원 기준 인원
+  overflowUserCount Int    @db.TinyInt
+  //NOTE: 최소 대여시간
+  minHour           Int    @db.TinyInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -77,6 +84,46 @@ model Space {
   usageCategories SpaceUsageCategory[]
   hashTags        SpaceHashTag[]
   spaceQnAs       SpaceQnA[]
+}
+
+//INFO: 대여 종류 (시간, 패키지)
+model RentalType {
+  id         String @id @default(uuid())
+  name       String @db.VarChar(120)
+  baseCost   Int    @db.MediumInt // 기본 비용
+  rentalType Int    @db.TinyInt // 1 : 시간, 2 : 패키지
+  baseHour   Int?   @db.TinyInt // 기본 이용시간
+  startAt    Int    @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
+  endAt      Int    @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
+
+  spaceId      String
+  space        Space         @relation(fields: [spaceId], references: [id])
+  reservations Reservation[]
+  timeCostInfo TimeCostInfo?
+}
+
+model TimeCostInfo {
+  id      String @id @default(uuid())
+  cost    Int    @db.MediumInt
+  startAt Int    @db.TinyInt
+  endAt   Int    @db.TinyInt
+
+  rentalTypeId String     @unique
+  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
+}
+
+//INFO: 예약 정보
+model Reservation {
+  id    String @id @unique @default(uuid())
+  year  String @db.Char(4)
+  month String @db.VarChar(2)
+  day   String @db.VarChar(2)
+
+  startAt Int @db.TinyInt
+  endAt   Int @db.TinyInt
+
+  rentalTypeId String
+  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)
@@ -212,20 +259,6 @@ model SpaceDiscountInfo {
   description   String
   spaceId       String
   space         Space  @relation(fields: [spaceId], references: [id])
-}
-
-//INFO: 대여 종류 (시간, 패키지)
-model RentalType {
-  id       String @id @default(uuid())
-  name     String @db.VarChar(120)
-  cost     Int    @db.MediumInt
-  costType Int    @db.TinyInt // 1 : 시간, 2 : 패키지
-  baseHour Int?   @db.TinyInt // 기본 이용시간
-  startAt  Int    @db.TinyInt // 시작시간
-  endAt    Int    @db.TinyInt // 종료시간
-
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
 }
 
 model SpaceLocation {
