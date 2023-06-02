@@ -23,6 +23,7 @@ import { AdminAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
 import {
   AUTH_ERROR_CODE,
+  NOT_ACCEPTED_ADMIN,
   WRONG_ACCESS_TOKEN,
   WRONG_ID,
   WRONG_KEY,
@@ -121,10 +122,16 @@ export class AuthService {
 
   async adminLogin(props: AdminAuthDTO) {
     const admin = await this.adminRepository.findAdminByUserId(props.userId);
+
     const isMatch = Encrypt.comparePassword(admin.salt, props.password, admin.password);
     if (!isMatch) {
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
     }
+
+    if (!admin.isAccepted) {
+      throw new AuthException(AUTH_ERROR_CODE.UNAUTHORIZED(NOT_ACCEPTED_ADMIN));
+    }
+
     const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
     return token;
   }

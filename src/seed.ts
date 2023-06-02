@@ -5,15 +5,27 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.space.deleteMany({});
   await database.host.deleteMany({});
   await database.user.deleteMany({});
+  await database.admin.deleteMany({});
   const salt = Encrypt.createSalt();
-  const password = Encrypt.hashPassword('1234', salt);
+  const hostPassword = Encrypt.hashPassword('1234', salt);
+  const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
+
+  await database.admin.create({
+    data: {
+      name: '통합관리자',
+      password: adminPassword,
+      salt,
+      userId: 'admin',
+      isAccepted: true,
+    },
+  });
   const host = await database.host.create({
     data: {
       name: 'testHost',
       email: 'test@gmail.com',
       gender: 1,
       phoneNumber: '01012341234',
-      password,
+      password: hostPassword,
       salt,
     },
   });
