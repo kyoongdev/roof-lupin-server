@@ -4,7 +4,7 @@ import type { DateProps } from '@/common';
 
 import { BaseHostDTO } from './base-host.dto';
 
-export interface HostProps extends DateProps {
+export interface HostDTOProps extends DateProps {
   id: string;
   email: string;
   name: string;
@@ -31,7 +31,7 @@ export class HostDTO extends BaseHostDTO {
   @Property({ apiProperty: { type: 'string', description: '남성 | 여성' } })
   gender: string;
 
-  constructor(props: HostProps) {
+  constructor(props: HostDTOProps) {
     super();
     this.id = props.id;
     this.email = props.email;

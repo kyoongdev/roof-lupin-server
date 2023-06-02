@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-export interface HostAccountProps {
+export interface HostAccountDTOProps {
   id: string;
   ownerName: string;
   bankName: number;
@@ -28,7 +28,7 @@ export class HostAccountDTO {
   @Property({ apiProperty: { type: 'string', description: '계좌 소유자 이름' } })
   accountOwner: string;
 
-  constructor(props: HostAccountProps) {
+  constructor(props: HostAccountDTOProps) {
     this.id = props.id;
     this.ownerName = props.ownerName;
     this.bankName = props.bankName;
