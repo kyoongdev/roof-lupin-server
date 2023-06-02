@@ -3,7 +3,8 @@ import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RequestAdmin } from '@/interface/role.interface';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -29,8 +30,22 @@ export class AdminController {
     type: AdminDTO,
     isPaging: true,
   })
-  async findAdmins(@Paging() paging: PagingDTO) {
+  async getAdmins(@Paging() paging: PagingDTO) {
     return await this.adminService.findPagingAdmins(paging);
+  }
+
+  @Get('me')
+  @RequestApi({
+    summary: {
+      description: '통합관리자 내 정보 조회',
+      summary: '통합관리자  내 정보 조회',
+    },
+  })
+  @ResponseApi({
+    type: AdminDTO,
+  })
+  async getMe(@ReqUser() user: RequestAdmin) {
+    return await this.adminService.findAdmin(user.id);
   }
 
   @Get(':adminId/detail')
@@ -48,11 +63,11 @@ export class AdminController {
   @ResponseApi({
     type: AdminDTO,
   })
-  async findAdmin(@Param('adminId') adminId: string) {
+  async getAdmin(@Param('adminId') adminId: string) {
     return await this.adminService.findAdmin(adminId);
   }
 
-  @Post('')
+  @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {

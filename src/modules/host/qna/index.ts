@@ -56,10 +56,13 @@ export class HostQnAController {
     type: QnADTO,
     isPaging: true,
   })
-  async getQnAsBySpaceID(@Paging() paging: PagingDTO, @Param('spaceId') spaceId: string) {
+  async getQnAsBySpaceID(@Paging() paging: PagingDTO, @Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
     return await this.qnaService.findPagingQnAs(paging, {
       where: {
         spaceId,
+        space: {
+          hostId: user.id,
+        },
       },
     });
   }
@@ -78,8 +81,14 @@ export class HostQnAController {
     type: QnADTO,
     isPaging: true,
   })
-  async getQnAs(@Paging() paging: PagingDTO) {
-    return await this.qnaService.findPagingQnAs(paging);
+  async getQnAs(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
+    return await this.qnaService.findPagingQnAs(paging, {
+      where: {
+        space: {
+          hostId: user.id,
+        },
+      },
+    });
   }
 
   @Post('/answer')

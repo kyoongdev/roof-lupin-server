@@ -2,8 +2,9 @@ import { Get, Param } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
+import { RequestHost } from '@/interface/role.interface';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
-import { ApiController } from '@/utils';
+import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -54,10 +55,17 @@ export class HostReviewController {
     type: ReviewDTO,
     isPaging: true,
   })
-  async getReviewsBySpaceID(@Paging() paging: PagingDTO, @Param('spaceId') spaceId: string) {
+  async getReviewsBySpaceID(
+    @Paging() paging: PagingDTO,
+    @Param('spaceId') spaceId: string,
+    @ReqUser() user: RequestHost
+  ) {
     return await this.reviewService.findPagingReviews(paging, {
       where: {
         spaceId,
+        space: {
+          hostId: user.id,
+        },
       },
     });
   }
@@ -77,7 +85,13 @@ export class HostReviewController {
     type: ReviewDTO,
     isPaging: true,
   })
-  async getReviews(@Paging() paging: PagingDTO) {
-    return await this.reviewService.findPagingReviews(paging, {});
+  async getReviews(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
+    return await this.reviewService.findPagingReviews(paging, {
+      where: {
+        space: {
+          hostId: user.id,
+        },
+      },
+    });
   }
 }
