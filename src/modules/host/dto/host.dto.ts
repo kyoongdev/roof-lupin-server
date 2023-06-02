@@ -6,7 +6,7 @@ import { BaseHostDTO } from './base-host.dto';
 
 export interface HostProps extends DateProps {
   id: string;
-  userId: string;
+  email: string;
   name: string;
   profileImage?: string;
   gender: number;
@@ -17,7 +17,7 @@ export class HostDTO extends BaseHostDTO {
   id: string;
 
   @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
-  userId: string;
+  email: string;
 
   @Property({ apiProperty: { type: 'string', description: '호스트 이름' } })
   name: string;
@@ -34,7 +34,7 @@ export class HostDTO extends BaseHostDTO {
   constructor(props: HostProps) {
     super();
     this.id = props.id;
-    this.userId = props.userId;
+    this.email = props.email;
     this.name = props.name;
     this.profileImage = props.profileImage;
     this.gender = this.hostGenderConverter(props.gender);

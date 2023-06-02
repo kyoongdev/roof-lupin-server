@@ -8,7 +8,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { AdminDetailDTO, AdminDTO, UpdateAdminDTO } from './dto';
 import { CreateAdminDTO } from './dto/create-admin.dto';
-import { ADMIN_ERROR_CODE } from './exception/errorCode';
+import { ADMIN_ERROR_CODE, ADMIN_NOT_FOUND } from './exception/errorCode';
 import { AdminException } from './exception/host.exception';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
     }
     return new AdminDTO(admin);
   }
@@ -52,7 +52,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
     }
     return new AdminDetailDTO(admin);
   }
@@ -65,7 +65,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND());
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
     }
 
     return new AdminDetailDTO(admin);
@@ -95,9 +95,12 @@ export class AdminRepository {
     return admin.id;
   }
   async updateAdmin(id: string, data: UpdateAdminDTO) {
-    const admin = await this.findAdminDetail(id);
+    const updateArgs: Prisma.AdminUpdateInput = data;
+
     if (data.password) {
-      data.password = Encrypt.hashPassword(admin.salt, data.password);
+      const salt = Encrypt.createSalt();
+      updateArgs.salt = salt;
+      updateArgs.password = Encrypt.hashPassword(salt, data.password);
     }
     await this.database.admin.update({
       where: {
@@ -110,7 +113,6 @@ export class AdminRepository {
   }
 
   async deleteAdmin(id: string) {
-    await this.findAdmin(id);
     await this.database.admin.update({
       where: {
         id,
@@ -122,7 +124,6 @@ export class AdminRepository {
   }
 
   async hardDeleteAdmin(id: string) {
-    await this.findAdmin(id);
     await this.database.admin.delete({
       where: {
         id,

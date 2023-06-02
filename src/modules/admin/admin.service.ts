@@ -40,14 +40,17 @@ export class AdminService {
   }
 
   async updateAdmin(id: string, data: UpdateAdminDTO) {
+    await this.findAdmin(id);
     await this.adminRepository.updateAdmin(id, data);
   }
 
   async deleteAdmin(id: string) {
+    await this.findAdmin(id);
     await this.adminRepository.deleteAdmin(id);
   }
 
   async hardDeleteAdmin(id: string) {
+    await this.findAdmin(id);
     await this.adminRepository.hardDeleteAdmin(id);
   }
 }
