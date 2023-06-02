@@ -37,9 +37,10 @@ class AppConfig {
 
   private configureSwagger() {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('Roof Server API')
-      .setDescription('Roof Server - ~~의 API 문서입니다.')
-      .setVersion('0.1')
+      .setTitle('🖕RoofLupin API🖕')
+      .setDescription('RoofLupin 루프루팡의 API 문서입니다.')
+      .setContact("RoofLupin's Developer", '', 'dev@cumuco.net')
+      .setVersion('1.0.0')
       .addServer('http://localhost:8000')
       .addBearerAuth(
         {

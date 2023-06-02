@@ -35,16 +35,18 @@ export class HostService {
   }
 
   async createHostAccount(hostId: string, data: CreateHostAccountDTO) {
+    await this.findHostAccountByHostId(hostId);
+
     return await this.hostRepository.createHostAccount(hostId, data);
   }
 
-  async updateHostAccount(id: string, data: UpdateHostAccountDTO) {
-    await this.findHostAccount(id);
-    await this.hostRepository.updateHostAccount(id, data);
+  async updateHostAccountByHostId(hostId: string, data: UpdateHostAccountDTO) {
+    const account = await this.findHostAccountByHostId(hostId);
+    await this.hostRepository.updateHostAccount(account.id, data);
   }
 
-  async deleteHostAccount(id: string) {
-    await this.findHostAccount(id);
-    await this.hostRepository.deleteHostAccount(id);
+  async deleteHostAccountByHostId(hostId: string) {
+    const account = await this.findHostAccountByHostId(hostId);
+    await this.hostRepository.deleteHostAccount(account.id);
   }
 }
