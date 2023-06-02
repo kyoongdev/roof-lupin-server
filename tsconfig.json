@@ -23,10 +23,13 @@
     "noLib": false,
     "resolveJsonModule": true,
     "downlevelIteration": true,
+
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["./src/@types"]
   },
+
   "include": ["src/**/*.json", "src/**/*.ts", "src/**/*.*.ts", "test/**/*.ts", "test/*.ts"],
   "exclude": ["node_modules", "dist", "aws", "prisma"]
 }
