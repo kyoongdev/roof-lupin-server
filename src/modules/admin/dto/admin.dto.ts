@@ -20,6 +20,7 @@ export class AdminDTO extends DateDTO {
 
   constructor(props: Props) {
     super();
+    this.id = props.id;
     this.name = props.name;
     this.userId = props.userId;
     this.isAccepted = props.isAccepted;

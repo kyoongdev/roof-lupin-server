@@ -105,9 +105,9 @@ export class HomeService {
       })
     );
     const result = await this.database.$transaction(transactionArgs);
-    console.log({ result });
+
     const home: HomeImage = result.find((query) => !!query['id']);
-    console.log({ home });
+
     return home.id;
   }
 
