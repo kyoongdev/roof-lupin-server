@@ -21,12 +21,12 @@ export class CreateHostDTO {
   @Property({ apiProperty: { type: 'string', description: '프로필 이미지', nullable: true } })
   profileImage?: string;
 
-  @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
   @PhoneNumberValidation()
+  @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
   phoneNumber: string;
 
-  @Property({ apiProperty: { type: 'number', description: '성별 1 = 남자, 2 = 여성' } })
   @GenderValidation()
+  @Property({ apiProperty: { type: 'number', description: '성별 1 = 남자, 2 = 여성' } })
   gender: number;
 
   @Property({ apiProperty: { type: 'string', description: '비밀번호' } })
