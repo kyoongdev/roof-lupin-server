@@ -102,6 +102,7 @@ model RentalType {
   timeCostInfo TimeCostInfo?
 }
 
+//INFO: 시간별 예약 추가 정보
 model TimeCostInfo {
   id      String @id @default(uuid())
   cost    Int    @db.MediumInt
@@ -121,6 +122,7 @@ model Reservation {
 
   startAt Int @db.TinyInt
   endAt   Int @db.TinyInt
+  cost    Int @db.MediumInt
 
   rentalTypeId String
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
@@ -308,9 +310,11 @@ model SpaceHashTag {
 
 //INFO: 공간주인
 model Host {
-  id           String  @id @default(uuid())
+  id String @id @default(uuid())
+
   userId       String  @db.VarChar(120)
-  name         String
+  name         String  @db.VarChar(20)
+  email        String
   profileImage String?
   phoneNumber  String  @db.Char(11)
   gender       Int     @db.TinyInt
@@ -321,6 +325,22 @@ model Host {
 
   spaces          Space[]
   spaceQnAAnswers SpaceQnAAnswer[]
+
+  hostAccount   HostAccount @relation(fields: [hostAccountId], references: [id])
+  hostAccountId String      @unique
+}
+
+//INFO: 공간주 사업자 및 계좌 정보
+model HostAccount {
+  id String @id @default(uuid())
+
+  ownerName                  String @db.VarChar(20)
+  bankName                   Int    @db.TinyInt
+  businessRegistrationNumber String @db.Char(10)
+  account                    String @db.VarChar(40)
+  accountOwner               String @db.VarChar(20)
+
+  host Host?
 }
 
 //INFO: 통합 관리자
