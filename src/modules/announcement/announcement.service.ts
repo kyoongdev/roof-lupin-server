@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -22,6 +23,20 @@ export class AnnouncementService {
     }
 
     return new AnnouncementDTO(announcement);
+  }
+
+  async findPagingAnnouncements(paging: PagingDTO, args = {} as Prisma.AnnouncementFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.countAnnouncements({
+      where: args.where,
+    });
+    const announcements = await this.findAnnouncements({
+      ...args,
+      skip,
+      take,
+    });
+
+    return new PaginationDTO<AnnouncementDTO>(announcements, { count, paging });
   }
 
   async findAnnouncements(args = {} as Prisma.AnnouncementFindManyArgs) {

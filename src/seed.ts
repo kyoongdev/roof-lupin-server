@@ -38,6 +38,7 @@ export const seedDatabase = async (database: PrismaService) => {
   for (let i = 0; i < 100; i++) {
     await database.space.create({
       data: {
+        thumbnail: 'thumbnail',
         buildingType: 1,
         description: 'test',
         title: `테스트 공간${i + 1}`,
