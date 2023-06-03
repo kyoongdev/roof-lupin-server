@@ -20,6 +20,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Curation {
+  id       String @id @default(uuid())
+  title    String @db.VarChar(30)
+  subTitle String @db.VarChar(100)
+  content  String @db.MediumText
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
 model Image {
   id  String @id @default(uuid())
   url String
@@ -59,6 +73,7 @@ model Space {
   overflowUserCount Int    @db.TinyInt
   //NOTE: 최소 대여시간
   minHour           Int    @db.TinyInt
+  thumbnail         String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -67,16 +82,16 @@ model Space {
   hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
 
-  reviews         SpaceReview[]
-  reports         SpaceReport[]
-  userInterests   SpaceInterest[]
-  userLikes       SpaceLike[]
-  images          SpaceImage[]
-  guideLines      SpaceGuideLine[]
-  cautions        SpaceCaution[]
+  reviews       SpaceReview[]
+  reports       SpaceReport[]
+  userInterests SpaceInterest[]
+  userLikes     SpaceLike[]
+  images        SpaceImage[]
+  guideLines    SpaceGuideLine[]
+  cautions      SpaceCaution[]
   //INFO: discountInfo는 1개만 존재하는지, 여러개 존재하는지 확인 필요
-  discountInfo    SpaceDiscountInfo[]
-  //INFO: discountInfo는 1개만 존재하는지, 여러개 존재하는지 확인 필요
+  discountInfo  SpaceDiscountInfo[]
+
   rentalType      RentalType[]
   location        SpaceLocation?
   facilities      SpaceFacility[]
@@ -372,6 +387,7 @@ model User {
   birth        String? @db.Char(8)
   gender       Int?    @db.TinyInt
   profileImage String?
+  isAdult      Boolean @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -385,6 +401,7 @@ model User {
   locations      UserLocation[]
   coupons        UserCoupon[]
   socials        UserSocial[]
+  curations      Curation[]
 }
 
 model UserSocial {
