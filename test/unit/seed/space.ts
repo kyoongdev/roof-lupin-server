@@ -4,7 +4,9 @@ export const seedSpace = async (database: PrismaService) => {
   const host = await database.host.create({
     data: {
       name: 'testHost',
-      userId: 'testHost',
+      email: 'asdf',
+      password: 'asdf',
+      salt: 'asdf',
       gender: 1,
       phoneNumber: '01012341234',
     },
@@ -21,7 +23,8 @@ export const seedSpace = async (database: PrismaService) => {
         buildingType: 1,
         description: 'test',
         title: `테스트 공간${i + 1}`,
-        facilityIntroduction: 'facilityIntroduction',
+        minHour: 12,
+        overflowUserCount: 1234,
         maxUser: 20,
         minUser: 1,
         overflowUserCost: i * 1000,

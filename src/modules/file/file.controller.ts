@@ -17,6 +17,10 @@ export class FileController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 1024 * 1024 * 10 } }))
   @RequestApi({
+    summary: {
+      description: '이미지 업로드',
+      summary: '이미지 업로드',
+    },
     body: {
       schema: {
         type: 'object',

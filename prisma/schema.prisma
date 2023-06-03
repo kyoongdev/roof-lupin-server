@@ -1,6 +1,7 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+  previewFeatures = ["views"]
 }
 
 // generator dbml {
@@ -25,7 +26,6 @@ model Image {
 
   spaceImages       SpaceImage[]
   spaceReviewImages SpaceReviewImage[]
-  loginBackground   LoginBackground[]
 }
 
 model HomeImage {
@@ -86,6 +86,11 @@ model Space {
   spaceQnAs       SpaceQnA[]
 }
 
+view SpaceView {
+  id   String @unique
+  cost Int
+}
+
 //INFO: 대여 종류 (시간, 패키지)
 model RentalType {
   id         String @id @default(uuid())
@@ -97,7 +102,7 @@ model RentalType {
   endAt      Int    @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
 
   spaceId      String
-  space        Space         @relation(fields: [spaceId], references: [id])
+  space        Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservations Reservation[]
   timeCostInfo TimeCostInfo?
 }
@@ -409,6 +414,8 @@ model Location {
   jibunAddress  String
   spaceLocation SpaceLocation?
   userLocations UserLocation[]
+
+  @@unique([lat, lng])
 }
 
 //INFO: 공간 주변 시설
@@ -464,14 +471,4 @@ model Coupon {
   description   String       @db.VarChar(100)
   dueDate       DateTime     @db.DateTime
   userCoupons   UserCoupon[]
-}
-
-//INFO: 로그인 페이지 배경
-model LoginBackground {
-  id String @id @default(uuid())
-
-  isDefault Boolean @default(false)
-
-  imageId String
-  image   Image  @relation(fields: [imageId], references: [id])
 }

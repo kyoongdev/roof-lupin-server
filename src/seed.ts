@@ -54,6 +54,26 @@ export const seedDatabase = async (database: PrismaService) => {
             id: host.id,
           },
         },
+        rentalType: {
+          create: [
+            {
+              baseCost: (i + 1) * 20,
+              startAt: 10,
+              endAt: 15,
+              name: '테스트',
+              rentalType: 1,
+              baseHour: 12,
+            },
+            {
+              baseCost: (i + 1) * 22,
+              startAt: 10,
+              endAt: 15,
+              name: '테스트2',
+              rentalType: 1,
+              baseHour: 12,
+            },
+          ],
+        },
       },
     });
   }

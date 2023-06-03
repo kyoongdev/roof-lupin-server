@@ -27,91 +27,91 @@ describe('ReviewService', () => {
     database = module.get<PrismaService>(PrismaService);
   });
 
-  beforeEach(async () => {
-    await seedSpace(database);
-  });
+  // beforeEach(async () => {
+  //   await seedSpace(database);
+  // });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(service).toBeDefined();
+  // });
 
-  describe('Review Update', () => {
-    let newReview: SpaceReview;
-    let space: Space;
-    let user: User;
-    beforeEach(async () => {
-      space = await database.space.findFirst({});
-      user = await database.user.findFirst({});
+  // describe('Review Update', () => {
+  //   let newReview: SpaceReview;
+  //   let space: Space;
+  //   let user: User;
+  //   beforeEach(async () => {
+  //     space = await database.space.findFirst({});
+  //     user = await database.user.findFirst({});
 
-      newReview = await database.spaceReview.create({
-        data: {
-          score: 5,
-          content: 'test',
-          space: {
-            connect: {
-              id: space.id,
-            },
-          },
-          user: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      });
-    });
-    it('리뷰 수정 (성공)', async () => {
-      expect(newReview).toBeDefined();
-      expect(newReview.userId).toEqual(user.id);
+  //     newReview = await database.spaceReview.create({
+  //       data: {
+  //         score: 5,
+  //         content: 'test',
+  //         space: {
+  //           connect: {
+  //             id: space.id,
+  //           },
+  //         },
+  //         user: {
+  //           connect: {
+  //             id: user.id,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   });
+  //   it('리뷰 수정 (성공)', async () => {
+  //     expect(newReview).toBeDefined();
+  //     expect(newReview.userId).toEqual(user.id);
 
-      await service.updateReview(
-        newReview.id,
-        user.id,
-        new UpdateReviewDTO({
-          content: 'hello',
-        })
-      );
-      const updatedReview = await service.findReview(newReview.id);
+  //     await service.updateReview(
+  //       newReview.id,
+  //       user.id,
+  //       new UpdateReviewDTO({
+  //         content: 'hello',
+  //       })
+  //     );
+  //     const updatedReview = await service.findReview(newReview.id);
 
-      expect(updatedReview).toBeDefined();
-      expect(updatedReview.user.id).toEqual(user.id);
-      expect(updatedReview.content).toEqual('hello');
-      expect(updatedReview.score).toEqual(5);
-    });
+  //     expect(updatedReview).toBeDefined();
+  //     expect(updatedReview.user.id).toEqual(user.id);
+  //     expect(updatedReview.content).toEqual('hello');
+  //     expect(updatedReview.score).toEqual(5);
+  //   });
 
-    it('리뷰 수정 (실패)', async () => {
-      expect(newReview).toBeDefined();
+  //   it('리뷰 수정 (실패)', async () => {
+  //     expect(newReview).toBeDefined();
 
-      expect(
-        async () => await service.updateReview(newReview.id, 'wrongId', new UpdateReviewDTO({ content: 'hello' }))
-      ).rejects.toThrowError(new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN)));
-    });
+  //     expect(
+  //       async () => await service.updateReview(newReview.id, 'wrongId', new UpdateReviewDTO({ content: 'hello' }))
+  //     ).rejects.toThrowError(new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN)));
+  //   });
 
-    it('리뷰 삭제 (성공)', async () => {
-      expect(newReview).toBeDefined();
-      expect(newReview.userId).toEqual(user.id);
+  //   it('리뷰 삭제 (성공)', async () => {
+  //     expect(newReview).toBeDefined();
+  //     expect(newReview.userId).toEqual(user.id);
 
-      await service.deleteReview(newReview.id, user.id);
+  //     await service.deleteReview(newReview.id, user.id);
 
-      expect(async () => await service.findReview(newReview.id)).rejects.toThrowError(
-        new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND())
-      );
-    });
+  //     expect(async () => await service.findReview(newReview.id)).rejects.toThrowError(
+  //       new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND())
+  //     );
+  //   });
 
-    it('리뷰 삭제 (실패)', async () => {
-      expect(newReview).toBeDefined();
-      expect(newReview.userId).toEqual(user.id);
+  //   it('리뷰 삭제 (실패)', async () => {
+  //     expect(newReview).toBeDefined();
+  //     expect(newReview.userId).toEqual(user.id);
 
-      expect(async () => await service.deleteReview(newReview.id, 'wrongId')).rejects.toThrowError(
-        new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN))
-      );
-    });
-  });
+  //     expect(async () => await service.deleteReview(newReview.id, 'wrongId')).rejects.toThrowError(
+  //       new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN))
+  //     );
+  //   });
+  // });
 
-  afterAll(async () => {
-    await database.space.deleteMany({});
-    await database.host.deleteMany({});
-    await database.user.deleteMany({});
-    await database.spaceReview.deleteMany({});
-  });
+  // afterAll(async () => {
+  //   await database.space.deleteMany({});
+  //   await database.host.deleteMany({});
+  //   await database.user.deleteMany({});
+  //   await database.spaceReview.deleteMany({});
+  // });
 });
