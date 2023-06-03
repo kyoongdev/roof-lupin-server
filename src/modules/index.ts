@@ -1,6 +1,9 @@
 import { AdminModule } from './admin/admin.module';
+import { AnnouncementModule } from './announcement/announcement.module';
+import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
 import { CouponModule } from './coupon/coupon.module';
+import { FaqModule } from './faq/faq.module';
 import { FileModule } from './file/file.module';
 import { GlobalModule } from './global';
 import { HomeModule } from './home/home.module';
@@ -24,4 +27,7 @@ export const Modules = [
   CouponModule,
   FileModule,
   HomeModule,
+  AppInfoModule,
+  AnnouncementModule,
+  FaqModule,
 ];
