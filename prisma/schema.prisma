@@ -20,6 +20,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AppInfo {
+  id             String @id @default(uuid())
+  iosVersion     String @db.VarChar(20)
+  androidVersion String @db.VarChar(20)
+}
+
+model FAQ {
+  id       String @id @default(uuid())
+  question String @db.VarChar(120)
+  answer   String @db.MediumText
+}
+
+model Announcement {
+  id      String @id @default(uuid())
+  title   String @db.VarChar(120)
+  content String @db.MediumText
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
 model Curation {
   id       String @id @default(uuid())
   title    String @db.VarChar(30)
