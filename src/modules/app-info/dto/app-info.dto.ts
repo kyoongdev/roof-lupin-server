@@ -1,11 +1,15 @@
 import { Property } from 'wemacu-nestjs';
 
 interface AppInfoDTOProps {
+  id: string;
   iosVersion: string;
   androidVersion: string;
 }
 
 export class AppInfoDTO {
+  @Property({ apiProperty: { type: 'string' } })
+  id: string;
+
   @Property({ apiProperty: { type: 'string' } })
   iosVersion: string;
 
