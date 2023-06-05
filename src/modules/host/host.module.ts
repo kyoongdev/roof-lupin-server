@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { SpaceRepository } from '../space/space.repository';
 
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
@@ -13,6 +14,8 @@ import { HostReportController } from './report';
 import { HostReportService } from './report/report.service';
 import { HostReviewController } from './review';
 import { HostReviewService } from './review/review.service';
+import { HostSpaceController } from './space';
+import { HostSpaceService } from './space/space.service';
 
 @Module({
   providers: [
@@ -24,7 +27,9 @@ import { HostReviewService } from './review/review.service';
     QnARepository,
     HostReportService,
     ReportRepository,
+    HostSpaceService,
+    SpaceRepository,
   ],
-  controllers: [HostController, HostReviewController, HostQnAController, HostReportController],
+  controllers: [HostController, HostReviewController, HostQnAController, HostReportController, HostSpaceController],
 })
 export class HostModule {}
