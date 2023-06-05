@@ -20,9 +20,6 @@ export class CurationDTO {
   @Property({ apiProperty: { type: 'string', description: '큐레이션 부제목' } })
   subTitle: string;
 
-  @Property({ apiProperty: { type: 'string', description: '큐레이션 내용' } })
-  content: string;
-
   @Property({ apiProperty: { type: 'string', description: '큐레이션 썸네일' } })
   thumbnail: string;
 
@@ -36,7 +33,6 @@ export class CurationDTO {
     this.id = props.id;
     this.title = props.title;
     this.subTitle = props.subTitle;
-    this.content = props.content;
     this.thumbnail = props.thumbnail;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
