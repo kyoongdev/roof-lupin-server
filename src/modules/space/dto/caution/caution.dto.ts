@@ -1,5 +1,6 @@
 import { Property } from 'wemacu-nestjs';
-interface CautionDTOProps {
+
+export interface CautionDTOProps {
   id: string;
   content: string;
 }
