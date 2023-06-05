@@ -29,6 +29,13 @@
     }
   },
 
-  "include": ["src/**/*.json", "src/**/*.ts", "src/**/*.*.ts", "test/**/*.ts", "test/*.ts"],
+  "include": [
+    "src/**/*.json",
+    "src/**/*.ts",
+    "src/**/*.*.ts",
+    "test/**/*.ts",
+    "test/*.ts",
+    "src/modules/space/space.controller.ts"
+  ],
   "exclude": ["node_modules", "dist", "aws", "prisma"]
 }

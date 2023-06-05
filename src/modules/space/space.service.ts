@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+
 import { UserRepository } from '../user/user.repository';
 
+import { SpaceDTO } from './dto';
 import { ALREADY_INTERESTED, ALREADY_LIKED, NOT_INTERESTED, NOT_LIKED, SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 import { SpaceRepository } from './space.repository';
@@ -12,6 +16,25 @@ export class SpaceService {
 
   async findSpace(id: string, userId?: string) {
     return await this.spaceRepository.findSpace(id, userId);
+  }
+
+  async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.spaceRepository.countSpaces({
+      where: args.where,
+    });
+    const spaces = await this.spaceRepository.findSpaces({
+      where: args.where,
+      orderBy: args.orderBy,
+      skip,
+      take,
+    });
+
+    return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
+
+  async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
+    return await this.spaceRepository.findSpaces(args);
   }
 
   async createInterest(userId: string, spaceId: string) {

@@ -157,6 +157,7 @@ export class SpaceRepository {
       sizes,
       ...rest
     } = data;
+
     const minCost = Math.min(...rentalTypes.map((rentalType) => rentalType.baseCost));
     const minSize = Math.min(...sizes.map((size) => size.size));
 
