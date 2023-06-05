@@ -3,7 +3,6 @@ import { Property } from 'wemacu-nestjs';
 export interface SearchRecommendDTOProps {
   id: string;
   content: string;
-  createdAt: Date;
 }
 
 export class SearchRecommendDTO {
