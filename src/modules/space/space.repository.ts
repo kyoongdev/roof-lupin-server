@@ -6,6 +6,12 @@ import { PagingDTO } from 'wemacu-nestjs';
 import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
+import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
+import { CreateSpaceDTO } from './dto/create-space.dto';
+import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
+import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
+import { CreateRefundPolicyDTO } from './dto/refund';
+import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 
@@ -133,6 +139,160 @@ export class SpaceRepository {
           publicTransportation: space.publicTransportations.at(-1),
           location: space.location?.['location'],
         })
+    );
+  }
+
+  async createSpace(hostId: string, data: CreateSpaceDTO) {
+    const {
+      images,
+      refundPolicies,
+      cautions,
+      rentalTypes,
+      location,
+      facilities: facilityProps,
+      services: servicesProps,
+      categories: categoryProps,
+      hashtags: hashtagProps,
+      publicTransportations,
+      sizes,
+      ...rest
+    } = data;
+    const minCost = Math.min(...rentalTypes.map((rentalType) => rentalType.baseCost));
+    const minSize = Math.min(...sizes.map((size) => size.size));
+
+    const facilities = await this.findOrCreateFacilities(facilityProps);
+    const services = await this.findOrCreateServices(servicesProps);
+    const categories = await this.findOrCreateCategories(categoryProps);
+    const hashtags = await this.findOrCreateHashtags(hashtagProps);
+
+    const space = await this.database.space.create({
+      data: {
+        ...rest,
+        minCost,
+        minSize,
+        host: {
+          connect: {
+            id: hostId,
+          },
+        },
+        images: {
+          create: images.map((image) => ({
+            imageId: image,
+          })),
+        },
+        refundPolicies: {
+          create: refundPolicies.map((refundPolicy) => refundPolicy),
+        },
+        cautions: {
+          create: cautions.map((caution) => caution),
+        },
+        rentalType: {
+          create: rentalTypes.map((rentalType) => rentalType),
+        },
+        facilities: {
+          create: facilities.map((facility) => ({
+            facilityId: facility.id,
+          })),
+        },
+        services: {
+          create: services.map((service) => ({
+            serviceId: service.id,
+          })),
+        },
+        categories: {
+          create: categories.map((category) => ({
+            categoryId: category.id,
+          })),
+        },
+        hashtags: {
+          create: hashtags.map((hashtag) => ({
+            hashtagId: hashtag.id,
+          })),
+        },
+        publicTransportations: {
+          create: publicTransportations.map((publicTransportation) => publicTransportation),
+        },
+        sizes: {
+          create: sizes.map((size) => size),
+        },
+      },
+    });
+    return space.id;
+  }
+
+  async findOrCreateFacilities(data: CreateFacilityDTO[]) {
+    return await Promise.all(
+      data.map(async (facility) => {
+        const isExist = await this.database.facility.findFirst({
+          where: {
+            name: facility.name,
+          },
+        });
+        if (isExist) {
+          return new FacilityDTO(isExist);
+        }
+        const newFacility = await this.database.facility.create({
+          data: facility,
+        });
+        return new FacilityDTO(newFacility);
+      })
+    );
+  }
+
+  async findOrCreateServices(data: CreateServiceDTO[]) {
+    return await Promise.all(
+      data.map(async (service) => {
+        const isExist = await this.database.service.findFirst({
+          where: {
+            name: service.name,
+          },
+        });
+        if (isExist) {
+          return new ServiceDTO(isExist);
+        }
+        const newService = await this.database.service.create({
+          data: service,
+        });
+        return new ServiceDTO(newService);
+      })
+    );
+  }
+
+  async findOrCreateCategories(data: CreateSpaceCategoryDTO[]) {
+    return await Promise.all(
+      data.map(async (category) => {
+        const isExist = await this.database.category.findFirst({
+          where: {
+            name: category.name,
+          },
+        });
+        if (isExist) {
+          return new SpaceCategoryDTO(isExist);
+        }
+        const newCategory = await this.database.category.create({
+          data: category,
+        });
+        return new SpaceCategoryDTO(newCategory);
+      })
+    );
+  }
+
+  async findOrCreateHashtags(data: CreateHashtagDTO[]) {
+    return await Promise.all(
+      data.map(async (hashtag) => {
+        const isExist = await this.database.hashtag.findFirst({
+          where: {
+            name: hashtag.name,
+          },
+        });
+        if (isExist) {
+          return new HashtagDTO(isExist);
+        }
+        const newHashtag = await this.database.hashtag.create({
+          data: hashtag,
+        });
+        return new HashtagDTO(newHashtag);
+      })
     );
   }
 

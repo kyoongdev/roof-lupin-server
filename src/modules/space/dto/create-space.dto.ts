@@ -63,7 +63,7 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'number', description: '초과 인원' } })
   overflowUserCount: number;
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '이미지' } })
+  @Property({ apiProperty: { type: 'string', isArray: true, description: '생성된 이미지 id' } })
   images: string[];
 
   @Property({ apiProperty: { type: 'string', isArray: true, description: '환불 정책' } })

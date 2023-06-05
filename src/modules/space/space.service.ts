@@ -10,8 +10,8 @@ import { SpaceRepository } from './space.repository';
 export class SpaceService {
   constructor(private readonly spaceRepository: SpaceRepository) {}
 
-  async findSpace(id: string) {
-    return await this.spaceRepository.findSpace(id);
+  async findSpace(id: string, userId?: string) {
+    return await this.spaceRepository.findSpace(id, userId);
   }
 
   async createInterest(userId: string, spaceId: string) {
