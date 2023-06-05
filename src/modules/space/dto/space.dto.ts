@@ -32,17 +32,17 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'number', description: '공간 가격' } })
   cost: number;
 
-  @Property({ apiProperty: { type: 'boolean', description: '공간 베스트 여부' } })
-  isBest?: boolean;
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '공간 베스트 여부' } })
+  isBest: boolean | null;
 
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 
-  @Property({ apiProperty: { type: TransportationDTO, description: '공간 대중 교통', nullable: true } })
-  publicTransportation?: TransportationDTO;
+  @Property({ apiProperty: { type: TransportationDTO, nullable: true, description: '공간 대중 교통' } })
+  publicTransportation: TransportationDTO | null;
 
-  @Property({ apiProperty: { type: LocationDTO, description: '공간 위치' } })
-  location: LocationDTO;
+  @Property({ apiProperty: { type: LocationDTO, nullable: true, description: '공간 위치' } })
+  location: LocationDTO | null;
 
   constructor(props: SpaceDTOProps) {
     this.id = props.id;
@@ -50,9 +50,9 @@ export class SpaceDTO {
     this.averageScore = props.averageScore;
     this.reviewCount = props.reviewCount;
     this.cost = props.cost;
-    this.isBest = props.isBest;
+    this.isBest = typeof props.isBest === 'boolean' ? props.isBest : null;
     this.thumbnail = props.thumbnail;
-    this.publicTransportation = props.publicTransportation && new TransportationDTO(props.publicTransportation);
-    this.location = new LocationDTO(props.location);
+    this.publicTransportation = props.publicTransportation ? new TransportationDTO(props.publicTransportation) : null;
+    this.location = props.location ? new LocationDTO(props.location) : null;
   }
 }

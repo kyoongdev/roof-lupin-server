@@ -136,7 +136,7 @@ export class SpaceRepository {
           ...space,
           cost: space.minCost,
           reviewCount: space._count.reviews,
-          publicTransportation: space.publicTransportations.at(-1),
+          publicTransportation: space.publicTransportations?.at(-1),
           location: space.location?.['location'],
         })
     );
