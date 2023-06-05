@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-interface CreateHashtagDTOProps {
+export interface CreateHashtagDTOProps {
   name: string;
 }
 
