@@ -19,7 +19,7 @@ import { TransportationDTO, TransportationDTOProps } from './transportaion';
 export interface SpaceDetailDTOProps extends DateProps {
   id: string;
   title: string;
-  score: number;
+  averageScore: number;
   reviewCount: number;
   cost: number;
   isBest?: boolean;
@@ -35,7 +35,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   overflowUserCount: number;
   isInterested?: boolean;
   host: HostDTOProps;
-  reviews: ReviewDTOProps[];
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
   cautions: CautionDTOProps[];
@@ -55,7 +54,7 @@ export class SpaceDetailDTO {
   title: string;
 
   @Property({ apiProperty: { type: 'number', description: '공간 평점' } })
-  score: number;
+  averageScore: number;
 
   @Property({ apiProperty: { type: 'number', description: '공간 리뷰 개수' } })
   reviewCount: number;
@@ -135,7 +134,7 @@ export class SpaceDetailDTO {
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
-    this.score = props.score;
+    this.averageScore = props.averageScore;
     this.reviewCount = props.reviewCount;
     this.cost = props.cost;
     this.isBest = props.isBest ?? false;
@@ -151,7 +150,6 @@ export class SpaceDetailDTO {
     this.overflowUserCount = props.overflowUserCount;
     this.isInterested = props.isInterested ?? false;
     this.host = new HostDTO(props.host);
-    this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.images = props.images.map((image) => new ImageDTO(image));
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
     this.cautions = props.cautions.map((caution) => new CautionDTO(caution));
