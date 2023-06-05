@@ -20,6 +20,8 @@ export const seedSpace = async (database: PrismaService) => {
   for (let i = 0; i < 100; i++) {
     await database.space.create({
       data: {
+        minCost: i * 1000,
+        thumbnail: 'thumbnail',
         buildingType: 1,
         description: 'test',
         title: `테스트 공간${i + 1}`,
