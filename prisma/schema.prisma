@@ -426,6 +426,7 @@ model User {
   searchRecords  SearchRecord[]
 }
 
+//INFO: 유저 검색 기록
 model SearchRecord {
   id String @id @default(uuid())
 
@@ -437,6 +438,7 @@ model SearchRecord {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
+//INFO: 추천 검색어
 model SearchRecommend {
   id String @id @default(uuid())
 

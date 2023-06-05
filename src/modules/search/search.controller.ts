@@ -1,4 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from '@/utils';
 
-@Controller('search')
-export class SearchController {}
+import { SearchService } from './search.service';
+
+@ApiController('search', '검색어')
+export class SearchController {
+  constructor(private readonly searchService: SearchService) {}
+}
