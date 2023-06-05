@@ -110,7 +110,7 @@ export class SpaceRepository {
       },
       include: {
         location: {
-          select: {
+          include: {
             location: true,
           },
         },
@@ -124,7 +124,6 @@ export class SpaceRepository {
     });
 
     //TODO: isBest는 어떻게 산정?
-
     return spaces.map(
       (space) =>
         new SpaceDTO({

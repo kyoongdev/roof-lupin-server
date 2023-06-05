@@ -164,13 +164,13 @@ model RentalType {
   baseCost   Int    @db.MediumInt // 기본 비용
   rentalType Int    @db.TinyInt // 1 : 시간, 2 : 패키지
   baseHour   Int?   @db.TinyInt // 기본 이용시간
-  startAt    Int    @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
-  endAt      Int    @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
+  startAt    Int    @default(0) @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
+  endAt      Int    @default(24) @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
 
   spaceId      String
-  space        Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  space        Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservations Reservation[]
-  timeCostInfo TimeCostInfo?
+  timeCostInfo TimeCostInfo[]
 }
 
 //INFO: 시간별 예약 추가 정보
