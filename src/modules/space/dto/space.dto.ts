@@ -7,7 +7,7 @@ export interface SpaceDTOProps {
   cost: number;
   isBest?: boolean;
   thumbnail: string;
-  publicTransportation: any; //ㅈ
+  publicTransportation: any; //대중 교통
 }
 
 export class SpaceDTO {}
