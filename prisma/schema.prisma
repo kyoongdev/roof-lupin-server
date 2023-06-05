@@ -422,6 +422,24 @@ model User {
   coupons        UserCoupon[]
   socials        UserSocial[]
   curations      Curation[]
+  searchRecords  SearchRecord[]
+}
+
+model SearchRecord {
+  id String @id @default(uuid())
+
+  content String
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model SearchRecommend {
+  id String @id @default(uuid())
+
+  content String
 }
 
 model UserSocial {
