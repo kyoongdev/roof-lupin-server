@@ -126,15 +126,26 @@ model Space {
   guideLines    SpaceGuideLine[]
   cautions      SpaceCaution[]
 
-  rentalType      RentalType[]
-  location        SpaceLocation?
-  facilities      SpaceFacility[]
-  services        SpaceService[]
-  usageCategories SpaceCategory[]
-  hashTags        SpaceHashTag[]
-  spaceQnAs       SpaceQnA[]
-  homeCategory    HomeCategory?   @relation(fields: [homeCategoryId], references: [id])
-  homeCategoryId  String?
+  rentalType            RentalType[]
+  location              SpaceLocation?
+  facilities            SpaceFacility[]
+  services              SpaceService[]
+  usageCategories       SpaceCategory[]
+  hashTags              SpaceHashTag[]
+  spaceQnAs             SpaceQnA[]
+  homeCategory          HomeCategory?          @relation(fields: [homeCategoryId], references: [id])
+  homeCategoryId        String?
+  publicTransportations PublicTransportation[]
+}
+
+model PublicTransportation {
+  id String @id @default(uuid())
+
+  name      String @db.VarChar(120)
+  timeTaken Int    @db.TinyInt
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
 }
 
 view SpaceView {
