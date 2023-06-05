@@ -5,7 +5,7 @@ import { DateDTO } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
-interface Props extends Partial<SpaceReview> {
+export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
   images: { image: Image }[];
 }
@@ -25,7 +25,7 @@ export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO } })
   user: CommonUserDTO;
 
-  constructor(props: Props) {
+  constructor(props: ReviewDTOProps) {
     super();
     this.content = props.content;
     this.score = props.score;

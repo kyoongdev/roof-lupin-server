@@ -97,8 +97,6 @@ model Space {
   spaceType         Int?   @db.TinyInt
   buildingType      Int?   @db.TinyInt
   thumbnail         String
-  //NOTE: 공간 소개글
-  spaceIntroduction String @db.MediumText
   //NOTE: 최소 인원
   minUser           Int    @db.TinyInt
   //NOTE: 최대 인원
@@ -107,9 +105,6 @@ model Space {
   overflowUserCost  Int    @db.MediumInt
   //NOTE: 초과 인원 기준 인원
   overflowUserCount Int    @db.TinyInt
-  //NOTE: 최소 대여시간
-  minHour           Int    @db.TinyInt
-  minCost           Int    @db.MediumInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -118,13 +113,12 @@ model Space {
   hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
 
-  reviews       SpaceReview[]
-  reports       SpaceReport[]
-  userInterests SpaceInterest[]
-  userLikes     SpaceLike[]
-  images        SpaceImage[]
-  guideLines    SpaceGuideLine[]
-  cautions      SpaceCaution[]
+  reviews        SpaceReview[]
+  reports        SpaceReport[]
+  userInterests  SpaceInterest[]
+  images         SpaceImage[]
+  refundPolicies RefundPolicy[]
+  cautions       SpaceCaution[]
 
   rentalType            RentalType[]
   location              SpaceLocation?
@@ -283,16 +277,6 @@ model SpaceInterest {
   @@id([userId, spaceId])
 }
 
-//INFO: 공간 좋아요
-model SpaceLike {
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-
-  @@id([userId, spaceId])
-}
-
 //INFO: 공간 사진
 model SpaceImage {
   spaceId String
@@ -303,10 +287,13 @@ model SpaceImage {
   @@id([spaceId, imageId])
 }
 
-//INFO: 공간 이용 정보
-model SpaceGuideLine {
-  id      String @id @default(uuid())
-  content String
+//INFO: 공간 환불 정보
+model RefundPolicy {
+  id          String @id @default(uuid())
+  refundRate  Int    @db.TinyInt
+  dueDate     Int    @db.TinyInt
+  dueDateType Int    @db.TinyInt // 1 = 일, 2 = 시간
+
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id])
 }
@@ -431,7 +418,6 @@ model User {
   spaceReviews   SpaceReview[]
   spaceReports   SpaceReport[]
   spaceInterests SpaceInterest[]
-  spaceLikes     SpaceLike[]
   spaceQnAs      SpaceQnA[]
   locations      UserLocation[]
   coupons        UserCoupon[]
