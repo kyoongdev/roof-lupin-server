@@ -117,7 +117,7 @@ model Space {
   location        SpaceLocation?
   facilities      SpaceFacility[]
   services        SpaceService[]
-  usageCategories SpaceUsageCategory[]
+  usageCategories SpaceCategory[]
   hashTags        SpaceHashTag[]
   spaceQnAs       SpaceQnA[]
 }
@@ -331,13 +331,13 @@ model SpaceService {
   @@id([spaceId, serviceId])
 }
 
-model SpaceUsageCategory {
-  spaceId         String
-  space           Space         @relation(fields: [spaceId], references: [id])
-  usageCategoryId String
-  usageCategory   UsageCategory @relation(fields: [usageCategoryId], references: [id])
+model SpaceCategory {
+  spaceId    String
+  space      Space    @relation(fields: [spaceId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
-  @@id([spaceId, usageCategoryId])
+  @@id([spaceId, categoryId])
 }
 
 model SpaceHashTag {
@@ -491,10 +491,10 @@ model Service {
 }
 
 //INFO: 활용 가능한 카테고리 (ex. 회의실, 스터디룸, 세미나실, 오픈스페이스 등)
-model UsageCategory {
-  id                   String               @id @default(uuid())
-  name                 String               @db.VarChar(80)
-  spaceUsageCategories SpaceUsageCategory[]
+model Category {
+  id                   String          @id @default(uuid())
+  name                 String          @db.VarChar(80)
+  spaceUsageCategories SpaceCategory[]
 }
 
 //INFO: 해시태그
