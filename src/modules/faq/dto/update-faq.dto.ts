@@ -3,7 +3,7 @@ import { Property } from 'wemacu-nestjs';
 export interface UpdateFAQDTOProps {
   question?: string;
   answer?: string;
-  order?: string;
+  order?: number;
 }
 
 export class UpdateFAQDTO {

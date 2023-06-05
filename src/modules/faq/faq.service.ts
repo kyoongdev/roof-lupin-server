@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { FAQDTO } from './dto';
+import { CreateFAQDTO, FAQDTO, UpdateFAQDTO } from './dto';
 import { FAQ_ERROR_CODE, FAQ_NOT_FOUND } from './exception/errorCode';
 import { FAQException } from './exception/faq.exception';
 
@@ -30,8 +30,37 @@ export class FaqService {
   }
 
   async findFAQs(args = {} as Prisma.FAQFindManyArgs) {
-    const faqs = await this.database.fAQ.findMany(args);
+    const faqs = await this.database.fAQ.findMany({
+      ...args,
+      orderBy: {
+        order: 'asc',
+      },
+    });
 
     return faqs.map((faq) => new FAQDTO(faq));
+  }
+
+  async createFAQ(data: CreateFAQDTO) {
+    const faq = await this.database.fAQ.create({ data });
+    return faq.id;
+  }
+
+  async updateFAQ(id: string, data: UpdateFAQDTO) {
+    await this.findFAQ(id);
+    const faq = await this.database.fAQ.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteFAQ(id: string) {
+    await this.findFAQ(id);
+    await this.database.fAQ.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
