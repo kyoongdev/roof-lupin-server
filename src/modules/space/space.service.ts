@@ -14,30 +14,6 @@ export class SpaceService {
     return await this.spaceRepository.findSpace(id);
   }
 
-  async createLike(userId: string, spaceId: string) {
-    await this.findSpace(spaceId);
-
-    const isLiked = await this.spaceRepository.checkIsInterested(userId, spaceId);
-
-    if (isLiked) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(ALREADY_LIKED));
-    }
-
-    await this.spaceRepository.createLike(userId, spaceId);
-  }
-
-  async deleteLike(userId: string, spaceId: string) {
-    await this.findSpace(spaceId);
-
-    const isLiked = await this.spaceRepository.checkIsInterested(userId, spaceId);
-
-    if (!isLiked) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(NOT_LIKED));
-    }
-
-    await this.spaceRepository.deleteLike(userId, spaceId);
-  }
-
   async createInterest(userId: string, spaceId: string) {
     await this.findSpace(spaceId);
 
