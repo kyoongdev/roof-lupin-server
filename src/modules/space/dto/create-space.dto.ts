@@ -7,6 +7,7 @@ import { CreateHashtagDTO, CreateHashtagDTOProps } from './hashtag';
 import { CreateRefundPolicyDTOProps } from './refund';
 import { CreateRentalTypeDTOProps } from './rentalType';
 import { CreateServiceDTOProps } from './service';
+import { CreateTransportationDTOProps } from './transportaion';
 
 export interface CreateSpaceDTOProps {
   title: string;
@@ -27,7 +28,7 @@ export interface CreateSpaceDTOProps {
   services: CreateServiceDTOProps[];
   categories: CreateSpaceCategoryDTOProps[];
   hashtags: CreateHashtagDTOProps[];
-  // publicTransportations:
+  publicTransportations: CreateTransportationDTOProps[];
 }
 
 export class CreateSpaceDTO {}
