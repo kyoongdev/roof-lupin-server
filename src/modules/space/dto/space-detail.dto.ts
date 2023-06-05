@@ -3,6 +3,7 @@ import { ImageDTO } from '@/modules/file/dto';
 import { HostDTOProps } from '@/modules/host/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
+import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { SpaceDTO, type SpaceDTOProps } from './space.dto';
 
 export interface SpaceDetailDTOProps extends SpaceDTOProps, DateProps {
@@ -19,7 +20,7 @@ export interface SpaceDetailDTOProps extends SpaceDTOProps, DateProps {
   host: HostDTOProps;
   reviews: ReviewDTOProps[];
   images: ImageDTO[];
-  refundPolicies: any[];
+  refundPolicies: RefundPolicyDTOProps[];
 }
 
 export class SpaceDetailDTO extends SpaceDTO {}
