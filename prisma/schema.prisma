@@ -124,7 +124,7 @@ model Space {
   location              SpaceLocation?
   facilities            SpaceFacility[]
   services              SpaceService[]
-  usageCategories       SpaceCategory[]
+  categories            SpaceCategory[]
   hashTags              SpaceHashTag[]
   spaceQnAs             SpaceQnA[]
   homeCategory          HomeCategory?          @relation(fields: [homeCategoryId], references: [id])

@@ -1,4 +1,5 @@
 import { DateProps } from '@/common';
+import { ImageDTO } from '@/modules/file/dto';
 import { HostDTOProps } from '@/modules/host/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
@@ -13,9 +14,12 @@ export interface SpaceDetailDTOProps extends SpaceDTOProps, DateProps {
   maxUser: number;
   overflowUserCost: number;
   overflowUserCount: number;
+  isLiked?: boolean;
+  isInterested?: boolean;
   host: HostDTOProps;
   reviews: ReviewDTOProps[];
-  isLiked?: boolean;
+  images: ImageDTO[];
+  refundPolicies: any[];
 }
 
 export class SpaceDetailDTO extends SpaceDTO {}
