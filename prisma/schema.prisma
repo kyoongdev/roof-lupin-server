@@ -83,8 +83,9 @@ model Space {
   description       String
   //NOTE: 공간 크기
   size              Int    @db.SmallInt
-  spaceType         Int    @db.TinyInt
-  buildingType      Int    @db.TinyInt
+  spaceType         Int?   @db.TinyInt
+  buildingType      Int?   @db.TinyInt
+  thumbnail         String
   //NOTE: 공간 소개글
   spaceIntroduction String @db.MediumText
   //NOTE: 최소 인원
@@ -97,7 +98,7 @@ model Space {
   overflowUserCount Int    @db.TinyInt
   //NOTE: 최소 대여시간
   minHour           Int    @db.TinyInt
-  thumbnail         String
+  minCost           Int    @db.MediumInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -413,6 +414,23 @@ model User {
   socials        UserSocial[]
   curations      Curation[]
   searchRecords  SearchRecord[]
+  alarms         UserAlarm[]
+}
+
+model UserAlarm {
+  id String @id @default(uuid())
+
+  title   String  @db.VarChar(50)
+  content String
+  link    String?
+
+  alarmType Int       @db.TinyInt
+  alarmAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 유저 검색 기록
