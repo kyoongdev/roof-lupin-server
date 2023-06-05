@@ -39,6 +39,7 @@ export const seedDatabase = async (database: PrismaService) => {
     await database.space.create({
       data: {
         thumbnail: 'thumbnail',
+        minCost: 1000,
         buildingType: 1,
         description: 'test',
         title: `테스트 공간${i + 1}`,

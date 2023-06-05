@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -79,8 +79,8 @@ export class CurationController {
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
-      description: '큐레이션 등록',
-      summary: '큐레이션 등록 - 유저만 사용 가능합니다.',
+      description: '큐레이션 수정',
+      summary: '큐레이션 수정 - 유저만 사용 가능합니다.',
     },
     params: {
       name: 'curationId',
@@ -102,7 +102,7 @@ export class CurationController {
     return await this.curationService.updateCuration(id, user.id, body);
   }
 
-  @Patch(':curationId')
+  @Delete(':curationId')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
