@@ -5,7 +5,7 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { SpaceDetailDTO } from './dto';
+import { SpaceDetailDTO, SpaceDTO } from './dto';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 
@@ -53,23 +53,12 @@ export class SpaceRepository {
         },
         publicTransportations: true,
         refundPolicies: true,
-
         services: {
           include: {
             service: true,
           },
         },
         userInterests: true,
-        spaceQnAs: {
-          include: {
-            user: true,
-            answers: {
-              include: {
-                host: true,
-              },
-            },
-          },
-        },
       },
     });
 
@@ -86,10 +75,8 @@ export class SpaceRepository {
       location,
       publicTransportations,
       refundPolicies,
-
       services,
       userInterests,
-      spaceQnAs,
     } = space;
 
     return new SpaceDetailDTO({
@@ -98,7 +85,7 @@ export class SpaceRepository {
       cautions: cautions.map((caution) => caution),
       categories: categories.map(({ category }) => category),
       facilities: facilities.map(({ facility }) => facility),
-      location: location.location,
+      location: location?.location,
       hashtags: hashtags.map(({ hashtag }) => hashtag),
       host,
       images: images.map(({ image }) => image),
@@ -106,9 +93,48 @@ export class SpaceRepository {
       refundPolicies: refundPolicies.map((refundPolicy) => refundPolicy),
       services: services.map(({ service }) => service),
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
-      qnas: spaceQnAs.map((spaceQnA) => spaceQnA),
       cost: space.minCost,
     });
+  }
+
+  async countSpaces(args = {} as Prisma.SpaceCountArgs) {
+    return this.database.space.count(args);
+  }
+
+  async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
+    const spaces = await this.database.space.findMany({
+      where: args.where,
+      orderBy: {
+        createdAt: 'desc',
+        ...args.orderBy,
+      },
+      include: {
+        location: {
+          select: {
+            location: true,
+          },
+        },
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
+      ...args,
+    });
+
+    //TODO: isBest는 어떻게 산정?
+
+    return spaces.map(
+      (space) =>
+        new SpaceDTO({
+          ...space,
+          cost: space.minCost,
+          reviewCount: space._count.reviews,
+          publicTransportation: space.publicTransportations.at(-1),
+          location: space.location?.['location'],
+        })
+    );
   }
 
   async createInterest(userId: string, spaceId: string) {

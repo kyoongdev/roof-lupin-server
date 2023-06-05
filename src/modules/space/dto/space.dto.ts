@@ -7,12 +7,12 @@ import { TransportationDTO, type TransportationDTOProps } from './transportaion'
 export interface SpaceDTOProps {
   id: string;
   title: string;
-  score: number;
+  averageScore: number;
   reviewCount: number;
   cost: number;
   isBest?: boolean;
   thumbnail: string;
-  publicTransportation: TransportationDTOProps; //대중 교통
+  publicTransportation?: TransportationDTOProps; //대중 교통
   location: LocationDTOProps;
 }
 
@@ -24,7 +24,7 @@ export class SpaceDTO {
   title: string;
 
   @Property({ apiProperty: { type: 'number', description: '공간 평점' } })
-  score: number;
+  averageScore: number;
 
   @Property({ apiProperty: { type: 'number', description: '공간 리뷰 개수' } })
   reviewCount: number;
@@ -38,8 +38,8 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 
-  @Property({ apiProperty: { type: TransportationDTO, description: '공간 대중 교통' } })
-  publicTransportation: TransportationDTO;
+  @Property({ apiProperty: { type: TransportationDTO, description: '공간 대중 교통', nullable: true } })
+  publicTransportation?: TransportationDTO;
 
   @Property({ apiProperty: { type: LocationDTO, description: '공간 위치' } })
   location: LocationDTO;
@@ -47,12 +47,12 @@ export class SpaceDTO {
   constructor(props: SpaceDTOProps) {
     this.id = props.id;
     this.title = props.title;
-    this.score = props.score;
+    this.averageScore = props.averageScore;
     this.reviewCount = props.reviewCount;
     this.cost = props.cost;
     this.isBest = props.isBest;
     this.thumbnail = props.thumbnail;
-    this.publicTransportation = new TransportationDTO(props.publicTransportation);
+    this.publicTransportation = props.publicTransportation && new TransportationDTO(props.publicTransportation);
     this.location = new LocationDTO(props.location);
   }
 }

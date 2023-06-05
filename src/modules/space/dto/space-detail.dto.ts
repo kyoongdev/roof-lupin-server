@@ -42,7 +42,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   services: ServiceDTOProps[];
   categories: SpaceCategoryDTOProps[];
   hashtags: HashtagDTOProps[];
-  qnas: QnADTOProps[];
   publicTransportations: TransportationDTOProps[];
 }
 
@@ -68,8 +67,8 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 
-  @Property({ apiProperty: { type: LocationDTO, description: '공간 위치' } })
-  location: LocationDTO;
+  @Property({ apiProperty: { type: LocationDTO, description: '공간 위치', nullable: true } })
+  location?: LocationDTO;
 
   @Property({ apiProperty: { type: 'string', description: '공간 설명' } })
   description: string;
@@ -125,9 +124,6 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: HashtagDTO, isArray: true, description: '해시태그 목록' } })
   hashtags: HashtagDTO[];
 
-  @Property({ apiProperty: { type: QnADTO, isArray: true, description: 'Q&A 목록' } })
-  qnas: QnADTO[];
-
   @Property({ apiProperty: { type: TransportationDTO, isArray: true, description: '대중교통 목록' } })
   publicTransportations: TransportationDTO[];
 
@@ -139,7 +135,7 @@ export class SpaceDetailDTO {
     this.cost = props.cost;
     this.isBest = props.isBest ?? false;
     this.thumbnail = props.thumbnail;
-    this.location = new LocationDTO(props.location);
+    this.location = props.location && new LocationDTO(props.location);
     this.description = props.description;
     this.minSize = props.minSize;
     this.spaceType = props.spaceType;
@@ -157,7 +153,6 @@ export class SpaceDetailDTO {
     this.services = props.services.map((service) => new ServiceDTO(service));
     this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));
     this.hashtags = props.hashtags.map((hashtag) => new HashtagDTO(hashtag));
-    this.qnas = props.qnas.map((qna) => new QnADTO(qna));
     this.publicTransportations = props.publicTransportations.map(
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
