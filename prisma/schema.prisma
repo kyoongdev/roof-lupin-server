@@ -77,8 +77,11 @@ model Slogan {
 
 model Space {
   id                String @id @default(uuid())
+  //NOTE: 공간 이름
   title             String @db.VarChar(120)
+  //NOTE: 공간 소개글
   description       String
+  //NOTE: 공간 크기
   size              Int    @db.SmallInt
   spaceType         Int    @db.TinyInt
   buildingType      Int    @db.TinyInt
@@ -110,8 +113,6 @@ model Space {
   images        SpaceImage[]
   guideLines    SpaceGuideLine[]
   cautions      SpaceCaution[]
-  //INFO: discountInfo는 1개만 존재하는지, 여러개 존재하는지 확인 필요
-  discountInfo  SpaceDiscountInfo[]
 
   rentalType      RentalType[]
   location        SpaceLocation?
@@ -290,18 +291,6 @@ model SpaceCaution {
   content String
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id])
-}
-
-//INFO: 공간 기본 할인 정보
-model SpaceDiscountInfo {
-  id            String @id @default(uuid())
-  discountType  Int    @db.TinyInt
-  discountValue Int    @db.MediumInt
-  name          String @db.VarChar(120)
-  content       String
-  description   String
-  spaceId       String
-  space         Space  @relation(fields: [spaceId], references: [id])
 }
 
 model SpaceLocation {
@@ -496,6 +485,7 @@ model Service {
 model Category {
   id                   String          @id @default(uuid())
   name                 String          @db.VarChar(80)
+  isHome               Boolean         @default(false)
   spaceUsageCategories SpaceCategory[]
 }
 
