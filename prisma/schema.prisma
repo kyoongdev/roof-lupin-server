@@ -48,6 +48,8 @@ model Curation {
   subTitle String @db.VarChar(100)
   content  String @db.MediumText
 
+  thumbnail String
+
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
