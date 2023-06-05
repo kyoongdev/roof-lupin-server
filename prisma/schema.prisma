@@ -496,12 +496,12 @@ model UserLocation {
 }
 
 model Location {
-  id            String         @id @default(uuid())
-  lat           String         @db.VarChar(120)
-  lng           String         @db.VarChar(120)
+  id            String          @id @default(uuid())
+  lat           String          @db.VarChar(120)
+  lng           String          @db.VarChar(120)
   roadAddress   String
   jibunAddress  String
-  spaceLocation SpaceLocation?
+  spaceLocation SpaceLocation[]
   userLocations UserLocation[]
 
   @@unique([lat, lng])
