@@ -5,7 +5,7 @@ import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
 
 import { QnAAnswerDTO, QnAAnswerProps } from './qna-answer.dto';
 
-export interface QnAProps extends DateProps {
+export interface QnADTOProps extends DateProps {
   id: string;
   content: string;
   user: CommonUserProps;
@@ -26,7 +26,7 @@ export class QnADTO extends DateDTO {
   @Property({ apiProperty: { type: QnAAnswerDTO, description: '답변', isArray: true } })
   answers: QnAAnswerDTO[];
 
-  constructor(props: QnAProps) {
+  constructor(props: QnADTOProps) {
     super();
     this.id = props.id;
     this.content = props.content;

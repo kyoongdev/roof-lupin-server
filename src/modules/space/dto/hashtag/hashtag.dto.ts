@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-interface HashtagDTOProps {
+export interface HashtagDTOProps {
   id: string;
   name: string;
 }

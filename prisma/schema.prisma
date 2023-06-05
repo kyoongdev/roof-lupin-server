@@ -87,13 +87,12 @@ model HomeCategory {
 }
 
 model Space {
-  id                String @id @default(uuid())
+  id          String @id @default(uuid())
   //NOTE: 공간 이름
-  title             String @db.VarChar(120)
+  title       String @db.VarChar(120)
   //NOTE: 공간 소개글
-  description       String
-  //NOTE: 공간 크기
-  size              Int    @db.SmallInt
+  description String
+
   spaceType         Int?   @db.TinyInt
   buildingType      Int?   @db.TinyInt
   thumbnail         String
@@ -105,6 +104,8 @@ model Space {
   overflowUserCost  Int    @db.MediumInt
   //NOTE: 초과 인원 기준 인원
   overflowUserCount Int    @db.TinyInt
+  minCost           Int    @db.MediumInt
+  minSize           Int    @db.SmallInt
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -125,11 +126,19 @@ model Space {
   facilities            SpaceFacility[]
   services              SpaceService[]
   categories            SpaceCategory[]
-  hashTags              SpaceHashTag[]
+  hashtags              SpaceHashtag[]
   spaceQnAs             SpaceQnA[]
   homeCategory          HomeCategory?          @relation(fields: [homeCategoryId], references: [id])
   homeCategoryId        String?
   publicTransportations PublicTransportation[]
+  sizes                 SpaceSize[]
+}
+
+model SpaceSize {
+  id      String @id @default(uuid())
+  size    Int    @db.SmallInt
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id])
 }
 
 model PublicTransportation {
@@ -341,13 +350,13 @@ model SpaceCategory {
   @@id([spaceId, categoryId])
 }
 
-model SpaceHashTag {
+model SpaceHashtag {
   spaceId   String
   space     Space   @relation(fields: [spaceId], references: [id])
-  hashTagId String
-  hashTag   HashTag @relation(fields: [hashTagId], references: [id])
+  hashtagId String
+  hashtag   Hashtag @relation(fields: [hashtagId], references: [id])
 
-  @@id([spaceId, hashTagId])
+  @@id([spaceId, hashtagId])
 }
 
 //INFO: 공간주인
@@ -518,10 +527,10 @@ model Category {
 }
 
 //INFO: 해시태그
-model HashTag {
+model Hashtag {
   id            String         @id @default(uuid())
   name          String
-  spaceHashTags SpaceHashTag[]
+  spaceHashtags SpaceHashtag[]
 }
 
 //INFO: 유저 쿠폰

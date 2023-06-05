@@ -1,5 +1,5 @@
 import { Property } from 'wemacu-nestjs';
-interface CreateQnAProps {
+interface CreateQnADTOProps {
   content: string;
   spaceId: string;
 }
@@ -11,7 +11,7 @@ export class CreateQnADTO {
   @Property({ apiProperty: { type: 'string', description: '공간 ID' } })
   spaceId: string;
 
-  constructor(props?: CreateQnAProps) {
+  constructor(props?: CreateQnADTOProps) {
     if (props) {
       this.content = props.content;
       this.spaceId = props.spaceId;
