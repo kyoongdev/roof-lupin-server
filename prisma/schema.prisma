@@ -75,6 +75,15 @@ model Slogan {
   isDefault Boolean @default(false)
 }
 
+model HomeCategory {
+  id String @id @default(uuid())
+
+  title String @db.VarChar(120)
+  order Int    @default(0) @db.TinyInt
+
+  spaces Space[]
+}
+
 model Space {
   id                String @id @default(uuid())
   //NOTE: 공간 이름
@@ -122,6 +131,8 @@ model Space {
   usageCategories SpaceCategory[]
   hashTags        SpaceHashTag[]
   spaceQnAs       SpaceQnA[]
+  homeCategory    HomeCategory?   @relation(fields: [homeCategoryId], references: [id])
+  homeCategoryId  String?
 }
 
 view SpaceView {
