@@ -11,6 +11,7 @@ import { HostModule } from './host/host.module';
 import { QnaModule } from './qna/qna.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';
+import { SearchModule } from './search/search.module';
 import { SpaceModule } from './space/space.module';
 import { UserModule } from './user/user.module';
 
@@ -30,4 +31,5 @@ export const Modules = [
   AppInfoModule,
   AnnouncementModule,
   FaqModule,
+  SearchModule,
 ];

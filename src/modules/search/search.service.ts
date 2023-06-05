@@ -91,6 +91,14 @@ export class SearchService {
     });
   }
 
+  async deleteAllSearchRecords(userId: string) {
+    await this.database.searchRecord.deleteMany({
+      where: {
+        userId,
+      },
+    });
+  }
+
   async createSearchRecommend(data: CreateSearchRecommendDTO) {
     const searchRecommend = await this.database.searchRecommend.create({
       data,
