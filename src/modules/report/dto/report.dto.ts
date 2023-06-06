@@ -1,13 +1,15 @@
 import { Property } from 'wemacu-nestjs';
 
 import { DateDTO, type DateProps } from '@/common';
+import { SpaceDetailDTO, SpaceDetailDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
 
-interface ReportProps extends DateProps {
+export interface ReportDTOProps extends DateProps {
   id: string;
   title: string;
   content: string;
   user: CommonUserProps;
+  space: SpaceDetailDTOProps;
 }
 
 export class ReportDTO extends DateDTO {
@@ -23,12 +25,16 @@ export class ReportDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '신고자' } })
   user: CommonUserDTO;
 
-  constructor(props: ReportProps) {
+  @Property({ apiProperty: { type: SpaceDetailDTO, description: '신고된 공간' } })
+  space: SpaceDetailDTO;
+
+  constructor(props: ReportDTOProps) {
     super();
     this.id = props.id;
     this.title = props.title;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
+    this.space = new SpaceDetailDTO(props.space);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
