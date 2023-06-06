@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { Prisma, PrismaClient } from '@prisma/client';
 
+export type TransactionPrisma = Omit<PrismaService, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>;
+
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   private readonly logger = new Logger();

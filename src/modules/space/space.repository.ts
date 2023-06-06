@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PagingDTO } from 'wemacu-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
@@ -12,6 +12,7 @@ import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateRefundPolicyDTO } from './dto/refund';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
+import { UpdateSpaceDTO } from './dto/update-space.dto';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 
@@ -161,70 +162,109 @@ export class SpaceRepository {
     const minCost = Math.min(...rentalTypes.map((rentalType) => rentalType.baseCost));
     const minSize = Math.min(...sizes.map((size) => size.size));
 
-    const facilities = await this.findOrCreateFacilities(facilityProps);
-    const services = await this.findOrCreateServices(servicesProps);
-    const categories = await this.findOrCreateCategories(categoryProps);
-    const hashtags = await this.findOrCreateHashtags(hashtagProps);
+    const id = await this.database.$transaction(async (prisma) => {
+      const facilities = await this.findOrCreateFacilities(prisma, facilityProps);
+      const services = await this.findOrCreateServices(prisma, servicesProps);
+      const categories = await this.findOrCreateCategories(prisma, categoryProps);
+      const hashtags = await this.findOrCreateHashtags(prisma, hashtagProps);
 
-    const space = await this.database.space.create({
-      data: {
-        ...rest,
-        minCost,
-        minSize,
-        host: {
-          connect: {
-            id: hostId,
+      const space = await prisma.space.create({
+        data: {
+          ...rest,
+          minCost,
+          minSize,
+          host: {
+            connect: {
+              id: hostId,
+            },
+          },
+          images: {
+            create: images.map((image) => ({
+              imageId: image,
+            })),
+          },
+          refundPolicies: {
+            create: refundPolicies.map((refundPolicy) => refundPolicy),
+          },
+          cautions: {
+            create: cautions.map((caution) => caution),
+          },
+          rentalType: {
+            create: rentalTypes.map((rentalType) => rentalType),
+          },
+          facilities: {
+            create: facilities.map((facility) => ({
+              facilityId: facility.id,
+            })),
+          },
+          services: {
+            create: services.map((service) => ({
+              serviceId: service.id,
+            })),
+          },
+          categories: {
+            create: categories.map((category) => ({
+              categoryId: category.id,
+            })),
+          },
+          hashtags: {
+            create: hashtags.map((hashtag) => ({
+              hashtagId: hashtag.id,
+            })),
+          },
+          publicTransportations: {
+            create: publicTransportations.map((publicTransportation) => publicTransportation),
+          },
+          sizes: {
+            create: sizes.map((size) => size),
           },
         },
+      });
+      return space.id;
+    });
+
+    return id;
+  }
+
+  async updateSpace(spaceId: string, data: UpdateSpaceDTO) {
+    const {
+      images,
+      refundPolicies,
+      cautions,
+      rentalTypes,
+      location,
+      facilities: facilityProps,
+      services: servicesProps,
+      categories: categoryProps,
+      hashtags: hashtagProps,
+      publicTransportations,
+      sizes,
+      ...rest
+    } = data;
+
+    const updateArgs: Prisma.SpaceUpdateArgs = {
+      where: {
+        id: spaceId,
+      },
+      data: {},
+    };
+
+    if (images) {
+      updateArgs.data = {
+        ...updateArgs.data,
         images: {
           create: images.map((image) => ({
             imageId: image,
           })),
         },
-        refundPolicies: {
-          create: refundPolicies.map((refundPolicy) => refundPolicy),
-        },
-        cautions: {
-          create: cautions.map((caution) => caution),
-        },
-        rentalType: {
-          create: rentalTypes.map((rentalType) => rentalType),
-        },
-        facilities: {
-          create: facilities.map((facility) => ({
-            facilityId: facility.id,
-          })),
-        },
-        services: {
-          create: services.map((service) => ({
-            serviceId: service.id,
-          })),
-        },
-        categories: {
-          create: categories.map((category) => ({
-            categoryId: category.id,
-          })),
-        },
-        hashtags: {
-          create: hashtags.map((hashtag) => ({
-            hashtagId: hashtag.id,
-          })),
-        },
-        publicTransportations: {
-          create: publicTransportations.map((publicTransportation) => publicTransportation),
-        },
-        sizes: {
-          create: sizes.map((size) => size),
-        },
-      },
-    });
-    return space.id;
+      };
+    }
   }
 
-  async findOrCreateFacilities(data: CreateFacilityDTO[]) {
+  async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {
     return await Promise.all(
       data.map(async (facility) => {
-        const isExist = await this.database.facility.findFirst({
+        const isExist = await prisma.facility.findFirst({
           where: {
             name: facility.name,
           },
@@ -232,7 +272,7 @@ export class SpaceRepository {
         if (isExist) {
           return new FacilityDTO(isExist);
         }
-        const newFacility = await this.database.facility.create({
+        const newFacility = await prisma.facility.create({
           data: facility,
         });
         return new FacilityDTO(newFacility);
@@ -240,10 +280,10 @@ export class SpaceRepository {
     );
   }
 
-  async findOrCreateServices(data: CreateServiceDTO[]) {
+  async findOrCreateServices(prisma: TransactionPrisma, data: CreateServiceDTO[]) {
     return await Promise.all(
       data.map(async (service) => {
-        const isExist = await this.database.service.findFirst({
+        const isExist = await prisma.service.findFirst({
           where: {
             name: service.name,
           },
@@ -251,7 +291,7 @@ export class SpaceRepository {
         if (isExist) {
           return new ServiceDTO(isExist);
         }
-        const newService = await this.database.service.create({
+        const newService = await prisma.service.create({
           data: service,
         });
         return new ServiceDTO(newService);
@@ -259,10 +299,10 @@ export class SpaceRepository {
     );
   }
 
-  async findOrCreateCategories(data: CreateSpaceCategoryDTO[]) {
+  async findOrCreateCategories(prisma: TransactionPrisma, data: CreateSpaceCategoryDTO[]) {
     return await Promise.all(
       data.map(async (category) => {
-        const isExist = await this.database.category.findFirst({
+        const isExist = await prisma.category.findFirst({
           where: {
             name: category.name,
           },
@@ -270,7 +310,7 @@ export class SpaceRepository {
         if (isExist) {
           return new SpaceCategoryDTO(isExist);
         }
-        const newCategory = await this.database.category.create({
+        const newCategory = await prisma.category.create({
           data: category,
         });
         return new SpaceCategoryDTO(newCategory);
@@ -278,10 +318,10 @@ export class SpaceRepository {
     );
   }
 
-  async findOrCreateHashtags(data: CreateHashtagDTO[]) {
+  async findOrCreateHashtags(prisma: TransactionPrisma, data: CreateHashtagDTO[]) {
     return await Promise.all(
       data.map(async (hashtag) => {
-        const isExist = await this.database.hashtag.findFirst({
+        const isExist = await prisma.hashtag.findFirst({
           where: {
             name: hashtag.name,
           },
@@ -289,7 +329,7 @@ export class SpaceRepository {
         if (isExist) {
           return new HashtagDTO(isExist);
         }
-        const newHashtag = await this.database.hashtag.create({
+        const newHashtag = await prisma.hashtag.create({
           data: hashtag,
         });
         return new HashtagDTO(newHashtag);
