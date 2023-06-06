@@ -3,7 +3,7 @@ import { Get, Param } from '@nestjs/common';
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { RequestHost } from '@/interface/role.interface';
-import { SpaceDetailDTO } from '@/modules/space/dto';
+import { SpaceDetailDTO, SpaceDTO } from '@/modules/space/dto';
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -27,5 +27,20 @@ export class HostSpaceController {
   })
   async getSpace(@Param('spaceId') id: string, @ReqUser() user: RequestHost) {
     return await this.spaceService.findSpace(id, user.id);
+  }
+
+  @Get()
+  @RequestApi({
+    summary: {
+      description: '공간 목록 조회',
+      summary: '공간 목록 조회 - 호스트만 사용가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: SpaceDTO,
+    isArray: true,
+  })
+  async getSpaces(@ReqUser() user: RequestHost) {
+    return await this.spaceService.findSpaces(user.id);
   }
 }
