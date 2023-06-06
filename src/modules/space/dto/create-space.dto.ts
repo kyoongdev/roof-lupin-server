@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
+import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 
 import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './category';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
@@ -26,7 +26,7 @@ export interface CreateSpaceDTOProps {
   refundPolicies: CreateRefundPolicyDTOProps[];
   cautions: CreateCautionDTOProps[];
   rentalTypes: CreateRentalTypeDTOProps[];
-  location: LocationDTOProps;
+  location: CreateLocationDTOProps;
   facilities: CreateFacilityDTOProps[];
   services: CreateServiceDTOProps[];
   categories: CreateSpaceCategoryDTOProps[];
@@ -66,35 +66,35 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, description: '생성된 이미지 id' } })
   images: string[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '환불 정책' } })
-  refundPolicies: CreateRefundPolicyDTO[];
+  @Property({ apiProperty: { type: CreateRefundPolicyDTO, nullable: true, isArray: true, description: '환불 정책' } })
+  refundPolicies?: CreateRefundPolicyDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '주의 사항' } })
-  cautions: CreateCautionDTO[];
+  @Property({ apiProperty: { type: CreateCautionDTO, nullable: true, isArray: true, description: '주의 사항' } })
+  cautions?: CreateCautionDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '대여 유형' } })
-  rentalTypes: CreateRentalTypeDTO[];
+  @Property({ apiProperty: { type: CreateRentalTypeDTO, nullable: true, isArray: true, description: '대여 유형' } })
+  rentalTypes?: CreateRentalTypeDTO[];
 
-  @Property({ apiProperty: { type: 'string', description: '위치' } })
-  location: LocationDTO;
+  @Property({ apiProperty: { type: CreateLocationDTO, nullable: true, description: '위치' } })
+  location?: CreateLocationDTO;
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '시설' } })
-  facilities: CreateFacilityDTO[];
+  @Property({ apiProperty: { type: CreateFacilityDTO, nullable: true, isArray: true, description: '시설' } })
+  facilities?: CreateFacilityDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '서비스' } })
-  services: CreateServiceDTO[];
+  @Property({ apiProperty: { type: CreateServiceDTO, nullable: true, isArray: true, description: '서비스' } })
+  services?: CreateServiceDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '카테고리' } })
-  categories: CreateSpaceCategoryDTO[];
+  @Property({ apiProperty: { type: CreateSpaceCategoryDTO, nullable: true, isArray: true, description: '카테고리' } })
+  categories?: CreateSpaceCategoryDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '해시태그' } })
-  hashtags: CreateHashtagDTO[];
+  @Property({ apiProperty: { type: CreateHashtagDTO, nullable: true, isArray: true, description: '해시태그' } })
+  hashtags?: CreateHashtagDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '대중교통' } })
-  publicTransportations: CreateTransportationDTO[];
+  @Property({ apiProperty: { type: CreateTransportationDTO, nullable: true, isArray: true, description: '대중교통' } })
+  publicTransportations?: CreateTransportationDTO[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '면적' } })
-  sizes: CreateSizeDTO[];
+  @Property({ apiProperty: { type: CreateSizeDTO, nullable: true, isArray: true, description: '면적' } })
+  sizes?: CreateSizeDTO[];
 
   constructor(props?: CreateSpaceDTOProps) {
     if (props) {
@@ -111,7 +111,7 @@ export class CreateSpaceDTO {
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
-      this.location = new LocationDTO(props.location);
+      this.location = new CreateLocationDTO(props.location);
       this.facilities = props.facilities.map((facility) => new CreateFacilityDTO(facility));
       this.services = props.services.map((service) => new CreateServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));

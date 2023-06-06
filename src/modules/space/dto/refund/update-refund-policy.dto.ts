@@ -8,10 +8,10 @@ export interface UpdateRefundPolicyDTOProps {
 
 export class UpdateRefundPolicyDTO {
   @Property({ apiProperty: { type: 'number', description: '환불률', nullable: true } })
-  refundRate: number;
+  refundRate?: number;
 
   @Property({ apiProperty: { type: 'number', description: '환불 기한', nullable: true } })
-  dueDate: number;
+  dueDate?: number;
 
   @Property({ apiProperty: { type: 'number', description: '환불 기한 타입', nullable: true } })
   dueDateType?: number;

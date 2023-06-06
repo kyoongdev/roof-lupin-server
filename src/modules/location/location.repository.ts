@@ -18,6 +18,10 @@ export class LocationRepository {
       },
     });
 
+    if (!location) {
+      return false;
+    }
+
     return new LocationDTO(location);
   }
 }
