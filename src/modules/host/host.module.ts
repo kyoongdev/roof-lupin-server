@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReviewRepository } from '../review/review.repository';
@@ -29,6 +30,7 @@ import { HostSpaceService } from './space/space.service';
     ReportRepository,
     HostSpaceService,
     SpaceRepository,
+    LocationRepository,
   ],
   controllers: [HostController, HostReviewController, HostQnAController, HostReportController, HostSpaceController],
 })
