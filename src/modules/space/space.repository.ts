@@ -246,19 +246,90 @@ export class SpaceRepository {
       where: {
         id: spaceId,
       },
-      data: {},
+      data: {
+        ...rest,
+      },
     };
+    await this.database.$transaction(async (prisma) => {
+      if (images) {
+        await prisma.spaceImage.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
 
-    if (images) {
-      updateArgs.data = {
-        ...updateArgs.data,
-        images: {
-          create: images.map((image) => ({
-            imageId: image,
-          })),
-        },
-      };
-    }
+        updateArgs.data = {
+          ...updateArgs.data,
+          images: {
+            create: images.map((image) => ({
+              imageId: image,
+            })),
+          },
+        };
+      }
+
+      if (refundPolicies) {
+        await prisma.refundPolicy.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+
+        updateArgs.data = {
+          ...updateArgs.data,
+          refundPolicies: {
+            create: refundPolicies.map((refundPolicy) => refundPolicy),
+          },
+        };
+      }
+
+      if (cautions) {
+        await prisma.spaceCaution.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+
+        updateArgs.data = {
+          ...updateArgs.data,
+          cautions: {
+            create: cautions.map((caution) => caution),
+          },
+        };
+      }
+
+      if (rentalTypes) {
+        await prisma.rentalType.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+
+        updateArgs.data = {
+          ...updateArgs.data,
+          rentalType: {
+            create: rentalTypes.map((rentalType) => rentalType),
+          },
+        };
+      }
+
+      if (location) {
+        await prisma.spaceLocation.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+
+        updateArgs.data = {
+          ...updateArgs.data,
+          location: {
+            create: {
+              locationId: location.id,
+            },
+          },
+        };
+      }
+    });
   }
 
   async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {
