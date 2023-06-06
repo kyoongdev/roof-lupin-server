@@ -6,6 +6,7 @@ export const HOST_NOT_FOUND = '호스트를 찾을 수 없습니다.' as const;
 export const HOST_ACCOUNT_NOT_FOUND = '호스트 계좌 정보를 찾을 수 없습니다.' as const;
 export const HOST_ACCOUNT_ALREADY_EXIST = '호스트 계좌 정보가 이미 존재합니다.' as const;
 export const QNA_ANSWER_MUTATION_FORBIDDEN = '본인이 작성한 QnA 댓글만 수정/삭제가 가능합니다.';
+export const HOST_SPACE_FIND_FORBIDDEN = '본인이 등록한 공간만 조회가 가능합니다.' as const;
 
 export const HOST_ERROR_CODE: ErrorCode<'NOT_FOUND' | 'CONFLICT' | 'FORBIDDEN'> = {
   NOT_FOUND: (message = '호스트를 찾을 수 없습니다.') => ({
