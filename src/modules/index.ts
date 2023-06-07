@@ -1,3 +1,5 @@
+import { LocationModule } from 'wemacu-nestjs';
+
 import { AdminModule } from './admin/admin.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
@@ -34,4 +36,5 @@ export const Modules = [
   FaqModule,
   SearchModule,
   CurationModule,
+  LocationModule,
 ];

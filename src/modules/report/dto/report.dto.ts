@@ -9,7 +9,6 @@ export interface ReportDTOProps extends DateProps {
   title: string;
   content: string;
   user: CommonUserProps;
-  space: SpaceDetailDTOProps;
 }
 
 export class ReportDTO extends DateDTO {
@@ -25,16 +24,13 @@ export class ReportDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '신고자' } })
   user: CommonUserDTO;
 
-  @Property({ apiProperty: { type: SpaceDetailDTO, description: '신고된 공간' } })
-  space: SpaceDetailDTO;
-
   constructor(props: ReportDTOProps) {
     super();
     this.id = props.id;
     this.title = props.title;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
-    this.space = new SpaceDetailDTO(props.space);
+
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
