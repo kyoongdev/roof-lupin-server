@@ -9,7 +9,14 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminService } from './admin.service';
-import { AdminDTO, CheckAdminDTO, CreateAdminDTO, IsAdminCheckedDTO, UpdateAdminDTO } from './dto';
+import {
+  AdminDTO,
+  CheckAdminDTO,
+  CreateAdminDTO,
+  IsAdminCheckedDTO,
+  UpdateAdminDTO,
+  UpdateAdminPasswordDTO,
+} from './dto';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins', '통합관리자')
@@ -89,7 +96,6 @@ export class AdminController {
   }
 
   @Post('check')
-  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '통합관리자 유저 id 존재 유무 파악',
@@ -107,6 +113,26 @@ export class AdminController {
   )
   async checkAdmin(@Body() data: CheckAdminDTO) {
     return await this.adminService.checkAdminWithUserId(data);
+  }
+
+  @Patch('reset/password')
+  @RequestApi({
+    summary: {
+      description: '통합관리자 비밀번호 재설정',
+      summary: '통합관리자 비밀번호 재설정',
+    },
+    body: {
+      type: UpdateAdminPasswordDTO,
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async resetAdminPassword(@Body() data: UpdateAdminPasswordDTO) {
+    await this.adminService.updateAdminPassword(data);
   }
 
   @Patch(':adminId')

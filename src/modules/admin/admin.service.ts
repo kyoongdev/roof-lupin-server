@@ -3,8 +3,17 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { Encrypt } from '@/common/encrypt';
+
 import { AdminRepository } from './admin.repository';
-import { AdminDTO, CheckAdminDTO, CreateAdminDTO, IsAdminCheckedDTO, UpdateAdminDTO } from './dto';
+import {
+  AdminDTO,
+  CheckAdminDTO,
+  CreateAdminDTO,
+  IsAdminCheckedDTO,
+  UpdateAdminDTO,
+  UpdateAdminPasswordDTO,
+} from './dto';
 
 @Injectable()
 export class AdminService {
@@ -43,6 +52,13 @@ export class AdminService {
 
   async createAdmin(data: CreateAdminDTO, byAdmin = false) {
     return await this.adminRepository.createAdmin(data, byAdmin);
+  }
+
+  async updateAdminPassword(data: UpdateAdminPasswordDTO) {
+    const admin = await this.adminRepository.findAdminByUserId(data.userId);
+    const password = Encrypt.hashPassword(admin.salt, data.password);
+
+    await this.adminRepository.updateAdmin(admin.id, { password });
   }
 
   async updateAdmin(id: string, data: UpdateAdminDTO) {

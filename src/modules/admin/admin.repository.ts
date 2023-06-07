@@ -97,6 +97,7 @@ export class AdminRepository {
 
     return admin.id;
   }
+
   async updateAdmin(id: string, data: UpdateAdminDTO) {
     const updateArgs: Prisma.AdminUpdateInput = data;
 
