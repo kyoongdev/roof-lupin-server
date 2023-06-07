@@ -20,7 +20,7 @@ export class ReviewController {
   @Get(':spaceId/paging')
   @RequestApi({
     summary: {
-      description: '공강의 리뷰 목록',
+      description: '공간의 리뷰 목록',
       summary: '공간의 리뷰 목록을 불러옵니다.',
     },
     params: {
@@ -64,6 +64,31 @@ export class ReviewController {
     return await this.reviewService.findReviews({
       where: {
         spaceId,
+      },
+    });
+  }
+
+  @Get(':spaceId/best')
+  @RequestApi({
+    summary: {
+      description: '공강의 베스트 리뷰 목록',
+      summary: '공간의 베스트 리뷰 목록을 불러옵니다.',
+    },
+    params: {
+      name: 'spaceId',
+      type: 'string',
+      description: '공간 아이디',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isArray: true,
+  })
+  async getSpaceBestReviews(@Param('spaceId') spaceId: string) {
+    return await this.reviewService.findReviews({
+      where: {
+        spaceId,
+        isBest: true,
       },
     });
   }

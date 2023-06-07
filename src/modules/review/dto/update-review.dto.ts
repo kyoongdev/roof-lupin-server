@@ -5,6 +5,7 @@ interface Props {
   content?: string;
   score?: number;
   images?: string[];
+  isBest?: boolean;
 }
 
 export class UpdateReviewDTO {
@@ -18,11 +19,15 @@ export class UpdateReviewDTO {
   @Property({ apiProperty: { type: 'string', isArray: true } })
   images?: string[];
 
+  @Property({ apiProperty: { type: 'boolean', isArray: true } })
+  isBest?: boolean;
+
   constructor(props?: Props) {
     if (props) {
       this.content = props.content;
       this.score = props.score;
       this.images = props.images;
+      this.isBest = props.isBest;
     }
   }
 }
