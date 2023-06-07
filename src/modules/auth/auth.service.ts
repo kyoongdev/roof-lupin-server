@@ -17,11 +17,14 @@ import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
 import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
+import { CreateHostDTO } from '../host/dto';
 import { CreateSocialUserDTO } from '../user/dto';
 
-import { AdminAuthDTO, TokenDTO } from './dto';
+import { AdminAuthDTO, HostAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
 import {
+  ALREADY_EXIST_ADMIN,
+  ALREADY_EXIST_HOST,
   AUTH_ERROR_CODE,
   NOT_ACCEPTED_ADMIN,
   WRONG_ACCESS_TOKEN,
@@ -137,8 +140,37 @@ export class AuthService {
   }
 
   async adminRegister(props: CreateAdminDTO) {
+    const isExist = await this.adminRepository.checkAdminByUserId(props.userId);
+    if (isExist) {
+      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_ADMIN));
+    }
+
     const admin = await this.adminRepository.createAdmin(props);
     const token = await this.createTokens({ id: admin, role: 'ADMIN' });
+    return token;
+  }
+
+  async hostLogin(props: HostAuthDTO) {
+    const host = await this.hostRepository.findHostByEmail(props.email);
+
+    const isMatch = Encrypt.comparePassword(host.salt, props.password, host.password);
+    if (!isMatch) {
+      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
+    }
+
+    const token = await this.createTokens({ id: host.id, role: 'HOST' });
+    return token;
+  }
+
+  async hostRegister(props: CreateHostDTO) {
+    const isExist = await this.hostRepository.checkHostByEmail(props.email);
+
+    if (isExist) {
+      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_HOST));
+    }
+
+    const host = await this.hostRepository.createHost(props);
+    const token = await this.createTokens({ id: host, role: 'HOST' });
     return token;
   }
 

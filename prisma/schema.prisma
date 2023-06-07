@@ -401,7 +401,7 @@ model HostAccount {
 model Admin {
   id         String  @id @default(uuid())
   name       String  @db.VarChar(20)
-  userId     String
+  userId     String  @unique
   password   String
   salt       String
   isAccepted Boolean @default(false)

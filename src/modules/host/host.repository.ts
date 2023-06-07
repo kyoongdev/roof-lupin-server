@@ -14,6 +14,7 @@ import {
   UpdateHostAccountDTO,
   UpdateHostDTO,
 } from './dto';
+import { HostAuthDetailDTO } from './dto/host-auth-detail.dto';
 import { HostDetailDTO } from './dto/host-detail.dto';
 import { HOST_ACCOUNT_NOT_FOUND, HOST_ERROR_CODE, HOST_NOT_FOUND } from './exception/errorCode';
 import { HostException } from './exception/host.exception';
@@ -85,6 +86,19 @@ export class HostRepository {
     }
 
     return new HostDTO(host);
+  }
+
+  async findHostByEmail(email: string) {
+    const host = await this.database.host.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!host) {
+      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+    }
+
+    return new HostAuthDetailDTO(host);
   }
 
   async createHost(data: CreateHostDTO) {
