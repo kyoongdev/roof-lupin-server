@@ -7,9 +7,10 @@ import { KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 import { ApiController } from '@/utils';
 
 import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
+import { CreateHostDTO } from '../host/dto';
 
 import { AuthService } from './auth.service';
-import { AdminAuthDTO, TokenDTO } from './dto';
+import { AdminAuthDTO, HostAuthDTO, TokenDTO } from './dto';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
@@ -121,6 +122,39 @@ export class AuthController {
   })
   async adminRegister(@Body() body: CreateAdminDTO) {
     return await this.authService.adminRegister(body);
+  }
+  @Post('host/login')
+  @RequestApi({
+    summary: {
+      description: '호스트 로그인',
+      summary: '호스트 로그인을 합니다.',
+    },
+    body: {
+      type: HostAuthDTO,
+    },
+  })
+  @ResponseApi({
+    type: TokenDTO,
+  })
+  async hostLogin(@Body() body: HostAuthDTO) {
+    return await this.authService.hostLogin(body);
+  }
+
+  @Post('host/register')
+  @RequestApi({
+    summary: {
+      description: '호스트 회원가입',
+      summary: '호스트 회원가입을 합니다.',
+    },
+    body: {
+      type: CreateHostDTO,
+    },
+  })
+  @ResponseApi({
+    type: TokenDTO,
+  })
+  async hostRegister(@Body() body: CreateHostDTO) {
+    return await this.authService.hostRegister(body);
   }
 
   @Post('refresh')
