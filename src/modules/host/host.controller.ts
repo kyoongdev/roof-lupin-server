@@ -8,16 +8,24 @@ import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } fro
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateHostAccountDTO, HostAccountDTO, HostDTO, UpdateHostAccountDTO, UpdateHostDTO } from './dto';
+import {
+  CheckHostDTO,
+  CreateHostAccountDTO,
+  HostAccountDTO,
+  HostDTO,
+  IsHostCheckedDTO,
+  UpdateHostAccountDTO,
+  UpdateHostDTO,
+} from './dto';
 import { HostDetailDTO } from './dto/host-detail.dto';
 import { HostService } from './host.service';
 
 @ApiController('hosts', '호스트')
-@Auth([JwtAuthGuard, RoleGuard('HOST')])
 export class HostController {
   constructor(private readonly hostService: HostService) {}
 
   @Get('me')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '내 정보 조회',
@@ -32,6 +40,7 @@ export class HostController {
   }
 
   @Get('me/detail')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '내 정보 상세 조회',
@@ -45,7 +54,28 @@ export class HostController {
     return await this.hostService.findHostDetail(user.id);
   }
 
+  @Post('check')
+  @RequestApi({
+    summary: {
+      description: '호스트 유무 확인',
+      summary: '호스트 유무 확인',
+    },
+    body: {
+      type: CheckHostDTO,
+    },
+  })
+  @ResponseApi(
+    {
+      type: IsHostCheckedDTO,
+    },
+    200
+  )
+  async checkHost(@Body() body: CheckHostDTO) {
+    return await this.hostService.checkHost(body);
+  }
+
   @Get('accounts/me')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '내 계좌 정보 조회',
@@ -60,6 +90,7 @@ export class HostController {
   }
 
   @Patch()
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '내 정보 수정',
@@ -80,6 +111,7 @@ export class HostController {
   }
 
   @Delete()
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '내 정보 삭제',
@@ -97,6 +129,7 @@ export class HostController {
   }
 
   @Post('accounts')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -118,6 +151,7 @@ export class HostController {
   }
 
   @Patch('accounts')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '계좌 정보 수정',
@@ -138,6 +172,7 @@ export class HostController {
   }
 
   @Delete('accounts')
+  @Auth([JwtAuthGuard, RoleGuard('HOST')])
   @RequestApi({
     summary: {
       description: '계좌 정보 삭제',

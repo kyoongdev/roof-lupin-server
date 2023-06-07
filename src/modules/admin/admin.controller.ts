@@ -18,12 +18,12 @@ import {
   UpdateAdminPasswordDTO,
 } from './dto';
 
-@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins', '통합관리자')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get()
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 목록 조회',
@@ -42,6 +42,7 @@ export class AdminController {
   }
 
   @Get('me')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 내 정보 조회',
@@ -56,6 +57,7 @@ export class AdminController {
   }
 
   @Get(':adminId/detail')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 조회',
@@ -75,6 +77,7 @@ export class AdminController {
   }
 
   @Post()
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -136,6 +139,7 @@ export class AdminController {
   }
 
   @Patch(':adminId')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 수정',
@@ -162,6 +166,7 @@ export class AdminController {
   }
 
   @Delete(':adminId')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 삭제',
@@ -184,6 +189,7 @@ export class AdminController {
   }
 
   @Delete(':adminId/hard')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '통합관리자 삭제 [하드]',
