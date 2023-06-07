@@ -1,10 +1,11 @@
-import { Get } from '@nestjs/common';
+import { Get, Query } from '@nestjs/common';
 
 import { RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 
 import { NaverLocationDTO } from './dto';
+import { NaverGeocodeQuery } from './dto/query';
 import { LocationService } from './location.service';
 
 @ApiController('locations', '지도 / 위치 ')
@@ -21,7 +22,7 @@ export class LocationController {
   @ResponseApi({
     type: NaverLocationDTO,
   })
-  async findNaverLocation() {
-    return await this.locationService.findNaverLocation();
+  async findNaverLocation(@Query() query: NaverGeocodeQuery) {
+    return await this.locationService.findNaverLocation(query);
   }
 }
