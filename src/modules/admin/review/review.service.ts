@@ -52,6 +52,13 @@ export class AdminReviewService {
     );
   }
 
+  async setIsBestReview(id: string, isBest: boolean) {
+    await this.findReview(id);
+    await this.reviewRepository.updateReview(id, {
+      isBest,
+    });
+  }
+
   async deleteReview(id: string) {
     return await this.reviewRepository.deleteReview(id);
   }

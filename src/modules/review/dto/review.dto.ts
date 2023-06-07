@@ -22,6 +22,9 @@ export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', isArray: true } })
   images: ImageDTO[];
 
+  @Property({ apiProperty: { type: 'boolean' } })
+  isBest: boolean;
+
   @Property({ apiProperty: { type: CommonUserDTO } })
   user: CommonUserDTO;
 
@@ -31,6 +34,7 @@ export class ReviewDTO extends DateDTO {
     this.score = props.score;
     this.user = new CommonUserDTO(props.user);
     this.images = props.images.map(({ image }) => new ImageDTO(image));
+    this.isBest = props.isBest;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;

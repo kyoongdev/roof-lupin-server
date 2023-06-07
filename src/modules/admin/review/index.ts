@@ -1,4 +1,4 @@
-import { Delete, Get, Param, UseInterceptors } from '@nestjs/common';
+import { Delete, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -51,6 +51,44 @@ export class AdminReviewController {
   })
   async getReviews(@Paging() paging: PagingDTO) {
     return await this.reviewService.findPagingReviews(paging);
+  }
+
+  @Post(':reviewId/best')
+  @RequestApi({
+    summary: {
+      description: '[관리자]리뷰 베스트 설정',
+      summary: '리뷰를 베스트로 설정합니다. 관리자만 사용 가능합니다.',
+    },
+    params: {
+      name: 'reviewId',
+      description: '리뷰 id',
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async setBestReview(@Param('reviewId') reviewId: string) {
+    await this.reviewService.setIsBestReview(reviewId, true);
+  }
+
+  @Delete(':reviewId/best')
+  @RequestApi({
+    summary: {
+      description: '[관리자] 리뷰 베스트 제외',
+      summary: '리뷰를 베스트에서 제외합니다. 관리자만 사용 가능합니다.',
+    },
+    params: {
+      name: 'reviewId',
+      description: '리뷰 id',
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteBestReview(@Param('reviewId') reviewId: string) {
+    await this.reviewService.setIsBestReview(reviewId, false);
   }
 
   @Delete(':id')
