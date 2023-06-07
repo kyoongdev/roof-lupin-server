@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { CheckHostDTO, CreateHostAccountDTO, IsHostCheckedDTO, UpdateHostAccountDTO, UpdateHostDTO } from './dto';
+import { Encrypt } from '@/common/encrypt';
+
+import {
+  CheckHostDTO,
+  CreateHostAccountDTO,
+  IsHostCheckedDTO,
+  UpdateHostAccountDTO,
+  UpdateHostDTO,
+  UpdateHostPasswordDTO,
+} from './dto';
 import { HOST_ERROR_CODE, HOST_PHONE_NUMBER_BAD_REQUEST } from './exception/errorCode';
 import { HostException } from './exception/host.exception';
 import { HostRepository } from './host.repository';
@@ -32,6 +41,15 @@ export class HostService {
     }
 
     return new IsHostCheckedDTO({ isChecked: true });
+  }
+
+  async updateHostPassword(data: UpdateHostPasswordDTO) {
+    const host = await this.hostRepository.findHostByEmail(data.email);
+    const password = Encrypt.hashPassword(host.salt, data.password);
+
+    await this.hostRepository.updateHost(host.id, {
+      password,
+    });
   }
 
   async updateHost(id: string, data: UpdateHostDTO) {

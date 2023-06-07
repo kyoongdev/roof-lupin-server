@@ -7,3 +7,4 @@ export * from './create-host-account.dto';
 export * from './update-host-account.dto';
 export * from './check-host.dto';
 export * from './is-host-checked.dto';
+export * from './update-password.dto';

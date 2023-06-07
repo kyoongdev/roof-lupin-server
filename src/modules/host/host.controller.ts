@@ -16,6 +16,7 @@ import {
   IsHostCheckedDTO,
   UpdateHostAccountDTO,
   UpdateHostDTO,
+  UpdateHostPasswordDTO,
 } from './dto';
 import { HostDetailDTO } from './dto/host-detail.dto';
 import { HostService } from './host.service';
@@ -87,6 +88,26 @@ export class HostController {
   })
   async getMyAccount(@ReqUser() user: RequestHost) {
     return await this.hostService.findHostAccountByHostId(user.id);
+  }
+
+  @Patch('reset/password')
+  @RequestApi({
+    summary: {
+      description: '비밀번호 재설정',
+      summary: '비밀번호 재설정',
+    },
+    body: {
+      type: UpdateHostPasswordDTO,
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updatePassword(@Body() body: UpdateHostPasswordDTO) {
+    await this.hostService.updateHostPassword(body);
   }
 
   @Patch()
