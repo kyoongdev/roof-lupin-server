@@ -8,9 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { ReviewDTO } from '../review/dto/review.dto';
-
-import { CreateReportDTO, UpdateReportDTO } from './dto';
+import { CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
 import { ReportService } from './report.service';
 
 @ApiController('reports', '공간 신고')
@@ -29,7 +27,7 @@ export class ReportController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
+    type: ReportDTO,
     isPaging: true,
   })
   async getMyReports(@Paging() paging: PagingDTO) {
