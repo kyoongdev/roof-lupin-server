@@ -9,6 +9,6 @@ export class BaseUserDTO extends DateDTO {
     } else if (gender === 2) {
       return '여성';
     }
-    return undefined;
+    return null;
   }
 }

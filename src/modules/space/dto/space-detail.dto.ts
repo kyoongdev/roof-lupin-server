@@ -133,11 +133,11 @@ export class SpaceDetailDTO {
     this.cost = props.cost;
     this.isBest = props.isBest ?? false;
     this.thumbnail = props.thumbnail;
-    this.location = props.location && new LocationDTO(props.location);
+    this.location = props.location ? new LocationDTO(props.location) : null;
     this.description = props.description;
     this.minSize = props.minSize;
-    this.spaceType = props.spaceType;
-    this.buildingType = props.buildingType;
+    this.spaceType = props.spaceType ?? null;
+    this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;
     this.overflowUserCost = props.overflowUserCost;

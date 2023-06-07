@@ -33,13 +33,13 @@ export class CommonUserDTO extends BaseUserDTO {
   constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
-    this.name = props.name;
+    this.name = props.name ?? null;
     this.nickname = props.nickname;
-    this.email = props.email;
-    this.phoneNumber = props.phoneNumber;
-    this.birth = props.birth;
+    this.email = props.email ?? null;
+    this.phoneNumber = props.phoneNumber ?? null;
+    this.birth = props.birth ?? null;
     this.gender = this.userGenderConverter(props.gender);
-    this.profileImage = props.profileImage;
+    this.profileImage = props.profileImage ?? null;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;

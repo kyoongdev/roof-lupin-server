@@ -1,5 +1,3 @@
-import { Injectable } from '@nestjs/common';
-
 import crypto from 'crypto';
 
 import { CommonException } from './exception/common.exception';

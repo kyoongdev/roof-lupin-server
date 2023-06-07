@@ -43,10 +43,12 @@ export class RentalTypeDTO {
     this.name = props.name;
     this.baseCost = props.baseCost;
     this.rentalType = RentalTypeDTO.convertRentalType(props.rentalType);
-    this.baseHour = props.baseHour;
+    this.baseHour = props.baseHour ?? null;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
-    this.timeCostInfos = props.timeCostInfos?.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
+    this.timeCostInfos = props.timeCostInfos
+      ? props.timeCostInfos.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo))
+      : null;
   }
 
   static convertRentalType(rentalType: number) {
