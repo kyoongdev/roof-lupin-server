@@ -189,11 +189,12 @@ export class AuthService {
     if (accessTokenPayload.id !== refreshTokenPayload.id)
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
 
-    return this.createTokens({ ...refreshTokenPayload });
+    return this.createTokens({ id: refreshTokenPayload.id, role: refreshTokenPayload.role });
   }
 
   async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
     const key = nanoid();
+
     const accessToken = this.jwt.signJwt<TokenPayload>(
       { ...value, key },
       { ...options, expiresIn: this.accessTokenExpiresIn }
