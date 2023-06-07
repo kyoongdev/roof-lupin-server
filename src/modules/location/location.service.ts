@@ -13,6 +13,17 @@ export class LocationService {
   ) {}
 
   async findNaverLocation(query: NaverGeocodeQuery) {
-    return await this.socialLoginService.getNaverLocation(query);
+    const { latitude, longitude, ...rest } = query;
+
+    return await this.socialLoginService.getNaverLocation({
+      ...rest,
+      coordinate:
+        latitude && longitude
+          ? {
+              latitude,
+              longitude,
+            }
+          : undefined,
+    });
   }
 }
