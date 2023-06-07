@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { AdminRepository } from './admin.repository';
-import { AdminDTO, CreateAdminDTO, UpdateAdminDTO } from './dto';
+import { AdminDTO, CheckAdminDTO, CreateAdminDTO, IsAdminCheckedDTO, UpdateAdminDTO } from './dto';
 
 @Injectable()
 export class AdminService {
@@ -33,6 +33,12 @@ export class AdminService {
     });
 
     return new PaginationDTO<AdminDTO>(admins, { paging, count });
+  }
+
+  async checkAdminWithUserId(data: CheckAdminDTO) {
+    const isChecked = await this.adminRepository.checkAdminByUserId(data.userId);
+
+    return new IsAdminCheckedDTO({ isChecked: Boolean(isChecked) });
   }
 
   async createAdmin(data: CreateAdminDTO, byAdmin = false) {

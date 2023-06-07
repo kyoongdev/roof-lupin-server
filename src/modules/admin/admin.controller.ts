@@ -9,7 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminService } from './admin.service';
-import { AdminDTO, CreateAdminDTO, UpdateAdminDTO } from './dto';
+import { AdminDTO, CheckAdminDTO, CreateAdminDTO, IsAdminCheckedDTO, UpdateAdminDTO } from './dto';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins', '통합관리자')
@@ -86,6 +86,27 @@ export class AdminController {
   )
   async createAdmin(@Body() data: CreateAdminDTO) {
     return await this.adminService.createAdmin(data, true);
+  }
+
+  @Post('check')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '통합관리자 유저 id 존재 유무 파악',
+      summary: '통합관리자 유저 id 존재 유무 파악',
+    },
+    body: {
+      type: CheckAdminDTO,
+    },
+  })
+  @ResponseApi(
+    {
+      type: IsAdminCheckedDTO,
+    },
+    200
+  )
+  async checkAdmin(@Body() data: CheckAdminDTO) {
+    return await this.adminService.checkAdminWithUserId(data);
   }
 
   @Patch(':adminId')

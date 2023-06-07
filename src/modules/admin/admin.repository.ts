@@ -77,6 +77,9 @@ export class AdminRepository {
         userId,
       },
     });
+    if (!admin) {
+      return false;
+    }
 
     return new AdminDetailDTO(admin);
   }
