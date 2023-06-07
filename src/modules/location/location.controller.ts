@@ -4,6 +4,7 @@ import { RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 
+import { NaverLocationDTO } from './dto';
 import { LocationService } from './location.service';
 
 @ApiController('locations', '지도 / 위치 ')
@@ -17,7 +18,9 @@ export class LocationController {
       summary: '네이버 지도 API를 이용하여 주소를 좌표로 변환합니다.',
     },
   })
-  @ResponseApi({})
+  @ResponseApi({
+    type: NaverLocationDTO,
+  })
   async findNaverLocation() {
     return await this.locationService.findNaverLocation();
   }
