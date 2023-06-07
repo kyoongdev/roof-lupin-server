@@ -146,8 +146,8 @@ export class AuthService {
     const { accessToken, refreshToken } = tokens;
     const accessTokenPayload = this.jwt.verifyJwt<TokenPayload>(accessToken, {
       ignoreExpiration: true,
-    });
-    const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken);
+    }) as TokenPayload | null | undefined;
+    const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken) as TokenPayload | null | undefined;
 
     if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
     if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
@@ -157,7 +157,7 @@ export class AuthService {
     if (accessTokenPayload.id !== refreshTokenPayload.id)
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
 
-    return this.createTokens(refreshTokenPayload.id, refreshTokenPayload.userType);
+    return this.createTokens({ ...refreshTokenPayload });
   }
 
   async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
