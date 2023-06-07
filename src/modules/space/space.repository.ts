@@ -13,6 +13,7 @@ import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateRefundPolicyDTO } from './dto/refund';
+import { RentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
@@ -487,6 +488,20 @@ export class SpaceRepository {
         id,
       },
     });
+  }
+
+  async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
+    const rentalTypes = await this.database.rentalType.findMany({
+      where: {
+        spaceId,
+        ...args.where,
+      },
+      include: {
+        timeCostInfo: true,
+      },
+      ...args,
+    });
+    return rentalTypes.map((rentalType) => new RentalTypeDTO(rentalType));
   }
 
   async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {
