@@ -1,5 +1,3 @@
-import { LocationModule } from 'wemacu-nestjs';
-
 import { AdminModule } from './admin/admin.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
@@ -11,6 +9,7 @@ import { FileModule } from './file/file.module';
 import { GlobalModule } from './global';
 import { HomeModule } from './home/home.module';
 import { HostModule } from './host/host.module';
+import { LocationModule } from './location/location.module';
 import { QnaModule } from './qna/qna.module';
 import { ReportModule } from './report/report.module';
 import { ReviewModule } from './review/review.module';

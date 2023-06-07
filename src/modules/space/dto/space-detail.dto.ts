@@ -4,8 +4,7 @@ import { type DateProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto';
 import { LocationDTO, LocationDTOProps } from '@/modules/location/dto';
-import { QnADTO, QnADTOProps } from '@/modules/qna/dto';
-import { ReviewDTO, type ReviewDTOProps } from '@/modules/review/dto/review.dto';
+import { ReviewDTO } from '@/modules/review/dto/review.dto';
 
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
@@ -13,7 +12,6 @@ import { FacilityDTO, type FacilityDTOProps } from './facility';
 import { HashtagDTO, HashtagDTOProps } from './hashtag';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
-import { SpaceDTO, type SpaceDTOProps } from './space.dto';
 import { TransportationDTO, TransportationDTOProps } from './transportaion';
 
 export interface SpaceDetailDTOProps extends DateProps {
