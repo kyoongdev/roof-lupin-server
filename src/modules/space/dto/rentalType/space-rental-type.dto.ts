@@ -13,5 +13,11 @@ export class SpaceRentalTypeDTO {
   @Property({ apiProperty: { type: PackageRentalTypeDTO, description: '패키지 대여타입' } })
   packageRentalType: PackageRentalTypeDTO;
 
-  // constructor(props: SpaceRentalTypeDTOProps) {}
+  constructor(props: SpaceRentalTypeDTOProps) {
+    const timeRentalType: RentalTypeDTOProps | undefined = props.find((rentalType) => rentalType.rentalType === 1);
+    const packageRentalType = props.filter((rentalType) => rentalType.rentalType === 2);
+
+    this.timeRentalType = new TimeRentalTypeDTO(timeRentalType);
+    this.packageRentalType = new PackageRentalTypeDTO(packageRentalType);
+  }
 }
