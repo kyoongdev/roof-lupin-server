@@ -197,6 +197,8 @@ model Reservation {
 
   rentalTypeId String
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)
@@ -436,6 +438,7 @@ model User {
   curations      Curation[]
   searchRecords  SearchRecord[]
   alarms         UserAlarm[]
+  reservations   Reservation[]
 }
 
 model UserAlarm {
