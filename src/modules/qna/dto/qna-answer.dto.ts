@@ -10,7 +10,7 @@ export interface QnAAnswerProps extends DateProps {
   host: HostDTOProps;
 }
 
-export class QnAAnswerDTO extends DateDTO {
+export class QnAAnswerDTO {
   @Property({ apiProperty: { type: 'string', description: '답변 ID' } })
   id: string;
 
@@ -23,14 +23,18 @@ export class QnAAnswerDTO extends DateDTO {
   @Property({ apiProperty: { type: HostDTO, description: '호스트' } })
   host: HostDTO;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  updatedAt: Date;
+
   constructor(props: QnAAnswerProps) {
-    super();
     this.id = props.id;
     this.content = props.content;
     this.qnaId = props.spaceQnAId;
     this.host = new HostDTO(props.host);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
-    this.deletedAt = props.deletedAt;
   }
 }

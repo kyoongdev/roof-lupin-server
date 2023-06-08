@@ -13,7 +13,7 @@ export interface QnADTOProps extends DateProps {
 }
 
 //TODO: space dto 추가
-export class QnADTO extends DateDTO {
+export class QnADTO {
   @Property({ apiProperty: { type: 'string', description: 'QnA ID' } })
   id: string;
 
@@ -26,14 +26,18 @@ export class QnADTO extends DateDTO {
   @Property({ apiProperty: { type: QnAAnswerDTO, description: '답변', isArray: true } })
   answers: QnAAnswerDTO[];
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  updatedAt: Date;
+
   constructor(props: QnADTOProps) {
-    super();
     this.id = props.id;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
     this.answers = props.answers.map((answer) => new QnAAnswerDTO(answer));
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
-    this.deletedAt = props.deletedAt;
   }
 }

@@ -33,6 +33,5 @@ export class ReportDTO extends DateDTO {
 
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
-    this.deletedAt = props.deletedAt;
   }
 }

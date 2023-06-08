@@ -19,13 +19,11 @@ export class HostReportService {
     const count = await this.reportRepository.countReports({
       where: {
         ...args.where,
-        deletedAt: null,
       },
     });
     const reports = await this.reportRepository.findReports({
       where: {
         ...args.where,
-        deletedAt: null,
       },
       skip,
       take,

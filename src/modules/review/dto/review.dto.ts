@@ -10,7 +10,7 @@ export interface ReviewDTOProps extends Partial<SpaceReview> {
   images: { image: Image }[];
 }
 
-export class ReviewDTO extends DateDTO {
+export class ReviewDTO {
   @Property({ apiProperty: { type: 'string' } })
   content: string;
 
@@ -28,8 +28,13 @@ export class ReviewDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO } })
   user: CommonUserDTO;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time' } })
+  updatedAt: Date;
+
   constructor(props: ReviewDTOProps) {
-    super();
     this.content = props.content;
     this.score = props.score;
     this.user = new CommonUserDTO(props.user);
@@ -37,6 +42,5 @@ export class ReviewDTO extends DateDTO {
     this.isBest = props.isBest;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
-    this.deletedAt = props.deletedAt;
   }
 }
