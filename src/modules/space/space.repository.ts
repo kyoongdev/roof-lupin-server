@@ -16,7 +16,7 @@ import { CreateRefundPolicyDTO } from './dto/refund';
 import { RentalTypeDTO, SpaceRentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
-import { SPACE_ERROR_CODE } from './exception/errorCode';
+import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 
 @Injectable()
@@ -488,6 +488,23 @@ export class SpaceRepository {
         id,
       },
     });
+  }
+
+  async findRentalType(id: string) {
+    const rentalType = await this.database.rentalType.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        timeCostInfo: true,
+      },
+    });
+
+    if (!rentalType) {
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+    }
+
+    return new RentalTypeDTO(rentalType);
   }
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
