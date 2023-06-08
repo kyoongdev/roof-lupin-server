@@ -55,7 +55,7 @@ export class ReservationService {
 
   async createReservation(userId: string, data: CreateReservationDTO) {
     await this.validateReservation(data);
-    await this.reservationRepository.createReservation(userId, data);
+    return await this.reservationRepository.createReservation(userId, data);
   }
 
   async updateReservation(id: string, userId: string, data: CreateReservationDTO) {
