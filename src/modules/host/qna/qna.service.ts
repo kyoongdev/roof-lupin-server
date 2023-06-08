@@ -22,13 +22,11 @@ export class HostQnAService {
     const count = await this.qnaRepository.countQna({
       where: {
         ...args.where,
-        deletedAt: null,
       },
     });
     const qnas = await this.qnaRepository.findQnAs({
       where: {
         ...args.where,
-        deletedAt: null,
       },
       skip,
       take,

@@ -31,7 +31,6 @@ export class AdminService {
     const admins = await this.adminRepository.findAdmins({
       where: {
         ...args.where,
-        deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',

@@ -21,7 +21,6 @@ export class QnAService {
     const qnas = await this.qnaRepository.findQnAs({
       where: {
         ...args.where,
-        deletedAt: null,
         user: {
           deletedAt: null,
         },

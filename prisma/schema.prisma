@@ -218,9 +218,8 @@ model SpaceReport {
   userId  String
   user    User   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 //INFO: 공간 QnA
@@ -234,9 +233,8 @@ model SpaceQnA {
   userId  String
   user    User   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   answers SpaceQnAAnswer[]
 }
@@ -267,9 +265,8 @@ model SpaceReview {
   score   Int     @db.TinyInt
   isBest  Boolean @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   images SpaceReviewImage[]
 }

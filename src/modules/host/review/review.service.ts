@@ -19,13 +19,11 @@ export class HostReviewService {
     const count = await this.reviewRepository.countReviews({
       where: {
         ...args.where,
-        deletedAt: null,
       },
     });
     const reviews = await this.reviewRepository.findReviews({
       where: {
         ...args.where,
-        deletedAt: null,
       },
       skip,
       take,

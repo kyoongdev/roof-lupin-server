@@ -34,6 +34,7 @@ export class ReservationService {
     const reservations = await this.reservationRepository.findReservations({
       where: {
         userId,
+        deletedAt: null,
       },
       skip,
       take,
