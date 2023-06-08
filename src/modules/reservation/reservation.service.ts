@@ -58,6 +58,12 @@ export class ReservationService {
     await this.reservationRepository.createReservation(userId, data);
   }
 
+  async updateReservation(id: string, userId: string, data: CreateReservationDTO) {
+    await this.findMyReservation(id, userId);
+    await this.validateReservation(data);
+    // await this.reservationRepository.updateReservation(id, data);
+  }
+
   async deleteMyReservation(id: string, userId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
 

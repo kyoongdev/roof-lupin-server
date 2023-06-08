@@ -3,7 +3,6 @@ import { Property } from 'wemacu-nestjs';
 import { RentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '@/modules/space/exception/errorCode';
 import { SpaceException } from '@/modules/space/exception/space.exception';
-import { GenderValidation } from '@/utils/validation';
 
 import {
   RESERVATION_COST_BAD_REQUEST,
