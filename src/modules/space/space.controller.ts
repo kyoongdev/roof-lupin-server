@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
+import { SpaceRentalTypeDTO } from './dto/rentalType';
 import { SpaceService } from './space.service';
 
 @ApiController('spaces', '공간')
@@ -33,6 +34,26 @@ export class SpaceController {
   })
   async getSpace(@Param('spaceId') id: string, @ReqUser() user?: RequestUser) {
     return await this.spaceService.findSpace(id, user?.id);
+  }
+
+  @Get(':spaceId/rental-type')
+  @RequestApi({
+    summary: {
+      description: '공간 이용 요금 조회하기',
+      summary: '공간 이용 요금 조회하기',
+    },
+    params: {
+      name: 'spaceId',
+      type: 'string',
+      description: '공간 아이디',
+      required: true,
+    },
+  })
+  @ResponseApi({
+    type: SpaceRentalTypeDTO,
+  })
+  async getSpaceRentalType(@Param('spaceId') id: string) {
+    return await this.spaceService.findSpaceRentalType(id);
   }
 
   @Get('paging')
