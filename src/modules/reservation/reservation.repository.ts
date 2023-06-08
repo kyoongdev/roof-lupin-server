@@ -6,7 +6,9 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTOProps } from '../space/dto';
 
-import { ReservationDetailDTO, ReservationDTO } from './dto';
+import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO } from './dto';
+import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
+import { ReservationException } from './exception/reservation.exception';
 import { CommonReservation } from './type';
 
 @Injectable()
@@ -37,6 +39,10 @@ export class ReservationRepository {
         },
       },
     });
+
+    if (!reservation) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
+    }
 
     const { rentalType, ...rest } = reservation;
     const { space, ...restRentalType } = rentalType;
@@ -102,6 +108,38 @@ export class ReservationRepository {
           location: space.location?.['location'],
         },
       });
+    });
+  }
+
+  //TODO: 결제 시스템까지 도입
+  async createReservation(userId: string, data: CreateReservationDTO) {
+    const { rentalTypeId, ...rest } = data;
+    const reservation = await this.database.reservation.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        rentalType: {
+          connect: {
+            id: rentalTypeId,
+          },
+        },
+        ...rest,
+      },
+    });
+    return reservation.id;
+  }
+
+  async deleteReservation(id: string) {
+    await this.database.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   }
 }
