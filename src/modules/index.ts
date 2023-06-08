@@ -12,6 +12,7 @@ import { HostModule } from './host/host.module';
 import { LocationModule } from './location/location.module';
 import { QnaModule } from './qna/qna.module';
 import { ReportModule } from './report/report.module';
+import { ReservationModule } from './reservation/reservation.module';
 import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
 import { SpaceModule } from './space/space.module';
@@ -36,4 +37,5 @@ export const Modules = [
   SearchModule,
   CurationModule,
   LocationModule,
+  ReservationModule,
 ];
