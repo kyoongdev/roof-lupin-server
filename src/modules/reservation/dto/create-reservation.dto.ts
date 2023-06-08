@@ -2,6 +2,8 @@ import { Property } from 'wemacu-nestjs';
 
 import { GenderValidation } from '@/utils/validation';
 
+import { TimeValidation } from './validation';
+
 export interface CreateReservationDTOProps {
   year: string;
   month: string;
@@ -23,10 +25,12 @@ export class CreateReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 일' } })
   day: string;
 
-  @Property({ apiProperty: { type: 'number', description: '예약 시작 시간' } })
+  @TimeValidation()
+  @Property({ apiProperty: { type: 'number', description: '예약 시작 시간 (0 ~ 23)' } })
   startAt: number;
 
-  @Property({ apiProperty: { type: 'number', description: '예약 종료 시간' } })
+  @TimeValidation()
+  @Property({ apiProperty: { type: 'number', description: '예약 종료 시간 (0 ~ 23)' } })
   endAt: number;
 
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })

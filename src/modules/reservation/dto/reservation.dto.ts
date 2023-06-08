@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
+
 export interface ReservationDTOProps {
   id: string;
   year: string;
@@ -10,6 +12,7 @@ export interface ReservationDTOProps {
   cost: number;
   rentalTypeId: string;
   userId: string;
+  space: SpaceDTOProps;
 }
 
 export class ReservationDTO {
@@ -40,6 +43,9 @@ export class ReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
   userId: string;
 
+  @Property({ apiProperty: { type: SpaceDTO, description: '공간 정보' } })
+  space: SpaceDTO;
+
   constructor(props: ReservationDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -50,5 +56,6 @@ export class ReservationDTO {
     this.cost = props.cost;
     this.rentalTypeId = props.rentalTypeId;
     this.userId = props.userId;
+    this.space = new SpaceDTO(props.space);
   }
 }
