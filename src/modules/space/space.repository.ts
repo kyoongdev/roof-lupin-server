@@ -507,10 +507,9 @@ export class SpaceRepository {
     return new RentalTypeDTO(rentalType);
   }
 
-  async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
+  async findRentalTypes(args = {} as Prisma.RentalTypeFindManyArgs) {
     const rentalTypes = await this.database.rentalType.findMany({
       where: {
-        spaceId,
         ...args.where,
       },
       include: {
@@ -518,6 +517,7 @@ export class SpaceRepository {
       },
       ...args,
     });
+
     return rentalTypes.map((rentalType) => new RentalTypeDTO(rentalType));
   }
 
