@@ -68,11 +68,16 @@ export class ReservationService {
     //INFO: 예약 시도하는 시간에 예약된 건이 있는지 여부 확인
     if (existingReservations.length > 0) {
       const isPossible = existingReservations.reduce<boolean>((acc, next) => {
-        if (next.startAt > data.endAt || next.endAt < data.startAt) {
-          acc = true;
+        if (next.startAt <= data.startAt && data.startAt < next.endAt) {
+          acc = false;
         }
+
+        if (next.startAt < data.endAt && data.endAt <= next.endAt) {
+          acc = false;
+        }
+
         return acc;
-      }, false);
+      }, true);
 
       if (!isPossible) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_TIME_BAD_REQUEST));
@@ -102,8 +107,12 @@ export class ReservationService {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
       }
     } else if (rentalType.rentalType === '패키지') {
-      //
+      if (rentalType.startAt !== data.startAt || rentalType.endAt !== data.endAt) {
+        throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_TIME_BAD_REQUEST));
+      }
     } else throw new SpaceException(SPACE_ERROR_CODE.INTERNAL_SERVER_ERROR(RENTAL_TYPE_ERROR));
+
+    await this.reservationRepository.createReservation(userId, data);
   }
 
   async deleteMyReservation(id: string, userId: string) {
