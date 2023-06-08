@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { ApiController } from '@/utils';
 
-@Controller('reservation')
+@ApiController('reservations', '예약하기')
 export class ReservationController {}
