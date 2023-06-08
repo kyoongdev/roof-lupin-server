@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTOProps } from '../space/dto';
 
-import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO } from './dto';
+import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 import { CommonReservation } from './type';
@@ -130,6 +130,23 @@ export class ReservationRepository {
       },
     });
     return reservation.id;
+  }
+
+  async updateReservation(id: string, data: UpdateReservationDTO) {
+    const { rentalTypeId, ...rest } = data;
+    await this.database.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+        rentalType: {
+          connect: {
+            id: rentalTypeId,
+          },
+        },
+      },
+    });
   }
 
   async deleteReservation(id: string) {
