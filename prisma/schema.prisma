@@ -199,6 +199,10 @@ model Reservation {
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
   userId       String
   user         User       @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)

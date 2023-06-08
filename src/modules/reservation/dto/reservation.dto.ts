@@ -1,6 +1,8 @@
 import { Property } from 'wemacu-nestjs';
 
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
+import { RentalTypeDTO, RentalTypeDTOProps } from '@/modules/space/dto/rentalType';
+import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 export interface ReservationDTOProps {
   id: string;
@@ -10,9 +12,11 @@ export interface ReservationDTOProps {
   startAt: number;
   endAt: number;
   cost: number;
-  rentalTypeId: string;
-  userId: string;
+  user: CommonUserProps;
+  rentalType: RentalTypeDTOProps;
   space: SpaceDTOProps;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class ReservationDTO {
@@ -37,14 +41,20 @@ export class ReservationDTO {
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
   cost: number;
 
-  @Property({ apiProperty: { type: 'string', description: '대여 타입 아이디' } })
-  rentalTypeId: string;
+  @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
+  user: CommonUserDTO;
 
-  @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
-  userId: string;
+  @Property({ apiProperty: { type: RentalTypeDTO, description: '대여 정보' } })
+  rentalType: RentalTypeDTO;
 
   @Property({ apiProperty: { type: SpaceDTO, description: '공간 정보' } })
   space: SpaceDTO;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '생성 날짜' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '수정 날짜' } })
+  updatedAt: Date;
 
   constructor(props: ReservationDTOProps) {
     this.id = props.id;
@@ -54,8 +64,10 @@ export class ReservationDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.cost = props.cost;
-    this.rentalTypeId = props.rentalTypeId;
-    this.userId = props.userId;
+    this.user = new CommonUserDTO(props.user);
+    this.rentalType = new RentalTypeDTO(props.rentalType);
     this.space = new SpaceDTO(props.space);
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
   }
 }
