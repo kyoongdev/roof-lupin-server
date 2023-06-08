@@ -3,16 +3,18 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { UserRepository } from '../user/user.repository';
-
 import { SpaceDTO } from './dto';
-import { ALREADY_INTERESTED, ALREADY_LIKED, NOT_INTERESTED, NOT_LIKED, SPACE_ERROR_CODE } from './exception/errorCode';
+import { ALREADY_INTERESTED, NOT_INTERESTED, SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
+import { RentalTypeRepository } from './rentalType/rentalType.repository';
 import { SpaceRepository } from './space.repository';
 
 @Injectable()
 export class SpaceService {
-  constructor(private readonly spaceRepository: SpaceRepository) {}
+  constructor(
+    private readonly spaceRepository: SpaceRepository,
+    private readonly rentalTypeRepository: RentalTypeRepository
+  ) {}
 
   async findSpace(id: string, userId?: string) {
     return await this.spaceRepository.findSpace(id, userId);
@@ -35,6 +37,10 @@ export class SpaceService {
 
   async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
     return await this.spaceRepository.findSpaces(args);
+  }
+
+  async findSpaceRentalType(spaceId: string) {
+    return await this.rentalTypeRepository.findSpaceRentalType(spaceId);
   }
 
   async createInterest(userId: string, spaceId: string) {

@@ -7,17 +7,23 @@ import { TimeRentalTypeDTO, TimeRentalTypeDTOProps } from './time-rental-type.dt
 export type SpaceRentalTypeDTOProps = RentalTypeDTOProps[];
 
 export class SpaceRentalTypeDTO {
-  @Property({ apiProperty: { type: TimeRentalTypeDTO, description: '시간 대여타입' } })
+  @Property({ apiProperty: { type: TimeRentalTypeDTO, nullable: true, description: '시간 대여타입' } })
   timeRentalType: TimeRentalTypeDTOProps;
 
-  @Property({ apiProperty: { type: PackageRentalTypeDTO, description: '패키지 대여타입' } })
+  @Property({ apiProperty: { type: PackageRentalTypeDTO, nullable: true, description: '패키지 대여타입' } })
   packageRentalType: PackageRentalTypeDTO;
 
   constructor(props: SpaceRentalTypeDTOProps) {
     const timeRentalType: RentalTypeDTOProps | undefined = props.find((rentalType) => rentalType.rentalType === 1);
     const packageRentalType = props.filter((rentalType) => rentalType.rentalType === 2);
 
-    this.timeRentalType = new TimeRentalTypeDTO(timeRentalType);
+    this.timeRentalType = timeRentalType
+      ? new TimeRentalTypeDTO({
+          id: timeRentalType.id,
+          name: timeRentalType.name,
+          timeCostInfos: timeRentalType.timeCostInfos,
+        })
+      : null;
     this.packageRentalType = new PackageRentalTypeDTO(packageRentalType);
   }
 }

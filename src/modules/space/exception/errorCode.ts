@@ -2,8 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 
 import type { ErrorCode } from 'wemacu-nestjs';
 
-export const ALREADY_LIKED = '이미 좋아요를 눌렀습니다.' as const;
-export const NOT_LIKED = '좋아요를 누르지 않았습니다.' as const;
 export const ALREADY_INTERESTED = '이미 찜을 했습니다..' as const;
 export const NOT_INTERESTED = '찜을 하지 않았습니다.' as const;
 
