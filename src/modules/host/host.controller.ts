@@ -4,7 +4,7 @@ import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
-import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 

@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, Space } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-
-import { SpaceDTOProps } from '../space/dto';
 
 import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';

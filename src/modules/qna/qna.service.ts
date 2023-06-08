@@ -3,9 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { HostRepository } from '../host/host.repository';
-import { SpaceRepository } from '../space/space.repository';
-
 import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';

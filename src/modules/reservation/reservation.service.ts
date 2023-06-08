@@ -8,9 +8,7 @@ import { SpaceRepository } from '../space/space.repository';
 
 import { CreateReservationDTO, ReservationDTO } from './dto';
 import {
-  RESERVATION_COST_BAD_REQUEST,
   RESERVATION_ERROR_CODE,
-  RESERVATION_TIME_BAD_REQUEST,
   RESERVATION_USER_DELETE_FORBIDDEN,
   RESERVATION_USER_FIND_FORBIDDEN,
 } from './exception/errorCode';

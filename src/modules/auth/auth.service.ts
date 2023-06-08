@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import axios from 'axios';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
-import { type KakaoGetRestCallback, KakaoLogin, type NaverGetRestCallback, NaverLogin } from 'wemacu-nestjs';
+import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
 import { Encrypt } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';

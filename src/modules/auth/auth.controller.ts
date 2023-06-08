@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query, Redirect, Response } from '@nestjs/common';
+import { Body, Get, Post, Query, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
 import { nanoid } from 'nanoid';
