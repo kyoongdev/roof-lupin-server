@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { GenderValidation } from '@/utils/validation';
+
 export interface CreateReservationDTOProps {
   year: string;
   month: string;
