@@ -10,6 +10,10 @@ import { ReservationRepository } from '@/modules/reservation/reservation.reposit
 export class AdminReservationService {
   constructor(private readonly reservationRepository: ReservationRepository) {}
 
+  async findReservation(id: string) {
+    return await this.reservationRepository.findReservation(id);
+  }
+
   async findPagingReservations(paging: PagingDTO, args = {} as Prisma.ReservationFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reservationRepository.countReservations({

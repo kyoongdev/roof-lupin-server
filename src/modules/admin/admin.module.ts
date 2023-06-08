@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { HostRepository } from '../host/host.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
+import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 
 import { AdminController } from './admin.controller';
@@ -14,6 +15,8 @@ import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
 import { AdminReportController } from './report';
 import { AdminReportService } from './report/report.service';
+import { AdminReservationController } from './reservation/reservation.controller';
+import { AdminReservationService } from './reservation/reservation.service';
 import { AdminReviewController } from './review';
 import { AdminReviewService } from './review/review.service';
 
@@ -29,7 +32,16 @@ import { AdminReviewService } from './review/review.service';
     ReportRepository,
     AdminHostService,
     HostRepository,
+    AdminReservationService,
+    ReservationRepository,
   ],
-  controllers: [AdminController, AdminReviewController, AdminQnAController, AdminReportController, AdminHostController],
+  controllers: [
+    AdminController,
+    AdminReviewController,
+    AdminQnAController,
+    AdminReportController,
+    AdminHostController,
+    AdminReservationController,
+  ],
 })
 export class AdminModule {}
