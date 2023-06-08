@@ -56,6 +56,9 @@ export class ReservationService {
   async createReservation(userId: string, data: CreateReservationDTO) {
     const { rentalTypeId } = data;
     const rentalType = await this.spaceRepository.findRentalType(rentalTypeId);
+    const existingReservations = await this.reservationRepository.findReservations({
+      where: {},
+    });
     if (rentalType.rentalType === '시간') {
       if (rentalType.startAt > data.startAt || rentalType.endAt < data.endAt) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_TIME_BAD_REQUEST));
