@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';

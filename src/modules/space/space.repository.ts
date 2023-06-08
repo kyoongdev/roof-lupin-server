@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
