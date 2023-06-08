@@ -36,26 +36,6 @@ export class SpaceController {
     return await this.spaceService.findSpace(id, user?.id);
   }
 
-  @Get(':spaceId/rental-type')
-  @RequestApi({
-    summary: {
-      description: '공간 이용 요금 조회하기',
-      summary: '공간 이용 요금 조회하기',
-    },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      description: '공간 아이디',
-      required: true,
-    },
-  })
-  @ResponseApi({
-    type: SpaceRentalTypeDTO,
-  })
-  async getSpaceRentalType(@Param('spaceId') id: string) {
-    return await this.spaceService.findSpaceRentalType(id);
-  }
-
   @Get('paging')
   @RequestApi({
     summary: {

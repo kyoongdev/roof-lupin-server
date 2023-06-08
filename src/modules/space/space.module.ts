@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 
 import { LocationRepository } from '../location/location.repository';
 
-import { RentalTypeRepository } from './rentalType/rentalType.repository';
+import { RentalTypeController } from './rentalType/rentalType.controller';
+import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceController } from './space.controller';
 import { SpaceRepository } from './space.repository';
 import { SpaceService } from './space.service';
 
 @Module({
-  providers: [SpaceService, SpaceRepository, LocationRepository, RentalTypeRepository],
-  controllers: [SpaceController],
+  providers: [SpaceService, SpaceRepository, LocationRepository, RentalTypeService],
+  controllers: [SpaceController, RentalTypeController],
 })
 export class SpaceModule {}

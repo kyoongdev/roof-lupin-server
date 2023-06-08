@@ -9,13 +9,13 @@ import { SpaceRepository } from '../space/space.repository';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
 import { HostService } from './host.service';
-import { HostQnAController } from './qna';
+import { HostQnAController } from './qna/qna.controller';
 import { HostQnAService } from './qna/qna.service';
-import { HostReportController } from './report';
+import { HostReportController } from './report/report.controller';
 import { HostReportService } from './report/report.service';
-import { HostReviewController } from './review';
+import { HostReviewController } from './review/review.controller';
 import { HostReviewService } from './review/review.service';
-import { HostSpaceController } from './space';
+import { HostSpaceController } from './space/space.controller';
 import { HostSpaceService } from './space/space.service';
 
 @Module({
