@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { AlarmRepository } from './alarm.repository';
-import { AlarmDTO, CreateAlarmDTO, UpdateAlarmDTO } from './dto';
+import { AlarmDTO } from './dto';
 import { AlarmException } from './exception/alarm.exception';
 import { ALARM_ERROR_CODE, ALARM_MUTATION_FORBIDDEN } from './exception/errorCode';
 
