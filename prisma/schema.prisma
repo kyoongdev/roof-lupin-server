@@ -540,25 +540,26 @@ model Hashtag {
 
 //INFO: 유저 쿠폰
 model UserCoupon {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   userId   String
-  user     User   @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
   couponId String
-  coupon   Coupon @relation(fields: [couponId], references: [id])
-  count    Int    @default(1) @db.TinyInt
+  coupon   Coupon   @relation(fields: [couponId], references: [id])
+  count    Int      @default(1) @db.TinyInt
   //INFO: 기본 6자리 랜덤 생성
-  code     String @unique @default(dbgenerated("(left(uuid(),6))")) @db.Char(6)
+  code     String   @unique @default(dbgenerated("(left(uuid(),6))")) @db.Char(6)
+  dueDate  DateTime @db.DateTime
 
   createdAt DateTime @default(now())
 }
 
 //INFO: 쿠폰
 model Coupon {
-  id            String       @id @default(uuid())
-  name          String       @db.VarChar(80)
-  discountType  Int          @db.TinyInt
-  discountValue Int          @db.MediumInt
-  description   String       @db.VarChar(100)
-  dueDate       DateTime     @db.DateTime
-  userCoupons   UserCoupon[]
+  id            String @id @default(uuid())
+  name          String @db.VarChar(80)
+  discountType  Int    @db.TinyInt
+  discountValue Int    @db.MediumInt
+  description   String @db.VarChar(100)
+
+  userCoupons UserCoupon[]
 }

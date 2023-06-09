@@ -1,6 +1,9 @@
+import schedule from 'node-schedule';
+
 import { PrismaService } from '@/database/prisma.service';
 
 import { Encrypt } from './common/encrypt';
+
 export const seedDatabase = async (database: PrismaService) => {
   await database.space.deleteMany({});
   await database.host.deleteMany({});
@@ -30,7 +33,7 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
 
-  await database.user.create({
+  const testUser = await database.user.create({
     data: {
       nickname: 'testUser',
     },

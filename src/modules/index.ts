@@ -1,4 +1,5 @@
 import { AdminModule } from './admin/admin.module';
+import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
@@ -38,4 +39,5 @@ export const Modules = [
   CurationModule,
   LocationModule,
   ReservationModule,
+  AlarmModule,
 ];

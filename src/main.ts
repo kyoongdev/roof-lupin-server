@@ -1,7 +1,5 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
-import { useContainer, ValidationError } from 'class-validator';
 
 import AppConfig from '@/appConfig';
 import { winstonLogger } from '@/log';
