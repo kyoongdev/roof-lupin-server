@@ -453,8 +453,9 @@ model UserAlarm {
   isPush   Boolean   @default(false)
   isPushed Boolean   @default(false)
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 유저 검색 기록

@@ -23,6 +23,10 @@ export class AlarmService {
     });
     const alarms = await this.alarmRepository.findAlarms({
       where: args.where,
+      orderBy: {
+        createdAt: 'desc',
+        isRead: 'asc',
+      },
       skip,
       take,
     });
@@ -30,9 +34,6 @@ export class AlarmService {
     return new PaginationDTO<AlarmDTO>(alarms, { count, paging });
   }
 
-  async createAlarm(data: CreateAlarmDTO) {
-    return await this.alarmRepository.createAlarm(data);
-  }
   async readAlarm(id: string, userId: string) {
     const alarm = await this.findAlarm(id);
 
@@ -40,15 +41,6 @@ export class AlarmService {
       throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_MUTATION_FORBIDDEN));
     }
     await this.alarmRepository.updateAlarm(id, { isRead: true });
-  }
-
-  async updateAlarm(id: string, userId: string, data: UpdateAlarmDTO) {
-    const alarm = await this.findAlarm(id);
-
-    if (alarm.user.id !== userId) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_MUTATION_FORBIDDEN));
-    }
-    await this.alarmRepository.updateAlarm(id, data);
   }
 
   async deleteAlarm(id: string, userId: string) {

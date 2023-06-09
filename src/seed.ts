@@ -39,6 +39,19 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
   for (let i = 0; i < 100; i++) {
+    await database.userAlarm.create({
+      data: {
+        user: {
+          connect: {
+            id: testUser.id,
+          },
+        },
+        title: `테스트 알람${i + 1}`,
+        content: `테스트 알람 내용${i + 1}`,
+        isRead: i % 2 === 0,
+      },
+    });
+
     await database.space.create({
       data: {
         thumbnail: 'thumbnail',
