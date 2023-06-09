@@ -45,7 +45,9 @@ export class CreateRentalTypeDTO {
       this.baseHour = props.baseHour;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
-      this.timeCostInfos = props.timeCostInfos?.map((timeCostInfo) => new CreateTimeCostInfoDTO(timeCostInfo));
+      this.timeCostInfos = props.timeCostInfos
+        ?.map((timeCostInfo) => new CreateTimeCostInfoDTO(timeCostInfo))
+        .sort((a, b) => a.time - b.time);
     }
   }
 }
