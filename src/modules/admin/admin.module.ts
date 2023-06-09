@@ -4,6 +4,7 @@ import { SchedulerEvent } from '@/event/scheduler';
 
 import { AlarmRepository } from '../alarm/alarm.repository';
 import { HostRepository } from '../host/host.repository';
+import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -47,6 +48,7 @@ import { AdminSpaceService } from './space/space.service';
     AdminSpaceService,
     SpaceRepository,
     SchedulerEvent,
+    LocationRepository,
   ],
   controllers: [
     AdminController,
