@@ -2,8 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 export interface TimeCostInfoDTOProps {
   cost: number;
-  startAt: number;
-  endAt: number;
+  time: number;
 }
 
 export class TimeCostInfoDTO {
@@ -11,14 +10,10 @@ export class TimeCostInfoDTO {
   cost: number;
 
   @Property({ apiProperty: { type: 'number', description: '시작 시간' } })
-  startAt: number;
-
-  @Property({ apiProperty: { type: 'number', description: '종료 시간' } })
-  endAt: number;
+  time: number;
 
   constructor(props: TimeCostInfoDTOProps) {
     this.cost = props.cost;
-    this.startAt = props.startAt;
-    this.endAt = props.endAt;
+    this.time = props.time;
   }
 }

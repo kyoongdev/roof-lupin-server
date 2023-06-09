@@ -175,10 +175,9 @@ model RentalType {
 
 //INFO: 시간별 예약 추가 정보
 model TimeCostInfo {
-  id      String @id @default(uuid())
-  cost    Int    @db.MediumInt
-  startAt Int    @db.TinyInt
-  endAt   Int    @db.TinyInt
+  id   String @id @default(uuid())
+  cost Int    @db.MediumInt
+  time Int    @db.TinyInt
 
   rentalTypeId String     @unique
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)

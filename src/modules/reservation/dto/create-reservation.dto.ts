@@ -96,7 +96,7 @@ export class CreateReservationDTO {
     const timeCostInfos = rentalType.timeCostInfos;
 
     const realCost = timeCostInfos.reduce<number>((acc, next) => {
-      if (17 <= next.startAt || next.endAt <= 20) {
+      if (this.startAt <= next.time && next.time <= this.endAt) {
         acc += next.cost;
       }
       return acc;
