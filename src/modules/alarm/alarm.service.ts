@@ -23,10 +23,14 @@ export class AlarmService {
     });
     const alarms = await this.alarmRepository.findAlarms({
       where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        isRead: 'asc',
-      },
+      orderBy: [
+        {
+          isRead: 'asc',
+        },
+        {
+          createdAt: 'desc',
+        },
+      ],
       skip,
       take,
     });
