@@ -448,10 +448,10 @@ model UserAlarm {
   content String
   link    String?
 
-  alarmType Int       @db.TinyInt
-  alarmAt   DateTime?
-
-  createdAt DateTime @default(now())
+  alarmAt  DateTime?
+  isRead   Boolean   @default(false)
+  isPush   Boolean   @default(false)
+  isPushed Boolean   @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -540,17 +540,19 @@ model Hashtag {
 
 //INFO: 유저 쿠폰
 model UserCoupon {
-  id       String   @id @default(uuid())
-  userId   String
-  user     User     @relation(fields: [userId], references: [id])
-  couponId String
-  coupon   Coupon   @relation(fields: [couponId], references: [id])
-  count    Int      @default(1) @db.TinyInt
+  id String @id @default(uuid())
+
+  count   Int      @default(1) @db.TinyInt
   //INFO: 기본 6자리 랜덤 생성
-  code     String   @unique @default(dbgenerated("(left(uuid(),6))")) @db.Char(6)
-  dueDate  DateTime @db.DateTime
+  code    String   @unique @default(dbgenerated("(left(uuid(),6))")) @db.Char(6)
+  dueDate DateTime @db.DateTime
 
   createdAt DateTime @default(now())
+
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  couponId String
+  coupon   Coupon @relation(fields: [couponId], references: [id])
 }
 
 //INFO: 쿠폰
