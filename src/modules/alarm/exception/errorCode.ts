@@ -3,9 +3,10 @@ import { HttpStatus } from '@nestjs/common';
 import { ErrorCode } from 'wemacu-nestjs';
 
 export const ALARM_NOT_FOUND = '알람을 찾을 수 없습니다.' as const;
+export const ALARM_MUTATION_FORBIDDEN = '알람을 수정할 권한이 없습니다.' as const;
 
 export const ALARM_ERROR_CODE: ErrorCode<
-  'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT' | 'UNAUTHORIZED' | 'NOT_FOUND'
+  'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT' | 'FORBIDDEN' | 'NOT_FOUND'
 > = {
   BAD_REQUEST: (message = 'Bad Request') => ({
     code: HttpStatus.BAD_REQUEST,
@@ -19,8 +20,8 @@ export const ALARM_ERROR_CODE: ErrorCode<
     code: HttpStatus.CONFLICT,
     message,
   }),
-  UNAUTHORIZED: (message = 'Unauthorized') => ({
-    code: HttpStatus.UNAUTHORIZED,
+  FORBIDDEN: (message = 'FORBIDDEN') => ({
+    code: HttpStatus.FORBIDDEN,
     message,
   }),
   NOT_FOUND: (message = 'Not Found') => ({
