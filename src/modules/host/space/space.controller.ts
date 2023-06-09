@@ -6,6 +6,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
 import { SpaceDetailDTO, SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
+import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -89,6 +90,36 @@ export class HostSpaceController {
   )
   async updateSpace(@ReqUser() user: RequestHost, @Param('spaceId') id: string, @Body() body: UpdateSpaceDTO) {
     await this.spaceService.updateSpace(id, user.id, body);
+  }
+
+  @Patch('rental-type/:rentalTypeId')
+  @RequestApi({
+    summary: {
+      description: '공간 대여 정보 수정',
+      summary: '공간 대여정보 수정 수정 - 호스트만 사용가능합니다.',
+    },
+    body: {
+      type: UpdateRentalTypeDTO,
+    },
+    params: {
+      name: 'rentalTypeId',
+      description: '공간 대여 정보 아이디',
+      required: true,
+      type: 'string',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateRentalType(
+    @ReqUser() user: RequestHost,
+    @Param('rentalTypeId') id: string,
+    @Body() body: UpdateRentalTypeDTO
+  ) {
+    await this.spaceService.updateRentalType(id, user.id, body);
   }
 
   @Delete(':spaceId')
