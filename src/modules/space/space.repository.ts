@@ -13,7 +13,7 @@ import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateRefundPolicyDTO } from './dto/refund';
-import { RentalTypeDTO, SpaceRentalTypeDTO } from './dto/rentalType';
+import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
 import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from './exception/errorCode';
@@ -176,6 +176,7 @@ export class SpaceRepository {
         : await prisma.location.create({
             data: locationProps,
           });
+
       const space = await prisma.space.create({
         data: {
           ...rest,
@@ -197,9 +198,7 @@ export class SpaceRepository {
           cautions: {
             create: cautions.map((caution) => caution),
           },
-          rentalType: {
-            create: rentalTypes.map((rentalType) => rentalType),
-          },
+
           facilities: {
             create: facilities.map((facility) => ({
               facilityId: facility.id,
@@ -237,6 +236,8 @@ export class SpaceRepository {
           },
         },
       });
+      await this.createRentalTypes(prisma, space.id, rentalTypes);
+
       return space.id;
     });
 
@@ -322,13 +323,7 @@ export class SpaceRepository {
             spaceId,
           },
         });
-
-        updateArgs.data = {
-          ...updateArgs.data,
-          rentalType: {
-            create: rentalTypes.map((rentalType) => rentalType),
-          },
-        };
+        await this.createRentalTypes(prisma, spaceId, rentalTypes);
       }
 
       if (locationProps) {
@@ -532,6 +527,33 @@ export class SpaceRepository {
     });
 
     return new SpaceRentalTypeDTO(rentalTypes);
+  }
+
+  async createRentalTypes(prisma: TransactionPrisma, spaceId: string, data: CreateRentalTypeDTO[]) {
+    await Promise.all(
+      data.map(async (rentalType) => {
+        const { timeCostInfos, ...rest } = rentalType;
+        const createArgs: Prisma.RentalTypeCreateArgs = {
+          data: {
+            ...rest,
+            space: {
+              connect: {
+                id: spaceId,
+              },
+            },
+          },
+        };
+        if (rest.rentalType === 1) {
+          createArgs.data = {
+            ...createArgs.data,
+            timeCostInfo: {
+              create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
+            },
+          };
+        }
+        await prisma.rentalType.create(createArgs);
+      })
+    );
   }
 
   async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {

@@ -6,7 +6,12 @@ import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
-import { HOST_ERROR_CODE, HOST_SPACE_FIND_FORBIDDEN, HOST_SPACE_MUTATION_FORBIDDEN } from '../exception/errorCode';
+import {
+  HOST_ERROR_CODE,
+  HOST_SPACE_FIND_FORBIDDEN,
+  HOST_SPACE_MUTATION_FORBIDDEN,
+  HOST_SPACE_RENTAL_TYPE_BAD_REQUEST,
+} from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
@@ -33,6 +38,12 @@ export class HostSpaceService {
   }
 
   async createSpace(hostId: string, data: CreateSpaceDTO) {
+    const rentalType = data.rentalTypes;
+    const timeCostCount = rentalType.filter((item) => item.rentalType === 1).length;
+    if (timeCostCount > 1) {
+      throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_SPACE_RENTAL_TYPE_BAD_REQUEST));
+    }
+
     return await this.spaceRepository.createSpace(hostId, data);
   }
 
