@@ -9,6 +9,8 @@ export interface AlarmDTOProps {
   link?: string;
   alarmAt?: Date;
   isRead: boolean;
+  isPush: boolean;
+  isPushed: boolean;
   user: CommonUserProps;
 }
 
@@ -31,6 +33,12 @@ export class AlarmDTO {
   @Property({ apiProperty: { type: 'boolean', description: '읽음 여부' } })
   isRead: boolean;
 
+  @Property({ apiProperty: { type: 'boolean', description: '푸시 여부' } })
+  isPush: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '푸시 전송 여부' } })
+  isPushed: boolean;
+
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
@@ -41,6 +49,8 @@ export class AlarmDTO {
     this.link = props.link;
     this.alarmAt = props.alarmAt;
     this.isRead = props.isRead;
+    this.isPush = props.isPush;
+    this.isPushed = props.isPushed;
     this.user = new CommonUserDTO(props.user);
   }
 }
