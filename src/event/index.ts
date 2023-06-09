@@ -1,2 +1,3 @@
 import { ClientRevalidateEventProvider } from './client';
-export const EventProviders = [ClientRevalidateEventProvider];
+import { SchedulerEventProvider } from './scheduler';
+export const EventProviders = [ClientRevalidateEventProvider, SchedulerEventProvider];

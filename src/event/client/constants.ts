@@ -1,4 +1,4 @@
-export const EVENT_NAME = {
+export const CLIENT_EVENT_NAME = {
   CLIENT_REVALIDATE: Symbol('client.revalidate'),
 } as const;
 

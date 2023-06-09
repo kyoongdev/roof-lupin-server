@@ -10,7 +10,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminAlarmService } from './alarm.service';
 
-@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+// @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins/alarms', '[관리자] 알람 관리')
 export class AdminAlarmController {
   constructor(private readonly alarmService: AdminAlarmService) {}

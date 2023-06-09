@@ -38,6 +38,7 @@ export const seedDatabase = async (database: PrismaService) => {
       nickname: 'testUser',
     },
   });
+
   for (let i = 0; i < 100; i++) {
     await database.userAlarm.create({
       data: {

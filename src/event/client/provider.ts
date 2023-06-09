@@ -3,11 +3,11 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 import axios from 'axios';
 
-import { EVENT_NAME } from './constants';
+import { CLIENT_EVENT_NAME } from './constants';
 
 @Injectable()
 export class ClientRevalidateEventProvider {
-  @OnEvent(EVENT_NAME.CLIENT_REVALIDATE)
+  @OnEvent(CLIENT_EVENT_NAME.CLIENT_REVALIDATE)
   revalidate(payload: string) {
     axios.get(payload);
   }

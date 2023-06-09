@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 
+import { SchedulerEvent } from '@/event/scheduler';
+
+import { AlarmRepository } from '../alarm/alarm.repository';
 import { HostRepository } from '../host/host.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
@@ -9,6 +12,8 @@ import { ReviewRepository } from '../review/review.repository';
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
+import { AdminAlarmController } from './alarm/alarm.controller';
+import { AdminAlarmService } from './alarm/alarm.service';
 import { AdminHostController } from './host';
 import { AdminHostService } from './host/host.service';
 import { AdminQnAController } from './qna';
@@ -34,6 +39,9 @@ import { AdminReviewService } from './review/review.service';
     HostRepository,
     AdminReservationService,
     ReservationRepository,
+    AdminAlarmService,
+    AlarmRepository,
+    SchedulerEvent,
   ],
   controllers: [
     AdminController,
@@ -42,6 +50,7 @@ import { AdminReviewService } from './review/review.service';
     AdminReportController,
     AdminHostController,
     AdminReservationController,
+    AdminAlarmController,
   ],
 })
 export class AdminModule {}
