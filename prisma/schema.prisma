@@ -181,7 +181,7 @@ model TimeCostInfo {
   endAt   Int    @db.TinyInt
 
   rentalTypeId String     @unique
-  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
+  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 예약 정보

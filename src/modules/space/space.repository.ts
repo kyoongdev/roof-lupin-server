@@ -323,6 +323,7 @@ export class SpaceRepository {
             spaceId,
           },
         });
+
         await this.createRentalTypes(prisma, spaceId, rentalTypes);
       }
 
