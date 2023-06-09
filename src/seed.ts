@@ -13,6 +13,19 @@ export const seedDatabase = async (database: PrismaService) => {
   const hostPassword = Encrypt.hashPassword('1234', salt);
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
 
+  await database.homeImage.create({
+    data: {
+      isDefault: true,
+      url: '	https://s.pinimg.com/webapp/shop-bd0c8a04.png',
+    },
+  });
+  await database.slogan.create({
+    data: {
+      isDefault: true,
+      content: '도심 속 루프라이프의 시작',
+    },
+  });
+
   await database.admin.create({
     data: {
       name: '통합관리자',
