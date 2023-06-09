@@ -8,6 +8,7 @@ import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { SpaceRepository } from '../space/space.repository';
 
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
@@ -24,6 +25,8 @@ import { AdminReservationController } from './reservation/reservation.controller
 import { AdminReservationService } from './reservation/reservation.service';
 import { AdminReviewController } from './review';
 import { AdminReviewService } from './review/review.service';
+import { AdminSpaceController } from './space/space.controller';
+import { AdminSpaceService } from './space/space.service';
 
 @Module({
   providers: [
@@ -41,6 +44,8 @@ import { AdminReviewService } from './review/review.service';
     ReservationRepository,
     AdminAlarmService,
     AlarmRepository,
+    AdminSpaceService,
+    SpaceRepository,
     SchedulerEvent,
   ],
   controllers: [
@@ -51,6 +56,7 @@ import { AdminReviewService } from './review/review.service';
     AdminHostController,
     AdminReservationController,
     AdminAlarmController,
+    AdminSpaceController,
   ],
 })
 export class AdminModule {}

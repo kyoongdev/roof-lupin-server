@@ -35,6 +35,7 @@ export class AdminAlarmService {
     const alarmAt = new Date(data.alarmAt);
     alarmAt.setSeconds(alarmAt.getSeconds() + 5);
     this.schedulerEvent.createSchedule(alarmId, alarmAt, () => {
+      //TODO: fcm logic
       console.log('띵동');
     });
 
@@ -45,6 +46,7 @@ export class AdminAlarmService {
     const alarmAt = new Date(data.alarmAt);
     alarmAt.setSeconds(alarmAt.getSeconds() + 5);
     this.schedulerEvent.updateSchedule(id, alarmAt, () => {
+      //TODO: fcm logic
       console.log('띵동');
     });
 
