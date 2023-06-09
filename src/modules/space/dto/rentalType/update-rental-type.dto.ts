@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '../timeCostInfo';
+import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
 
 import { RentalTypeValidation } from './validation/rental-type.validation';
 
@@ -11,7 +11,7 @@ export interface UpdateRentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
-  timeCostInfos?: TimeCostInfoDTOProps[];
+  timeCostInfos?: UpdateTimeCostInfoDTOProps[];
 }
 
 export class UpdateRentalTypeDTO {
@@ -34,8 +34,8 @@ export class UpdateRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '종료 시간' } })
   endAt?: number;
 
-  @Property({ apiProperty: { type: TimeCostInfoDTO, isArray: true, nullable: true, description: '시간별 가격' } })
-  timeCostInfos?: TimeCostInfoDTOProps[];
+  @Property({ apiProperty: { type: UpdateTimeCostInfoDTO, isArray: true, nullable: true, description: '시간별 가격' } })
+  timeCostInfos?: UpdateTimeCostInfoDTO[];
 
   constructor(props?: UpdateRentalTypeDTOProps) {
     if (props) {
@@ -45,7 +45,7 @@ export class UpdateRentalTypeDTO {
       this.baseHour = props.baseHour;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
-      this.timeCostInfos = props.timeCostInfos?.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
+      this.timeCostInfos = props.timeCostInfos?.map((timeCostInfo) => new UpdateTimeCostInfoDTO(timeCostInfo));
     }
   }
 }

@@ -13,7 +13,7 @@ import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateRefundPolicyDTO } from './dto/refund';
-import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto/rentalType';
+import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO, UpdateRentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
 import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from './exception/errorCode';
@@ -555,6 +555,32 @@ export class SpaceRepository {
         await prisma.rentalType.create(createArgs);
       })
     );
+  }
+
+  async updateRentalType(rentalTypeId: string, data: UpdateRentalTypeDTO) {
+    const { timeCostInfos, ...rest } = data;
+
+    const updateArgs: Prisma.RentalTypeUpdateArgs = {
+      where: {
+        id: rentalTypeId,
+      },
+      data: {
+        ...rest,
+      },
+    };
+    if (timeCostInfos) {
+      updateArgs.data = {
+        ...updateArgs.data,
+        timeCostInfo: {
+          deleteMany: {
+            rentalTypeId,
+          },
+          create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
+        },
+      };
+    }
+
+    await this.database.rentalType.update(updateArgs);
   }
 
   async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {

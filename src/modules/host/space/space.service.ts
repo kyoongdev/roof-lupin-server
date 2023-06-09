@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
+import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
@@ -45,6 +46,13 @@ export class HostSpaceService {
     }
 
     return await this.spaceRepository.createSpace(hostId, data);
+  }
+  async updateRentalType(rentalTypeId: string, hostId: string, data: UpdateRentalTypeDTO) {
+    const space = await this.spaceRepository.findSpace(rentalTypeId);
+    if (space.host.id !== hostId) {
+      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+    }
+    await this.spaceRepository.updateRentalType(rentalTypeId, data);
   }
 
   async updateSpace(id: string, hostId: string, data: UpdateSpaceDTO) {
