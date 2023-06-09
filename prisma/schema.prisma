@@ -545,7 +545,6 @@ model UserCoupon {
 
   count   Int      @default(1) @db.TinyInt
   //INFO: 기본 6자리 랜덤 생성
-  code    String   @unique @default(dbgenerated("(left(uuid(),6))")) @db.Char(6)
   dueDate DateTime @db.DateTime
 
   createdAt DateTime @default(now())
@@ -563,6 +562,7 @@ model Coupon {
   discountType  Int    @db.TinyInt
   discountValue Int    @db.MediumInt
   description   String @db.VarChar(100)
+  code          String @unique @default(uuid()) @db.Char(8)
 
   userCoupons UserCoupon[]
 }
