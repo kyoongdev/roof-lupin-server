@@ -1,4 +1,4 @@
-import { Get } from '@nestjs/common';
+import { Get, Param } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -30,5 +30,25 @@ export class AdminAlarmController {
   })
   async getAlarms(@Paging() paging: PagingDTO) {
     return await this.alarmService.findPagingAlarms(paging);
+  }
+
+  @Get(':alarmId/detail')
+  @RequestApi({
+    summary: {
+      description: '알람 상세 불러오기',
+      summary: '알람 상세 불러오기 - 관리자만 사용 가능합니다.',
+    },
+    params: {
+      name: 'alarmId',
+      type: 'string',
+      required: true,
+      description: '알람 ID',
+    },
+  })
+  @ResponseApi({
+    type: AlarmDTO,
+  })
+  async getAlarm(@Param('alarmId') id: string) {
+    return await this.alarmService.findAlarm(id);
   }
 }
