@@ -16,7 +16,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.homeImage.create({
     data: {
       isDefault: true,
-      url: '	https://s.pinimg.com/webapp/shop-bd0c8a04.png',
+      url: 'https://s.pinimg.com/webapp/shop-bd0c8a04.png',
     },
   });
   await database.slogan.create({
