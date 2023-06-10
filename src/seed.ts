@@ -107,6 +107,7 @@ export const seedDatabase = async (database: PrismaService) => {
             },
           ],
         },
+        refundPolicies: {},
         host: {
           connect: {
             id: host.id,

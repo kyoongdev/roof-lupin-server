@@ -51,7 +51,7 @@ model Curation {
   thumbnail String
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,7 +129,7 @@ model Space {
   categories            SpaceCategory[]
   hashtags              SpaceHashtag[]
   spaceQnAs             SpaceQnA[]
-  mainCategory          MainCategory?          @relation(fields: [mainCategoryId], references: [id])
+  mainCategory          MainCategory?          @relation(fields: [mainCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   mainCategoryId        String?
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
@@ -149,7 +149,7 @@ model PublicTransportation {
   timeTaken Int    @db.TinyInt
 
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 view SpaceView {
@@ -196,9 +196,9 @@ model Reservation {
   cost    Int @db.MediumInt
 
   rentalTypeId String
-  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id])
+  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId       String
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -214,9 +214,9 @@ model SpaceReport {
   content      String @db.MediumText
 
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -229,9 +229,9 @@ model SpaceQnA {
   content String @db.MediumText
 
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -248,9 +248,9 @@ model SpaceQnAAnswer {
   updatedAt DateTime @updatedAt
 
   spaceQnAId String
-  spaceQnA   SpaceQnA @relation(fields: [spaceQnAId], references: [id])
+  spaceQnA   SpaceQnA @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hostId     String
-  host       Host     @relation(fields: [hostId], references: [id])
+  host       Host     @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 공간 리뷰
@@ -283,9 +283,9 @@ model SpaceReviewImage {
 //INFO: 관심있는 공간 (마이페이지에서 확인 가능)
 model SpaceInterest {
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([userId, spaceId])
 }
@@ -293,9 +293,9 @@ model SpaceInterest {
 //INFO: 공간 사진
 model SpaceImage {
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   imageId String
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, imageId])
 }
@@ -308,57 +308,57 @@ model RefundPolicy {
   dueDateType Int    @db.TinyInt // 1 = 일, 2 = 시간
 
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SpaceCaution {
   id      String @id @default(uuid())
   content String
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SpaceLocation {
   spaceId    String   @unique
-  space      Space    @relation(fields: [spaceId], references: [id])
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId String   @unique
-  location   Location @relation(fields: [locationId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, locationId])
 }
 
 model SpaceFacility {
   spaceId    String
-  space      Space    @relation(fields: [spaceId], references: [id])
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   facilityId String
-  facility   Facility @relation(fields: [facilityId], references: [id])
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, facilityId])
 }
 
 model SpaceService {
   spaceId   String
-  space     Space   @relation(fields: [spaceId], references: [id])
+  space     Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   serviceId String
-  service   Service @relation(fields: [serviceId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, serviceId])
 }
 
 model SpaceCategory {
   spaceId    String
-  space      Space    @relation(fields: [spaceId], references: [id])
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, categoryId])
 }
 
 model SpaceHashtag {
   spaceId   String
-  space     Space   @relation(fields: [spaceId], references: [id])
+  space     Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hashtagId String
-  hashtag   Hashtag @relation(fields: [hashtagId], references: [id])
+  hashtag   Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceId, hashtagId])
 }
