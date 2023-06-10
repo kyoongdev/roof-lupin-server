@@ -18,7 +18,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.homeImage.create({
     data: {
       isDefault: true,
-      url: 'https://s.pinimg.com/webapp/shop-bd0c8a04.png',
+      url: 'https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg',
     },
   });
   await database.slogan.create({
