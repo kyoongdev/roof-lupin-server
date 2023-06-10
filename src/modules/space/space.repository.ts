@@ -75,6 +75,16 @@ export class SpaceRepository {
     if (!space) {
       throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
     }
+
+    const reviewScore = await this.database.spaceReview.aggregate({
+      where: {
+        spaceId: id,
+      },
+      _avg: {
+        score: true,
+      },
+    });
+
     const {
       cautions,
       categories,
@@ -104,6 +114,7 @@ export class SpaceRepository {
       services: services.map(({ service }) => service),
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       cost: space.minCost,
+      averageScore: reviewScore._avg.score,
     });
   }
 
@@ -124,11 +135,7 @@ export class SpaceRepository {
             location: true,
           },
         },
-        _count: {
-          select: {
-            reviews: true,
-          },
-        },
+        reviews: true,
       },
       ...args,
     });
@@ -139,9 +146,10 @@ export class SpaceRepository {
         new SpaceDTO({
           ...space,
           cost: space.minCost,
-          reviewCount: space._count.reviews,
+          reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location?.['location'],
+          averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
         })
     );
   }

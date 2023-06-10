@@ -88,12 +88,11 @@ model MainCategory {
 }
 
 model Space {
-  id           String @id @default(uuid())
+  id          String @id @default(uuid())
   //NOTE: 공간 이름
-  title        String @db.VarChar(120)
+  title       String @db.VarChar(120)
   //NOTE: 공간 소개글
-  description  String
-  averageScore Int    @default(0) @db.TinyInt
+  description String
 
   spaceType         Int?   @db.TinyInt
   buildingType      Int?   @db.TinyInt
