@@ -10,12 +10,12 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.user.deleteMany({});
   await database.admin.deleteMany({});
   await database.slogan.deleteMany({});
-  await database.homeImage.deleteMany({});
+  await database.mainImage.deleteMany({});
   const salt = Encrypt.createSalt();
   const hostPassword = Encrypt.hashPassword('1234', salt);
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
 
-  await database.homeImage.create({
+  await database.mainImage.create({
     data: {
       isDefault: true,
       url: 'https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg',

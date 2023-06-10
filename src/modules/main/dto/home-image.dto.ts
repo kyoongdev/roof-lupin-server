@@ -1,8 +1,8 @@
-import { HomeImage } from '@prisma/client';
+import { MainImage } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
-export type HomeImageDTOProps = HomeImage;
+export type MainImageDTOProps = MainImage;
 
-export class HomeImageDTO {
+export class MainImageDTO {
   @Property({ apiProperty: { type: 'string', description: '홈 이미지 아이디' } })
   id: string;
 
@@ -12,7 +12,7 @@ export class HomeImageDTO {
   @Property({ apiProperty: { type: 'string', description: '기본 설정 여부' } })
   isDefault: boolean;
 
-  constructor(props: HomeImageDTOProps) {
+  constructor(props: MainImageDTOProps) {
     this.id = props.id;
     this.url = props.url;
     this.isDefault = props.isDefault;

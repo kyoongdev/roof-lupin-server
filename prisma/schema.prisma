@@ -65,7 +65,7 @@ model Image {
   spaceReviewImages SpaceReviewImage[]
 }
 
-model HomeImage {
+model MainImage {
   id        String  @id @default(uuid())
   url       String
   isDefault Boolean @default(false)
@@ -77,7 +77,7 @@ model Slogan {
   isDefault Boolean @default(false)
 }
 
-model HomeCategory {
+model MainCategory {
   id String @id @default(uuid())
 
   title String @db.VarChar(120)
@@ -129,8 +129,8 @@ model Space {
   categories            SpaceCategory[]
   hashtags              SpaceHashtag[]
   spaceQnAs             SpaceQnA[]
-  homeCategory          HomeCategory?          @relation(fields: [homeCategoryId], references: [id])
-  homeCategoryId        String?
+  mainCategory          MainCategory?          @relation(fields: [mainCategoryId], references: [id])
+  mainCategoryId        String?
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
 }

@@ -5,7 +5,7 @@ interface Props {
   isDefault?: boolean;
 }
 
-export class CreateHomeImageDTO {
+export class CreateMainImageDTO {
   @Property({ apiProperty: { type: 'string', description: '홈 배경 이미지 url' } })
   url: string;
 

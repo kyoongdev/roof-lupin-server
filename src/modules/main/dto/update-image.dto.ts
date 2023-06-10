@@ -3,7 +3,7 @@ interface UpdateHomeImageDTOProps {
   isDefault: boolean;
 }
 
-export class UpdateHomeImageDTO {
+export class UpdateMainImageDTO {
   @Property({ apiProperty: { type: 'boolean' } })
   isDefault: boolean;
 

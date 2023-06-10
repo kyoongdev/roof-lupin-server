@@ -11,6 +11,7 @@ import { GlobalModule } from './global';
 import { HomeModule } from './home/home.module';
 import { HostModule } from './host/host.module';
 import { LocationModule } from './location/location.module';
+import { MainModule } from './main/main.module';
 import { QnaModule } from './qna/qna.module';
 import { ReportModule } from './report/report.module';
 import { ReservationModule } from './reservation/reservation.module';
@@ -40,4 +41,5 @@ export const Modules = [
   LocationModule,
   ReservationModule,
   AlarmModule,
+  MainModule,
 ];
