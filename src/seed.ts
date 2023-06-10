@@ -1,3 +1,4 @@
+import { Space } from '@prisma/client';
 import schedule from 'node-schedule';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -54,6 +55,7 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
 
+  const spaces: Space[] = [];
   for (let i = 0; i < 100; i++) {
     await database.userAlarm.create({
       data: {
@@ -68,7 +70,7 @@ export const seedDatabase = async (database: PrismaService) => {
       },
     });
 
-    await database.space.create({
+    const space = await database.space.create({
       data: {
         thumbnail: 'thumbnail',
         minCost: 10000,
@@ -110,5 +112,108 @@ export const seedDatabase = async (database: PrismaService) => {
         },
       },
     });
+    spaces.push(space);
   }
+
+  const mainCategory1 = await database.mainCategory.create({
+    data: {
+      highlightTitle: '8월 인기',
+      title: '기획전',
+    },
+  });
+  const mainCategory2 = await database.mainCategory.create({
+    data: {
+      highlightTitle: '루프탑 바',
+      title: '인기 10위',
+    },
+  });
+  const mainCategory3 = await database.mainCategory.create({
+    data: {
+      highlightTitle: '여름 휴가',
+      title: '옥상 바베큐',
+    },
+  });
+  const mainCategory4 = await database.mainCategory.create({
+    data: {
+      highlightTitle: '루프루팡 픽!',
+      title: '최고의 옥상',
+    },
+  });
+  const mainCategory5 = await database.mainCategory.create({
+    data: {
+      highlightTitle: '옥상에서 즐기는',
+      title: '영화 감상',
+    },
+  });
+
+  await Promise.all(
+    spaces.map(async (spaces, index) => {
+      if (index < 5) {
+        await database.mainCategory.update({
+          where: {
+            id: mainCategory1.id,
+          },
+          data: {
+            spaces: {
+              connect: {
+                id: spaces.id,
+              },
+            },
+          },
+        });
+      } else if (index < 10) {
+        await database.mainCategory.update({
+          where: {
+            id: mainCategory2.id,
+          },
+          data: {
+            spaces: {
+              connect: {
+                id: spaces.id,
+              },
+            },
+          },
+        });
+      } else if (index < 15) {
+        await database.mainCategory.update({
+          where: {
+            id: mainCategory3.id,
+          },
+          data: {
+            spaces: {
+              connect: {
+                id: spaces.id,
+              },
+            },
+          },
+        });
+      } else if (index < 20) {
+        await database.mainCategory.update({
+          where: {
+            id: mainCategory4.id,
+          },
+          data: {
+            spaces: {
+              connect: {
+                id: spaces.id,
+              },
+            },
+          },
+        });
+      } else if (index < 25) {
+        await database.mainCategory.update({
+          where: {
+            id: mainCategory5.id,
+          },
+          data: {
+            spaces: {
+              connect: {
+                id: spaces.id,
+              },
+            },
+          },
+        });
+      }
+    })
+  );
 };

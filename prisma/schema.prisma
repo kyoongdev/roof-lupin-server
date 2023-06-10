@@ -80,8 +80,9 @@ model Slogan {
 model MainCategory {
   id String @id @default(uuid())
 
-  title String @db.VarChar(120)
-  order Int    @default(0) @db.TinyInt
+  highlightTitle String @db.VarChar(120)
+  title          String @db.VarChar(120)
+  order          Int    @default(0) @db.TinyInt
 
   spaces Space[]
 }
