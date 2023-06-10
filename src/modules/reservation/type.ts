@@ -1,10 +1,8 @@
-import type { PublicTransportation, RentalType, Space, SpaceLocation } from '@prisma/client';
+import type { PublicTransportation, RentalType, Space, SpaceLocation, SpaceReview } from '@prisma/client';
 
 export type CommonReservation = RentalType & {
   space: Space & {
-    _count: {
-      reviews: number;
-    };
+    reviews: SpaceReview[];
     location: SpaceLocation;
     publicTransportations: PublicTransportation[];
   };

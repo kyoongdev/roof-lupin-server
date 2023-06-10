@@ -24,11 +24,7 @@ export class ReservationRepository {
           include: {
             space: {
               include: {
-                _count: {
-                  select: {
-                    reviews: true,
-                  },
-                },
+                reviews: true,
                 location: true,
                 publicTransportations: true,
               },
@@ -44,6 +40,7 @@ export class ReservationRepository {
 
     const { rentalType, ...rest } = reservation;
     const { space, ...restRentalType } = rentalType;
+    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
     return new ReservationDetailDTO({
       ...rest,
@@ -51,9 +48,10 @@ export class ReservationRepository {
       space: {
         ...space,
         cost: space.minCost,
-        reviewCount: space._count.reviews,
+        reviewCount: space.reviews.length,
         publicTransportation: space.publicTransportations?.at(-1),
         location: space.location?.['location'],
+        averageScore,
       },
     });
   }
@@ -71,11 +69,7 @@ export class ReservationRepository {
           include: {
             space: {
               include: {
-                _count: {
-                  select: {
-                    reviews: true,
-                  },
-                },
+                reviews: true,
                 location: true,
                 publicTransportations: true,
               },
@@ -94,6 +88,7 @@ export class ReservationRepository {
       const { rentalType, ...rest } = reservation;
       const { space, ...restRentalType } = rentalType as CommonReservation;
 
+      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
       return new ReservationDTO({
         ...rest,
         user: rest.user,
@@ -101,9 +96,10 @@ export class ReservationRepository {
         space: {
           ...space,
           cost: space.minCost,
-          reviewCount: space._count.reviews,
+          reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location?.['location'],
+          averageScore: averageScore,
         },
       });
     });

@@ -82,11 +82,37 @@ export const seedDatabase = async (database: PrismaService) => {
         overflowUserCost: i * 1000,
         overflowUserCount: 5,
         buildingType: 1,
+        images: {
+          create: [
+            {
+              image: {
+                create: {
+                  url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                },
+              },
+            },
+          ],
+        },
         host: {
           connect: {
             id: host.id,
           },
         },
+
         rentalType: {
           create: [
             {

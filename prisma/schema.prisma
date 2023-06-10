@@ -92,7 +92,7 @@ model Space {
   //NOTE: 공간 이름
   title       String @db.VarChar(120)
   //NOTE: 공간 소개글
-  description String
+  description String @db.MediumText
 
   spaceType         Int?   @db.TinyInt
   buildingType      Int?   @db.TinyInt
