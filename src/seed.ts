@@ -12,6 +12,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.admin.deleteMany({});
   await database.slogan.deleteMany({});
   await database.mainImage.deleteMany({});
+  await database.location.deleteMany({});
   const salt = Encrypt.createSalt();
   const hostPassword = Encrypt.hashPassword('1234', salt);
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
@@ -107,32 +108,212 @@ export const seedDatabase = async (database: PrismaService) => {
             },
           ],
         },
-        refundPolicies: {},
+        refundPolicies: {
+          create: [
+            {
+              dueDate: 1,
+              dueDateType: 3,
+              refundRate: 10,
+            },
+            {
+              dueDate: 2,
+              dueDateType: 3,
+              refundRate: 20,
+            },
+            {
+              dueDate: 3,
+              dueDateType: 3,
+              refundRate: 50,
+            },
+          ],
+        },
+        cautions: {
+          create: [
+            {
+              content: '테스트 주의사항1',
+            },
+            {
+              content: '테스트 주의사항2',
+            },
+            {
+              content: '테스트 주의사항3',
+            },
+            {
+              content: '테스트 주의사항4',
+            },
+          ],
+        },
+        // rentalType: {
+        //   create: [
+        //     {
+        //       baseCost: 1000,
+        //       startAt: 13,
+        //       endAt: 22,
+        //       name: '시간대여',
+        //       rentalType: 1,
+        //       baseHour: 2,
+        //       timeCostInfo: {
+        //         create: [
+        //           {
+        //             cost: 1000,
+        //             time: 13,
+        //           },
+        //           {
+        //             cost: 1000,
+        //             time: 14,
+        //           },
+        //           {
+        //             cost: 1000,
+        //             time: 15,
+        //           },
+        //           {
+        //             cost: 1000,
+        //             time: 16,
+        //           },
+        //           {
+        //             cost: 2000,
+        //             time: 17,
+        //           },
+        //           {
+        //             cost: 2000,
+        //             time: 18,
+        //           },
+        //           {
+        //             cost: 2000,
+        //             time: 19,
+        //           },
+        //           {
+        //             cost: 2000,
+        //             time: 20,
+        //           },
+        //           {
+        //             cost: 2000,
+        //             time: 21,
+        //           },
+        //         ],
+        //       },
+        //     },
+        //     {
+        //       baseCost: 100000,
+        //       startAt: 14,
+        //       endAt: 20,
+        //       name: '패키지 대여',
+        //       rentalType: 2,
+        //       baseHour: 6,
+        //     },
+        //   ],
+        // },
+        location: {
+          create: {
+            roadAddress: '경기도 성남시 분당구 불정로 6 그린팩토리',
+            jibunAddress: '경기도 성남시 분당구 정자동 178-1 그린팩토리',
+            lng: '127.10522081658463',
+            lat: '37.35951219616309',
+          },
+        },
+        facilities: {
+          create: [
+            {
+              facility: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '주차 5대',
+                },
+              },
+            },
+            {
+              facility: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '3층',
+                },
+              },
+            },
+            {
+              facility: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '엘리베이터 없음',
+                },
+              },
+            },
+          ],
+        },
+        services: {
+          create: [
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '바베큐',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '반려동물 동반가능',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '전기',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '금연',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '인터넷/WIFI',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '장비대여',
+                },
+              },
+            },
+          ],
+        },
+        hashtags: {
+          create: [
+            {
+              hashtag: {
+                create: {
+                  name: '테스트해시태그1',
+                },
+              },
+            },
+          ],
+        },
+        publicTransportations: {
+          create: [
+            {
+              name: '부산역',
+              timeTaken: 25,
+            },
+          ],
+        },
         host: {
           connect: {
             id: host.id,
           },
-        },
-
-        rentalType: {
-          create: [
-            {
-              baseCost: (i + 1) * 20,
-              startAt: 10,
-              endAt: 15,
-              name: '테스트',
-              rentalType: 1,
-              baseHour: 12,
-            },
-            {
-              baseCost: (i + 1) * 22,
-              startAt: 10,
-              endAt: 15,
-              name: '테스트2',
-              rentalType: 1,
-              baseHour: 12,
-            },
-          ],
         },
       },
     });

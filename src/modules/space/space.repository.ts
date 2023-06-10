@@ -56,11 +56,7 @@ export class SpaceRepository {
             image: true,
           },
         },
-        location: {
-          include: {
-            location: true,
-          },
-        },
+        location: true,
         publicTransportations: true,
         refundPolicies: true,
         services: {
@@ -92,7 +88,6 @@ export class SpaceRepository {
       hashtags,
       host,
       images,
-      location,
       publicTransportations,
       refundPolicies,
       services,
@@ -105,7 +100,6 @@ export class SpaceRepository {
       cautions: cautions.map((caution) => caution),
       categories: categories.map(({ category }) => category),
       facilities: facilities.map(({ facility }) => facility),
-      location: location?.location,
       hashtags: hashtags.map(({ hashtag }) => hashtag),
       host,
       images: images.map(({ image }) => image),
@@ -130,11 +124,7 @@ export class SpaceRepository {
         ...args.orderBy,
       },
       include: {
-        location: {
-          include: {
-            location: true,
-          },
-        },
+        location: true,
         reviews: true,
       },
       ...args,
@@ -148,7 +138,7 @@ export class SpaceRepository {
           cost: space.minCost,
           reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
-          location: space.location?.['location'],
+          location: space.location,
           averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
         })
     );
@@ -172,18 +162,12 @@ export class SpaceRepository {
 
     const minCost = Math.min(...rentalTypes.map((rentalType) => rentalType.baseCost));
     const minSize = Math.min(...sizes.map((size) => size.size));
-    const isLocationExist = await this.locationRepository.checkLocationByLatLng(locationProps.lat, locationProps.lng);
 
     const id = await this.database.$transaction(async (prisma) => {
       const facilities = await this.findOrCreateFacilities(prisma, facilityProps);
       const services = await this.findOrCreateServices(prisma, servicesProps);
       const categories = await this.findOrCreateCategories(prisma, categoryProps);
       const hashtags = await this.findOrCreateHashtags(prisma, hashtagProps);
-      const location = isLocationExist
-        ? isLocationExist
-        : await prisma.location.create({
-            data: locationProps,
-          });
 
       const space = await prisma.space.create({
         data: {
@@ -235,11 +219,7 @@ export class SpaceRepository {
           },
           location: {
             create: {
-              location: {
-                connect: {
-                  id: location.id,
-                },
-              },
+              ...locationProps,
             },
           },
         },
@@ -342,26 +322,11 @@ export class SpaceRepository {
           },
         });
 
-        const isLocationExist = await prisma.location.findUnique({
-          where: {
-            lat_lng: {
-              lat: locationProps.lat,
-              lng: locationProps.lng,
-            },
-          },
-        });
-
-        const location = isLocationExist
-          ? isLocationExist
-          : await prisma.location.create({
-              data: locationProps,
-            });
-
         updateArgs.data = {
           ...updateArgs.data,
           location: {
             create: {
-              locationId: location.id,
+              ...locationProps,
             },
           },
         };

@@ -7,21 +7,4 @@ import { LocationDTO } from './dto';
 @Injectable()
 export class LocationRepository {
   constructor(private readonly database: PrismaService) {}
-
-  async checkLocationByLatLng(lat: string, lng: string) {
-    const location = await this.database.location.findUnique({
-      where: {
-        lat_lng: {
-          lat,
-          lng,
-        },
-      },
-    });
-
-    if (!location) {
-      return false;
-    }
-
-    return new LocationDTO(location);
-  }
 }
