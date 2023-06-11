@@ -23,7 +23,7 @@ export class ReviewService {
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
-    return await this.findReviews({
+    return await this.reviewRepository.findReviews({
       where: {
         ...args.where,
       },

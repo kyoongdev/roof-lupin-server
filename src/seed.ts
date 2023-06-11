@@ -13,6 +13,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.slogan.deleteMany({});
   await database.mainImage.deleteMany({});
   await database.location.deleteMany({});
+  await database.category.deleteMany({});
   const salt = Encrypt.createSalt();
   const hostPassword = Encrypt.hashPassword('1234', salt);
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
@@ -333,6 +334,28 @@ export const seedDatabase = async (database: PrismaService) => {
             {
               name: '부산역',
               timeTaken: 25,
+            },
+          ],
+        },
+        reviews: {
+          create: [
+            {
+              content: '오우 재밌어요',
+              score: 3,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+            },
+            {
+              content: '오우 재밌어요22',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
             },
           ],
         },
