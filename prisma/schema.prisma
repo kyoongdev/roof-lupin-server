@@ -77,16 +77,6 @@ model Slogan {
   isDefault Boolean @default(false)
 }
 
-model MainCategory {
-  id String @id @default(uuid())
-
-  highlightTitle String @db.VarChar(120)
-  title          String @db.VarChar(120)
-  order          Int    @default(0) @db.TinyInt
-
-  spaces Space[]
-}
-
 model Space {
   id          String @id @default(uuid())
   //NOTE: 공간 이름
@@ -122,15 +112,14 @@ model Space {
   refundPolicies RefundPolicy[]
   cautions       SpaceCaution[]
 
-  rentalType            RentalType[]
-  location              SpaceLocation?
-  facilities            SpaceFacility[]
-  services              SpaceService[]
-  categories            SpaceCategory[]
-  hashtags              SpaceHashtag[]
-  spaceQnAs             SpaceQnA[]
-  mainCategory          MainCategory?          @relation(fields: [mainCategoryId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  mainCategoryId        String?
+  rentalType RentalType[]
+  location   SpaceLocation?
+  facilities SpaceFacility[]
+  services   SpaceService[]
+  categories SpaceCategory[]
+  hashtags   SpaceHashtag[]
+  spaceQnAs  SpaceQnA[]
+
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
   recentSpaces          RecentSpace[]
@@ -534,8 +523,10 @@ model Service {
 model Category {
   id                   String          @id @default(uuid())
   name                 String          @db.VarChar(80)
+  highlight            String?         @db.VarChar(80)
   isHome               Boolean         @default(false)
   isRecommended        Boolean         @default(false)
+  isContent            Boolean         @default(false)
   iconPath             String?
   spaceUsageCategories SpaceCategory[]
 }
