@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CategoryDTO } from './dto';
+import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
 import { CategoryException } from './exception/category.exception';
 import { CATEGORY_ERROR_CODE, CATEGORY_NOT_FOUND } from './exception/errorCode';
 
@@ -31,7 +31,28 @@ export class CategoryRepository {
     return categories.map((category) => new CategoryDTO(category));
   }
 
-  async createCategory(data: Prisma.CategoryCreateInput) {
-    //
+  async createCategory(data: CreateCategoryDTO) {
+    const category = await this.database.category.create({
+      data,
+    });
+
+    return category.id;
+  }
+
+  async updateCategory(id: string, data: UpdateCategoryDTO) {
+    await this.database.category.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteCategory(id: string) {
+    await this.database.category.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
