@@ -25,6 +25,10 @@ export class CategoryRepository {
     return new CategoryDTO(category);
   }
 
+  async countCategories(args = {} as Prisma.CategoryCountArgs) {
+    return await this.database.category.count(args);
+  }
+
   async findCategories(args = {} as Prisma.CategoryFindManyArgs) {
     const categories = await this.database.category.findMany(args);
 

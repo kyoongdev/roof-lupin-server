@@ -527,6 +527,8 @@ model Category {
   id                   String          @id @default(uuid())
   name                 String          @db.VarChar(80)
   isHome               Boolean         @default(false)
+  isRecommended        Boolean         @default(false)
+  iconPath             String?
   spaceUsageCategories SpaceCategory[]
 }
 
