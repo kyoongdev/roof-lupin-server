@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CategoryRepository } from './category.repository';
-import { CreateCategoryDTO, UpdateCategoryDTO } from './dto';
+import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
 import { CategoryException } from './exception/category.exception';
 import { CATEGORY_ERROR_CODE, HOME_CATEGORY_COUNT, HOME_CATEGORY_ICON_PATH_BAD_REQUEST } from './exception/errorCode';
 
@@ -17,6 +18,22 @@ export class CategoryService {
 
   async findCategories(args = {} as Prisma.CategoryFindManyArgs) {
     return await this.categoryRepository.findCategories(args);
+  }
+
+  async findPagingCategories(paging: PagingDTO, args = {} as Prisma.CategoryFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.categoryRepository.countCategories({
+      where: {
+        ...args.where,
+      },
+    });
+    const categories = await this.categoryRepository.findCategories({
+      skip,
+      take,
+      ...args,
+    });
+
+    return new PaginationDTO<CategoryDTO>(categories, { count, paging });
   }
 
   async createCategory(data: CreateCategoryDTO) {
