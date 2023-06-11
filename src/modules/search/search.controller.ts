@@ -8,6 +8,8 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { SpaceDTO } from '../space/dto';
+
 import { CreateSearchRecordDTO, SearchRecommendDTO, SearchRecordDTO } from './dto';
 import { SearchService } from './search.service';
 
@@ -154,5 +156,42 @@ export class SearchController {
   )
   async deleteSearchRecommend(@Param('searchRecommendId') id: string) {
     return await this.searchService.deleteSearchRecommend(id);
+  }
+
+  @Get('recent/spaces')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '최근 검색한 공간 조회',
+      summary: '최근 검색한 공간 조회 - 유저만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: SpaceDTO,
+    isArray: true,
+  })
+  async getRecentSearchSpaces(@ReqUser() user: RequestUser) {
+    return await this.searchService.findMyRecentSpace(user.id);
+  }
+
+  @Post('recent/spaces/:spaceId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '최근 검색한 공간 추가',
+      summary: '최근 검색한 공간 추가 - 유저만 사용 가능합니다.',
+    },
+    params: {
+      name: 'spaceId',
+      description: '공간 아이디',
+      required: true,
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async createRecentSearchSpace(@ReqUser() user: RequestUser, @Param('spaceId') spaceId: string) {
+    return await this.searchService.createRecentSpace(user.id, spaceId);
   }
 }

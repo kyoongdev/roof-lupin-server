@@ -4,6 +4,8 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { SpaceRepository } from '../space/space.repository';
+
 import { CreateSearchRecommendDTO, CreateSearchRecordDTO, SearchRecommendDTO, SearchRecordDTO } from './dto';
 import {
   SEARCH_ERROR_CODE,
@@ -15,7 +17,7 @@ import { SearchException } from './exception/search.exception';
 
 @Injectable()
 export class SearchService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
 
   async findSearchRecord(id: string) {
     const searchRecord = await this.database.searchRecord.findUnique({
@@ -113,6 +115,69 @@ export class SearchService {
     await this.database.searchRecommend.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async findMyRecentSpace(userId: string) {
+    const spaces = await this.spaceRepository.findSpaces({
+      where: {
+        recentSpaces: {
+          some: {
+            userId,
+          },
+        },
+      },
+    });
+    return spaces;
+  }
+
+  async countMyRecentSpaces(userId: string) {
+    const count = await this.database.recentSpace.count({
+      where: {
+        userId,
+      },
+    });
+    return count;
+  }
+
+  async createRecentSpace(userId: string, spaceId: string) {
+    await this.spaceRepository.findSpace(spaceId);
+
+    const count = await this.countMyRecentSpaces(userId);
+
+    if (count === 10) {
+      const target = await this.database.recentSpace.findFirst({
+        where: {
+          userId,
+        },
+        orderBy: {
+          viewedAt: 'asc',
+        },
+      });
+      await this.database.recentSpace.delete({
+        where: {
+          userId_spaceId: {
+            spaceId: target.spaceId,
+            userId: target.userId,
+          },
+        },
+      });
+    }
+
+    await this.database.recentSpace.create({
+      data: {
+        space: {
+          connect: {
+            id: spaceId,
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        viewedAt: new Date(),
       },
     });
   }

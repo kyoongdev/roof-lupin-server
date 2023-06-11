@@ -133,6 +133,18 @@ model Space {
   mainCategoryId        String?
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
+  recentSpaces          RecentSpace[]
+}
+
+model RecentSpace {
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  viewedAt DateTime @default(now())
+
+  @@id([userId, spaceId])
 }
 
 model SpaceSize {
@@ -425,6 +437,7 @@ model User {
   searchRecords  SearchRecord[]
   alarms         UserAlarm[]
   reservations   Reservation[]
+  recentSpaces   RecentSpace[]
 }
 
 model UserAlarm {
