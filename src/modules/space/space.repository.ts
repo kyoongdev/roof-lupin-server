@@ -122,6 +122,7 @@ export class SpaceRepository {
       include: {
         location: true,
         reviews: true,
+        publicTransportations: true,
       },
       ...args,
     });
