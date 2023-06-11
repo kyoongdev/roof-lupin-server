@@ -3,6 +3,7 @@ import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CurationModule } from './curation/curation.module';
 import { FaqModule } from './faq/faq.module';
@@ -42,4 +43,5 @@ export const Modules = [
   ReservationModule,
   AlarmModule,
   MainModule,
+  CategoryModule,
 ];

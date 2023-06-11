@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-
-import { LocationRepository } from '../location/location.repository';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
-import { CreateRefundPolicyDTO } from './dto/refund';
 import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO, UpdateRentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
@@ -21,7 +17,7 @@ import { SpaceException } from './exception/space.exception';
 
 @Injectable()
 export class SpaceRepository {
-  constructor(private readonly database: PrismaService, private readonly locationRepository: LocationRepository) {}
+  constructor(private readonly database: PrismaService) {}
 
   async findSpace(id: string, userId?: string) {
     const space = await this.database.space.findUnique({
