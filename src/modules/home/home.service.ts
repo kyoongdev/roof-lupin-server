@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateHomeContentsDTO, HomeContentsDTO } from './dto';
+import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from './exception/errorCode';
 import { HomeException } from './exception/home.exception';
 
@@ -90,7 +90,7 @@ export class HomeService {
     return homeContents.id;
   }
 
-  async updateHomeContents(id: string, data: CreateHomeContentsDTO) {
+  async updateHomeContents(id: string, data: UpdateHomeContentsDTO) {
     await this.findHomeContents(id);
     const updateArgs: Prisma.CategoryUpdateArgs = {
       where: {
