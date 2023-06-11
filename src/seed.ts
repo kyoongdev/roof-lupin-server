@@ -57,6 +57,32 @@ export const seedDatabase = async (database: PrismaService) => {
   });
 
   const spaces: Space[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    await database.curation.create({
+      data: {
+        title: `테스트 큐레이션${i + 1}`,
+        subTitle: `테스트 큐레이션 서브 타이틀${i + 1}`,
+        content: `테스트 큐레이션 내용${i + 1}`,
+        thumbnail: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+        isMain: true,
+        user: {
+          connect: {
+            id: testUser.id,
+          },
+        },
+      },
+    });
+    await database.category.create({
+      data: {
+        name: `카테고리${i + 1}`,
+        iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+        isHome: true,
+        isRecommended: i === 4,
+      },
+    });
+  }
+
   for (let i = 0; i < 100; i++) {
     await database.userAlarm.create({
       data: {
@@ -143,66 +169,66 @@ export const seedDatabase = async (database: PrismaService) => {
             },
           ],
         },
-        // rentalType: {
-        //   create: [
-        //     {
-        //       baseCost: 1000,
-        //       startAt: 13,
-        //       endAt: 22,
-        //       name: '시간대여',
-        //       rentalType: 1,
-        //       baseHour: 2,
-        //       timeCostInfo: {
-        //         create: [
-        //           {
-        //             cost: 1000,
-        //             time: 13,
-        //           },
-        //           {
-        //             cost: 1000,
-        //             time: 14,
-        //           },
-        //           {
-        //             cost: 1000,
-        //             time: 15,
-        //           },
-        //           {
-        //             cost: 1000,
-        //             time: 16,
-        //           },
-        //           {
-        //             cost: 2000,
-        //             time: 17,
-        //           },
-        //           {
-        //             cost: 2000,
-        //             time: 18,
-        //           },
-        //           {
-        //             cost: 2000,
-        //             time: 19,
-        //           },
-        //           {
-        //             cost: 2000,
-        //             time: 20,
-        //           },
-        //           {
-        //             cost: 2000,
-        //             time: 21,
-        //           },
-        //         ],
-        //       },
-        //     },
-        //     {
-        //       baseCost: 100000,
-        //       startAt: 14,
-        //       endAt: 20,
-        //       name: '패키지 대여',
-        //       rentalType: 2,
-        //       baseHour: 6,
-        //     },
-        //   ],
-        // },
+        rentalType: {
+          create: [
+            {
+              baseCost: 1000,
+              startAt: 13,
+              endAt: 22,
+              name: '시간대여',
+              rentalType: 1,
+              baseHour: 2,
+              timeCostInfo: {
+                create: [
+                  {
+                    cost: 1000,
+                    time: 13,
+                  },
+                  {
+                    cost: 1000,
+                    time: 14,
+                  },
+                  {
+                    cost: 1000,
+                    time: 15,
+                  },
+                  {
+                    cost: 1000,
+                    time: 16,
+                  },
+                  {
+                    cost: 2000,
+                    time: 17,
+                  },
+                  {
+                    cost: 2000,
+                    time: 18,
+                  },
+                  {
+                    cost: 2000,
+                    time: 19,
+                  },
+                  {
+                    cost: 2000,
+                    time: 20,
+                  },
+                  {
+                    cost: 2000,
+                    time: 21,
+                  },
+                ],
+              },
+            },
+            {
+              baseCost: 100000,
+              startAt: 14,
+              endAt: 20,
+              name: '패키지 대여',
+              rentalType: 2,
+              baseHour: 6,
+            },
+          ],
+        },
         location: {
           create: {
             roadAddress: '경기도 성남시 분당구 불정로 6 그린팩토리',

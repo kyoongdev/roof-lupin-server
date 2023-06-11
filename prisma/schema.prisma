@@ -43,12 +43,12 @@ model Announcement {
 }
 
 model Curation {
-  id       String @id @default(uuid())
-  title    String @db.VarChar(30)
-  subTitle String @db.VarChar(100)
-  content  String @db.MediumText
-
+  id        String  @id @default(uuid())
+  title     String  @db.VarChar(30)
+  subTitle  String  @db.VarChar(100)
+  content   String  @db.MediumText
   thumbnail String
+  isMain    Boolean @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -150,11 +150,6 @@ model PublicTransportation {
 
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-view SpaceView {
-  id   String @unique
-  cost Int
 }
 
 //INFO: 대여 종류 (시간, 패키지)

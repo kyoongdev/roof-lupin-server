@@ -53,6 +53,23 @@ export class CurationController {
     return await this.curationService.findPagingCurations(paging);
   }
 
+  @Get('home')
+  @RequestApi({
+    summary: {
+      description: '홈 화면 큐레이션 목록 조회',
+      summary: '홈 화면 큐레이션 목록 조회',
+    },
+  })
+  @ResponseApi({
+    type: CurationDTO,
+    isArray: true,
+  })
+  async getHomeCuration() {
+    return await this.curationService.findCurations({
+      where: { isMain: true },
+    });
+  }
+
   @Post()
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)

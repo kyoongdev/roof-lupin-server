@@ -15,6 +15,9 @@ export class CurationService {
   async findCuration(id: string) {
     return await this.curationRepository.findCuration(id);
   }
+  async findCurations(args = {} as Prisma.CurationFindManyArgs) {
+    return await this.curationRepository.findCurations(args);
+  }
 
   async findPagingCurations(paging: PagingDTO, args = {} as Prisma.CurationFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
