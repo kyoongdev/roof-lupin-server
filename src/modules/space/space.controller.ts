@@ -54,6 +54,33 @@ export class SpaceController {
     return await this.spaceService.findPagingSpaces(paging);
   }
 
+  @Get('interest')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 찜 목록 조회하기',
+      summary: '공간 찜 목록 조회하기 - 유저만 사용가능합니다.',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: SpaceDTO,
+    isPaging: true,
+  })
+  async getPagingInterestSpaces(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
+    return await this.spaceService.findPagingSpaces(paging, {
+      where: {
+        userInterests: {
+          some: {
+            userId: user.id,
+          },
+        },
+      },
+    });
+  }
+
   @Post(':spaceId/interest')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
