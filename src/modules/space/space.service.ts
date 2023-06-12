@@ -71,22 +71,23 @@ export class SpaceService {
           const maxPossibleTime = Math.max(...possibleTimes);
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
           if (maxPossibleTime < date.time) {
-            //INFO: 이미 가능한 공간에 없는 경우에만 추가
             isPossible = false;
           } else {
             isPossible = true;
           }
         } else if (reservation.rentalType === '패키지') {
           const time = reservation.endAt - reservation.startAt;
+          console.log({ time });
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
           if (!(reservation as PossiblePackageDTO).isPossible || time < date.time) {
             isPossible = false;
-            //INFO: 이미 가능한 공간에 없는 경우에만 추가
           } else {
             isPossible = true;
           }
         }
+
         if (isPossible) {
+          //INFO: 가능한데, 제외되어있으면 제외 목록에서 제거
           if (excludeSpaces.includes(reservation.spaceId)) {
             excludeSpaces.splice(excludeSpaces.indexOf(reservation.spaceId), 1);
           }
