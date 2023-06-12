@@ -9,6 +9,7 @@ import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { AdminController } from './admin.controller';
@@ -49,6 +50,7 @@ import { AdminSpaceService } from './space/space.service';
     SpaceRepository,
     SchedulerEvent,
     LocationRepository,
+    RentalTypeRepository,
   ],
   controllers: [
     AdminController,

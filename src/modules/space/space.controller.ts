@@ -1,4 +1,4 @@
-import { Delete, Get, Param, Post } from '@nestjs/common';
+import { Delete, Get, Param, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -9,6 +9,9 @@ import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
+import { FindSpacesQuery } from './dto/query';
+import { FindByDateQuery } from './dto/query/find-by-date.query';
+import { FindByLocationQuery } from './dto/query/find-by-location.query';
 import { SpaceService } from './space.service';
 
 @ApiController('spaces', '공간')
@@ -43,16 +46,68 @@ export class SpaceController {
       description: '공간 목록 조회하기',
       summary: '공간 목록 조회하기',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: SpaceDTO,
     isPaging: true,
   })
-  async getPagingSpaces(@Paging() paging: PagingDTO) {
-    return await this.spaceService.findPagingSpaces(paging, {});
+  async getPagingSpaces(@Paging() paging: PagingDTO, @Query() query: FindSpacesQuery) {
+    const location: FindByLocationQuery | undefined = query.lat &&
+      query.lat &&
+      query.distance && {
+        lat: query.lat,
+        lng: query.lng,
+        distance: query.distance,
+      };
+
+    const date: FindByDateQuery | undefined = query.year &&
+      query.month &&
+      query.day &&
+      query.time && {
+        year: query.year,
+        month: query.month,
+        day: query.day,
+        time: query.time,
+      };
+    return await this.spaceService.findPagingSpaces(
+      paging,
+      {
+        where: {
+          ...(query.userCount && {
+            minUser: {
+              lte: query.userCount,
+            },
+          }),
+          ...(query.category && {
+            categories: {
+              some: {
+                category: {
+                  name: query.category,
+                },
+              },
+            },
+          }),
+          ...(query.locationName && {
+            location: {
+              OR: [
+                {
+                  jibunAddress: {
+                    contains: query.locationName,
+                  },
+                },
+                {
+                  roadAddress: {
+                    contains: query.locationName,
+                  },
+                },
+              ],
+            },
+          }),
+        },
+      },
+      location,
+      date
+    );
   }
 
   @Get('interest')

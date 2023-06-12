@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 
-import { SpaceRepository } from '../space.repository';
+import { RentalTypeRepository } from './rentalType.repository';
 
 @Injectable()
 export class RentalTypeService {
-  constructor(private readonly spaceRepository: SpaceRepository) {}
+  constructor(private readonly rentalTypeRepository: RentalTypeRepository) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
-    return await this.spaceRepository.findRentalTypes({
+    return await this.rentalTypeRepository.findRentalTypes({
       where: {
         spaceId,
         ...args.where,
@@ -18,6 +18,6 @@ export class RentalTypeService {
   }
 
   async findSpaceRentalTypeDetail(spaceId: string) {
-    return await this.spaceRepository.findSpaceRentalTypeDetail(spaceId);
+    return await this.rentalTypeRepository.findSpaceRentalTypeDetail(spaceId);
   }
 }

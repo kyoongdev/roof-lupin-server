@@ -4,7 +4,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCode';
 import { SpaceException } from '../space/exception/space.exception';
-import { SpaceRepository } from '../space/space.repository';
+import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
 import { CreateReservationDTO, ReservationDTO } from './dto';
 import {
@@ -19,7 +19,7 @@ import { ReservationRepository } from './reservation.repository';
 export class ReservationService {
   constructor(
     private readonly reservationRepository: ReservationRepository,
-    private readonly spaceRepository: SpaceRepository
+    private readonly rentalTypeRepository: RentalTypeRepository
   ) {}
 
   async findMyPagingReservations(paging: PagingDTO, userId: string) {
@@ -74,7 +74,7 @@ export class ReservationService {
 
   async validateReservation(data: CreateReservationDTO) {
     const { rentalTypeId } = data;
-    const rentalType = await this.spaceRepository.findRentalType(rentalTypeId);
+    const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
     const existingReservations = await this.reservationRepository.findReservations({
       where: {
         rentalTypeId,

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { LocationRepository } from '../location/location.repository';
+import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
@@ -10,6 +10,6 @@ import { ReportService } from './report.service';
 
 @Module({
   controllers: [ReportController],
-  providers: [ReportService, ReportRepository, SpaceRepository, UserRepository, LocationRepository],
+  providers: [ReportService, ReportRepository, SpaceRepository, UserRepository, RentalTypeRepository],
 })
 export class ReportModule {}

@@ -5,6 +5,7 @@ import type { Prisma } from '@prisma/client';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
+import { RentalTypeRepository } from '@/modules/space/rentalType/rentalType.repository';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
 import {
@@ -17,7 +18,10 @@ import { HostException } from '../exception/host.exception';
 
 @Injectable()
 export class HostSpaceService {
-  constructor(private readonly spaceRepository: SpaceRepository) {}
+  constructor(
+    private readonly spaceRepository: SpaceRepository,
+    private readonly rentalTypeRepository: RentalTypeRepository
+  ) {}
 
   async findSpace(id: string, hostId: string) {
     const space = await this.spaceRepository.findSpace(id);
@@ -52,7 +56,7 @@ export class HostSpaceService {
     if (space.host.id !== hostId) {
       throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
     }
-    await this.spaceRepository.updateRentalType(rentalTypeId, data);
+    await this.rentalTypeRepository.updateRentalType(rentalTypeId, data);
   }
 
   async updateSpace(id: string, hostId: string, data: UpdateSpaceDTO) {
