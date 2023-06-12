@@ -4,7 +4,13 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
-import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO, UpdateRentalTypeDTO } from '../dto/rentalType';
+import {
+  CreateRentalTypeDTO,
+  RentalTypeDTO,
+  RentalTypeWithReservationDTO,
+  SpaceRentalTypeDTO,
+  UpdateRentalTypeDTO,
+} from '../dto/rentalType';
 import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
@@ -41,6 +47,34 @@ export class RentalTypeRepository {
     });
 
     return rentalTypes.map((rentalType) => new RentalTypeDTO(rentalType));
+  }
+
+  async findRentalTypesWithReservations(args = {} as Prisma.RentalTypeFindManyArgs) {
+    const rentalTypes = await this.database.rentalType.findMany({
+      where: {
+        ...args.where,
+      },
+      include: {
+        timeCostInfo: true,
+        reservations: true,
+      },
+      ...args,
+    });
+
+    return rentalTypes.map(
+      (rentalType) =>
+        new RentalTypeWithReservationDTO({
+          id: rentalType.id,
+          baseCost: rentalType.baseCost,
+          name: rentalType.name,
+          rentalType: rentalType.rentalType,
+          timeCostInfos: rentalType.timeCostInfo,
+          reservations: rentalType.reservations,
+          baseHour: rentalType.baseHour,
+          endAt: rentalType.endAt,
+          startAt: rentalType.startAt,
+        })
+    );
   }
 
   async findSpaceRentalTypeDetail(spaceId: string) {
