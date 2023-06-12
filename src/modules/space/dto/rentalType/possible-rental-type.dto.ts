@@ -5,7 +5,9 @@ import {
   type PossibleTimeCostInfoDTOProps,
 } from '../timeCostInfo/possible-time-cost-info.dto';
 
-export interface RentalTypeDTOProps {
+import { RentalTypeDTO } from './rental-type.dto';
+
+export interface PossibleRentalTypeDTOProps {
   id: string;
   name: string;
   baseCost: number;
@@ -37,4 +39,27 @@ export class PossibleRentalTypeDTO {
 
   @Property({ apiProperty: { type: 'number', description: '종료 시간' } })
   endAt: number;
+
+  @Property({
+    apiProperty: {
+      type: PossibleTimeCostInfoDTO,
+      isArray: true,
+      nullable: true,
+      description: '시간 정보[패키지는 null]',
+    },
+  })
+  timeCostInfos?: PossibleTimeCostInfoDTO[];
+
+  constructor(props: PossibleRentalTypeDTOProps) {
+    this.id = props.id;
+    this.name = props.name;
+    this.baseCost = props.baseCost;
+    this.rentalType = RentalTypeDTO.convertRentalType(props.rentalType);
+    this.baseHour = props.baseHour;
+    this.startAt = props.startAt;
+    this.endAt = props.endAt;
+    this.timeCostInfos = props.timeCostInfos
+      ? props.timeCostInfos?.map((timeCostInfo) => new PossibleTimeCostInfoDTO(timeCostInfo))
+      : null;
+  }
 }
