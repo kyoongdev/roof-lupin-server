@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { LocationRepository } from '../location/location.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
+import { ReviewRepository } from '../review/review.repository';
 
 import { RentalTypeController } from './rentalType/rentalType.controller';
 import { RentalTypeRepository } from './rentalType/rentalType.repository';

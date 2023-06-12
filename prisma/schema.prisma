@@ -1,7 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
-  previewFeatures = ["views"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 // generator dbml {
@@ -84,19 +83,20 @@ model Space {
   //NOTE: 공간 소개글
   description String @db.MediumText
 
-  spaceType         Int?   @db.TinyInt
-  buildingType      Int?   @db.TinyInt
+  spaceType         Int?    @db.TinyInt
+  buildingType      Int?    @db.TinyInt
   thumbnail         String
   //NOTE: 최소 인원
-  minUser           Int    @db.TinyInt
+  minUser           Int     @db.TinyInt
   //NOTE: 최대 인원
-  maxUser           Int    @db.TinyInt
+  maxUser           Int     @db.TinyInt
   //NOTE: 초과 인원당 추가 비용
-  overflowUserCost  Int    @db.MediumInt
+  overflowUserCost  Int     @db.MediumInt
   //NOTE: 초과 인원 기준 인원
-  overflowUserCount Int    @db.TinyInt
-  minCost           Int    @default(0) @db.MediumInt
-  minSize           Int    @default(0) @db.SmallInt
+  overflowUserCount Int     @db.TinyInt
+  minCost           Int     @default(0) @db.MediumInt
+  minSize           Int     @default(0) @db.SmallInt
+  averageScore      Decimal @default(0) @db.Decimal(1, 1)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

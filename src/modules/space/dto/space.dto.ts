@@ -1,7 +1,9 @@
+import { Prisma } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
 
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
+import { FindSpacesQuery } from './query';
 import { TransportationDTO, type TransportationDTOProps } from './transportaion';
 
 export interface SpaceDTOProps {
@@ -54,5 +56,76 @@ export class SpaceDTO {
     this.thumbnail = props.thumbnail;
     this.publicTransportation = props.publicTransportation ? new TransportationDTO(props.publicTransportation) : null;
     this.location = props.location ? new LocationDTO(props.location) : null;
+  }
+
+  static findSpacesFindManyClause(query: FindSpacesQuery): Prisma.SpaceFindManyArgs {
+    let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
+      createdAt: 'desc',
+    };
+
+    if (query.sort === 'POPULARITY') {
+      orderBy = [
+        {
+          userInterests: {
+            _count: 'desc',
+          },
+        },
+        {
+          averageScore: 'desc',
+        },
+        {
+          reviews: {
+            _count: 'desc',
+          },
+        },
+      ];
+    } else if (query.sort === 'RECENT') {
+      orderBy = {
+        createdAt: 'desc',
+      };
+    } else if (query.sort === 'PRICE_HIGH') {
+      orderBy = {
+        minCost: 'desc',
+      };
+    } else if (query.sort === 'PRICE_LOW') {
+      orderBy = {
+        minCost: 'asc',
+      };
+    }
+    return {
+      where: {
+        ...(query.userCount && {
+          minUser: {
+            lte: query.userCount,
+          },
+        }),
+        ...(query.category && {
+          categories: {
+            some: {
+              category: {
+                name: query.category,
+              },
+            },
+          },
+        }),
+        ...(query.locationName && {
+          location: {
+            OR: [
+              {
+                jibunAddress: {
+                  contains: query.locationName,
+                },
+              },
+              {
+                roadAddress: {
+                  contains: query.locationName,
+                },
+              },
+            ],
+          },
+        }),
+      },
+      orderBy,
+    };
   }
 }

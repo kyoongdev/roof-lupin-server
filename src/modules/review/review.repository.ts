@@ -77,6 +77,31 @@ export class ReviewRepository {
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
 
+    const reviewsCount = await this.countReviews({
+      where: {
+        spaceId,
+      },
+    });
+    const reviewScore = await this.database.spaceReview.aggregate({
+      where: {
+        spaceId,
+      },
+      _avg: {
+        score: true,
+      },
+    });
+
+    const newAverageScore = (reviewScore._avg.score * reviewsCount + score) / (reviewsCount + 1);
+
+    await this.database.space.update({
+      where: {
+        id: spaceId,
+      },
+      data: {
+        averageScore: Number(newAverageScore.toFixed(1)),
+      },
+    });
+
     const review = await this.database.spaceReview.create({
       data: {
         content,

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma, Reservation, SpaceLocation } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { LocationRepository } from '../location/location.repository';
-import { ReservationRepository } from '../reservation/reservation.repository';
+import { ReviewRepository } from '../review/review.repository';
 
 import { SpaceDTO } from './dto';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
@@ -34,6 +34,69 @@ export class SpaceService {
     date?: FindByDateQuery
   ) {
     const { skip, take } = paging.getSkipTake();
+    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(paging, args, location, date);
+
+    const whereArgs: Prisma.SpaceWhereInput = {
+      ...(includeSpaces.length > 0 && {
+        OR: includeSpaces.map((spaceId) => ({
+          id: spaceId,
+        })),
+      }),
+      ...(excludeSpaces.length > 0 && {
+        NOT: excludeSpaces.map((spaceId) => ({
+          id: spaceId,
+        })),
+      }),
+      ...args.where,
+    };
+
+    const count = await this.spaceRepository.countSpaces({
+      where: whereArgs,
+    });
+    const spaces = await this.spaceRepository.findSpaces({
+      where: whereArgs,
+      orderBy: args.orderBy,
+      skip,
+      take,
+    });
+
+    return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
+
+  async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
+    return await this.spaceRepository.findSpaces(args);
+  }
+
+  async createInterest(userId: string, spaceId: string) {
+    await this.findSpace(spaceId);
+
+    const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
+
+    if (isInterested) {
+      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(ALREADY_INTERESTED));
+    }
+
+    await this.spaceRepository.createInterest(userId, spaceId);
+  }
+
+  async deleteInterest(userId: string, spaceId: string) {
+    await this.findSpace(spaceId);
+
+    const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
+
+    if (!isInterested) {
+      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(NOT_INTERESTED));
+    }
+
+    await this.spaceRepository.deleteInterest(userId, spaceId);
+  }
+
+  async generateIncludeExcludeSpaces(
+    paging: PagingDTO,
+    args = {} as Prisma.SpaceFindManyArgs,
+    location?: FindByLocationQuery,
+    date?: FindByDateQuery
+  ) {
     const includeSpaces: string[] = [];
     const excludeSpaces: string[] = [];
     if (location) {
@@ -102,58 +165,6 @@ export class SpaceService {
       }, []);
     }
 
-    const whereArgs: Prisma.SpaceWhereInput = {
-      ...(includeSpaces.length > 0 && {
-        OR: includeSpaces.map((spaceId) => ({
-          id: spaceId,
-        })),
-      }),
-      ...(excludeSpaces.length > 0 && {
-        NOT: excludeSpaces.map((spaceId) => ({
-          id: spaceId,
-        })),
-      }),
-      ...args.where,
-    };
-
-    const count = await this.spaceRepository.countSpaces({
-      where: whereArgs,
-    });
-    const spaces = await this.spaceRepository.findSpaces({
-      where: whereArgs,
-      orderBy: args.orderBy,
-      skip,
-      take,
-    });
-
-    return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
-  }
-
-  async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
-    return await this.spaceRepository.findSpaces(args);
-  }
-
-  async createInterest(userId: string, spaceId: string) {
-    await this.findSpace(spaceId);
-
-    const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
-
-    if (isInterested) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(ALREADY_INTERESTED));
-    }
-
-    await this.spaceRepository.createInterest(userId, spaceId);
-  }
-
-  async deleteInterest(userId: string, spaceId: string) {
-    await this.findSpace(spaceId);
-
-    const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
-
-    if (!isInterested) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(NOT_INTERESTED));
-    }
-
-    await this.spaceRepository.deleteInterest(userId, spaceId);
+    return [includeSpaces, excludeSpaces];
   }
 }

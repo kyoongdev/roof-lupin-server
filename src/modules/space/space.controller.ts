@@ -68,45 +68,7 @@ export class SpaceController {
         day: query.day,
         time: query.time,
       };
-    return await this.spaceService.findPagingSpaces(
-      paging,
-      {
-        where: {
-          ...(query.userCount && {
-            minUser: {
-              lte: query.userCount,
-            },
-          }),
-          ...(query.category && {
-            categories: {
-              some: {
-                category: {
-                  name: query.category,
-                },
-              },
-            },
-          }),
-          ...(query.locationName && {
-            location: {
-              OR: [
-                {
-                  jibunAddress: {
-                    contains: query.locationName,
-                  },
-                },
-                {
-                  roadAddress: {
-                    contains: query.locationName,
-                  },
-                },
-              ],
-            },
-          }),
-        },
-      },
-      location,
-      date
-    );
+    return await this.spaceService.findPagingSpaces(paging, SpaceDTO.findSpacesFindManyClause(query), location, date);
   }
 
   @Get('interest')

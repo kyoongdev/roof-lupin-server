@@ -9,10 +9,9 @@ import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
-import { CreateRentalTypeDTO, RentalTypeDTO, SpaceRentalTypeDTO, UpdateRentalTypeDTO } from './dto/rentalType';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { UpdateSpaceDTO } from './dto/update-space.dto';
-import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from './exception/errorCode';
+import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 import { RentalTypeRepository } from './rentalType/rentalType.repository';
 
@@ -69,15 +68,6 @@ export class SpaceRepository {
       throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
     }
 
-    const reviewScore = await this.database.spaceReview.aggregate({
-      where: {
-        spaceId: id,
-      },
-      _avg: {
-        score: true,
-      },
-    });
-
     const {
       cautions,
       categories,
@@ -105,7 +95,7 @@ export class SpaceRepository {
       services: services.map(({ service }) => service),
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       cost: space.minCost,
-      averageScore: reviewScore._avg.score,
+      averageScore: Number(space.averageScore),
     });
   }
 
@@ -116,15 +106,16 @@ export class SpaceRepository {
   async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
     const spaces = await this.database.space.findMany({
       where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
+
       include: {
         location: true,
         reviews: true,
         publicTransportations: true,
       },
+      orderBy: {
+        ...args.orderBy,
+      },
+
       ...args,
     });
 
@@ -137,7 +128,7 @@ export class SpaceRepository {
           reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location,
-          averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+          averageScore: Number(space.averageScore),
         })
     );
   }
