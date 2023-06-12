@@ -89,7 +89,11 @@ export class SpaceRepository {
       services,
       userInterests,
     } = space;
-
+    console.log(
+      { userInterests },
+      userInterests.some((userInterest) => userInterest.userId === userId),
+      userId
+    );
     return new SpaceDetailDTO({
       ...space,
       reviewCount: space._count.reviews,

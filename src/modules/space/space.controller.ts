@@ -5,11 +5,10 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
+import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
-import { SpaceRentalTypeDTO } from './dto/rentalType';
 import { SpaceService } from './space.service';
 
 @ApiController('spaces', '공간')
@@ -17,6 +16,7 @@ export class SpaceController {
   constructor(private readonly spaceService: SpaceService) {}
 
   @Get(':spaceId/detail')
+  @Auth([JwtNullableAuthGuard])
   @RequestApi({
     summary: {
       description: '공간 상세 조회하기',
@@ -33,6 +33,7 @@ export class SpaceController {
     type: SpaceDetailDTO,
   })
   async getSpace(@Param('spaceId') id: string, @ReqUser() user?: RequestUser) {
+    console.log(user);
     return await this.spaceService.findSpace(id, user?.id);
   }
 
@@ -51,7 +52,7 @@ export class SpaceController {
     isPaging: true,
   })
   async getPagingSpaces(@Paging() paging: PagingDTO) {
-    return await this.spaceService.findPagingSpaces(paging);
+    return await this.spaceService.findPagingSpaces(paging, {});
   }
 
   @Get('interest')
