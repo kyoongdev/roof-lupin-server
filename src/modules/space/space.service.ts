@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { LocationRepository } from '../location/location.repository';
-import { ReviewRepository } from '../review/review.repository';
 
 import { SpaceDTO } from './dto';
+import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
 import { PossiblePackageDTO, PossibleRentalTypeDTO } from './dto/rentalType';
@@ -27,6 +27,44 @@ export class SpaceService {
     return await this.spaceRepository.findSpace(id, userId);
   }
 
+  async findNearbySpaces(
+    paging: PagingDTO,
+    args = {} as Prisma.SpaceFindManyArgs,
+    query: FindSpacesQuery,
+    date?: FindByDateQuery,
+    location?: FindByLocationQuery
+  ) {
+    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(paging, args, location, date);
+    const locations = await this.locationRepository.getSpaceWithLocationsByDistance(
+      query,
+      excludeSpaces,
+      location ? includeSpaces : undefined
+    );
+    // await this.spaceRepository.findSpaces();
+
+    // const whereArgs: Prisma.SpaceWhereInput = {
+    //   ...(includeSpaces.length > 0 && {
+    //     OR: includeSpaces.map((spaceId) => ({
+    //       id: spaceId,
+    //     })),
+    //   }),
+    //   ...(excludeSpaces.length > 0 && {
+    //     NOT: excludeSpaces.map((spaceId) => ({
+    //       id: spaceId,
+    //     })),
+    //   }),
+    //   ...args.where,
+    // };
+
+    // const count = await this.spaceRepository.countSpaces({
+    //   where: whereArgs,
+    // });
+    // const tmp = await this.locationRepository.getSpaceWithLocationsByDistance(query, includeSpaces, excludeSpaces);
+
+    return [];
+    // return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
+
   async findPagingSpaces(
     paging: PagingDTO,
     args = {} as Prisma.SpaceFindManyArgs,
@@ -34,10 +72,11 @@ export class SpaceService {
     date?: FindByDateQuery
   ) {
     const { skip, take } = paging.getSkipTake();
+
     const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(paging, args, location, date);
 
     const whereArgs: Prisma.SpaceWhereInput = {
-      ...(includeSpaces.length > 0 && {
+      ...(location && {
         OR: includeSpaces.map((spaceId) => ({
           id: spaceId,
         })),
@@ -59,6 +98,7 @@ export class SpaceService {
       skip,
       take,
     });
+    console.log({ whereArgs, args });
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

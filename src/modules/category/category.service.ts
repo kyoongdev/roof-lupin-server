@@ -30,6 +30,7 @@ export class CategoryService {
     const categories = await this.categoryRepository.findCategories({
       skip,
       take,
+
       ...args,
     });
 

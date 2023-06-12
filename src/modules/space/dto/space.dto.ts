@@ -103,7 +103,9 @@ export class SpaceDTO {
           categories: {
             some: {
               category: {
-                name: query.category,
+                name: {
+                  contains: query.category,
+                },
               },
             },
           },

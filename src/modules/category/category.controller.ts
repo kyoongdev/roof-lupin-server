@@ -83,6 +83,9 @@ export class CategoryController {
       where: {
         isHome: true,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

@@ -67,6 +67,9 @@ export class CurationController {
   async getHomeCuration() {
     return await this.curationService.findCurations({
       where: { isMain: true },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 

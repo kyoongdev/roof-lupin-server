@@ -68,7 +68,11 @@ export class SpaceController {
         day: query.day,
         time: query.time,
       };
-    return await this.spaceService.findPagingSpaces(paging, SpaceDTO.findSpacesFindManyClause(query), location, date);
+
+    await this.spaceService.findNearbySpaces(paging, SpaceDTO.findSpacesFindManyClause(query), query, date, location);
+
+    // return await this.spaceService.findPagingSpaces(paging, SpaceDTO.findSpacesFindManyClause(query), location, date);
+    return [];
   }
 
   @Get('interest')
