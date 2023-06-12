@@ -52,11 +52,12 @@ export class RentalTypeService {
         if (next.rentalType === '시간') {
           const timeCostInfos: PossibleTimeCostInfoDTOProps[] = range(0, 24).map((hour) => ({
             cost: 0,
-            isPossible: true,
+            isPossible: false,
             time: hour,
           }));
           next.timeCostInfos.forEach((timeInfo) => {
             timeCostInfos[timeInfo.time].cost = timeInfo.cost;
+            timeCostInfos[timeInfo.time].isPossible = true;
           });
           next.reservations.forEach((reservation) => {
             range(reservation.startAt, reservation.endAt).forEach((hour) => {
@@ -65,25 +66,13 @@ export class RentalTypeService {
           });
 
           acc.time.push({
-            id: next.id,
-            name: next.name,
-            baseCost: next.baseCost,
-            rentalType: next.rentalType,
-            baseHour: next.baseHour,
-            endAt: next.endAt,
-            startAt: next.startAt,
+            ...next,
             timeCostInfos,
           });
         } else if (next.rentalType === '패키지') {
           const isPossible = next.reservations.length === 0;
           acc.package.push({
-            id: next.id,
-            name: next.name,
-            baseCost: next.baseCost,
-            rentalType: next.rentalType,
-            baseHour: next.baseHour,
-            endAt: next.endAt,
-            startAt: next.startAt,
+            ...next,
             isPossible,
           });
         }
