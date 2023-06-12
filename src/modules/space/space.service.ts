@@ -69,6 +69,7 @@ export class SpaceService {
           }, 0);
           //INFO: 가장 길게 이용할 수 있는 시간
           const maxPossibleTime = Math.max(...possibleTimes);
+
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
           if (maxPossibleTime < date.time) {
             isPossible = false;

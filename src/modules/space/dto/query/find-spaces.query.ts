@@ -1,5 +1,7 @@
 import { PagingDTO, Property } from 'wemacu-nestjs';
 
+import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
+
 export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '인원수 필터' } })
   userCount?: number;
@@ -30,4 +32,8 @@ export class FindSpacesQuery extends PagingDTO {
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 시간' } })
   time?: number;
+
+  @SpaceSortValidation()
+  @Property({ apiProperty: { type: 'string', nullable: true, enum: SPACE_SORT_OPTION_VALUES } })
+  sort?: keyof typeof SPACE_SORT_OPTION;
 }

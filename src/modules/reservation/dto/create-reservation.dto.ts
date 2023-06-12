@@ -36,11 +36,11 @@ export class CreateReservationDTO {
   day: string;
 
   @TimeValidation()
-  @Property({ apiProperty: { type: 'number', description: '예약 시작 시간 (0 ~ 23)' } })
+  @Property({ apiProperty: { type: 'number', description: '예약 시작 시간 (0 ~ 24)' } })
   startAt: number;
 
   @TimeValidation()
-  @Property({ apiProperty: { type: 'number', description: '예약 종료 시간 (0 ~ 23)' } })
+  @Property({ apiProperty: { type: 'number', description: '예약 종료 시간 (0 ~ 24)' } })
   endAt: number;
 
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
@@ -112,6 +112,10 @@ export class CreateReservationDTO {
   public validatePackageReservation(rentalType: RentalTypeDTO) {
     if (rentalType.startAt !== this.startAt || rentalType.endAt !== this.endAt) {
       throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_TIME_BAD_REQUEST));
+    }
+
+    if (rentalType.baseCost !== this.cost) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
     }
   }
 }

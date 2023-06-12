@@ -6,7 +6,7 @@ import { BaseValidator } from '@/utils/validation/base-validator';
 export class TimeValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
     if (!Number.isInteger(value)) return false;
-    if (value < 0 || value > 23) return false;
+    if (value < 0 || value > 24) return false;
 
     return true;
   }
