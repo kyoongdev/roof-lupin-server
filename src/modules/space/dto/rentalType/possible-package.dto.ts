@@ -8,6 +8,7 @@ export interface PossiblePackageDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
+  spaceId: string;
   isPossible: boolean;
 }
 
@@ -36,6 +37,9 @@ export class PossiblePackageDTO {
   @Property({ apiProperty: { type: 'boolean', description: '대여 가능 여부' } })
   isPossible: boolean;
 
+  @Property({ apiProperty: { type: 'string', description: '공간 id' } })
+  spaceId: string;
+
   constructor(props: PossiblePackageDTOProps) {
     this.id = props.id;
     this.name = props.name;
@@ -44,6 +48,7 @@ export class PossiblePackageDTO {
     this.baseHour = props.baseHour;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
+    this.spaceId = props.spaceId;
     this.isPossible = props.isPossible;
   }
 }

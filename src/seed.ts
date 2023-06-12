@@ -222,8 +222,8 @@ export const seedDatabase = async (database: PrismaService) => {
             },
             {
               baseCost: 100000,
-              startAt: 14,
-              endAt: 20,
+              startAt: 13,
+              endAt: 24,
               name: '패키지 대여',
               rentalType: 2,
               baseHour: 6,

@@ -9,8 +9,10 @@ import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDTO } from './dto';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
+import { PossiblePackageDTO, PossibleRentalTypeDTO } from './dto/rentalType';
 import { ALREADY_INTERESTED, NOT_INTERESTED, SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
+import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
 
 @Injectable()
@@ -18,7 +20,7 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly locationRepository: LocationRepository,
-    private readonly reservationRepository: ReservationRepository
+    private readonly rentalTypeService: RentalTypeService
   ) {}
 
   async findSpace(id: string, userId?: string) {
@@ -40,18 +42,72 @@ export class SpaceService {
       );
     }
     if (date) {
-      const results = await this.reservationRepository.findReservations({
-        where: {
+      const results = await this.rentalTypeService.findPossibleRentalTypesBySpaces(
+        {
           year: date.year,
           month: date.month,
           day: date.day,
         },
-      });
+        args
+      );
+
+      const reservations = [...results.package, ...results.time];
+      //INFO: acc는 가능한 시간의 집합 => 가능한 것이 우선순위가 높음
+      reservations.reduce<string[]>((acc, reservation) => {
+        let isPossible = true;
+        if (reservation.rentalType === '시간') {
+          const possibleTimes: number[] = [];
+          //INFO: 시간대별로 가능한 시간의 크기를 구함
+          (reservation as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, timeCostInfo) => {
+            if (timeCostInfo.isPossible) {
+              acc += 1;
+            } else {
+              possibleTimes.push(acc);
+              acc = 0;
+            }
+            return acc;
+          }, 0);
+          //INFO: 가장 길게 이용할 수 있는 시간
+          const maxPossibleTime = Math.max(...possibleTimes);
+          //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
+          if (maxPossibleTime < date.time) {
+            //INFO: 이미 가능한 공간에 없는 경우에만 추가
+            isPossible = false;
+          } else {
+            isPossible = true;
+          }
+        } else if (reservation.rentalType === '패키지') {
+          const time = reservation.endAt - reservation.startAt;
+          //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
+          if (!(reservation as PossiblePackageDTO).isPossible || time < date.time) {
+            isPossible = false;
+            //INFO: 이미 가능한 공간에 없는 경우에만 추가
+          } else {
+            isPossible = true;
+          }
+        }
+        if (isPossible) {
+          if (excludeSpaces.includes(reservation.spaceId)) {
+            excludeSpaces.splice(excludeSpaces.indexOf(reservation.spaceId), 1);
+          }
+          if (!acc.includes(reservation.spaceId)) {
+            acc.push(reservation.spaceId);
+          }
+        } else if (!acc.includes(reservation.spaceId) && !excludeSpaces.includes(reservation.spaceId)) {
+          excludeSpaces.push(reservation.spaceId);
+        }
+        return acc;
+      }, []);
     }
 
     const whereArgs: Prisma.SpaceWhereInput = {
       ...(includeSpaces.length > 0 && {
         OR: includeSpaces.map((spaceId) => ({
+          id: spaceId,
+        })),
+      }),
+      ...(excludeSpaces.length > 0 && {
+        NOT: excludeSpaces.map((spaceId) => ({
           id: spaceId,
         })),
       }),

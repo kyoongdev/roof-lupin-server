@@ -5,6 +5,7 @@ import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { CouponModule } from './coupon/coupon.module';
+import { CurationModule } from './curation/curation.module';
 import { FaqModule } from './faq/faq.module';
 import { FileModule } from './file/file.module';
 import { GlobalModule } from './global';
@@ -42,4 +43,5 @@ export const Modules = [
   AlarmModule,
   MainModule,
   CategoryModule,
+  CurationModule,
 ];

@@ -92,6 +92,7 @@ export class RentalTypeRepository {
           baseHour: rentalType.baseHour,
           endAt: rentalType.endAt,
           startAt: rentalType.startAt,
+          spaceId: rentalType.spaceId,
         })
     );
   }

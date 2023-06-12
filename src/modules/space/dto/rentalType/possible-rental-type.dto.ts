@@ -5,8 +5,6 @@ import {
   type PossibleTimeCostInfoDTOProps,
 } from '../timeCostInfo/possible-time-cost-info.dto';
 
-import { RentalTypeDTO } from './rental-type.dto';
-
 export interface PossibleRentalTypeDTOProps {
   id: string;
   name: string;
@@ -15,6 +13,7 @@ export interface PossibleRentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
+  spaceId?: string;
   timeCostInfos?: PossibleTimeCostInfoDTOProps[];
 }
 
@@ -40,6 +39,9 @@ export class PossibleRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '종료 시간' } })
   endAt: number;
 
+  @Property({ apiProperty: { type: 'string', description: '공간 id' } })
+  spaceId: string;
+
   @Property({
     apiProperty: {
       type: PossibleTimeCostInfoDTO,
@@ -58,6 +60,7 @@ export class PossibleRentalTypeDTO {
     this.baseHour = props.baseHour;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
+    this.spaceId = props.spaceId;
     this.timeCostInfos = props.timeCostInfos
       ? props.timeCostInfos?.map((timeCostInfo) => new PossibleTimeCostInfoDTO(timeCostInfo))
       : null;

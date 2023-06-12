@@ -6,7 +6,7 @@ import { range } from 'lodash';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
 import { PossibleRentalTypeQuery } from '../dto/query';
-import { PossibleRentalTypesDTO, PossibleRentalTypesDTOProps } from '../dto/rentalType';
+import { PossibleRentalTypesDTO, PossibleRentalTypesDTOProps, RentalTypeWithReservationDTO } from '../dto/rentalType';
 import { PossibleTimeCostInfoDTOProps } from '../dto/timeCostInfo/possible-time-cost-info.dto';
 import { SpaceRepository } from '../space.repository';
 
@@ -49,6 +49,30 @@ export class RentalTypeService {
       }
     );
 
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes);
+  }
+
+  async findPossibleRentalTypesBySpaces(query: PossibleRentalTypeQuery, args = {} as Prisma.SpaceFindManyArgs) {
+    const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
+      {
+        where: {
+          space: {
+            ...args.where,
+          },
+        },
+      },
+      {
+        where: {
+          year: query.year,
+          month: query.month,
+          day: query.day,
+        },
+      }
+    );
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes);
+  }
+
+  getPossibleRentalTypesBySpaceId(rentalTypes: RentalTypeWithReservationDTO[]) {
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === '시간') {
@@ -66,7 +90,7 @@ export class RentalTypeService {
               timeCostInfos[hour].isPossible = false;
             });
           });
-
+          console.log(next);
           acc.time.push({
             ...next,
             timeCostInfos,
