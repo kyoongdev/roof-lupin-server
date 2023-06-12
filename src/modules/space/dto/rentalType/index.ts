@@ -7,3 +7,4 @@ export * from './space-rental-type.dto';
 export * from './possible-rental-type.dto';
 export * from './possible-rental-types.dto';
 export * from './rental-type-with-reservations.dto';
+export * from './possible-package.dto';

@@ -24,7 +24,11 @@ export class RentalTypeRepository {
         id,
       },
       include: {
-        timeCostInfo: true,
+        timeCostInfo: {
+          orderBy: {
+            time: 'asc',
+          },
+        },
       },
     });
 
@@ -41,7 +45,11 @@ export class RentalTypeRepository {
         ...args.where,
       },
       include: {
-        timeCostInfo: true,
+        timeCostInfo: {
+          orderBy: {
+            time: 'asc',
+          },
+        },
       },
       ...args,
     });
@@ -55,7 +63,11 @@ export class RentalTypeRepository {
         ...args.where,
       },
       include: {
-        timeCostInfo: true,
+        timeCostInfo: {
+          orderBy: {
+            time: 'asc',
+          },
+        },
         reservations: true,
       },
       ...args,
@@ -83,7 +95,11 @@ export class RentalTypeRepository {
         spaceId,
       },
       include: {
-        timeCostInfo: true,
+        timeCostInfo: {
+          orderBy: {
+            time: 'asc',
+          },
+        },
       },
     });
 

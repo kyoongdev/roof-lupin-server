@@ -1,13 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import {
-  PossibleTimeCostInfoDTO,
-  type PossibleTimeCostInfoDTOProps,
-} from '../timeCostInfo/possible-time-cost-info.dto';
-
-import { RentalTypeDTO } from './rental-type.dto';
-
-export interface PossibleRentalTypeDTOProps {
+export interface PossiblePackageDTOProps {
   id: string;
   name: string;
   baseCost: number;
@@ -15,10 +8,10 @@ export interface PossibleRentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
-  timeCostInfos?: PossibleTimeCostInfoDTOProps[];
+  isPossible: boolean;
 }
 
-export class PossibleRentalTypeDTO {
+export class PossiblePackageDTO {
   @Property({ apiProperty: { type: 'string', description: '대여타입 id' } })
   id: string;
 
@@ -40,17 +33,10 @@ export class PossibleRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '종료 시간' } })
   endAt: number;
 
-  @Property({
-    apiProperty: {
-      type: PossibleTimeCostInfoDTO,
-      isArray: true,
-      nullable: true,
-      description: '시간 정보[패키지는 null]',
-    },
-  })
-  timeCostInfos?: PossibleTimeCostInfoDTO[];
+  @Property({ apiProperty: { type: 'boolean', description: '대여 가능 여부' } })
+  isPossible: boolean;
 
-  constructor(props: PossibleRentalTypeDTOProps) {
+  constructor(props: PossiblePackageDTOProps) {
     this.id = props.id;
     this.name = props.name;
     this.baseCost = props.baseCost;
@@ -58,8 +44,6 @@ export class PossibleRentalTypeDTO {
     this.baseHour = props.baseHour;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
-    this.timeCostInfos = props.timeCostInfos
-      ? props.timeCostInfos?.map((timeCostInfo) => new PossibleTimeCostInfoDTO(timeCostInfo))
-      : null;
+    this.isPossible = props.isPossible;
   }
 }
