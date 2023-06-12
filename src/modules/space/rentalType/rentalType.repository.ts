@@ -57,7 +57,10 @@ export class RentalTypeRepository {
     return rentalTypes.map((rentalType) => new RentalTypeDTO(rentalType));
   }
 
-  async findRentalTypesWithReservations(args = {} as Prisma.RentalTypeFindManyArgs) {
+  async findRentalTypesWithReservations(
+    args = {} as Prisma.RentalTypeFindManyArgs,
+    reservationArgs = {} as Prisma.ReservationFindManyArgs
+  ) {
     const rentalTypes = await this.database.rentalType.findMany({
       where: {
         ...args.where,
@@ -68,7 +71,11 @@ export class RentalTypeRepository {
             time: 'asc',
           },
         },
-        reservations: true,
+        reservations: {
+          where: {
+            ...reservationArgs.where,
+          },
+        },
       },
       ...args,
     });

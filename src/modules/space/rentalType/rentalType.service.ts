@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { range } from 'lodash-es';
+import { range } from 'lodash';
 
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
@@ -16,8 +16,7 @@ import { RentalTypeRepository } from './rentalType.repository';
 export class RentalTypeService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeRepository: RentalTypeRepository,
-    private readonly reservationRepository: ReservationRepository
+    private readonly rentalTypeRepository: RentalTypeRepository
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
@@ -35,19 +34,22 @@ export class RentalTypeService {
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
     await this.spaceRepository.findSpace(spaceId);
-    const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations({
-      where: {
-        spaceId,
-        reservations: {
-          some: {
-            year: query.year,
-            month: query.month,
-            day: query.day,
-          },
+    const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
+      {
+        where: {
+          spaceId,
         },
       },
-    });
-    return rentalTypes.reduce<PossibleRentalTypesDTO>(
+      {
+        where: {
+          year: query.year,
+          month: query.month,
+          day: query.day,
+        },
+      }
+    );
+
+    const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === '시간') {
           const timeCostInfos: PossibleTimeCostInfoDTOProps[] = range(0, 24).map((hour) => ({
@@ -81,5 +83,6 @@ export class RentalTypeService {
       },
       { time: [], package: [] }
     );
+    return new PossibleRentalTypesDTO(possibleRentalTypes);
   }
 }
