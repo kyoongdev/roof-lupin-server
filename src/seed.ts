@@ -84,7 +84,7 @@ export const seedDatabase = async (database: PrismaService) => {
     });
   }
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1000; i++) {
     await database.userAlarm.create({
       data: {
         user: {
@@ -219,7 +219,7 @@ export const seedDatabase = async (database: PrismaService) => {
             {
               baseCost: 100000,
               startAt: 13,
-              endAt: i === 50 ? 24 : 22,
+              endAt: i % 50 === 0 ? 24 : 22,
               name: '패키지 대여',
               rentalType: 2,
               baseHour: 6,
@@ -362,6 +362,7 @@ export const seedDatabase = async (database: PrismaService) => {
         },
       },
     });
+
     spaces.push(space);
   }
 

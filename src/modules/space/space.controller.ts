@@ -36,7 +36,6 @@ export class SpaceController {
     type: SpaceDetailDTO,
   })
   async getSpace(@Param('spaceId') id: string, @ReqUser() user?: RequestUser) {
-    console.log(user);
     return await this.spaceService.findSpace(id, user?.id);
   }
 

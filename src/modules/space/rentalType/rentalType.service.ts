@@ -90,7 +90,7 @@ export class RentalTypeService {
               timeCostInfos[hour].isPossible = false;
             });
           });
-          console.log(next);
+
           acc.time.push({
             ...next,
             timeCostInfos,

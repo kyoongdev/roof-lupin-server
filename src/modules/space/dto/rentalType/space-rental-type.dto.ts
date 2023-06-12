@@ -21,7 +21,7 @@ export class SpaceRentalTypeDTO {
       ? new TimeRentalTypeDTO({
           id: timeRentalType.id,
           name: timeRentalType.name,
-          timeCostInfos: timeRentalType.timeCostInfos,
+          timeCostInfos: timeRentalType.timeCostInfo,
         })
       : null;
     this.packageRentalType = new PackageRentalTypeDTO(packageRentalType);

@@ -77,7 +77,7 @@ export class SpaceService {
           }
         } else if (reservation.rentalType === '패키지') {
           const time = reservation.endAt - reservation.startAt;
-          console.log({ time });
+
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
           if (!(reservation as PossiblePackageDTO).isPossible || time < date.time) {
             isPossible = false;

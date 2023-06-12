@@ -107,7 +107,7 @@ export class ReservationRepository {
 
   //TODO: 결제 시스템까지 도입
   async createReservation(userId: string, data: CreateReservationDTO) {
-    const { rentalTypeId, ...rest } = data;
+    const { rentalTypeId, spaceId, ...rest } = data;
     const reservation = await this.database.reservation.create({
       data: {
         user: {

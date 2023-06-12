@@ -23,7 +23,6 @@ export class JwtNullableAuthGuard implements CanActivate {
 
     const authorization = req.headers.authorization;
 
-    console.log({ authorization });
     if (authorization) {
       const splittedHeader = authorization.split(' ');
       if (splittedHeader.length !== 2 && splittedHeader[0] !== 'Bearer') throw new UnauthorizedException();

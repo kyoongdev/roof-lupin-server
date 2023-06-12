@@ -87,7 +87,7 @@ export class RentalTypeRepository {
           baseCost: rentalType.baseCost,
           name: rentalType.name,
           rentalType: rentalType.rentalType,
-          timeCostInfos: rentalType.timeCostInfo,
+          timeCostInfo: rentalType.timeCostInfo,
           reservations: rentalType.reservations,
           baseHour: rentalType.baseHour,
           endAt: rentalType.endAt,

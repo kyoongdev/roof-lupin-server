@@ -10,7 +10,7 @@ export interface RentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
-  timeCostInfos?: TimeCostInfoDTOProps[];
+  timeCostInfo?: TimeCostInfoDTOProps[];
 }
 
 export class RentalTypeDTO {
@@ -46,8 +46,8 @@ export class RentalTypeDTO {
     this.baseHour = props.baseHour ?? null;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
-    this.timeCostInfos = props.timeCostInfos
-      ? props.timeCostInfos.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo))
+    this.timeCostInfos = props.timeCostInfo
+      ? props.timeCostInfo.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo))
       : null;
   }
 

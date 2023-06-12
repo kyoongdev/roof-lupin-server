@@ -9,7 +9,6 @@ import { SCHEDULER_EVENT_NAME } from './constants';
 export class SchedulerEventProvider {
   @OnEvent(SCHEDULER_EVENT_NAME.SCHEDULER_CREATE)
   async createSchedule(jobId: string, targetDate: Date, callback: JobCallback) {
-    console.log({ jobId, targetDate, callback });
     scheduler.scheduleJob(jobId, targetDate, callback);
   }
 
