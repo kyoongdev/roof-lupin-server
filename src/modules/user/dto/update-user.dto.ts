@@ -3,7 +3,6 @@ import { Property } from 'wemacu-nestjs';
 import { GenderValidation } from '../../../utils/validation/gender.validate';
 
 interface Props {
-  name?: string;
   nickname?: string;
   email?: string;
   phoneNumber?: string;
@@ -13,9 +12,6 @@ interface Props {
 }
 
 export class UpdateUserDTO {
-  @Property({ apiProperty: { type: 'string', description: '이름', nullable: true } })
-  name?: string;
-
   @Property({ apiProperty: { type: 'string', description: '닉네임', nullable: true } })
   nickname?: string;
 
@@ -37,7 +33,6 @@ export class UpdateUserDTO {
 
   constructor(props?: Props) {
     if (props) {
-      this.name = props.name;
       this.nickname = props.nickname;
       this.email = props.email;
       this.phoneNumber = props.phoneNumber;

@@ -9,9 +9,6 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true } })
-  name?: string;
-
   @Property({ apiProperty: { type: 'string' } })
   nickname: string;
 
@@ -33,7 +30,6 @@ export class CommonUserDTO extends BaseUserDTO {
   constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
-    this.name = props.name ?? null;
     this.nickname = props.nickname;
     this.email = props.email ?? null;
     this.phoneNumber = props.phoneNumber ?? null;

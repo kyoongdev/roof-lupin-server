@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import type { BaseErrorCode } from 'wemacu-nestjs';
 

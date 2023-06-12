@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -54,18 +53,6 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
-    return new CommonUserDTO(user);
-  }
-
-  async findUserByName(name: string) {
-    const user = await this.database.user.findFirst({
-      where: {
-        name,
-      },
-    });
-    if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
-    }
     return new CommonUserDTO(user);
   }
 

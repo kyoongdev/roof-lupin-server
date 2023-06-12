@@ -3,14 +3,12 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
-
 import { CommonUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly database: PrismaService, private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findUser(id: string) {
     return await this.userRepository.findUser(id);

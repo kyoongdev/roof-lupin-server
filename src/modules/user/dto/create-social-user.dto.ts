@@ -5,7 +5,6 @@ import { SOCIAL_TYPE, type SocialType } from '@/interface/user.interface';
 import { socialTypeToNumber } from '../utils';
 
 interface Props {
-  name?: string;
   nickname: string;
   email?: string;
   phoneNumber?: string;
@@ -17,9 +16,6 @@ interface Props {
 }
 
 export class CreateSocialUserDTO {
-  @Property({ apiProperty: { type: 'string', description: '이름', nullable: true } })
-  name?: string;
-
   @Property({ apiProperty: { type: 'string', description: '닉네임' } })
   nickname: string;
 
@@ -47,7 +43,7 @@ export class CreateSocialUserDTO {
   constructor(props?: Props) {
     if (props) {
       if (props.phoneNumber && props.phoneNumber.includes('-')) props.phoneNumber = props.phoneNumber.replace(/-/g, '');
-      this.name = props.name;
+
       this.nickname = props.nickname;
       this.email = props.email;
       this.phoneNumber = props.phoneNumber;

@@ -401,15 +401,16 @@ model Admin {
 }
 
 model User {
-  id           String  @id @default(uuid())
-  name         String? @db.VarChar(20)
-  nickname     String
-  email        String?
-  phoneNumber  String? @db.Char(11)
-  birth        String? @db.Char(8)
-  gender       Int?    @db.TinyInt
-  profileImage String?
-  isAdult      Boolean @default(false)
+  id String @id @default(uuid())
+
+  nickname        String
+  email           String?
+  phoneNumber     String? @db.Char(11)
+  birth           String? @db.Char(8)
+  gender          Int?    @db.TinyInt
+  profileImage    String?
+  isAdult         Boolean @default(false)
+  isAlarmAccepted Boolean @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
