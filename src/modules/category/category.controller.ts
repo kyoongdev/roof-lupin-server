@@ -67,28 +67,6 @@ export class CategoryController {
     return await this.categoryService.findCategories();
   }
 
-  @Get('home')
-  @RequestApi({
-    summary: {
-      description: '홈 카테고리 리스트 조회',
-      summary: '홈 카테고리 리스트 조회',
-    },
-  })
-  @ResponseApi({
-    type: CategoryDTO,
-    isArray: true,
-  })
-  async getHomeCategories() {
-    return await this.categoryService.findCategories({
-      where: {
-        isHome: true,
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    });
-  }
-
   @Post()
   @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @UseInterceptors(ResponseWithIdInterceptor)
