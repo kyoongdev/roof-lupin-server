@@ -11,7 +11,6 @@ export interface SpaceDTOProps {
   title: string;
   averageScore: number;
   reviewCount: number;
-
   isBest?: boolean;
   isInterested?: boolean;
   thumbnail: string;

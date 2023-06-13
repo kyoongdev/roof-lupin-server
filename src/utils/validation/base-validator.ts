@@ -8,7 +8,7 @@ export function BaseValidator(validator: ValidatorConstraintInterface | Function
         propertyName: propertyName,
         options: {
           ...validationOptions,
-          message: validationOptions?.message ?? message,
+          message,
         },
         constraints: [],
         validator,

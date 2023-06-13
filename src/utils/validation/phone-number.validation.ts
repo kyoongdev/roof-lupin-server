@@ -4,9 +4,8 @@ import { BaseValidator } from '@/utils/validation';
 
 @ValidatorConstraint()
 export class PhoneNumberValidateConstraint implements ValidatorConstraintInterface {
-  validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    if (!Number.isInteger(value)) return false;
-    if (value !== 1 && value !== 2) return false;
+  validate(value: string, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    if (value.length !== 11) return false;
 
     return true;
   }

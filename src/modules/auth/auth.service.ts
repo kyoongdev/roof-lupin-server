@@ -161,7 +161,7 @@ export class AuthService {
 
   async hostRegister(props: CreateHostDTO) {
     const isExist = await this.hostRepository.checkHostByEmail(props.email);
-
+    console.log({ props });
     if (isExist) {
       throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_HOST));
     }

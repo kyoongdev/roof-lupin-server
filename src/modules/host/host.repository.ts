@@ -81,7 +81,8 @@ export class HostRepository {
         email,
       },
     });
-    if (host) {
+
+    if (!host) {
       return false;
     }
 
