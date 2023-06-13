@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
@@ -31,6 +33,25 @@ export class HostSpaceService {
     }
 
     return space;
+  }
+
+  async findPagingSpaces(paging: PagingDTO, hostId: string, args = {} as Prisma.SpaceFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.spaceRepository.countSpaces({
+      where: {
+        hostId,
+        ...args.where,
+      },
+    });
+    const spaces = await this.spaceRepository.findSpaces({
+      where: {
+        hostId,
+        ...args.where,
+      },
+      skip,
+      take,
+    });
+    return new PaginationDTO<SpaceDTO>(spaces, { paging, count });
   }
 
   async findSpaces(hostId: string, args = {} as Prisma.SpaceFindManyArgs) {

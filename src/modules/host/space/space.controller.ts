@@ -1,6 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
@@ -19,7 +19,7 @@ import { HostSpaceService } from './space.service';
 export class HostSpaceController {
   constructor(private readonly spaceService: HostSpaceService) {}
 
-  @Get(':spaceId')
+  @Get(':spaceId/detail')
   @RequestApi({
     summary: {
       description: '공간 상세 조회',
@@ -61,6 +61,24 @@ export class HostSpaceController {
   })
   async getSpaces(@ReqUser() user: RequestHost) {
     return await this.spaceService.findSpaces(user.id);
+  }
+
+  @Get('paging')
+  @RequestApi({
+    summary: {
+      description: '공간 목록 페이징 조회',
+      summary: '공간 목록 페이징 조회 - 호스트만 사용가능합니다.',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: SpaceDTO,
+    isPaging: true,
+  })
+  async getPagingSpaces(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
+    return await this.spaceService.findPagingSpaces(paging, user.id);
   }
 
   @Post()
