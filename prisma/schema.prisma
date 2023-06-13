@@ -83,7 +83,6 @@ model Space {
   //NOTE: 공간 소개글
   description String @db.MediumText
 
-  spaceType         Int?    @db.TinyInt
   buildingType      Int?    @db.TinyInt
   thumbnail         String
   //NOTE: 최소 인원

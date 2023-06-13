@@ -25,7 +25,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   location: LocationDTOProps;
   description: string;
   minSize: number;
-  spaceType: number;
   buildingType: number;
   minUser: number;
   maxUser: number;
@@ -73,9 +72,6 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'number', description: '공간 최소 크기' } })
   minSize: number;
-
-  @Property({ apiProperty: { type: 'number', description: '공간 타입', nullable: true } })
-  spaceType?: number;
 
   @Property({ apiProperty: { type: 'number', description: '건물 타입', nullable: true } })
   buildingType?: number;
@@ -136,7 +132,7 @@ export class SpaceDetailDTO {
     this.location = props.location ? new LocationDTO(props.location) : null;
     this.description = props.description;
     this.minSize = props.minSize;
-    this.spaceType = props.spaceType ?? null;
+
     this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;
