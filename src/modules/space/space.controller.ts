@@ -40,6 +40,7 @@ export class SpaceController {
   }
 
   @Get('paging')
+  @Auth([JwtNullableAuthGuard])
   @RequestApi({
     summary: {
       description: '공간 목록 조회하기',
@@ -50,7 +51,7 @@ export class SpaceController {
     type: SpaceDTO,
     isPaging: true,
   })
-  async getPagingSpaces(@Paging() paging: PagingDTO, @Query() query: FindSpacesQuery) {
+  async getPagingSpaces(@Paging() paging: PagingDTO, @Query() query: FindSpacesQuery, @ReqUser() user?: RequestUser) {
     const location: FindByLocationQuery | undefined = query.lat &&
       query.lat &&
       query.distance && {
@@ -69,10 +70,14 @@ export class SpaceController {
         time: query.time,
       };
 
-    await this.spaceService.findNearbySpaces(paging, SpaceDTO.findSpacesFindManyClause(query), query, date, location);
-
-    // return await this.spaceService.findPagingSpaces(paging, SpaceDTO.findSpacesFindManyClause(query), location, date);
-    return [];
+    return await this.spaceService.findPagingSpaces(
+      paging,
+      SpaceDTO.findSpacesFindManyClause(query),
+      query,
+      location,
+      date,
+      user.id
+    );
   }
 
   @Get('interest')

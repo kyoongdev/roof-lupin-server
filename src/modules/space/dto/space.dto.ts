@@ -135,4 +135,22 @@ export class SpaceDTO {
       orderBy,
     };
   }
+  static generateSqlWhereClause(query: FindSpacesQuery, excludeSpaces: string[], includeSpaces?: string[]) {
+    const userCountWhere = query.userCount ? Prisma.sql`minUser <= ${query.userCount}` : Prisma.sql`1=1`;
+    const locationWhere = query.locationName
+      ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(
+          query.locationName
+        )}%' OR sl.roadAddress LIKE '%${Prisma.raw(query.locationName)}%')`
+      : Prisma.sql``;
+
+    const categoryWhere = query.category
+      ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(query.category)}%'`
+      : Prisma.sql``;
+
+    const excludeIds =
+      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
+    const includeIds = includeSpaces ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
+    const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${locationWhere} ${excludeIds} ${includeIds}`;
+    return where;
+  }
 }

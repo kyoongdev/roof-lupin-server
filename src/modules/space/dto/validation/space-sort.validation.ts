@@ -22,5 +22,5 @@ export class SpaceSortValidateConstraint implements ValidatorConstraintInterface
 
 export const SpaceSortValidation = BaseValidator(
   SpaceSortValidateConstraint,
-  ' 정렬 옵션은 다음 중 하나여야 합니다: ' + SPACE_SORT_OPTION_VALUES.join(', ') + '.'
+  '정렬 옵션은 다음 중 하나여야 합니다: ' + SPACE_SORT_OPTION_VALUES.join(', ') + '.'
 );

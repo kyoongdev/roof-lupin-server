@@ -99,6 +99,32 @@ export class SpaceRepository {
     });
   }
 
+  async findCommonSpace(id: string, userId?: string) {
+    const space = await this.database.space.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        location: true,
+        reviews: true,
+        publicTransportations: true,
+        userInterests: true,
+      },
+    });
+    if (!space) {
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
+    }
+    return new SpaceDTO({
+      ...space,
+      cost: space.minCost,
+      reviewCount: space.reviews.length,
+      publicTransportation: space.publicTransportations?.at(-1),
+      location: space.location,
+      averageScore: Number(space.averageScore),
+      isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+    });
+  }
+
   async countSpaces(args = {} as Prisma.SpaceCountArgs) {
     return this.database.space.count(args);
   }
