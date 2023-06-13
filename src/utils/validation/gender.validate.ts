@@ -23,26 +23,26 @@ export class IsGenderValidateConstraint implements ValidatorConstraintInterface 
 
 export const GenderValidation = BaseValidator(IsGenderValidateConstraint, 'MALE과 FEMALE 중에서만 입력해주세요.');
 
-export const GenderReqTransForm = () =>
-  Transform(({ value }) => {
-    if (value === GENDER.MALE) {
-      return 1;
-    } else if (value === GENDER.FEMALE) {
-      return 2;
-    } else {
-      return 3;
-    }
-  });
+export const genderNumberToString = (gender: number) => {
+  if (gender === 1) {
+    return GENDER.MALE;
+  } else if (gender === 2) {
+    return GENDER.FEMALE;
+  } else {
+    return null;
+  }
+};
 
-export const GenderResTransForm = () =>
-  Transform(({ value }) => {
-    if (value === 1) {
-      return GENDER.MALE;
-    } else if (value === 2) {
-      return GENDER.FEMALE;
-    } else {
-      return null;
-    }
-  });
+export const genderStringToNumber = (gender: string) => {
+  if (gender === GENDER.MALE) {
+    return 1;
+  } else if (gender === GENDER.FEMALE) {
+    return 2;
+  } else {
+    return null;
+  }
+};
 
+export const GenderReqTransForm = () => Transform(({ value }) => genderStringToNumber(value));
+export const GenderResTransForm = () => Transform(({ value }) => genderNumberToString(value));
 export const GenderReqDecorators = () => applyDecorators(GenderReqTransForm(), GenderValidation());
