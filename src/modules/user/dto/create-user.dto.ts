@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Property } from 'wemacu-nestjs';
 
 import { GENDER, GENDER_VALUE, GenderReqDecorators, GenderValidation } from '../../../utils/validation/gender.validate';
@@ -25,9 +27,6 @@ export class CreateUserDTO {
   birth?: string;
 
   @GenderReqDecorators()
-  @Property({
-    apiProperty: { type: 'string', nullable: true, enum: GENDER_VALUE, description: '성별 : MALE | FEMALE' },
-  })
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })

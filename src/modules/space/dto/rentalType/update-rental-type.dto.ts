@@ -1,6 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
 import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
+import { RENTAL_TYPE_KEYS, RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
 import { RentalTypeValidation } from './validation/rental-type.validation';
 
@@ -21,8 +22,10 @@ export class UpdateRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 가격' } })
   baseCost?: number;
 
-  @RentalTypeValidation()
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '대여타입 ,1 = 시간 | 2 = 패키지' } })
+  @RentalTypeReqDecorator()
+  @Property({
+    apiProperty: { type: 'string', nullable: true, enum: RENTAL_TYPE_KEYS, description: RENTAL_TYPE_KEYS.join(',') },
+  })
   rentalType?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })

@@ -70,7 +70,7 @@ export class UserController {
   }
 
   @Post('')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  // @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {

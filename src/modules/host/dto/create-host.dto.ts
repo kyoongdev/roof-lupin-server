@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { GENDER_VALUE, GenderReqDecorators, PhoneNumberValidation } from '@/utils/validation';
+import { GenderReqDecorators, PhoneNumberValidation } from '@/utils/validation';
 
 interface CreateHostDTOProps {
   name: string;
@@ -26,7 +26,6 @@ export class CreateHostDTO {
   phoneNumber: string;
 
   @GenderReqDecorators()
-  @Property({ apiProperty: { type: 'number', enum: GENDER_VALUE, description: '성별 : MALE | FEMALE' } })
   gender: number;
 
   @Property({ apiProperty: { type: 'string', description: '비밀번호' } })

@@ -25,7 +25,7 @@ export class CommonUserDTO extends BaseUserDTO {
   birth?: string;
 
   @GenderResTransForm()
-  @Property({ apiProperty: { type: 'string', nullable: true, example: GENDER_VALUE.join(',') } })
+  @Property({ apiProperty: { type: 'string', nullable: true, example: GENDER_VALUE.join(',') + ',NULL' } })
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })
