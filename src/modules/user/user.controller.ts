@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -17,7 +17,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @RequestApi({
     summary: {
       description: '유저 목록',

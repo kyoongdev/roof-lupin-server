@@ -15,7 +15,6 @@ export class UserRepository {
   async findUsers(args = {} as Prisma.UserFindManyArgs) {
     const users = await this.database.user.findMany({
       ...args,
-      include: {},
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,

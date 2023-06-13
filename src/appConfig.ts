@@ -1,4 +1,4 @@
-import type { INestApplication, PipeTransform } from '@nestjs/common';
+import type { INestApplication, NestInterceptor, PipeTransform } from '@nestjs/common';
 import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -27,11 +27,17 @@ class AppConfig {
 
   configureMiddleware(...middlewares: any[]) {
     middlewares.length > 0 && this.app.use(...middlewares);
+
     return this;
   }
 
   configurePipes(...pipes: PipeTransform<any, any>[]) {
     pipes.length > 0 && this.app.useGlobalPipes(...pipes);
+    return this;
+  }
+
+  configureInterceptors(...interceptors: NestInterceptor[]) {
+    interceptors.length > 0 && this.app.useGlobalInterceptors(...interceptors);
     return this;
   }
 

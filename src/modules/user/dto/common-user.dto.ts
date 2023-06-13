@@ -1,5 +1,8 @@
 import { User } from '@prisma/client';
+import { Expose } from 'class-transformer';
 import { Property } from 'wemacu-nestjs';
+
+import { GenderResponseTransForm, GenderTransForm } from '@/utils/validation';
 
 import { BaseUserDTO } from './base-user.dto';
 
@@ -21,8 +24,9 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   birth?: string;
 
+  @GenderResponseTransForm()
   @Property({ apiProperty: { type: 'string', nullable: true, example: '남성 | 여성 | undefined' } })
-  gender?: string;
+  gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })
   profileImage?: string;
@@ -34,7 +38,7 @@ export class CommonUserDTO extends BaseUserDTO {
     this.email = props.email ?? null;
     this.phoneNumber = props.phoneNumber ?? null;
     this.birth = props.birth ?? null;
-    this.gender = this.userGenderConverter(props.gender);
+    this.gender = props.gender;
     this.profileImage = props.profileImage ?? null;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;

@@ -1,3 +1,5 @@
+import { applyDecorators } from '@nestjs/common';
+
 import { Transform } from 'class-transformer';
 import { type ValidationArguments, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
 
@@ -32,3 +34,17 @@ export const GenderTransForm = () =>
       return 3;
     }
   });
+
+export const GenderResponseTransForm = () =>
+  Transform(({ value }) => {
+    console.log(value);
+    if (value === 1) {
+      return GENDER.MALE;
+    } else if (value === 2) {
+      return GENDER.FEMALE;
+    } else {
+      return null;
+    }
+  });
+
+export const GenderDecorators = () => applyDecorators(GenderTransForm(), GenderValidation());

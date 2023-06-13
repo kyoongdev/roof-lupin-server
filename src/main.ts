@@ -1,5 +1,5 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 
 import AppConfig from '@/appConfig';
 import { winstonLogger } from '@/log';
@@ -16,6 +16,7 @@ import { AppModule } from './app.module';
       origin: '*',
     })
     .configureMiddleware()
+    .configureInterceptors(new ClassSerializerInterceptor(app.get(Reflector)))
     .configurePipes(
       new ValidationPipe({
         whitelist: true,

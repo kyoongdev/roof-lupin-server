@@ -1,4 +1,4 @@
-import { Module, type Provider } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module, type Provider, UseInterceptors } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 

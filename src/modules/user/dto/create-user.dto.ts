@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { GenderValidation } from '../../../utils/validation/gender.validate';
+import { GENDER_VALUE, GenderDecorators, GenderValidation } from '../../../utils/validation/gender.validate';
 
 interface Props {
   nickname: string;
@@ -24,10 +24,10 @@ export class CreateUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   birth?: string;
 
+  @GenderDecorators()
   @Property({
-    apiProperty: { type: 'number', nullable: true, example: '1 = 남성, 2 = 여성' },
+    apiProperty: { type: 'number', nullable: true, enum: GENDER_VALUE, description: '성별 : MALE | FEMALE' },
   })
-  @GenderValidation()
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })
