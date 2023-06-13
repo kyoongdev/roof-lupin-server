@@ -15,7 +15,7 @@ export const RENTAL_TYPE_VALUES = Object.values(RENTAL_TYPE);
 
 @ValidatorConstraint()
 export class RentalTypeValidateConstraint implements ValidatorConstraintInterface {
-  validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+  validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
     if (value !== 1 && value !== 2) return false;
 
     return true;
@@ -27,22 +27,22 @@ export const RentalTypeValidation = BaseValidator(
   'rentalType 옵션은 다음 중 하나여야 합니다: ' + RENTAL_TYPE_VALUES.join(', ') + '.'
 );
 
-export const RentalTypeRequestTransForm = () =>
-  Transform(({ value }) => {
-    if (value === RENTAL_TYPE.TIME) {
-      return 1;
-    } else if (value === RENTAL_TYPE.PACKAGE) {
-      return 2;
-    } else return 3;
-  });
+export const rentalTypeStringToNumber = (rentalType: string) => {
+  if (rentalType === RENTAL_TYPE.TIME) {
+    return 1;
+  } else if (rentalType === RENTAL_TYPE.PACKAGE) {
+    return 2;
+  } else return null;
+};
 
+export const rentalTypeNumberToString = (rentalType: number) => {
+  if (rentalType === 1) {
+    return RENTAL_TYPE.TIME;
+  } else if (rentalType === 2) {
+    return RENTAL_TYPE.PACKAGE;
+  } else return null;
+};
+
+export const RentalTypeRequestTransForm = () => Transform(({ value }) => rentalTypeStringToNumber(value));
+export const RentalTypeResTransForm = () => Transform(({ value }) => rentalTypeNumberToString(value));
 export const RentalTypeReqDecorator = () => applyDecorators(RentalTypeRequestTransForm(), RentalTypeValidation());
-
-export const RentalTypeResTransForm = () =>
-  Transform(({ value }) => {
-    if (value === 1) {
-      return RENTAL_TYPE.TIME;
-    } else if (value === 2) {
-      return RENTAL_TYPE.PACKAGE;
-    } else return null;
-  });

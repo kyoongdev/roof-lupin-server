@@ -14,7 +14,7 @@ export const GENDER_VALUE = Object.keys(GENDER);
 
 @ValidatorConstraint()
 export class IsGenderValidateConstraint implements ValidatorConstraintInterface {
-  validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+  validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
     if (value !== 1 && value !== 2) return false;
 
     return true;
