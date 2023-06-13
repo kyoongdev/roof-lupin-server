@@ -24,8 +24,8 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '생년월일', nullable: true, minLength: 8, maxLength: 8 } })
   birth?: string;
 
-  @Property({ apiProperty: { type: 'string', description: '성별', nullable: true } })
   @GenderValidation()
+  @Property({ apiProperty: { type: 'string', description: '성별', nullable: true } })
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', description: '프로필 사진', nullable: true } })

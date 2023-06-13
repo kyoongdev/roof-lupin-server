@@ -15,7 +15,6 @@ export const GENDER_VALUE = Object.keys(GENDER);
 @ValidatorConstraint()
 export class IsGenderValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    console.log(value);
     if (value !== 1 && value !== 2) return false;
 
     return true;
@@ -24,7 +23,7 @@ export class IsGenderValidateConstraint implements ValidatorConstraintInterface 
 
 export const GenderValidation = BaseValidator(IsGenderValidateConstraint, 'MALE과 FEMALE 중에서만 입력해주세요.');
 
-export const GenderTransForm = () =>
+export const GenderReqTransForm = () =>
   Transform(({ value }) => {
     if (value === GENDER.MALE) {
       return 1;
@@ -35,9 +34,8 @@ export const GenderTransForm = () =>
     }
   });
 
-export const GenderResponseTransForm = () =>
+export const GenderResTransForm = () =>
   Transform(({ value }) => {
-    console.log(value);
     if (value === 1) {
       return GENDER.MALE;
     } else if (value === 2) {
@@ -47,4 +45,4 @@ export const GenderResponseTransForm = () =>
     }
   });
 
-export const GenderDecorators = () => applyDecorators(GenderTransForm(), GenderValidation());
+export const GenderReqDecorators = () => applyDecorators(GenderReqTransForm(), GenderValidation());

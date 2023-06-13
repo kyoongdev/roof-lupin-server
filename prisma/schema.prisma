@@ -83,7 +83,7 @@ model Space {
   //NOTE: 공간 소개글
   description String @db.MediumText
 
-  buildingType      Int?    @db.TinyInt
+  buildingType      Int?    @db.TinyInt //TODO: 추후 정리
   thumbnail         String
   //NOTE: 최소 인원
   minUser           Int     @db.TinyInt
@@ -157,7 +157,7 @@ model RentalType {
   id         String @id @default(uuid())
   name       String @db.VarChar(120)
   baseCost   Int    @db.MediumInt // 기본 비용
-  rentalType Int    @db.TinyInt // 1 : 시간, 2 : 패키지
+  rentalType Int    @db.TinyInt //INFO: 1 : 시간, 2 : 패키지
   baseHour   Int?   @db.TinyInt // 기본 이용시간
   startAt    Int    @default(0) @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
   endAt      Int    @default(24) @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
