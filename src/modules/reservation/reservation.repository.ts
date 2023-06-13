@@ -72,6 +72,7 @@ export class ReservationRepository {
                 reviews: true,
                 location: true,
                 publicTransportations: true,
+                userInterests: true,
               },
             },
           },

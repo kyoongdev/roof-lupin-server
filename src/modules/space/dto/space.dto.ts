@@ -13,6 +13,7 @@ export interface SpaceDTOProps {
   reviewCount: number;
   cost: number;
   isBest?: boolean;
+  isInterested?: boolean;
   thumbnail: string;
   publicTransportation?: TransportationDTOProps; //대중 교통
   location: LocationDTOProps;
@@ -37,6 +38,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '공간 베스트 여부' } })
   isBest: boolean | null;
 
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '찜 여부' } })
+  isInterested: boolean | null;
+
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 
@@ -53,6 +57,7 @@ export class SpaceDTO {
     this.reviewCount = props.reviewCount;
     this.cost = props.cost;
     this.isBest = typeof props.isBest === 'boolean' ? props.isBest : null;
+    this.isInterested = typeof props.isInterested === 'boolean' ? props.isInterested : null;
     this.thumbnail = props.thumbnail;
     this.publicTransportation = props.publicTransportation ? new TransportationDTO(props.publicTransportation) : null;
     this.location = props.location ? new LocationDTO(props.location) : null;

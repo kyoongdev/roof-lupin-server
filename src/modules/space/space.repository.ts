@@ -103,19 +103,18 @@ export class SpaceRepository {
     return this.database.space.count(args);
   }
 
-  async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
+  async findSpaces(args = {} as Prisma.SpaceFindManyArgs, userId?: string) {
     const spaces = await this.database.space.findMany({
       where: args.where,
-
       include: {
         location: true,
         reviews: true,
         publicTransportations: true,
+        userInterests: true,
       },
       orderBy: {
         ...args.orderBy,
       },
-
       ...args,
     });
 
@@ -129,6 +128,7 @@ export class SpaceRepository {
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location,
           averageScore: Number(space.averageScore),
+          isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
         })
     );
   }

@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { PrismaService } from '@/database/prisma.service';
+
 import { LocationRepository } from '../location/location.repository';
 
 import { SpaceDTO } from './dto';
@@ -20,11 +22,45 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly locationRepository: LocationRepository,
-    private readonly rentalTypeService: RentalTypeService
+    private readonly rentalTypeService: RentalTypeService,
+    private readonly database: PrismaService
   ) {}
 
   async findSpace(id: string, userId?: string) {
     return await this.spaceRepository.findSpace(id, userId);
+  }
+
+  async findPopularSpaces(query: FindSpacesQuery, excludeSpaces: string[], includeSpaces?: string[]) {
+    const where = query.userCount ? Prisma.sql`minUser <= ${query.userCount}` : Prisma.sql`1=1`;
+    const locationWhere = query.locationName
+      ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(
+          query.locationName
+        )}%' OR sl.roadAddress LIKE '%${Prisma.raw(query.locationName)}%')`
+      : Prisma.sql``;
+
+    const categoryWhere = query.category
+      ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(query.category)}%'`
+      : Prisma.sql``;
+
+    const excludeIds =
+      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
+    const includeIds = includeSpaces ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
+
+    const spaces: { id: string; distance: number }[] = await this.database.$queryRaw`
+          SELECT sp.id, AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests,COUNT(sr.spaceId) as reviewCount
+          FROM Space sp
+          LEFT JOIN SpaceInterest si ON  sp.id = si.spaceId 
+          LEFT JOIN SpaceReview sr ON sp.id = sr.spaceId
+          INNER JOIN SpaceLocation sl ON sp.id = sl.spaceId
+          INNER JOIN SpaceCategory sc ON sp.id = sc.spaceId 
+          INNER JOIN Category ca ON sc.categoryId = ca.id 
+          WHERE ${where} ${categoryWhere} ${locationWhere} ${excludeIds} ${includeIds}
+          GROUP BY sp.id
+          ORDER BY userInterests, averageScore,reviewCount
+          LIMIT ${query.page ?? 0},${query.limit ?? 10}
+      `;
+
+    return spaces;
   }
 
   async findNearbySpaces(
@@ -35,11 +71,12 @@ export class SpaceService {
     location?: FindByLocationQuery
   ) {
     const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(paging, args, location, date);
-    const locations = await this.locationRepository.getSpaceWithLocationsByDistance(
-      query,
-      excludeSpaces,
-      location ? includeSpaces : undefined
-    );
+    await this.findPopularSpaces(query, excludeSpaces, location ? includeSpaces : undefined);
+    // const locations = await this.locationRepository.getSpaceWithLocationsByDistance(
+    //   query,
+    //   excludeSpaces,
+    //   location ? includeSpaces : undefined
+    // );
     // await this.spaceRepository.findSpaces();
 
     // const whereArgs: Prisma.SpaceWhereInput = {
@@ -98,7 +135,6 @@ export class SpaceService {
       skip,
       take,
     });
-    console.log({ whereArgs, args });
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

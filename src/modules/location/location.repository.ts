@@ -46,8 +46,8 @@ export class LocationRepository {
       excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
     const includeIds = includeSpaces ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
 
-    const locations: (Space & { distance: number })[] = await this.database.$queryRaw`
-        SELECT sp.id,
+    const spaces: { id: string; distance: number }[] = await this.database.$queryRaw`
+        SELECT sp.id as id,
         (6371*acos(cos(radians(${query.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
         -radians(${query.lng}))+sin(radians(${query.lat}))*sin(radians(sl.lat))))
         AS distance
@@ -59,8 +59,7 @@ export class LocationRepository {
         ORDER BY distance 
         LIMIT ${query.page ?? 0},${query.limit ?? 10}
     `;
-
-    console.log(locations);
-    return locations;
+    console.log({ spaces });
+    return spaces;
   }
 }
