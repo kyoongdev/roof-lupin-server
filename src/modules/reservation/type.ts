@@ -5,5 +5,6 @@ export type CommonReservation = RentalType & {
     reviews: SpaceReview[];
     location: SpaceLocation;
     publicTransportations: PublicTransportation[];
+    rentalType: RentalType[];
   };
 };

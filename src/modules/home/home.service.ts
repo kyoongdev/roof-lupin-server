@@ -27,6 +27,7 @@ export class HomeService {
                 location: true,
                 reviews: true,
                 publicTransportations: true,
+                rentalType: true,
               },
             },
           },

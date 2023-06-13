@@ -109,14 +109,16 @@ export class SpaceRepository {
         reviews: true,
         publicTransportations: true,
         userInterests: true,
+        rentalType: true,
       },
     });
     if (!space) {
       throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
     }
+    space.rentalType;
     return new SpaceDTO({
       ...space,
-      cost: space.minCost,
+
       reviewCount: space.reviews.length,
       publicTransportation: space.publicTransportations?.at(-1),
       location: space.location,
@@ -137,6 +139,7 @@ export class SpaceRepository {
         reviews: true,
         publicTransportations: true,
         userInterests: true,
+        rentalType: true,
       },
       orderBy: {
         ...args.orderBy,
@@ -149,7 +152,7 @@ export class SpaceRepository {
       (space) =>
         new SpaceDTO({
           ...space,
-          cost: space.minCost,
+          rentalType: space.rentalType,
           reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location,

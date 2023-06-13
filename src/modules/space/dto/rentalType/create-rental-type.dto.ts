@@ -22,7 +22,7 @@ export class CreateRentalTypeDTO {
   baseCost: number;
 
   @RentalTypeValidation()
-  @Property({ apiProperty: { type: 'number', description: '대여타입 ,1 = 시간 | 2 = 패키지' } })
+  @Property({ apiProperty: { type: 'number', description: '대여타입,1 = 시간 | 2 = 패키지' } })
   rentalType: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })

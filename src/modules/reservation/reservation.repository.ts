@@ -27,6 +27,7 @@ export class ReservationRepository {
                 reviews: true,
                 location: true,
                 publicTransportations: true,
+                rentalType: true,
               },
             },
           },
@@ -47,7 +48,6 @@ export class ReservationRepository {
       rentalType: restRentalType,
       space: {
         ...space,
-        cost: space.minCost,
         reviewCount: space.reviews.length,
         publicTransportation: space.publicTransportations?.at(-1),
         location: space.location?.['location'],
@@ -73,6 +73,7 @@ export class ReservationRepository {
                 location: true,
                 publicTransportations: true,
                 userInterests: true,
+                rentalType: true,
               },
             },
           },
@@ -96,7 +97,6 @@ export class ReservationRepository {
         rentalType: restRentalType,
         space: {
           ...space,
-          cost: space.minCost,
           reviewCount: space.reviews.length,
           publicTransportation: space.publicTransportations?.at(-1),
           location: space.location?.['location'],
