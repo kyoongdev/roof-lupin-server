@@ -20,10 +20,7 @@ export class CreateRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '기본 가격' } })
   baseCost: number;
 
-  @RentalTypeReqDecorator()
-  @Property({
-    apiProperty: { type: 'string', enum: RENTAL_TYPE_KEYS, description: RENTAL_TYPE_KEYS.join(',') },
-  })
+  @RentalTypeReqDecorator(false)
   rentalType: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })

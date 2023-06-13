@@ -14,7 +14,7 @@ import { HomeException } from './exception/home.exception';
 export class HomeService {
   constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
 
-  async getHomeContents() {
+  async getHomeContents(userId?: string) {
     const categories = await this.database.category.findMany({
       where: {
         isContent: true,
@@ -27,6 +27,7 @@ export class HomeService {
                 location: true,
                 reviews: true,
                 publicTransportations: true,
+                userInterests: true,
                 rentalType: true,
               },
             },
@@ -48,6 +49,7 @@ export class HomeService {
             publicTransportation: space.publicTransportations?.at(-1),
             location: space.location,
             averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+            isInterested: space.userInterests.some((interest) => interest.userId === userId),
           })),
         })
     );

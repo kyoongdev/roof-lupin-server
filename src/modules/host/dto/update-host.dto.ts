@@ -25,7 +25,7 @@ export class UpdateHostDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 아이디', nullable: true } })
   phoneNumber?: string;
 
-  @GenderReqDecorators()
+  @GenderReqDecorators(true)
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', description: '비밀번호', nullable: true } })

@@ -15,7 +15,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.location.deleteMany({});
   await database.category.deleteMany({});
   const salt = Encrypt.createSalt();
-  const hostPassword = Encrypt.hashPassword('1234', salt);
+  const hostPassword = Encrypt.hashPassword(salt, '1234');
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
 
   await database.mainImage.create({

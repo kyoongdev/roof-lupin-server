@@ -4,12 +4,13 @@ import {
   PossibleTimeCostInfoDTO,
   type PossibleTimeCostInfoDTOProps,
 } from '../timeCostInfo/possible-time-cost-info.dto';
+import { RENTAL_TYPE_KEYS, RentalTypeResTransForm } from '../validation/rental-type.validation';
 
 export interface PossibleRentalTypeDTOProps {
   id: string;
   name: string;
   baseCost: number;
-  rentalType: string;
+  rentalType: number;
   baseHour?: number;
   startAt?: number;
   endAt?: number;
@@ -27,8 +28,9 @@ export class PossibleRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '기본 가격' } })
   baseCost: number;
 
-  @Property({ apiProperty: { type: 'number', description: '대여타입 , 시간 | 패키지' } })
-  rentalType: string;
+  @RentalTypeResTransForm()
+  @Property({ apiProperty: { type: 'string', description: RENTAL_TYPE_KEYS.join(',') } })
+  rentalType: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })
   baseHour?: number;

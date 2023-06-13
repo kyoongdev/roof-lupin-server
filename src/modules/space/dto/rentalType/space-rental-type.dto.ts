@@ -8,7 +8,7 @@ export type SpaceRentalTypeDTOProps = RentalTypeDTOProps[];
 
 export class SpaceRentalTypeDTO {
   @Property({ apiProperty: { type: TimeRentalTypeDTO, nullable: true, description: '시간 대여타입' } })
-  timeRentalType: TimeRentalTypeDTOProps;
+  timeRentalType: TimeRentalTypeDTO;
 
   @Property({ apiProperty: { type: PackageRentalTypeDTO, nullable: true, description: '패키지 대여타입' } })
   packageRentalType: PackageRentalTypeDTO;

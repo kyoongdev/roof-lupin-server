@@ -23,9 +23,6 @@ export class UpdateRentalTypeDTO {
   baseCost?: number;
 
   @RentalTypeReqDecorator()
-  @Property({
-    apiProperty: { type: 'string', nullable: true, enum: RENTAL_TYPE_KEYS, description: RENTAL_TYPE_KEYS.join(',') },
-  })
   rentalType?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })

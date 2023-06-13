@@ -8,6 +8,7 @@ import { ReservationRepository } from '@/modules/reservation/reservation.reposit
 import { PossibleRentalTypeQuery } from '../dto/query';
 import { PossibleRentalTypesDTO, PossibleRentalTypesDTOProps, RentalTypeWithReservationDTO } from '../dto/rentalType';
 import { PossibleTimeCostInfoDTOProps } from '../dto/timeCostInfo/possible-time-cost-info.dto';
+import { RENTAL_TYPE_ENUM } from '../dto/validation/rental-type.validation';
 import { SpaceRepository } from '../space.repository';
 
 import { RentalTypeRepository } from './rentalType.repository';
@@ -75,7 +76,7 @@ export class RentalTypeService {
   getPossibleRentalTypesBySpaceId(rentalTypes: RentalTypeWithReservationDTO[]) {
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
-        if (next.rentalType === '시간') {
+        if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
           const timeCostInfos: PossibleTimeCostInfoDTOProps[] = range(0, 24).map((hour) => ({
             cost: 0,
             isPossible: false,
@@ -95,7 +96,7 @@ export class RentalTypeService {
             ...next,
             timeCostInfos,
           });
-        } else if (next.rentalType === '패키지') {
+        } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           const isPossible = next.reservations.length === 0;
           acc.package.push({
             ...next,

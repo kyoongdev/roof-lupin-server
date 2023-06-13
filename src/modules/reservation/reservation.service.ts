@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
 import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCode';
 import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
@@ -89,9 +90,9 @@ export class ReservationService {
       data.validateIsReservationExist(existingReservations);
     }
 
-    if (rentalType.rentalType === '시간') {
+    if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       data.validateTimeReservation(rentalType);
-    } else if (rentalType.rentalType === '패키지') {
+    } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       data.validatePackageReservation(rentalType);
     } else throw new SpaceException(SPACE_ERROR_CODE.INTERNAL_SERVER_ERROR(RENTAL_TYPE_ERROR));
   }

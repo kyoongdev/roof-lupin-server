@@ -42,6 +42,19 @@ export class HostSpaceService {
     });
   }
 
+  async findSpaceRentalType(spaceId: string, hostId: string) {
+    const space = await this.spaceRepository.findSpace(spaceId);
+
+    if (space.host.id !== hostId) {
+      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_FIND_FORBIDDEN));
+    }
+    return await this.rentalTypeRepository.findRentalTypes({
+      where: {
+        spaceId,
+      },
+    });
+  }
+
   async createSpace(hostId: string, data: CreateSpaceDTO) {
     const rentalType = data.rentalTypes;
     const timeCostCount = rentalType.filter((item) => item.rentalType === 1).length;
@@ -51,11 +64,17 @@ export class HostSpaceService {
 
     return await this.spaceRepository.createSpace(hostId, data);
   }
-  async updateRentalType(rentalTypeId: string, hostId: string, data: UpdateRentalTypeDTO) {
-    const space = await this.spaceRepository.findSpace(rentalTypeId);
+  async updateRentalType(spaceId: string, rentalTypeId: string, hostId: string, data: UpdateRentalTypeDTO) {
+    const space = await this.spaceRepository.findSpace(spaceId);
     if (space.host.id !== hostId) {
       throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
     }
+    const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
+
+    if (space.id !== rentalType.spaceId) {
+      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+    }
+
     await this.rentalTypeRepository.updateRentalType(rentalTypeId, data);
   }
 

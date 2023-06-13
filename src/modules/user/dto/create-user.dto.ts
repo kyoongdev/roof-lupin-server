@@ -26,7 +26,7 @@ export class CreateUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   birth?: string;
 
-  @GenderReqDecorators()
+  @GenderReqDecorators(true)
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true } })

@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
@@ -10,13 +11,17 @@ export const RENTAL_TYPE = {
   PACKAGE: 'PACKAGE',
 } as const;
 
+export enum RENTAL_TYPE_ENUM {
+  TIME = 1,
+  PACKAGE = 2,
+}
 export const RENTAL_TYPE_KEYS = Object.keys(RENTAL_TYPE);
 export const RENTAL_TYPE_VALUES = Object.values(RENTAL_TYPE);
 
 @ValidatorConstraint()
 export class RentalTypeValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    if (value !== 1 && value !== 2) return false;
+    if (value !== RENTAL_TYPE_ENUM.TIME && value !== RENTAL_TYPE_ENUM.PACKAGE) return false;
 
     return true;
   }
@@ -29,20 +34,31 @@ export const RentalTypeValidation = BaseValidator(
 
 export const rentalTypeStringToNumber = (rentalType: string) => {
   if (rentalType === RENTAL_TYPE.TIME) {
-    return 1;
+    return RENTAL_TYPE_ENUM.TIME;
   } else if (rentalType === RENTAL_TYPE.PACKAGE) {
-    return 2;
+    return RENTAL_TYPE_ENUM.PACKAGE;
   } else return null;
 };
 
 export const rentalTypeNumberToString = (rentalType: number) => {
-  if (rentalType === 1) {
+  console.log({ rentalType });
+  if (rentalType === RENTAL_TYPE_ENUM.TIME) {
     return RENTAL_TYPE.TIME;
-  } else if (rentalType === 2) {
+  } else if (rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
     return RENTAL_TYPE.PACKAGE;
   } else return null;
 };
 
 export const RentalTypeRequestTransForm = () => Transform(({ value }) => rentalTypeStringToNumber(value));
 export const RentalTypeResTransForm = () => Transform(({ value }) => rentalTypeNumberToString(value));
-export const RentalTypeReqDecorator = () => applyDecorators(RentalTypeRequestTransForm(), RentalTypeValidation());
+export const RentalTypeReqDecorator = (nullable = false) =>
+  applyDecorators(
+    RentalTypeRequestTransForm(),
+    RentalTypeValidation(),
+    ApiProperty({
+      type: 'string',
+      nullable,
+      example: RENTAL_TYPE_KEYS,
+      description: RENTAL_TYPE_KEYS.join(','),
+    })
+  );

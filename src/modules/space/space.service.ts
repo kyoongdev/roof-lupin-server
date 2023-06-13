@@ -14,6 +14,7 @@ import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
 import { PossiblePackageDTO, PossibleRentalTypeDTO } from './dto/rentalType';
+import { RENTAL_TYPE_ENUM } from './dto/validation/rental-type.validation';
 import {
   ALREADY_INTERESTED,
   CURRENT_LOCATION_BAD_REQUEST,
@@ -196,7 +197,7 @@ export class SpaceService {
       //INFO: acc는 가능한 시간의 집합 => 가능한 것이 우선순위가 높음
       reservations.reduce<string[]>((acc, reservation) => {
         let isPossible = true;
-        if (reservation.rentalType === '시간') {
+        if (reservation.rentalType === RENTAL_TYPE_ENUM.TIME) {
           const possibleTimes: number[] = [];
           //INFO: 시간대별로 가능한 시간의 크기를 구함
           (reservation as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, timeCostInfo) => {
@@ -217,7 +218,7 @@ export class SpaceService {
           } else {
             isPossible = true;
           }
-        } else if (reservation.rentalType === '패키지') {
+        } else if (reservation.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           const time = reservation.endAt - reservation.startAt;
 
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외

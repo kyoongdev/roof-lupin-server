@@ -3,8 +3,9 @@ import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { ApiController, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
+import { RequestUser } from '@/interface/role.interface';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
+import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CategoryService } from '../category/category.service';
@@ -15,8 +16,6 @@ import { CurationDTO } from '../curation/dto';
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HomeService } from './home.service';
 
-// curations/home ->  home/curations
-
 @ApiController('home', '홈 화면 컨텐츠')
 export class HomeController {
   constructor(
@@ -26,6 +25,7 @@ export class HomeController {
   ) {}
 
   @Get('contents')
+  @Auth([JwtNullableAuthGuard])
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',
@@ -36,8 +36,8 @@ export class HomeController {
     type: HomeContentsDTO,
     isArray: true,
   })
-  async getHomeContents() {
-    return await this.homeService.getHomeContents();
+  async getHomeContents(@ReqUser() user?: RequestUser) {
+    return await this.homeService.getHomeContents(user?.id);
   }
 
   @Get('curations')

@@ -1,6 +1,12 @@
 import { Property } from 'wemacu-nestjs';
 
 import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '../timeCostInfo';
+import {
+  RENTAL_TYPE_ENUM,
+  RENTAL_TYPE_KEYS,
+  RentalTypeRequestTransForm,
+  RentalTypeResTransForm,
+} from '../validation/rental-type.validation';
 
 export interface RentalTypeDTOProps {
   id: string;
@@ -10,6 +16,7 @@ export interface RentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
+  spaceId: string;
   timeCostInfo?: TimeCostInfoDTOProps[];
 }
 
@@ -23,8 +30,9 @@ export class RentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '기본 가격' } })
   baseCost: number;
 
-  @Property({ apiProperty: { type: 'number', description: '대여타입 , 시간 | 패키지' } })
-  rentalType: string;
+  @RentalTypeResTransForm()
+  @Property({ apiProperty: { type: 'string', description: RENTAL_TYPE_KEYS.join(',') } })
+  rentalType: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })
   baseHour?: number;
@@ -38,24 +46,19 @@ export class RentalTypeDTO {
   @Property({ apiProperty: { type: TimeCostInfoDTO, isArray: true, nullable: true, description: '시간별 가격' } })
   timeCostInfos?: TimeCostInfoDTOProps[];
 
+  @Property({ apiProperty: { type: 'string', description: '공간 ID' } })
+  spaceId: string;
+
   constructor(props: RentalTypeDTOProps) {
     this.id = props.id;
     this.name = props.name;
     this.baseCost = props.baseCost;
-    this.rentalType = RentalTypeDTO.convertRentalType(props.rentalType);
+    this.rentalType = props.rentalType;
     this.baseHour = props.baseHour ?? null;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
-    this.timeCostInfos = props.timeCostInfo
-      ? props.timeCostInfo.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo))
-      : null;
-  }
-
-  static convertRentalType(rentalType: number) {
-    if (rentalType === 1) {
-      return '시간';
-    } else {
-      return '패키지';
-    }
+    this.spaceId = props.spaceId;
+    if (props.rentalType === RENTAL_TYPE_ENUM.TIME)
+      this.timeCostInfos = props.timeCostInfo.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
   }
 }

@@ -76,7 +76,7 @@ export class SpaceController {
       query,
       location,
       date,
-      user.id
+      user?.id
     );
   }
 
