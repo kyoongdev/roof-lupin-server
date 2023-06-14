@@ -6,7 +6,7 @@ import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
-import { CacheApi } from '@/utils/cache';
+import { CacheApi, DeleteCache } from '@/utils/cache';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -15,7 +15,7 @@ import { CategoryDTO } from '../category/dto';
 import { CurationService } from '../curation/curation.service';
 import { CurationDTO } from '../curation/dto';
 
-import { HOME_CONTENT_CACHE } from './cache';
+import { HOME_CATEGORY_CACHE, HOME_CONTENT_CACHE, HOME_CURATION_CACHE } from './cache';
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HomeService } from './home.service';
 
@@ -31,6 +31,7 @@ export class HomeController {
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
   @CacheApi({ key: HOME_CONTENT_CACHE.KEY, ttl: HOME_CONTENT_CACHE.TTL })
+  @DeleteCache(HOME_CONTENT_CACHE.KEY)
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',
@@ -46,6 +47,7 @@ export class HomeController {
   }
 
   @Get('curations')
+  @CacheApi({ key: HOME_CURATION_CACHE.KEY, ttl: HOME_CURATION_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 화면 큐레이션 목록 조회',
@@ -66,6 +68,7 @@ export class HomeController {
   }
 
   @Get('categories')
+  @CacheApi({ key: HOME_CATEGORY_CACHE.KEY, ttl: HOME_CATEGORY_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 카테고리 리스트 조회',
