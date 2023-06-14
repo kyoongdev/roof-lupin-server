@@ -4,13 +4,11 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
-import { SpaceDetailDTO, SpaceDTO } from './dto';
+import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
-import { CreateSpaceDTO } from './dto/create-space.dto';
 import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
-import { UpdateSpaceDTO } from './dto/update-space.dto';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 import { RentalTypeRepository } from './rentalType/rentalType.repository';
@@ -18,6 +16,15 @@ import { RentalTypeRepository } from './rentalType/rentalType.repository';
 @Injectable()
 export class SpaceRepository {
   constructor(private readonly database: PrismaService, private readonly rentalTypeRepository: RentalTypeRepository) {}
+
+  async findSpaceIds() {
+    const spaces = await this.database.space.findMany({
+      select: {
+        id: true,
+      },
+    });
+    return new SpaceIdsDTO({ ids: spaces.map((space) => space.id) });
+  }
 
   async findSpace(id: string, userId?: string) {
     const space = await this.database.space.findUnique({

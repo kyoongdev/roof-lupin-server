@@ -10,7 +10,6 @@ import { Filters, Interceptors } from '@/utils';
 import { AppController } from './app.controller';
 import { EventProviders } from './event';
 import { AOPProvider } from './utils/aop';
-import { CreateCacheDecorator, DeleteCacheDecorator } from './utils/cache';
 
 const providers: Provider[] = [
   ...Filters,
@@ -19,8 +18,6 @@ const providers: Provider[] = [
   DiscoveryService,
   MetadataScanner,
   AOPProvider,
-  CreateCacheDecorator,
-  DeleteCacheDecorator,
 ];
 
 @Module({

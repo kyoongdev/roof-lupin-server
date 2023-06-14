@@ -9,8 +9,7 @@ import { DistanceSpace, PopularSpace } from '@/interface/space.interface';
 import { LatLngDTO } from '../location/dto';
 import { LocationRepository } from '../location/location.repository';
 
-import { SpaceDTO } from './dto';
-import { InterestedDTO } from './dto/interested.dto';
+import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
@@ -34,6 +33,10 @@ export class SpaceService {
     private readonly rentalTypeService: RentalTypeService,
     private readonly database: PrismaService
   ) {}
+
+  async findSpaceIds() {
+    return this.spaceRepository.findSpaceIds();
+  }
 
   async findSpace(id: string, userId?: string) {
     return await this.spaceRepository.findSpace(id, userId);

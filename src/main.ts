@@ -5,7 +5,6 @@ import AppConfig from '@/appConfig';
 import { winstonLogger } from '@/log';
 
 import { AppModule } from './app.module';
-import { DeleteCacheInterceptor } from './utils/cache';
 
 (async function () {
   const app = await NestFactory.create(AppModule, {
