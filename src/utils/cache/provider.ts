@@ -29,7 +29,11 @@ export class CacheDecoratorProvider implements OnModuleInit {
           if (!testData) {
             return;
           }
-          console.log({ testData });
+
+          const originFunc: Function = instance[methodName];
+          const originMethod = async (...args: unknown[]) => originFunc.call(instance, ...args);
+
+          console.log({ testData }, typeof instance[methodName]);
         });
       });
   }

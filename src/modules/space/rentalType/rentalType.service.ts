@@ -21,6 +21,7 @@ export class RentalTypeService {
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
+    await this.spaceRepository.findSpace(spaceId);
     return await this.rentalTypeRepository.findRentalTypes({
       where: {
         spaceId,
@@ -30,6 +31,7 @@ export class RentalTypeService {
   }
 
   async findSpaceRentalTypeDetail(spaceId: string) {
+    await this.spaceRepository.findSpace(spaceId);
     return await this.rentalTypeRepository.findSpaceRentalTypeDetail(spaceId);
   }
 
