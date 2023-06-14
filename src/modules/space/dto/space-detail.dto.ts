@@ -19,7 +19,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   title: string;
   averageScore: number;
   reviewCount: number;
-  cost: number;
   isBest?: boolean;
   thumbnail: string;
   location: LocationDTOProps;
@@ -54,9 +53,6 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'number', description: '공간 리뷰 개수' } })
   reviewCount: number;
-
-  @Property({ apiProperty: { type: 'number', description: '공간 가격' } })
-  cost: number;
 
   @Property({ apiProperty: { type: 'boolean', description: '공간 베스트 여부' } })
   isBest?: boolean;
@@ -126,13 +122,12 @@ export class SpaceDetailDTO {
     this.title = props.title;
     this.averageScore = props.averageScore;
     this.reviewCount = props.reviewCount;
-    this.cost = props.cost;
+
     this.isBest = props.isBest ?? false;
     this.thumbnail = props.thumbnail;
     this.location = props.location ? new LocationDTO(props.location) : null;
     this.description = props.description;
     this.minSize = props.minSize;
-
     this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;

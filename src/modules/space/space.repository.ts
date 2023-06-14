@@ -94,7 +94,7 @@ export class SpaceRepository {
       refundPolicies: refundPolicies.map((refundPolicy) => refundPolicy),
       services: services.map(({ service }) => service),
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
-      cost: space.minCost,
+
       averageScore: Number(space.averageScore),
     });
   }

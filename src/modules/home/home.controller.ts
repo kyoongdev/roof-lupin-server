@@ -7,6 +7,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { CacheApi, DeleteCache } from '@/utils/cache';
+import { CacheDecoratorTest } from '@/utils/cache/decorator';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -48,6 +49,7 @@ export class HomeController {
 
   @Get('curations')
   @CacheApi({ key: HOME_CURATION_CACHE.KEY, ttl: HOME_CURATION_CACHE.TTL })
+  @CacheDecoratorTest()
   @RequestApi({
     summary: {
       description: '홈 화면 큐레이션 목록 조회',

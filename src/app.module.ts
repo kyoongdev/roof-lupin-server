@@ -1,6 +1,7 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { DiscoveryService, MetadataScanner } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { Modules } from '@/modules';
@@ -8,8 +9,16 @@ import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
 import { EventProviders } from './event';
+import { CacheDecoratorProvider } from './utils/cache/provider';
 
-const providers: Provider[] = [...Filters, ...Interceptors, ...EventProviders];
+const providers: Provider[] = [
+  ...Filters,
+  ...Interceptors,
+  ...EventProviders,
+  DiscoveryService,
+  MetadataScanner,
+  CacheDecoratorProvider,
+];
 
 @Module({
   imports: [

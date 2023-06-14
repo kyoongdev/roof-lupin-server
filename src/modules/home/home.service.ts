@@ -5,6 +5,7 @@ import { Prisma } from '@prisma/client';
 import { Cache } from 'cache-manager';
 
 import { PrismaService } from '@/database/prisma.service';
+import { CacheDecoratorTest } from '@/utils/cache/decorator';
 
 import { SpaceRepository } from '../space/space.repository';
 
