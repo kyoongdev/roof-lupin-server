@@ -41,7 +41,6 @@ export const rentalTypeStringToNumber = (rentalType: string) => {
 };
 
 export const rentalTypeNumberToString = (rentalType: number) => {
-  console.log({ rentalType });
   if (rentalType === RENTAL_TYPE_ENUM.TIME) {
     return RENTAL_TYPE.TIME;
   } else if (rentalType === RENTAL_TYPE_ENUM.PACKAGE) {

@@ -10,6 +10,7 @@ import { LatLngDTO } from '../location/dto';
 import { LocationRepository } from '../location/location.repository';
 
 import { SpaceDTO } from './dto';
+import { InterestedDTO } from './dto/interested.dto';
 import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
@@ -144,6 +145,12 @@ export class SpaceService {
 
   async findSpaces(args = {} as Prisma.SpaceFindManyArgs) {
     return await this.spaceRepository.findSpaces(args);
+  }
+
+  async findSpaceIsInterested(userId: string, spaceId: string) {
+    const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
+
+    return new InterestedDTO({ isInterested });
   }
 
   async createInterest(userId: string, spaceId: string) {

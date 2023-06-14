@@ -9,6 +9,7 @@ import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { SpaceDetailDTO, SpaceDTO } from './dto';
+import { InterestedDTO } from './dto/interested.dto';
 import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
@@ -37,6 +38,27 @@ export class SpaceController {
   })
   async getSpace(@Param('spaceId') id: string, @ReqUser() user?: RequestUser) {
     return await this.spaceService.findSpace(id, user?.id);
+  }
+
+  @Get(':spaceId/is-interested')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 찜 유무 조회하기',
+      summary: '공간 찜 유무 조회하기',
+    },
+    params: {
+      name: 'spaceId',
+      type: 'string',
+      description: '공간 아이디',
+      required: true,
+    },
+  })
+  @ResponseApi({
+    type: InterestedDTO,
+  })
+  async getIsSpaceInterested(@Param('spaceId') id: string, @ReqUser() user: RequestUser) {
+    return await this.spaceService.findSpaceIsInterested(user?.id, id);
   }
 
   @Get('paging')

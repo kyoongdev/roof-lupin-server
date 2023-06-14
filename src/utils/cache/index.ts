@@ -27,12 +27,6 @@ export class DeleteCacheInterceptor implements NestInterceptor {
     const method = context.getHandler();
     const keys: string[] | undefined = Reflect.getMetadata(DELETE_CACHE, method);
 
-    if (keys) {
-      keys.forEach(async (key) => {
-        console.log(await this.cacheManager.get(key));
-      });
-    }
-
     return next.handle();
   }
 }

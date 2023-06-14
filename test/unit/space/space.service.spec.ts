@@ -41,8 +41,6 @@ describe('SpaceService', () => {
             spaceId: rental.spaceId,
           },
         });
-        console.log(rentalTypes);
-        console.log(rental.spaceId, rental._min);
       })
     );
   });

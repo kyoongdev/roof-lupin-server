@@ -9,7 +9,8 @@ import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
 import { EventProviders } from './event';
-import { CacheDecoratorProvider } from './utils/cache/provider';
+import { AOPProvider } from './utils/aop';
+import { FooDecorator } from './utils/cache/provider';
 
 const providers: Provider[] = [
   ...Filters,
@@ -17,7 +18,8 @@ const providers: Provider[] = [
   ...EventProviders,
   DiscoveryService,
   MetadataScanner,
-  CacheDecoratorProvider,
+  AOPProvider,
+  FooDecorator,
 ];
 
 @Module({

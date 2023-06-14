@@ -1,40 +1,20 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
+import { AOP } from '../aop';
+import { createDecorator } from '../aop/utils';
 
-import { CACHE_DECORATOR } from './decorator';
+export const FOO = Symbol('FOO');
 
-@Injectable()
-export class CacheDecoratorProvider implements OnModuleInit {
-  constructor(
-    private readonly discovery: DiscoveryService,
-    private readonly scanner: MetadataScanner,
-    private readonly reflect: Reflector
-  ) {}
+type FooOptions = {
+  options: string;
+};
+export const Foo = (options: FooOptions) => createDecorator(FOO, options);
 
-  onModuleInit() {
-    this.getInstance();
-  }
-  getInstance(): void {
-    this.discovery
-      .getControllers()
-      .filter((wrapper) => wrapper.isDependencyTreeStatic())
-      .filter(({ instance }) => instance && Object.getPrototypeOf(instance))
-      // MetadataScanner로 decorator의 instance에 대한 metadata를 가져옵니다.
-      .forEach(({ instance }) => {
-        const methodNames = this.scanner.getAllMethodNames(instance);
+@AOP(FOO)
+export class FooDecorator {
+  wrap({ method, metadata: options }: any) {
+    return (arg1: string, arg2: number) => {
+      const originResult = method(arg1, arg2);
 
-        methodNames.forEach((methodName) => {
-          const testData = Reflect.getMetadata(CACHE_DECORATOR, instance[methodName]);
-
-          if (!testData) {
-            return;
-          }
-
-          const originFunc: Function = instance[methodName];
-          const originMethod = async (...args: unknown[]) => originFunc.call(instance, ...args);
-
-          console.log({ testData }, typeof instance[methodName]);
-        });
-      });
+      return originResult;
+    };
   }
 }
