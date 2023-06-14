@@ -9,10 +9,12 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 
 import { UploadedFileDTO } from './dto';
+import { FileService } from './file.service';
 
 @ApiController('file', '파일')
-@Auth([JwtAuthGuard])
 export class FileController {
+  constructor(private readonly fileService: FileService) {}
+
   @Post('/image')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 1024 * 1024 * 10 } }))
@@ -40,6 +42,6 @@ export class FileController {
     201
   )
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return 'test';
+    return this.fileService.uploadFile(file);
   }
 }

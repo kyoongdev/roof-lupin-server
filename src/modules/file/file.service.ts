@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 
 import * as AWS from 'aws-sdk';
 
+import { ImageDTO } from './dto';
+
 @Injectable()
 export class FileService {
   constructor(private readonly configService: ConfigService) {}
@@ -26,11 +28,9 @@ export class FileService {
         })
         .promise();
 
-      return Object.assign({
-        statusCode: 201,
-        message: `이미지 등록 성공`,
-        data: { url: 'https://roof-lupin.s3.ap-northeast-2.amazonaws.com/' },
-      });
+      const url = `${this.configService.get('AWS_S3_BUCKET_URL')}${key}`;
+
+      return new ImageDTO({ url });
     } catch (error) {
       console.log(error);
     }
