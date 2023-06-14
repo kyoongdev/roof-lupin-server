@@ -1,5 +1,5 @@
 import { CacheModule } from '@nestjs/cache-manager';
-import { ClassSerializerInterceptor, Module, type Provider, UseInterceptors } from '@nestjs/common';
+import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -20,7 +20,9 @@ const providers: Provider[] = [...Filters, ...Interceptors, ...EventProviders];
     EventEmitterModule.forRoot({
       global: true,
     }),
-    CacheModule.register(),
+    CacheModule.register({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers,

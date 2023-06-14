@@ -1,5 +1,4 @@
 import { Space } from '@prisma/client';
-import schedule from 'node-schedule';
 
 import { PrismaService } from '@/database/prisma.service';
 

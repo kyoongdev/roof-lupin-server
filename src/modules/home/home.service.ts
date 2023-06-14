@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { Cache } from 'cache-manager';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -12,7 +14,11 @@ import { HomeException } from './exception/home.exception';
 
 @Injectable()
 export class HomeService {
-  constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
+  constructor(
+    private readonly database: PrismaService,
+    private readonly spaceRepository: SpaceRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   async getHomeContents(userId?: string) {
     const categories = await this.database.category.findMany({
@@ -35,7 +41,8 @@ export class HomeService {
         },
       },
     });
-
+    // await this.cacheManager.set('HOME_CONTENTS', categories, 30);
+    // console.log(await this.cacheManager.get('HOME_CONTENTS'));
     return categories.map(
       (category) =>
         new HomeContentsDTO({

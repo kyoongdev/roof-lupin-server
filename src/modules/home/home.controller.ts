@@ -1,5 +1,7 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { CACHE_MANAGER, CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { Body, Delete, Get, Inject, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
+import { Cache } from 'cache-manager';
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
@@ -13,19 +15,24 @@ import { CategoryDTO } from '../category/dto';
 import { CurationService } from '../curation/curation.service';
 import { CurationDTO } from '../curation/dto';
 
+import { HOME_CONTENT_CACHE } from './cache';
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HomeService } from './home.service';
 
 @ApiController('home', '홈 화면 컨텐츠')
+@UseInterceptors(CacheInterceptor)
 export class HomeController {
   constructor(
     private readonly homeService: HomeService,
     private readonly curationService: CurationService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
+  @CacheTTL(HOME_CONTENT_CACHE.TTL)
+  @CacheKey(HOME_CONTENT_CACHE.KEY)
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',
