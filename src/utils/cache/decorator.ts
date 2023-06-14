@@ -35,3 +35,22 @@ export class CreateCacheDecorator implements AOPDecorator {
     };
   }
 }
+
+@AOP(DELETE_CACHE)
+export class DeleteCacheDecorator implements AOPDecorator {
+  constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
+
+  execute({ method, metadata }: AOPParams<any, string>) {
+    return async (arg1: string, arg2: number) => {
+      const originResult = method(arg1, arg2);
+
+      const isCacheExist = await this.cache.get(metadata);
+
+      if (isCacheExist) {
+        await this.cache.del(metadata);
+      }
+
+      return originResult;
+    };
+  }
+}
