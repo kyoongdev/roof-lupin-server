@@ -4,11 +4,12 @@ import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
-import { CreateCache } from '@/utils/cache';
+import { CreateCache, DeleteCache } from '@/utils/cache';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AppInfoService } from './app-info.service';
+import { APP_INFO_CACHE } from './cache';
 import { AppInfoDTO, CreateAppInfoDTO, UpdateAppInfoDTO } from './dto';
 
 @ApiController('app-infos', '앱 정보')
@@ -16,7 +17,7 @@ export class AppInfoController {
   constructor(private readonly appInfoService: AppInfoService) {}
 
   @Get()
-  @CreateCache({ key: 'APP_INFO', ttl: 60 * 60 * 24 })
+  @CreateCache({ key: APP_INFO_CACHE.KEY, ttl: APP_INFO_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '앱 정보 조회',
@@ -33,6 +34,7 @@ export class AppInfoController {
 
   @Post()
   @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  @DeleteCache(APP_INFO_CACHE.KEY)
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {

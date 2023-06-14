@@ -13,7 +13,7 @@ export const CREATE_CACHE = Symbol('CREATE_CACHE');
 export const DELETE_CACHE = Symbol('DELETE_CACHE');
 
 export const CreateCache = (options: CacheOption) => createAOPDecorator(CREATE_CACHE, options);
-export const DeleteCache = (key: string) => createAOPDecorator(DELETE_CACHE, key);
+export const DeleteCache = (...key: string[]) => createAOPDecorator(DELETE_CACHE, key);
 
 @AOP(CREATE_CACHE)
 export class CreateCacheDecorator implements AOPDecorator {
@@ -40,15 +40,16 @@ export class CreateCacheDecorator implements AOPDecorator {
 export class DeleteCacheDecorator implements AOPDecorator {
   constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
 
-  execute({ method, metadata }: AOPParams<any, string>) {
+  execute({ method, metadata }: AOPParams<any, string[]>) {
     return async (arg1: string, arg2: number) => {
       const originResult = method(arg1, arg2);
+      metadata.forEach(async (key) => {
+        const isCacheExist = await this.cache.get(key);
 
-      const isCacheExist = await this.cache.get(metadata);
-
-      if (isCacheExist) {
-        await this.cache.del(metadata);
-      }
+        if (isCacheExist) {
+          await this.cache.del(key);
+        }
+      });
 
       return originResult;
     };
