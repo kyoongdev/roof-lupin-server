@@ -30,7 +30,6 @@ export class HomeController {
 
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
-  @CreateCache({ key: HOME_CONTENT_CACHE.KEY, ttl: HOME_CONTENT_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',
@@ -46,6 +45,7 @@ export class HomeController {
   }
 
   @Get('curations')
+  @CreateCache({ key: HOME_CURATION_CACHE.KEY, ttl: HOME_CURATION_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 화면 큐레이션 목록 조회',
