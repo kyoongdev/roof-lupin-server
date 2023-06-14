@@ -1,57 +1,48 @@
 import { applyDecorators } from '@nestjs/common';
 
-const aopSymbol = Symbol('AOP_DECORATOR');
+import type {
+  AOPMetaData,
+  ApplyAOPFunction,
+  ApplyMetaData,
+  BaseAOPMetaData,
+  CreateAOPDecorator,
+} from '@/interface/aop.interface';
 
-export const AddMetadata = <K extends string | symbol = string, V = any>(
-  metadataKey: K,
-  metadataValue: V
-): MethodDecorator => {
-  const decoratorFactory = (
-    _: any,
-    __: string | symbol,
-    descriptor: PropertyDescriptor
-  ): TypedPropertyDescriptor<any> => {
-    if (!Reflect.hasMetadata(metadataKey, descriptor.value)) {
-      Reflect.defineMetadata(metadataKey, [], descriptor.value);
+export const AOPSymbol = Symbol('AOP_DECORATOR');
+export const AOPPrefix = ':AOP';
+
+export const applyMetaData: ApplyMetaData = (metaDataKey, metaDataValue): MethodDecorator => {
+  return (_: any, __: string | symbol, descriptor: PropertyDescriptor) => {
+    if (!Reflect.hasMetadata(metaDataKey, descriptor.value)) {
+      Reflect.defineMetadata(metaDataKey, [], descriptor.value);
     }
-    const metadataValues: V[] = Reflect.getMetadata(metadataKey, descriptor.value);
-
-    metadataValues.push(metadataValue);
+    const metaDataValues: any[] = Reflect.getMetadata(metaDataKey, descriptor.value);
+    metaDataValues.push({ ...metaDataValue, originalFn: descriptor.value });
     return descriptor;
   };
-
-  decoratorFactory.key = metadataKey;
-  return decoratorFactory;
 };
 
-export const createDecorator = (metadataKey: symbol | string, metadata?: unknown): MethodDecorator =>
-  applyDecorators(
-    (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-      if (descriptor.value) {
-        Object.defineProperty(descriptor.value, 'name', {
-          value: descriptor.value?.name + ':AOP',
-        });
-      }
-      return AddMetadata<symbol | string, { metadata?: unknown; aopSymbol: symbol; originalFn: unknown }>(metadataKey, {
-        originalFn: descriptor.value,
-        metadata,
-        aopSymbol,
-      })(target, propertyKey, descriptor);
-    },
-    (_: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-      const originalFn = descriptor.value;
-      descriptor.value = function (this: any, ...args: any[]) {
-        if (this[aopSymbol]?.[propertyKey]) {
-          return this[aopSymbol][propertyKey].apply(this, args);
-        }
-
-        return originalFn.apply(this, args);
-      };
-
-      Object.defineProperty(descriptor.value, 'name', {
-        value: propertyKey.toString(),
-        writable: false,
-      });
-      Object.setPrototypeOf(descriptor.value, originalFn);
+export const applyAOPFunction: ApplyAOPFunction = (_, propertyKey, descriptor) => {
+  const originalFn = descriptor.value;
+  descriptor.value = function (this: any, ...args: any[]) {
+    if (this[AOPSymbol]?.[propertyKey]) {
+      return this[AOPSymbol][propertyKey].apply(this, args);
     }
+    return originalFn.apply(this, args);
+  };
+
+  Object.defineProperty(descriptor.value, 'name', {
+    value: originalFn?.name + AOPPrefix,
+    writable: false,
+  });
+  Object.setPrototypeOf(descriptor.value, originalFn);
+};
+
+export const createAOPDecorator: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>
+  applyDecorators(
+    applyMetaData<symbol | string, BaseAOPMetaData>(metaDataKey, {
+      metadata,
+      aopSymbol: AOPSymbol,
+    }),
+    applyAOPFunction
   );
