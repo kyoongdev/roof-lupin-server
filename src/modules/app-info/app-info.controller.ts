@@ -4,6 +4,7 @@ import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { CreateCache } from '@/utils/cache';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -15,6 +16,7 @@ export class AppInfoController {
   constructor(private readonly appInfoService: AppInfoService) {}
 
   @Get()
+  @CreateCache({ key: 'APP_INFO', ttl: 60 * 60 * 24 })
   @RequestApi({
     summary: {
       description: '앱 정보 조회',

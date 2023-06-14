@@ -27,6 +27,7 @@
     "@typescript-eslint/ban-types": "off",
     "import/no-duplicates": "error",
     "no-unused-vars": "off",
+    "no-undef": "off",
     "sort-imports": [
       "error",
       {

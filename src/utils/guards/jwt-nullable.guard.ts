@@ -38,7 +38,7 @@ export class JwtNullableAuthGuard implements CanActivate {
       else if (decoded.role === Role.ADMIN)
         isExist = await this.database.admin.findUnique({ where: { id: decoded.id } });
 
-      if (!isExist) throw new ForbiddenException('권한이 없습니다.');
+      if (!isExist) throw new ForbiddenException('AUTHORIZATION_FORBIDDEN');
 
       req.user = {
         ...isExist,

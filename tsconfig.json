@@ -26,9 +26,9 @@
 
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["./src/@types"]
   },
-
   "include": [
     "src/**/*.json",
     "src/**/*.ts",

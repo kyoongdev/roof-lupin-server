@@ -23,7 +23,7 @@ export class JwtAuthGuard implements CanActivate {
 
     const authorization = req.headers.authorization;
 
-    if (!authorization) throw new UnauthorizedException('토큰이 없습니다.');
+    if (!authorization) throw new UnauthorizedException('TOKEN_EMPTY');
 
     const splittedHeader = authorization.split(' ');
     if (splittedHeader.length !== 2 && splittedHeader[0] !== 'Bearer') throw new UnauthorizedException();
@@ -38,7 +38,7 @@ export class JwtAuthGuard implements CanActivate {
     else if (decoded.role === Role.HOST) isExist = await this.database.host.findUnique({ where: { id: decoded.id } });
     else if (decoded.role === Role.ADMIN) isExist = await this.database.admin.findUnique({ where: { id: decoded.id } });
 
-    if (!isExist) throw new ForbiddenException('권한이 없습니다.');
+    if (!isExist) throw new ForbiddenException('AUTHORIZATION_FORBIDDEN');
 
     req.user = {
       ...isExist,
