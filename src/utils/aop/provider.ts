@@ -42,7 +42,7 @@ export class AOPProvider implements OnModuleInit {
               return;
             }
             for (const { originalFn, metadata, aopSymbol } of metadataList) {
-              const wrappedMethod = aopInstance.wrap({
+              const wrappedMethod = aopInstance.execute({
                 instance,
                 methodName,
                 method: originalFn.bind(instance),

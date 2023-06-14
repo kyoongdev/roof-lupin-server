@@ -15,3 +15,17 @@ export interface AOPMetaData {
   originalFn: Function;
 }
 export type ApplyAOPFunction = (_: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => void;
+
+export type AOPParams<T extends Function = Function, M = unknown> = {
+  instance: any;
+  methodName: string;
+  method: T;
+  metadata: M;
+};
+
+/**
+ * Aspect 선언시 구현이 필요합니다.
+ */
+export interface AOPDecorator<T extends Function = Function, M = unknown> {
+  execute(params: AOPParams<T, M>): T;
+}

@@ -10,7 +10,6 @@ import { Filters, Interceptors } from '@/utils';
 import { AppController } from './app.controller';
 import { EventProviders } from './event';
 import { AOPProvider } from './utils/aop';
-import { FooDecorator } from './utils/cache/provider';
 
 const providers: Provider[] = [
   ...Filters,
@@ -19,7 +18,6 @@ const providers: Provider[] = [
   DiscoveryService,
   MetadataScanner,
   AOPProvider,
-  FooDecorator,
 ];
 
 @Module({
