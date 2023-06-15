@@ -14,6 +14,27 @@ import { SettlementException } from './exception/settlement.exception';
 export class SettlementRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async checkSettlementByHostAndDate(year: string, month: string, day: string, hostId: string) {
+    const settlement = await this.database.settlement.findFirst({
+      where: {
+        year,
+        month,
+        day,
+        reservations: {
+          some: {
+            rentalType: {
+              space: {
+                hostId,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return !!settlement;
+  }
+
   async findSettlement(id: string) {
     const settlement = await this.database.settlement.findUnique({
       where: {
