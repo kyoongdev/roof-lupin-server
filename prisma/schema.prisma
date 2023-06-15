@@ -196,7 +196,7 @@ model Reservation {
 
   orderId       String? @unique //INFO: 주문 번호
   orderResultId String? @unique //INFO: 주문 결과 번호 
-  orderType     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
+  payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
 
   isNotForSale Boolean @default(false)
 
@@ -204,11 +204,48 @@ model Reservation {
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId       String
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  settlementId String
+  settlement   Settlement @relation(fields: [settlementId], references: [id])
 
   payedAt   DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+//INFO: 정산 정보
+model Settlement {
+  id String @id @default(uuid())
+
+  year  String @db.Char(4)
+  month String @db.VarChar(2)
+  day   String @db.VarChar(2)
+
+  totalCost    Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
+  taxFreeCost  Int @db.MediumInt //INFO: 비과세 금액
+  discountCost Int @default(0) @db.MediumInt //INFO: 할인금액
+  originalCost Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
+
+  isPayed Boolean @default(false)
+
+  reservations Reservation[]
+}
+
+//INFO: 세금 신고
+model TaxReturn {
+  id String @id @default(uuid())
+
+  year  String @db.Char(4)
+  month String @db.VarChar(2)
+
+  merchantPurchaseCost Int @db.MediumInt //INFO: 공간주 매입금
+  merchantSalesCost    Int @db.MediumInt //INFO: 공간주 매출금
+
+  receiptUrl  String?
+  isSubmitted Boolean @default(false)
+
+  hostId String
+  host   Host   @relation(fields: [hostId], references: [id])
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)
@@ -380,6 +417,7 @@ model Host {
   spaceQnAAnswers SpaceQnAAnswer[]
 
   hostAccount HostAccount?
+  taxReturns  TaxReturn[]
 }
 
 //INFO: 공간주 사업자 및 계좌 정보
