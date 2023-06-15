@@ -27,6 +27,9 @@ export class RentalTypeService {
         spaceId,
         ...args.where,
       },
+      orderBy: {
+        rentalType: 'asc',
+      },
     });
   }
 
