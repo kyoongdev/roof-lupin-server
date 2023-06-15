@@ -221,10 +221,11 @@ model Settlement {
   month String @db.VarChar(2)
   day   String @db.VarChar(2)
 
-  totalCost    Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
-  taxFreeCost  Int @db.MediumInt //INFO: 비과세 금액
-  discountCost Int @default(0) @db.MediumInt //INFO: 할인금액
-  originalCost Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
+  settlementCost Int @db.MediumInt //INFO: 정산 금액
+  totalCost      Int @db.MediumInt //INFO: 최종 매출 금액 (originalCost - discountCost)
+  taxFreeCost    Int @db.MediumInt //INFO: 비과세 금액
+  discountCost   Int @default(0) @db.MediumInt //INFO: 할인금액
+  originalCost   Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
 
   isPayed Boolean @default(false)
 
