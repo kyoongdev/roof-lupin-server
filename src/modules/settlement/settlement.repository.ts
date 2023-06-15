@@ -87,6 +87,10 @@ export class SettlementRepository {
     });
   }
 
+  async countSettlements(args = {} as Prisma.SettlementCountArgs) {
+    return await this.database.settlement.count(args);
+  }
+
   async findSettlements(args = {} as Prisma.SettlementFindManyArgs) {
     const settlements = await this.database.settlement.findMany({
       where: args.where,
