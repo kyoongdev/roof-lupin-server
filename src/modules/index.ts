@@ -18,7 +18,9 @@ import { ReportModule } from './report/report.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
+import { SettlementModule } from './settlement/settlement.module';
 import { SpaceModule } from './space/space.module';
+import { TaxReturnModule } from './tax-return/tax-return.module';
 import { UserModule } from './user/user.module';
 
 export const Modules = [
@@ -44,4 +46,6 @@ export const Modules = [
   MainModule,
   CategoryModule,
   CurationModule,
+  SettlementModule,
+  TaxReturnModule,
 ];

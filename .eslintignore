@@ -3,7 +3,7 @@ dist
 aws
 .husky
 prisma
-
+test
 
 *.js
 *.yml

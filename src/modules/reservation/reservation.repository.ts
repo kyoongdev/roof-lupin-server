@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
+import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 import { CommonReservation } from './type';
@@ -107,8 +107,10 @@ export class ReservationRepository {
   }
 
   //TODO: 결제 시스템까지 도입
-  async createReservation(userId: string, data: CreateReservationDTO) {
+  async createReservation(userId: string, data: CreatePaymentDTO) {
     const { rentalTypeId, spaceId, ...rest } = data;
+    const taxCost = Math.floor(rest.totalCost / 1.1);
+
     const reservation = await this.database.reservation.create({
       data: {
         user: {
@@ -122,6 +124,7 @@ export class ReservationRepository {
           },
         },
         ...rest,
+        taxFreeCost: rest.totalCost - taxCost,
       },
     });
     return reservation.id;

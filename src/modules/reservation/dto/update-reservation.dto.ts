@@ -1,8 +1,8 @@
-import { CreateReservationDTO, CreateReservationDTOProps } from './create-reservation.dto';
+import { CreatePaymentDTO, CreatePaymentDTOProps } from './create-payment';
 
-export type UpdateReservationDTOProps = CreateReservationDTOProps;
+export type UpdateReservationDTOProps = CreatePaymentDTOProps;
 
-export class UpdateReservationDTO extends CreateReservationDTO {
+export class UpdateReservationDTO extends CreatePaymentDTO {
   constructor(props?: UpdateReservationDTOProps) {
     super(props);
   }

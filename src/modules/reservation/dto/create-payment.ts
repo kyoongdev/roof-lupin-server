@@ -14,18 +14,20 @@ import { ReservationException } from '../exception/reservation.exception';
 import { ReservationDTO } from './reservation.dto';
 import { TimeValidation } from './validation';
 
-export interface CreateReservationDTOProps {
+export interface CreatePaymentDTOProps {
   year: string;
   month: string;
   day: string;
   startAt: number;
   endAt: number;
-  cost: number;
+  totalCost: number;
+  discountCost: number;
+  originalCost: number;
   rentalTypeId: string;
   spaceId: string;
 }
 
-export class CreateReservationDTO {
+export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 연도' } })
   year: string;
 
@@ -44,7 +46,13 @@ export class CreateReservationDTO {
   endAt: number;
 
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
-  cost: number;
+  totalCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '할인 금액' } })
+  discountCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '할인제외 예약 비용' } })
+  originalCost: number;
 
   @Property({ apiProperty: { type: 'string', description: '대여 타입 아이디' } })
   rentalTypeId: string;
@@ -52,14 +60,14 @@ export class CreateReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 아이디' } })
   spaceId: string;
 
-  constructor(props?: CreateReservationDTOProps) {
+  constructor(props?: CreatePaymentDTOProps) {
     if (props) {
       this.year = props.year;
       this.month = props.month;
       this.day = props.day;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
-      this.cost = props.cost;
+      this.totalCost = props.totalCost;
       this.rentalTypeId = props.rentalTypeId;
       this.spaceId = props.spaceId;
     }
@@ -104,7 +112,7 @@ export class CreateReservationDTO {
       return acc;
     }, 0);
 
-    if (realCost !== this.cost) {
+    if (realCost !== this.originalCost) {
       throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
     }
   }
@@ -114,7 +122,7 @@ export class CreateReservationDTO {
       throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_TIME_BAD_REQUEST));
     }
 
-    if (rentalType.baseCost !== this.cost) {
+    if (rentalType.baseCost !== this.originalCost) {
       throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
     }
   }

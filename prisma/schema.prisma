@@ -201,11 +201,11 @@ model Reservation {
   isNotForSale Boolean @default(false)
 
   rentalTypeId String
-  rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rentalType   RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId       String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  settlementId String
-  settlement   Settlement @relation(fields: [settlementId], references: [id])
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  settlementId String?
+  settlement   Settlement? @relation(fields: [settlementId], references: [id])
 
   payedAt   DateTime?
   createdAt DateTime  @default(now())
@@ -242,7 +242,7 @@ model TaxReturn {
   merchantSalesCost    Int @db.MediumInt //INFO: 공간주 매출금
 
   receiptUrl  String?
-  isSubmitted Boolean @default(false)
+  submittedAt DateTime?
 
   hostId String
   host   Host   @relation(fields: [hostId], references: [id])

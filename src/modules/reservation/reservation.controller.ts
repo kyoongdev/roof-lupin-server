@@ -8,7 +8,7 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
+import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import { ReservationService } from './reservation.service';
 
 @ApiController('reservations', '예약하기')
@@ -62,7 +62,7 @@ export class ReservationController {
       summary: '예약하기 - 유저만 사용가능합니다.',
     },
     body: {
-      type: CreateReservationDTO,
+      type: CreatePaymentDTO,
     },
   })
   @ResponseApi(
@@ -71,7 +71,7 @@ export class ReservationController {
     },
     201
   )
-  async createReservation(@ReqUser() user: RequestUser, @Body() data: CreateReservationDTO) {
+  async createReservation(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
     return await this.reservationService.createReservation(user.id, data);
   }
 

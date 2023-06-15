@@ -7,7 +7,11 @@ export interface BaseReservationDTOProps {
   day: string;
   startAt: number;
   endAt: number;
-  cost: number;
+  totalCost: number;
+  taxFreeCost: number;
+  discountCost: number;
+  originalCost: number;
+  payedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,8 +35,17 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'number', description: '예약 종료 시간' } })
   endAt: number;
 
-  @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
-  cost: number;
+  @Property({ apiProperty: { type: 'number', description: '결제 금액 (originalCost - discountCost)' } })
+  totalCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '비과세 금액' } })
+  taxFreeCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '할인금액' } })
+  discountCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '총액 - 할인가가 적용되지 않은 금액' } })
+  originalCost: number;
 
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '생성 날짜' } })
   createdAt: Date;
@@ -47,7 +60,10 @@ export class BaseReservationDTO {
     this.day = props.day;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
-    this.cost = props.cost;
+    this.totalCost = props.totalCost;
+    this.taxFreeCost = props.taxFreeCost;
+    this.discountCost = props.discountCost;
+    this.originalCost = props.originalCost;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
   }

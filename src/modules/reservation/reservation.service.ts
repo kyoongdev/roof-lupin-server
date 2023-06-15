@@ -7,7 +7,7 @@ import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCod
 import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
-import { CreateReservationDTO, ReservationDTO } from './dto';
+import { CreatePaymentDTO, ReservationDTO } from './dto';
 import {
   RESERVATION_ERROR_CODE,
   RESERVATION_USER_DELETE_FORBIDDEN,
@@ -52,12 +52,12 @@ export class ReservationService {
     return reservation;
   }
 
-  async createReservation(userId: string, data: CreateReservationDTO) {
+  async createReservation(userId: string, data: CreatePaymentDTO) {
     await this.validateReservation(data);
     return await this.reservationRepository.createReservation(userId, data);
   }
 
-  async updateReservation(id: string, userId: string, data: CreateReservationDTO) {
+  async updateReservation(id: string, userId: string, data: CreatePaymentDTO) {
     await this.findMyReservation(id, userId);
     await this.validateReservation(data);
     await this.reservationRepository.updateReservation(id, data);
@@ -73,7 +73,7 @@ export class ReservationService {
     await this.reservationRepository.deleteReservation(id);
   }
 
-  async validateReservation(data: CreateReservationDTO) {
+  async validateReservation(data: CreatePaymentDTO) {
     const { rentalTypeId } = data;
     const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
     const existingReservations = await this.reservationRepository.findReservations({
