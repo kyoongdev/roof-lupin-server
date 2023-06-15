@@ -200,12 +200,14 @@ model Reservation {
 
   isNotForSale Boolean @default(false)
 
-  rentalTypeId String
-  rentalType   RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  settlementId String?
-  settlement   Settlement? @relation(fields: [settlementId], references: [id])
+  rentalTypeId  String
+  rentalType    RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  settlementId  String?
+  settlement    Settlement? @relation(fields: [settlementId], references: [id])
+  userCounponId String?
+  userCoupon    UserCoupon? @relation(fields: [userCounponId], references: [id])
 
   payedAt   DateTime?
   createdAt DateTime  @default(now())
@@ -598,20 +600,22 @@ model UserCoupon {
 
   createdAt DateTime @default(now())
 
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  couponId String
-  coupon   Coupon @relation(fields: [couponId], references: [id])
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  couponId     String
+  coupon       Coupon        @relation(fields: [couponId], references: [id])
+  reservations Reservation[]
 }
 
 //INFO: 쿠폰
 model Coupon {
-  id            String @id @default(uuid())
-  name          String @db.VarChar(80)
-  discountType  Int    @db.TinyInt
-  discountValue Int    @db.MediumInt
-  description   String @db.VarChar(100)
-  code          String @unique @default(uuid()) @db.Char(8)
+  id            String  @id @default(uuid())
+  name          String  @db.VarChar(80)
+  discountType  Int     @db.TinyInt
+  discountValue Int     @db.MediumInt
+  description   String  @db.VarChar(100)
+  code          String  @unique @default(uuid()) @db.Char(8)
+  isLupinPay    Boolean @default(false)
 
   userCoupons UserCoupon[]
 }
