@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
+
 import { PrismaService } from '@/database/prisma.service';
 
 import { ReservationDTO, ReservationDTOProps } from '../reservation/dto';
 
-import { SettlementDetailDTO } from './dto';
+import { SettlementDetailDTO, SettlementDTO } from './dto';
 import { SETTLEMENT_ERROR_CODE, SETTLEMENT_HOST_NOT_FOUND, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
 
@@ -83,5 +85,20 @@ export class SettlementRepository {
       reservations: reservationDTOs,
       host,
     });
+  }
+
+  async findSettlements(args = {} as Prisma.SettlementFindManyArgs) {
+    const settlements = await this.database.settlement.findMany({
+      where: args.where,
+      orderBy: {
+        year: 'asc',
+        month: 'asc',
+        day: 'asc',
+        ...args.orderBy,
+      },
+      ...args,
+    });
+
+    return settlements.map((settlement) => new SettlementDTO(settlement));
   }
 }
