@@ -156,8 +156,9 @@ export class SpaceDTO {
       : Prisma.sql``;
 
     const excludeIds =
-      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
-    const includeIds = includeSpaces ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
+      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.raw(excludeSpaces.join(','))})` : Prisma.sql``;
+    const includeIds =
+      includeSpaces.length > 0 ? Prisma.sql`AND sp.id IN (${Prisma.raw(includeSpaces.join(','))})` : Prisma.sql``;
     const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${locationWhere} ${excludeIds} ${includeIds}`;
     return where;
   }
