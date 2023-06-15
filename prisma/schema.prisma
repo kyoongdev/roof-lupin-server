@@ -205,9 +205,9 @@ model Reservation {
   userId        String
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   settlementId  String?
-  settlement    Settlement? @relation(fields: [settlementId], references: [id])
+  settlement    Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   userCounponId String?
-  userCoupon    UserCoupon? @relation(fields: [userCounponId], references: [id])
+  userCoupon    UserCoupon? @relation(fields: [userCounponId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   payedAt   DateTime?
   createdAt DateTime  @default(now())
@@ -594,10 +594,10 @@ model Hashtag {
 model UserCoupon {
   id String @id @default(uuid())
 
-  count   Int      @default(1) @db.TinyInt
+  count     Int      @default(1) @db.TinyInt
   //INFO: 기본 6자리 랜덤 생성
-  dueDate DateTime @db.DateTime
-
+  dueDate   DateTime @db.DateTime
+  isUsed    Boolean  @default(false)
   createdAt DateTime @default(now())
 
   userId       String

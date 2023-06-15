@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { ReservationDTO, ReservationDTOProps } from '../reservation/dto';
 
-import { SettlementDetailDTO, SettlementDTO } from './dto';
+import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from './dto';
 import { SETTLEMENT_ERROR_CODE, SETTLEMENT_HOST_NOT_FOUND, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
 
@@ -104,5 +104,29 @@ export class SettlementRepository {
     });
 
     return settlements.map((settlement) => new SettlementDTO(settlement));
+  }
+
+  async createSettlement(data: CreateSettlementDTO) {
+    const settlement = await this.database.settlement.create({
+      data,
+    });
+    return settlement.id;
+  }
+
+  async updateSettlement(id: string, data: UpdateSettlementDTO) {
+    await this.database.settlement.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteSettlement(id: string) {
+    await this.database.settlement.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
