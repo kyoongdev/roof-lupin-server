@@ -1,4 +1,7 @@
+import { Prisma } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
+
+import { FindSettlementsQuery } from './query';
 
 export interface SettlementDTOProps {
   id: string;
@@ -55,5 +58,21 @@ export class SettlementDTO {
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
     this.isPayed = props.isPayed;
+  }
+
+  static generateQuery(query: FindSettlementsQuery): Prisma.SettlementFindManyArgs {
+    return {
+      where: {
+        ...(query.year && {
+          year: query.year,
+        }),
+        ...(query.month && {
+          month: query.month,
+        }),
+        ...(query.day && {
+          day: query.day,
+        }),
+      },
+    };
   }
 }
