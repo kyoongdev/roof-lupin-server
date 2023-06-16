@@ -189,10 +189,11 @@ model Reservation {
   startAt Int    @db.TinyInt
   endAt   Int    @db.TinyInt
 
-  totalCost    Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
-  taxFreeCost  Int @db.MediumInt //INFO: 비과세 금액
-  discountCost Int @default(0) @db.MediumInt //INFO: 할인금액 -> 유저 입장에서 할인되는 금액 (모든 쿠폰 정보가 포함)
-  originalCost Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
+  totalCost           Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
+  taxFreeCost         Int @db.MediumInt //INFO: 비과세 금액
+  discountCost        Int @default(0) @db.MediumInt //INFO: 할인금액 -> 유저 입장에서 할인되는 금액 (모든 쿠폰 정보가 포함)
+  serviceDiscountCost Int @default(0) @db.MediumInt
+  originalCost        Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
 
   orderId       String? @unique //INFO: 주문 번호
   orderResultId String? @unique //INFO: 주문 결과 번호 
