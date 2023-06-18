@@ -6,7 +6,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
-import { CreateFacilityDTO, FacilityDTO } from './dto/facility';
+import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
@@ -64,9 +64,9 @@ export class SpaceRepository {
           },
         },
         cautions: true,
-        facilities: {
+        buildings: {
           include: {
-            facility: true,
+            building: true,
           },
         },
         hashtags: {
@@ -99,7 +99,7 @@ export class SpaceRepository {
     const {
       cautions,
       categories,
-      facilities,
+      buildings,
       hashtags,
       host,
       images,
@@ -114,7 +114,7 @@ export class SpaceRepository {
       reviewCount: space._count.reviews,
       cautions: cautions.map((caution) => caution),
       categories: categories.map(({ category }) => category),
-      facilities: facilities.map(({ facility }) => facility),
+      buildings: buildings.map(({ building }) => building),
       hashtags: hashtags.map(({ hashtag }) => hashtag),
       host,
       images: images.map(({ image }) => image),
@@ -198,7 +198,7 @@ export class SpaceRepository {
       cautions,
       rentalTypes,
       location: locationProps,
-      facilities: facilityProps,
+      buildings: buildingProps,
       services: servicesProps,
       categories: categoryProps,
       hashtags: hashtagProps,
@@ -211,7 +211,7 @@ export class SpaceRepository {
     const minSize = Math.min(...sizes.map((size) => size.size));
 
     const id = await this.database.$transaction(async (prisma) => {
-      const facilities = await this.findOrCreateFacilities(prisma, facilityProps);
+      const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
       const services = await this.findOrCreateServices(prisma, servicesProps);
       const categories = await this.findOrCreateCategories(prisma, categoryProps);
       const hashtags = await this.findOrCreateHashtags(prisma, hashtagProps);
@@ -238,9 +238,9 @@ export class SpaceRepository {
             create: cautions.map((caution) => caution),
           },
 
-          facilities: {
-            create: facilities.map((facility) => ({
-              facilityId: facility.id,
+          buildings: {
+            create: buildings.map((building) => ({
+              buildingId: building.id,
             })),
           },
           services: {
@@ -286,7 +286,7 @@ export class SpaceRepository {
       cautions,
       rentalTypes,
       location: locationProps,
-      facilities: facilityProps,
+      buildings: buildingProps,
       services: servicesProps,
       categories: categoryProps,
       hashtags: hashtagProps,
@@ -378,20 +378,20 @@ export class SpaceRepository {
           },
         };
       }
-      if (facilityProps) {
-        await prisma.spaceFacility.deleteMany({
+      if (buildingProps) {
+        await prisma.spaceBuilding.deleteMany({
           where: {
             spaceId,
           },
         });
 
-        const facilities = await this.findOrCreateFacilities(prisma, facilityProps);
+        const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
 
         updateArgs.data = {
           ...updateArgs.data,
-          facilities: {
-            create: facilities.map((facility) => ({
-              facilityId: facility.id,
+          buildings: {
+            create: buildings.map((building) => ({
+              buildingId: building.id,
             })),
           },
         };
@@ -506,21 +506,21 @@ export class SpaceRepository {
     });
   }
 
-  async findOrCreateFacilities(prisma: TransactionPrisma, data: CreateFacilityDTO[]) {
+  async findOrCreateBuildings(prisma: TransactionPrisma, data: CreateBuildingDTO[]) {
     return await Promise.all(
-      data.map(async (facility) => {
-        const isExist = await prisma.facility.findFirst({
+      data.map(async (building) => {
+        const isExist = await prisma.building.findFirst({
           where: {
-            name: facility.name,
+            name: building.name,
           },
         });
         if (isExist) {
-          return new FacilityDTO(isExist);
+          return new BuildingDTO(isExist);
         }
-        const newFacility = await prisma.facility.create({
-          data: facility,
+        const newBuilding = await prisma.building.create({
+          data: building,
         });
-        return new FacilityDTO(newFacility);
+        return new BuildingDTO(newBuilding);
       })
     );
   }

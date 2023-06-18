@@ -8,7 +8,7 @@ import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
-import { FacilityDTO, type FacilityDTOProps } from './facility';
+import { BuildingDTO, type BuildingDTOProps } from './facility';
 import { HashtagDTO, HashtagDTOProps } from './hashtag';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
@@ -36,7 +36,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
   cautions: CautionDTOProps[];
-  facilities: FacilityDTOProps[];
+  buildings: BuildingDTOProps[];
   services: ServiceDTOProps[];
   categories: SpaceCategoryDTOProps[];
   hashtags: HashtagDTOProps[];
@@ -107,8 +107,8 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: CautionDTO, isArray: true, description: '주의 사항 목록' } })
   cautions: CautionDTO[];
 
-  @Property({ apiProperty: { type: FacilityDTO, isArray: true, description: '시설 목록' } })
-  facilities: FacilityDTO[];
+  @Property({ apiProperty: { type: BuildingDTO, isArray: true, description: '시설 목록' } })
+  buildings: BuildingDTO[];
 
   @Property({ apiProperty: { type: ServiceDTO, isArray: true, description: '서비스 목록' } })
   services: ServiceDTO[];
@@ -143,7 +143,7 @@ export class SpaceDetailDTO {
     this.images = props.images.map((image) => new ImageDTO(image));
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
     this.cautions = props.cautions.map((caution) => new CautionDTO(caution));
-    this.facilities = props.facilities.map((facility) => new FacilityDTO(facility));
+    this.buildings = props.buildings.map((building) => new BuildingDTO(building));
     this.services = props.services.map((service) => new ServiceDTO(service));
     this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));
     this.hashtags = props.hashtags.map((hashtag) => new HashtagDTO(hashtag));

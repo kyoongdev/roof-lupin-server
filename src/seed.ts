@@ -232,10 +232,10 @@ export const seedDatabase = async (database: PrismaService) => {
             lat: '37.35951219616309',
           },
         },
-        facilities: {
+        buildings: {
           create: [
             {
-              facility: {
+              building: {
                 create: {
                   iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
                   name: '주차 5대',
@@ -243,7 +243,7 @@ export const seedDatabase = async (database: PrismaService) => {
               },
             },
             {
-              facility: {
+              building: {
                 create: {
                   iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
                   name: '3층',
@@ -251,7 +251,7 @@ export const seedDatabase = async (database: PrismaService) => {
               },
             },
             {
-              facility: {
+              building: {
                 create: {
                   iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
                   name: '엘리베이터 없음',

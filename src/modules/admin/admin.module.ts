@@ -9,6 +9,7 @@ import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { SettlementRepository } from '../settlement/settlement.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 
@@ -27,6 +28,8 @@ import { AdminReservationController } from './reservation/reservation.controller
 import { AdminReservationService } from './reservation/reservation.service';
 import { AdminReviewController } from './review';
 import { AdminReviewService } from './review/review.service';
+import { AdminSettlementController } from './settlement/settlement.controller';
+import { AdminSettlementService } from './settlement/settlement.service';
 import { AdminSpaceController } from './space/space.controller';
 import { AdminSpaceService } from './space/space.service';
 
@@ -51,6 +54,8 @@ import { AdminSpaceService } from './space/space.service';
     SchedulerEvent,
     LocationRepository,
     RentalTypeRepository,
+    AdminSettlementService,
+    SettlementRepository,
   ],
   controllers: [
     AdminController,
@@ -61,6 +66,7 @@ import { AdminSpaceService } from './space/space.service';
     AdminReservationController,
     AdminAlarmController,
     AdminSpaceController,
+    AdminSettlementController,
   ],
 })
 export class AdminModule {}

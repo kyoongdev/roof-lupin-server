@@ -5,7 +5,7 @@ import { CreateLocationDTO } from '@/modules/location/dto';
 import { CreateSpaceCategoryDTO } from './category';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
-import { CreateFacilityDTO } from './facility';
+import { CreateBuildingDTO } from './facility';
 import { CreateHashtagDTO } from './hashtag';
 import { CreateRefundPolicyDTO } from './refund';
 import { CreateRentalTypeDTO } from './rentalType';
@@ -58,8 +58,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateLocationDTO, nullable: true, description: '위치' } })
   location?: CreateLocationDTO;
 
-  @Property({ apiProperty: { type: CreateFacilityDTO, nullable: true, isArray: true, description: '시설' } })
-  facilities?: CreateFacilityDTO[];
+  @Property({ apiProperty: { type: CreateBuildingDTO, nullable: true, isArray: true, description: '시설' } })
+  buildings?: CreateBuildingDTO[];
 
   @Property({ apiProperty: { type: CreateServiceDTO, nullable: true, isArray: true, description: '서비스' } })
   services?: CreateServiceDTO[];
@@ -92,7 +92,7 @@ export class UpdateSpaceDTO {
       this.cautions = props.cautions;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
-      this.facilities = props.facilities.map((facility) => new CreateFacilityDTO(facility));
+      this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
       this.services = props.services.map((service) => new CreateServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
       this.hashtags = props.hashtags.map((hashtag) => new CreateHashtagDTO(hashtag));

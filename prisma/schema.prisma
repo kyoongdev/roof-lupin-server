@@ -113,7 +113,7 @@ model Space {
 
   rentalType RentalType[]
   location   SpaceLocation?
-  facilities SpaceFacility[]
+  buildings  SpaceBuilding[]
   services   SpaceService[]
   categories SpaceCategory[]
   hashtags   SpaceHashtag[]
@@ -378,13 +378,13 @@ model SpaceCaution {
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model SpaceFacility {
+model SpaceBuilding {
   spaceId    String
   space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  facilityId String
-  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([spaceId, facilityId])
+  @@id([spaceId, buildingId])
 }
 
 model SpaceService {
@@ -570,12 +570,12 @@ model Location {
   userLocations UserLocation[]
 }
 
-//INFO: 공간 주변 시설
-model Facility {
-  id              String          @id @default(uuid())
-  iconPath        String
-  name            String
-  spaceFacilities SpaceFacility[]
+//INFO: 공간 시설
+model Building {
+  id             String          @id @default(uuid())
+  iconPath       String
+  name           String
+  spaceBuildings SpaceBuilding[]
 }
 
 //INFO: 이용 가능한 서비스

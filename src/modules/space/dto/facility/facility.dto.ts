@@ -1,12 +1,12 @@
 import { Property } from 'wemacu-nestjs';
 
-export interface FacilityDTOProps {
+export interface BuildingDTOProps {
   id: string;
   iconPath: string;
   name: string;
 }
 
-export class FacilityDTO {
+export class BuildingDTO {
   @Property({ apiProperty: { type: 'string', description: '시설 id' } })
   id: string;
 
@@ -16,7 +16,7 @@ export class FacilityDTO {
   @Property({ apiProperty: { type: 'string', description: '시설 이름' } })
   name: string;
 
-  constructor(props: FacilityDTOProps) {
+  constructor(props: BuildingDTOProps) {
     this.id = props.id;
     this.iconPath = props.iconPath;
     this.name = props.name;
