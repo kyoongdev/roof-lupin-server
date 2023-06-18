@@ -87,31 +87,6 @@ export class ReviewRepository {
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
 
-    const reviewsCount = await this.countReviews({
-      where: {
-        spaceId,
-      },
-    });
-    const reviewScore = await this.database.spaceReview.aggregate({
-      where: {
-        spaceId,
-      },
-      _avg: {
-        score: true,
-      },
-    });
-
-    const newAverageScore = (reviewScore._avg.score * reviewsCount + score) / (reviewsCount + 1);
-
-    await this.database.space.update({
-      where: {
-        id: spaceId,
-      },
-      data: {
-        averageScore: Number(newAverageScore.toFixed(1)),
-      },
-    });
-
     const review = await this.database.spaceReview.create({
       data: {
         content,
@@ -137,10 +112,14 @@ export class ReviewRepository {
         },
       },
     });
-
+    await this.updateReviewAverageScore(review.id, score);
     return review.id;
   }
   async updateReview(id: string, props: UpdateReviewDTO) {
+    if (props.score) {
+      await this.updateReviewAverageScore(id, props.score);
+    }
+
     await this.database.spaceReview.update({
       where: {
         id,
@@ -166,6 +145,37 @@ export class ReviewRepository {
     await this.database.spaceReview.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async updateReviewAverageScore(id: string, score: number) {
+    const review = await this.database.spaceReview.findUnique({
+      where: {
+        id,
+      },
+    });
+    const reviewsCount = await this.countReviews({
+      where: {
+        spaceId: review.spaceId,
+      },
+    });
+    const reviewScore = await this.database.spaceReview.aggregate({
+      where: {
+        spaceId: review.spaceId,
+      },
+      _avg: {
+        score: true,
+      },
+    });
+    const newAverageScore = (reviewScore._avg.score * reviewsCount - review.score + score) / reviewsCount;
+
+    await this.database.space.update({
+      where: {
+        id: review.spaceId,
+      },
+      data: {
+        averageScore: Number(newAverageScore.toFixed(1)),
       },
     });
   }
