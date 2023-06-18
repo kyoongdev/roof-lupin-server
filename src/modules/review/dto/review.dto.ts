@@ -5,9 +5,12 @@ import { DateDTO } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
+import { ReviewAnswerDTO, ReviewAnswerDTOProps } from './review-answer.dto';
+
 export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
   images: { image: Image }[];
+  answers: ReviewAnswerDTOProps[];
 }
 
 export class ReviewDTO {
@@ -34,6 +37,9 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time' } })
   updatedAt: Date;
 
+  @Property({ apiProperty: { type: ReviewAnswerDTO, isArray: true, description: '리뷰 답변' } })
+  reviewAnswers: ReviewAnswerDTO[];
+
   constructor(props: ReviewDTOProps) {
     this.content = props.content;
     this.score = props.score;
@@ -42,5 +48,6 @@ export class ReviewDTO {
     this.isBest = props.isBest;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+    this.reviewAnswers = props.answers.map((answer) => new ReviewAnswerDTO(answer));
   }
 }

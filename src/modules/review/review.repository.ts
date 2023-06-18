@@ -31,6 +31,11 @@ export class ReviewRepository {
             },
           },
         },
+        answers: {
+          include: {
+            host: true,
+          },
+        },
       },
     });
 
@@ -60,6 +65,11 @@ export class ReviewRepository {
                 url: true,
               },
             },
+          },
+        },
+        answers: {
+          include: {
+            host: true,
           },
         },
       },

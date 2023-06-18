@@ -40,7 +40,11 @@ export class SpaceRepository {
         },
         reviews: {
           include: {
-            answers: true,
+            answers: {
+              include: {
+                host: true,
+              },
+            },
             images: {
               include: {
                 image: true,
