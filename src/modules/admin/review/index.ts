@@ -3,11 +3,10 @@ import { Delete, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
+import { ReviewDTO } from '@/modules/review/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
-
-import { AdminReviewDTO } from '../dto/review/admin-review.dto';
 
 import { AdminReviewService } from './review.service';
 
@@ -29,7 +28,7 @@ export class AdminReviewController {
     },
   })
   @ResponseApi({
-    type: AdminReviewDTO,
+    type: ReviewDTO,
   })
   async getReview(@Param('reviewId') reviewId: string) {
     return await this.reviewService.findReview(reviewId);
@@ -46,7 +45,7 @@ export class AdminReviewController {
     },
   })
   @ResponseApi({
-    type: AdminReviewDTO,
+    type: ReviewDTO,
     isPaging: true,
   })
   async getReviews(@Paging() paging: PagingDTO) {

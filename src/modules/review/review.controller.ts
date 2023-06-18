@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Req, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, Req, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -10,6 +10,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
+import { FindReviewsQuery } from './dto/query';
 import { ReviewDTO } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
@@ -28,19 +29,22 @@ export class ReviewController {
       type: 'string',
       description: '공간 아이디',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReviewDTO,
     isPaging: true,
   })
-  async getPagingSpaceReviews(@Param('spaceId') spaceId: string, @Paging() paging: PagingDTO) {
+  async getPagingSpaceReviews(
+    @Param('spaceId') spaceId: string,
+    @Paging() paging: PagingDTO,
+    @Query() query: FindReviewsQuery
+  ) {
     return await this.reviewService.findPagingReviews(paging, {
       where: {
         spaceId,
+        ...(await ReviewDTO.generateQuery(query, spaceId)).where,
       },
+      orderBy: (await ReviewDTO.generateQuery(query, spaceId)).orderBy,
     });
   }
 
