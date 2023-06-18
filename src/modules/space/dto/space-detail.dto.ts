@@ -142,6 +142,7 @@ export class SpaceDetailDTO {
     this.maxUser = props.maxUser;
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
+    this.qnaCount = props.qnaCount;
     this.isInterested = props.isInterested ?? false;
     this.host = new HostDTO(props.host);
     this.images = props.images.map((image) => new ImageDTO(image));

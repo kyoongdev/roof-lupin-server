@@ -243,8 +243,7 @@ model TaxReturn {
   year  String @db.Char(4)
   month String @db.VarChar(2)
 
-  merchantPurchaseCost Int @db.MediumInt //INFO: 공간주 매입금
-  merchantSalesCost    Int @db.MediumInt //INFO: 공간주 매출금
+  cost Int @db.MediumInt //INFO: 신고 금액
 
   receiptUrl  String?
   submittedAt DateTime?
