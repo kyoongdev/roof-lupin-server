@@ -84,6 +84,9 @@ export class ReviewRepository {
     return reviews.map((review) => new ReviewDTO(review));
   }
 
+  //TODO: best photo review
+  // async findBestPhotoReviews(spaceId: string) {}
+
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
 

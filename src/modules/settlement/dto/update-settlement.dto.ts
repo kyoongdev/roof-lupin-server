@@ -9,6 +9,7 @@ export interface UpdateSettlementDTOProps {
   taxFreeCost?: number;
   discountCost?: number;
   originalCost?: number;
+  reservationIds?: string[];
 }
 
 export class UpdateSettlementDTO {
@@ -36,6 +37,9 @@ export class UpdateSettlementDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '총액 - 할인가가 적용되지 않은 금액' } })
   originalCost?: number;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '예약 ids' } })
+  reservationIds?: string[];
+
   constructor(props?: UpdateSettlementDTOProps) {
     if (props) {
       this.year = props.year;
@@ -46,6 +50,7 @@ export class UpdateSettlementDTO {
       this.taxFreeCost = props.taxFreeCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
+      this.reservationIds = props.reservationIds;
     }
   }
 }

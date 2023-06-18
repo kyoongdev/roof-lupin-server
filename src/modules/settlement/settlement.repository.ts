@@ -128,19 +128,40 @@ export class SettlementRepository {
   }
 
   async createSettlement(data: CreateSettlementDTO) {
+    const { reservationIds, ...rest } = data;
     const settlement = await this.database.settlement.create({
-      data,
+      data: {
+        ...rest,
+        reservations: {
+          connect: [...reservationIds.map((id) => ({ id }))],
+        },
+      },
     });
     return settlement.id;
   }
 
   async updateSettlement(id: string, data: UpdateSettlementDTO) {
-    await this.database.settlement.update({
+    const { reservationIds, ...rest } = data;
+    const updateArgs: Prisma.SettlementUpdateArgs = {
       where: {
         id,
       },
-      data,
-    });
+      data: {
+        ...rest,
+      },
+    };
+
+    if (data.reservationIds) {
+      updateArgs.data = {
+        ...updateArgs.data,
+        reservations: {
+          deleteMany: {},
+          connect: [...reservationIds.map((id) => ({ id }))],
+        },
+      };
+    }
+
+    await this.database.settlement.update(updateArgs);
   }
 
   async deleteSettlement(id: string) {

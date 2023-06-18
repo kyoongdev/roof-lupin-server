@@ -74,7 +74,6 @@ export class SpaceService {
         ORDER BY distance 
         LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
     `;
-    console.log({ spaces });
 
     return spaces;
   }
@@ -103,7 +102,6 @@ export class SpaceService {
       }),
       ...args.where,
     };
-    console.log(whereArgs);
 
     const count = await this.spaceRepository.countSpaces({
       where: whereArgs,

@@ -4,11 +4,13 @@ export interface CreateSettlementDTOProps {
   year: string;
   month: string;
   day: string;
+  hostId: string;
   settlementCost: number;
   totalCost: number;
   taxFreeCost: number;
   discountCost: number;
   originalCost: number;
+  reservationIds?: string[];
 }
 
 export class CreateSettlementDTO {
@@ -20,6 +22,9 @@ export class CreateSettlementDTO {
 
   @Property({ apiProperty: { type: 'string', description: '정산 일' } })
   day: string;
+
+  @Property({ apiProperty: { type: 'string', description: '호스트 Id' } })
+  hostId: string;
 
   @Property({ apiProperty: { type: 'number', description: '정산 금액' } })
   settlementCost: number;
@@ -36,16 +41,21 @@ export class CreateSettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '총액 - 할인가가 적용되지 않은 금액' } })
   originalCost: number;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '예약 ids' } })
+  reservationIds?: string[];
+
   constructor(props?: CreateSettlementDTOProps) {
     if (props) {
       this.year = props.year;
       this.month = props.month;
       this.day = props.day;
+      this.hostId = props.hostId;
       this.settlementCost = props.settlementCost;
       this.totalCost = props.totalCost;
       this.taxFreeCost = props.taxFreeCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
+      this.reservationIds = props.reservationIds;
     }
   }
 }
