@@ -140,7 +140,7 @@ model SpaceSize {
   size    Int    @db.SmallInt
   floor   String @db.VarChar(10)
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id])
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PublicTransportation {
