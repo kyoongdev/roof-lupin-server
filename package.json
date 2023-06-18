@@ -15,6 +15,7 @@
     "start:prod": "node dist/main",
     "start:docker": "yarn prisma db push --accept-data-loss && node dist/main.js",
     "deploy:docker": "yarn prisma db push && node dist/main.js",
+    "memory": "node dist/main --max-old-space-size=256",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier:fix": "prettier **/*.ts   --write",
     "lint:fix": "eslint --fix --ext .js,.ts ./src",
@@ -37,6 +38,7 @@
     "docker:dev": "yarn config:dev && docker buildx build --platform linux/amd64,linux/arm64 -t roof . "
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.354.0",
     "@nestjs/cache-manager": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",
@@ -45,7 +47,6 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^4.14.1",
-    "aws-sdk": "^2.1397.0",
     "axios": "^1.4.0",
     "cache-manager": "^5.2.2",
     "class-transformer": "^0.5.1",
