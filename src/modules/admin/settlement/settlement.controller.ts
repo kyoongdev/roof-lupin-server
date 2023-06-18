@@ -4,7 +4,6 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/settlement/dto';
-import { FindSettlementsQuery } from '@/modules/settlement/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';

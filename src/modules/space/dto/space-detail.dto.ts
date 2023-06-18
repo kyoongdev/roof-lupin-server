@@ -12,6 +12,7 @@ import { BuildingDTO, type BuildingDTOProps } from './facility';
 import { HashtagDTO, HashtagDTOProps } from './hashtag';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
+import { SizeDTO, SizeDTOProps } from './size';
 import { TransportationDTO, TransportationDTOProps } from './transportaion';
 
 export interface SpaceDetailDTOProps extends DateProps {
@@ -41,6 +42,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   categories: SpaceCategoryDTOProps[];
   hashtags: HashtagDTOProps[];
   publicTransportations: TransportationDTOProps[];
+  sizes: SizeDTOProps[];
 }
 
 export class SpaceDetailDTO {
@@ -122,12 +124,14 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: TransportationDTO, isArray: true, description: '대중교통 목록' } })
   publicTransportations: TransportationDTO[];
 
+  @Property({ apiProperty: { type: SizeDTO, isArray: true, description: '공간 크기 목록' } })
+  sizes: SizeDTO[];
+
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
     this.averageScore = props.averageScore;
     this.reviewCount = props.reviewCount;
-
     this.isBest = props.isBest ?? false;
     this.thumbnail = props.thumbnail;
     this.location = props.location ? new LocationDTO(props.location) : null;
@@ -151,5 +155,6 @@ export class SpaceDetailDTO {
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
     this.reviews = props.reviews.map((review) => new ReviewDTO(review));
+    this.sizes = props.sizes.map((size) => new SizeDTO(size));
   }
 }

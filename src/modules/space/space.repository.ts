@@ -89,6 +89,7 @@ export class SpaceRepository {
           },
         },
         userInterests: true,
+        sizes: true,
       },
     });
 

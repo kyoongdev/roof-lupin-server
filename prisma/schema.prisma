@@ -138,6 +138,7 @@ model RecentSpace {
 model SpaceSize {
   id      String @id @default(uuid())
   size    Int    @db.SmallInt
+  floor   String @db.VarChar(10)
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id])
 }
