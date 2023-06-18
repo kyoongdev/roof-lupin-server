@@ -40,5 +40,6 @@ export class TaxReturnService {
   async deleteTaxReturn(id: string) {
     await this.findTaxReturn(id);
     await this.taxReturnRepository.deleteTaxReturn(id);
+    ``;
   }
 }
