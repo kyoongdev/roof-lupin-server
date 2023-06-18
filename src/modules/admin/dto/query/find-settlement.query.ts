@@ -1,6 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { PagingDTO, Property } from 'wemacu-nestjs';
 
+export interface AdminFindSettlementsQueryProps {
+  hostName?: string;
+  spaceTitle?: string;
+}
+
 export class AdminFindSettlementsQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '호스트 이름' } })
   hostName?: string;
@@ -8,7 +13,7 @@ export class AdminFindSettlementsQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 이름' } })
   spaceTitle?: string;
 
-  static generateQuery(query: AdminFindSettlementsQuery): Prisma.SettlementFindManyArgs {
+  static generateQuery(query: AdminFindSettlementsQueryProps): Prisma.SettlementFindManyArgs {
     return {
       where: {
         ...(query.hostName && {
