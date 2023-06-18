@@ -314,7 +314,8 @@ model SpaceReview {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  images SpaceReviewImage[]
+  images  SpaceReviewImage[]
+  answers SpaceReviewAnswer[]
 }
 
 //INFO: 공간 리뷰 이미지
@@ -325,6 +326,18 @@ model SpaceReviewImage {
   image         Image       @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([spaceReviewId, imageId])
+}
+
+model SpaceReviewAnswer {
+  id      String @id @default(uuid())
+  content String @db.MediumText
+
+  createdAt DateTime @default(now())
+
+  hostId   String
+  host     Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  review   SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reviewId String
 }
 
 //INFO: 관심있는 공간 (마이페이지에서 확인 가능)
@@ -420,8 +433,9 @@ model Host {
   spaces          Space[]
   spaceQnAAnswers SpaceQnAAnswer[]
 
-  hostAccount HostAccount?
-  taxReturns  TaxReturn[]
+  hostAccount        HostAccount?
+  taxReturns         TaxReturn[]
+  spaceReviewAnswers SpaceReviewAnswer[]
 }
 
 //INFO: 공간주 사업자 및 계좌 정보

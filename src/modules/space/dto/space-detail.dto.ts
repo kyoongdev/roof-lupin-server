@@ -4,7 +4,7 @@ import { type DateProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto';
 import { LocationDTO, LocationDTOProps } from '@/modules/location/dto';
-import { ReviewDTO } from '@/modules/review/dto/review.dto';
+import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
@@ -29,8 +29,10 @@ export interface SpaceDetailDTOProps extends DateProps {
   maxUser: number;
   overflowUserCost: number;
   overflowUserCount: number;
+  qnaCount: number;
   isInterested?: boolean;
   host: HostDTOProps;
+  reviews: ReviewDTOProps[];
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
   cautions: CautionDTOProps[];
@@ -83,6 +85,9 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'number', description: '초과 인원' } })
   overflowUserCount: number;
+
+  @Property({ apiProperty: { type: 'number', description: '공간 Q&A 개수' } })
+  qnaCount: number;
 
   @Property({ apiProperty: { type: 'boolean', description: '찜 여부' } })
   isInterested: boolean;
@@ -145,5 +150,6 @@ export class SpaceDetailDTO {
     this.publicTransportations = props.publicTransportations.map(
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
+    this.reviews = props.reviews.map((review) => new ReviewDTO(review));
   }
 }

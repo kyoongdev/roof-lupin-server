@@ -35,6 +35,23 @@ export class SpaceRepository {
         _count: {
           select: {
             reviews: true,
+            spaceQnAs: true,
+          },
+        },
+        reviews: {
+          include: {
+            answers: true,
+            images: {
+              include: {
+                image: true,
+              },
+            },
+            user: true,
+          },
+          skip: 0,
+          take: 3,
+          orderBy: {
+            createdAt: 'desc',
           },
         },
         categories: {
@@ -101,8 +118,9 @@ export class SpaceRepository {
       refundPolicies: refundPolicies.map((refundPolicy) => refundPolicy),
       services: services.map(({ service }) => service),
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
-
+      qnaCount: space._count.spaceQnAs,
       averageScore: Number(space.averageScore),
+      reviews: space.reviews,
     });
   }
 
