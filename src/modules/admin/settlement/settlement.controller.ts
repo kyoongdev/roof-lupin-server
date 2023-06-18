@@ -1,11 +1,14 @@
-import { Get, Param } from '@nestjs/common';
+import { Get, Param, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { SettlementDTO } from '@/modules/settlement/dto';
+import { FindSettlementsQuery } from '@/modules/settlement/dto/query';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindSettlementsQuery } from '../dto/query';
 
 import { AdminSettlementService } from './settlement.service';
 
@@ -39,7 +42,7 @@ export class AdminSettlementController {
     type: SettlementDTO,
     isPaging: true,
   })
-  async getSettlements(@Paging() paging: PagingDTO) {
-    return await this.settlementService.findPagingSettlements(paging);
+  async getSettlements(@Paging() paging: PagingDTO, @Query() query: AdminFindSettlementsQuery) {
+    return await this.settlementService.findPagingSettlements(paging, AdminFindSettlementsQuery.generateQuery(query));
   }
 }
