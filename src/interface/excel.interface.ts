@@ -1,4 +1,4 @@
-interface StatisticExcel {
+export interface StatisticExcel {
   header: string;
   data: Array<string>;
   extra?: {

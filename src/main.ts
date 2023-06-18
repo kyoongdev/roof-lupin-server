@@ -25,5 +25,4 @@ import { AppModule } from './app.module';
       })
     )
     .init();
-  console.log('test', process.memoryUsage());
 })();

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import ExcelJS from 'exceljs';
 
+import type { StatisticExcel } from '@/interface/excel.interface';
 @Injectable()
 export class ExcelSheet {
   public getDefaultExcelSheet(
