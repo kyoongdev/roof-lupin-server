@@ -249,7 +249,7 @@ model TaxReturn {
   submittedAt DateTime?
 
   hostId String
-  host   Host   @relation(fields: [hostId], references: [id])
+  host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)
