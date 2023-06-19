@@ -19,7 +19,6 @@ import { SpaceService } from './space.service';
     LocationRepository,
     ReservationRepository,
     RentalTypeRepository,
-    ReviewRepository,
   ],
   controllers: [SpaceController, RentalTypeController],
 })

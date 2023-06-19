@@ -331,12 +331,18 @@ model SpaceReviewImage {
 }
 
 model SpaceReviewReport {
-  spaceReviewId String
-  spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id String @id @default(uuid())
 
-  @@id([spaceReviewId, userId])
+  reportType  Int     @db.TinyInt
+  content     String  @db.MediumText
+  isProcessed Boolean @default(false)
+
+  spaceReviewId String?
+  spaceReview   SpaceReview? @relation(fields: [spaceReviewId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 model SpaceReviewAnswer {
