@@ -48,6 +48,7 @@ class AppConfig {
       .setContact("RoofLupin's Developer", '', 'dev@cumuco.net')
       .setVersion('1.0.0')
       .addServer('http://localhost:8000')
+      .addServer('https://api.cumuco.net')
       .addBearerAuth(
         {
           type: 'http',
