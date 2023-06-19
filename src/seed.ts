@@ -361,6 +361,28 @@ export const seedDatabase = async (database: PrismaService) => {
                       },
                     },
                   },
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                  },
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                    isBest: true,
+                  },
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                  },
                 ],
               },
               answers: {
@@ -410,6 +432,33 @@ export const seedDatabase = async (database: PrismaService) => {
                 connect: {
                   id: testUser.id,
                 },
+              },
+              images: {
+                create: [
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                    isBest: true,
+                  },
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                  },
+                  {
+                    image: {
+                      create: {
+                        url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
+                      },
+                    },
+                    isBest: true,
+                  },
+                ],
               },
             },
             {
