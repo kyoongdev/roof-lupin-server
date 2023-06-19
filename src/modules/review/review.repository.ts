@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateReviewDTO, UpdateReviewDTO } from './dto';
+import { BestPhotoDTO, CreateReviewDTO, UpdateReviewDTO } from './dto';
 import { ReviewDTO } from './dto/review.dto';
 import { REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
@@ -84,7 +84,27 @@ export class ReviewRepository {
   }
 
   //TODO: best photo review
-  // async findBestPhotoReviews(spaceId: string) {}
+  async findBestPhotoReviews(spaceId: string) {
+    const photos = await this.database.spaceReviewImage.findMany({
+      where: {
+        isBest: true,
+        spaceReview: {
+          spaceId,
+        },
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    return photos.map(
+      (photo) =>
+        new BestPhotoDTO({
+          id: photo.image.id,
+          url: photo.image.url,
+        })
+    );
+  }
 
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
