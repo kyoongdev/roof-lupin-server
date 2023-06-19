@@ -38,26 +38,7 @@ export class SpaceRepository {
             spaceQnAs: true,
           },
         },
-        reviews: {
-          include: {
-            answers: {
-              include: {
-                host: true,
-              },
-            },
-            images: {
-              include: {
-                image: true,
-              },
-            },
-            user: true,
-          },
-          skip: 0,
-          take: 3,
-          orderBy: {
-            createdAt: 'desc',
-          },
-        },
+
         categories: {
           include: {
             category: true,
@@ -125,7 +106,6 @@ export class SpaceRepository {
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       qnaCount: space._count.spaceQnAs,
       averageScore: Number(space.averageScore),
-      reviews: space.reviews,
     });
   }
 

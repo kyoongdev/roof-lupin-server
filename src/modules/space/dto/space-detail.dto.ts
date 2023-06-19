@@ -33,7 +33,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   qnaCount: number;
   isInterested?: boolean;
   host: HostDTOProps;
-  reviews: ReviewDTOProps[];
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
   cautions: CautionDTOProps[];
@@ -97,9 +96,6 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: HostDTO, description: '호스트 정보' } })
   host: HostDTO;
 
-  @Property({ apiProperty: { type: ReviewDTO, isArray: true, description: '리뷰 목록' } })
-  reviews: ReviewDTO[];
-
   @Property({ apiProperty: { type: ImageDTO, isArray: true, description: '공간 이미지 목록' } })
   images: ImageDTO[];
 
@@ -155,7 +151,6 @@ export class SpaceDetailDTO {
     this.publicTransportations = props.publicTransportations.map(
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
-    this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
   }
 }
