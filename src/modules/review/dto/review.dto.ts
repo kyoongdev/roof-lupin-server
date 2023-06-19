@@ -16,6 +16,9 @@ export interface ReviewDTOProps extends Partial<SpaceReview> {
 
 export class ReviewDTO {
   @Property({ apiProperty: { type: 'string' } })
+  id: string;
+
+  @Property({ apiProperty: { type: 'string' } })
   content: string;
 
   @Property({
@@ -42,12 +45,11 @@ export class ReviewDTO {
   reviewAnswers: ReviewAnswerDTO[];
 
   constructor(props: ReviewDTOProps) {
+    this.id = props.id;
     this.content = props.content;
     this.score = props.score;
     this.user = new CommonUserDTO(props.user);
-
     this.images = props.images.map(({ image }) => new ImageDTO(image));
-
     this.isBest = props.isBest;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;

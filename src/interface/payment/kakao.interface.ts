@@ -32,13 +32,13 @@ export type PaymentStatus =
 
 export interface KakaoPayReadyRequest {
   /** 가맹정 코드 10자 */
-  cid: string;
+  cid?: string;
   /** 가맹점 코드 인증키, 24자, 숫자와 영문 소문자 조합 */
   cid_secret?: string;
   /** 가맹점 주문번호, 최대 100자 */
-  partner_order_id: string;
+  partner_order_id?: string;
   /** 가맹점 회원 id, 최대 100자 */
-  partner_user_id: string;
+  partner_user_id?: string;
   /** 상품명, 최대 100자 */
   item_name: string;
   /** 상품코드, 최대 100자 */
@@ -54,11 +54,11 @@ export interface KakaoPayReadyRequest {
   /** 컵 보증금 */
   green_deposit?: number;
   /** 결제 성공 시 redirect url */
-  approval_url: string;
+  approval_url?: string;
   /** 결제 취소 시 redirect url */
-  cancel_url: string;
+  cancel_url?: string;
   /** 결제 실패 시 redirect url */
-  fail_url: string;
+  fail_url?: string;
   /** 결제 수단으로써 사용 허가할 카드사 */
   available_cards?: Card[];
   /** 사용 허가할 결제수단 */
