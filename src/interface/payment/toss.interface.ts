@@ -26,6 +26,8 @@ export type AccountType = '일반' | '고정';
 export type RefundStatus = 'NONE' | 'PENDING' | 'FAILED' | 'PARTIAL_FAILED' | 'COMPLETED';
 export type SettlementStatus = 'INCOMPLETED' | 'COMPLETED';
 export type CashReceiptType = '소득공제' | '지출증빙' | '미발행';
+export type TransactionType = 'CONFIRM' | 'CANCEL';
+export type IssueStatus = 'IN_PROGRESS' | 'COMPLETE' | 'FAILED';
 
 export interface CreateTossPaymentRequest {
   /** 결제 수단 */
@@ -180,6 +182,33 @@ export interface CashReceipts {
   orderId: string;
   /** 주문명 */
   orderName: string;
+  /** 현금영수증 종류 */
+  type: CashReceiptType;
+  /** 현금영수증 발급 번호, 최대 9자 */
+  issueNumber: string;
+  /** 현ㄱ므영수증 주소  */
+  receiptUrl: string;
+  /** 현금영수증을 발급한 사업자등록번호 */
+  businessNumber: string;
+  /** 현금연수증 발급 종류 */
+  transactionType: TransactionType;
+  /** 현금영수증 처리된 금액 */
+  amount: number;
+  /** 면세 처리된 금액 */
+  taxFreeAmount: number;
+  /** 현금영수증 발급 상태 */
+  issueStatus: IssueStatus;
+  /** 결제 실패 객체 */
+  failure: Failure;
+  /** 현금영수증 발급에 필요한 소비자 인증수단 */
+  customerIdentityNumber: string;
+  /** 결제가 일어난 날짜와 시간 정보 */
+  requestedAt: string;
+}
+
+export interface Discount {
+  /** 카드사의 즉시 할인 프로모션을 적용한 금액 */
+  amount: number;
 }
 
 export interface Payment {
@@ -249,4 +278,10 @@ export interface Payment {
   country: string;
   /** 결제 실패 정보 */
   failure?: Failure;
+  /** 현금영수증 정보 */
+  cashReceipt?: CashReceipt;
+  /** 현금영수증 발행 및 취소 이력 */
+  cashReceipts?: CashReceipts[];
+  /** 카드사의 즉시 할인 프로모션 */
+  discount?: Discount;
 }
