@@ -71,7 +71,7 @@ export class SpaceDTO {
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
   }
 
-  static findSpacesFindManyClause(query: FindSpacesQuery): Prisma.SpaceFindManyArgs {
+  static findSpacesFindManyClause(query: FindSpacesQuery, userId?: string): Prisma.SpaceFindManyArgs {
     let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
       createdAt: 'desc',
     };
@@ -138,6 +138,17 @@ export class SpaceDTO {
               },
             ],
           },
+        }),
+        ...(userId && {
+          NOT: [
+            {
+              reports: {
+                some: {
+                  userId,
+                },
+              },
+            },
+          ],
         }),
       },
       orderBy,

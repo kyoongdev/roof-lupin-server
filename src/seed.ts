@@ -109,6 +109,7 @@ export const seedDatabase = async (database: PrismaService) => {
         overflowUserCount: 5,
         buildingType: 1,
         minSize: 12,
+        averageScore: 4,
         sizes: {
           create: [
             {
@@ -344,7 +345,8 @@ export const seedDatabase = async (database: PrismaService) => {
           create: [
             {
               content: '오우 재밌어요',
-              score: 3,
+              score: 4,
+              isBest: true,
               user: {
                 connect: {
                   id: testUser.id,
@@ -361,6 +363,18 @@ export const seedDatabase = async (database: PrismaService) => {
                   },
                 ],
               },
+              answers: {
+                create: [
+                  {
+                    content: '답변입니다~',
+                    host: {
+                      connect: {
+                        id: host.id,
+                      },
+                    },
+                  },
+                ],
+              },
             },
             {
               content: '오우 재밌어요22',
@@ -369,6 +383,105 @@ export const seedDatabase = async (database: PrismaService) => {
                 connect: {
                   id: testUser.id,
                 },
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+              answers: {
+                create: [
+                  {
+                    content: '답변입니다~',
+                    host: {
+                      connect: {
+                        id: host.id,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+              answers: {
+                create: [
+                  {
+                    content: '답변입니다~',
+                    host: {
+                      connect: {
+                        id: host.id,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+            },
+            {
+              content: '오우 재밌어요23',
+              score: 4,
+              user: {
+                connect: {
+                  id: testUser.id,
+                },
+              },
+              answers: {
+                create: [
+                  {
+                    content: '답변입니다~',
+                    host: {
+                      connect: {
+                        id: host.id,
+                      },
+                    },
+                  },
+                ],
               },
             },
           ],

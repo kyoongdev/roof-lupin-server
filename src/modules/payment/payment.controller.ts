@@ -2,7 +2,6 @@ import { Body, Get } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { KakaoPayProvider } from '@/common/payment';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';

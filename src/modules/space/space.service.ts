@@ -100,6 +100,7 @@ export class SpaceService {
           id: spaceId,
         })),
       }),
+
       ...args.where,
     };
 
@@ -184,10 +185,23 @@ export class SpaceService {
     paging: PagingDTO,
     args = {} as Prisma.SpaceFindManyArgs,
     location?: FindByLocationQuery,
-    date?: FindByDateQuery
+    date?: FindByDateQuery,
+    userId?: string
   ) {
     const includeSpaces: string[] = [];
     const excludeSpaces: string[] = [];
+    if (userId) {
+      const reports = await this.database.spaceReport.findMany({
+        where: {
+          userId,
+        },
+        select: {
+          spaceId: true,
+        },
+      });
+      excludeSpaces.push(...reports.map((report) => report.spaceId));
+    }
+
     if (location) {
       includeSpaces.push(
         ...(await this.locationRepository.getLocationsByDistance(paging, location)).map((location) => location.spaceId)
