@@ -30,4 +30,11 @@ export class HostReviewService {
     });
     return new PaginationDTO<ReviewDTO>(reviews, { count, paging });
   }
+
+  async setIsBestReview(id: string, isBest: boolean) {
+    await this.findReview(id);
+    await this.reviewRepository.updateReview(id, {
+      isBest,
+    });
+  }
 }

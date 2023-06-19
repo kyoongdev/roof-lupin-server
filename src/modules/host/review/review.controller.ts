@@ -1,7 +1,8 @@
-import { Get, Param } from '@nestjs/common';
+import { Delete, Get, Param, Post } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
+import { EmptyResponseDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import { ApiController, ReqUser } from '@/utils';
@@ -93,5 +94,43 @@ export class HostReviewController {
         },
       },
     });
+  }
+
+  @Post(':reviewId/best')
+  @RequestApi({
+    summary: {
+      description: '[호스트]리뷰 베스트 설정',
+      summary: '리뷰를 베스트로 설정합니다. 호스트만 사용 가능합니다.',
+    },
+    params: {
+      name: 'reviewId',
+      description: '리뷰 id',
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async setBestReview(@Param('reviewId') reviewId: string) {
+    await this.reviewService.setIsBestReview(reviewId, true);
+  }
+
+  @Delete(':reviewId/best')
+  @RequestApi({
+    summary: {
+      description: '[호스트] 리뷰 베스트 제외',
+      summary: '리뷰를 베스트에서 제외합니다. 호스트만 사용 가능합니다.',
+    },
+    params: {
+      name: 'reviewId',
+      description: '리뷰 id',
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteBestReview(@Param('reviewId') reviewId: string) {
+    await this.reviewService.setIsBestReview(reviewId, false);
   }
 }
