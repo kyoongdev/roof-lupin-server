@@ -3,7 +3,7 @@ import { Delete, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { ReviewDTO } from '@/modules/review/dto';
+import { ReviewDTO, ReviewReportDTO } from '@/modules/review/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -52,6 +52,24 @@ export class AdminReviewController {
     return await this.reviewService.findPagingReviews(paging);
   }
 
+  @Get('reports')
+  @RequestApi({
+    summary: {
+      description: '[관리자] 리뷰 신고 조회',
+      summary: '리뷰 신고를 조회합니다. 관리자만 사용 가능합니다.',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: ReviewReportDTO,
+    isPaging: true,
+  })
+  async getReviewReports(@Paging() paging: PagingDTO) {
+    return await this.reviewService.findPagingReviewReports(paging);
+  }
+
   @Post(':reviewId/best')
   @RequestApi({
     summary: {
@@ -69,6 +87,34 @@ export class AdminReviewController {
   })
   async setBestReview(@Param('reviewId') reviewId: string) {
     await this.reviewService.setIsBestReview(reviewId, true);
+  }
+
+  @Post('reports/:reportId/process')
+  @RequestApi({
+    summary: {
+      description: '[관리자] 리뷰 신고 처리',
+      summary: '리뷰 신고를 처리합니다. 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async processReviewReport(@Param('reportId') reportId: string) {
+    await this.reviewService.updateReviewReportIsProcessed(reportId, true);
+  }
+
+  @Delete('reports/:reportId/process')
+  @RequestApi({
+    summary: {
+      description: '[관리자] 리뷰 신고 미완료 처리',
+      summary: '리뷰 신고를 미완료 처리합니다. 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async unProcessReviewReport(@Param('reportId') reportId: string) {
+    await this.reviewService.updateReviewReportIsProcessed(reportId, false);
   }
 
   @Delete(':reviewId/best')

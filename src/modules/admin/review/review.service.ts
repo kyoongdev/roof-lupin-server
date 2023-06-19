@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
+import { ReviewReportDTO } from '@/modules/review/dto';
 import { ReviewRepository } from '@/modules/review/review.repository';
 
 @Injectable()
@@ -33,6 +34,24 @@ export class AdminReviewService {
     await this.reviewRepository.updateReview(id, {
       isBest,
     });
+  }
+
+  async findPagingReviewReports(paging: PagingDTO, args = {} as Prisma.SpaceReviewReportFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.reviewRepository.countReviewReports({
+      where: args.where,
+    });
+    const reports = await this.reviewRepository.findReviewReports({
+      where: args.where,
+      skip,
+      take,
+    });
+    return new PaginationDTO<ReviewReportDTO>(reports, { count, paging });
+  }
+
+  async updateReviewReportIsProcessed(id: string, isProcessed: boolean) {
+    await this.reviewRepository.findReview(id);
+    await this.reviewRepository.updateReviewReportIsProcessed(id, isProcessed);
   }
 
   async deleteReview(id: string) {
