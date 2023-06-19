@@ -6,6 +6,7 @@ import { ReportRepository } from '../report/report.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
+import { TaxReturnRepository } from '../tax-return/tax-return.repository';
 
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
@@ -18,6 +19,8 @@ import { HostReviewController } from './review/review.controller';
 import { HostReviewService } from './review/review.service';
 import { HostSpaceController } from './space/space.controller';
 import { HostSpaceService } from './space/space.service';
+import { HostTaxReturnController } from './tax-return/tax-return.controller';
+import { HostTaxReturnService } from './tax-return/tax-return.service';
 
 @Module({
   providers: [
@@ -33,7 +36,16 @@ import { HostSpaceService } from './space/space.service';
     SpaceRepository,
     LocationRepository,
     RentalTypeRepository,
+    HostTaxReturnService,
+    TaxReturnRepository,
   ],
-  controllers: [HostController, HostReviewController, HostQnAController, HostReportController, HostSpaceController],
+  controllers: [
+    HostController,
+    HostReviewController,
+    HostQnAController,
+    HostReportController,
+    HostSpaceController,
+    HostTaxReturnController,
+  ],
 })
 export class HostModule {}
