@@ -5,3 +5,5 @@ export * from './review-answer.dto';
 export * from './create-review-answer.dto';
 export * from './update-review-answer.dto';
 export * from './best-photo.dto';
+export * from './review-report.dto';
+export * from './create-review-report.dto';
