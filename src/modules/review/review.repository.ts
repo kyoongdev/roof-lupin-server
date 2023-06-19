@@ -180,6 +180,17 @@ export class ReviewRepository {
     return new ReviewReportDTO(report);
   }
 
+  async checkReviewReport(reviewId: string, userId: string) {
+    const report = await this.database.spaceReviewReport.findFirst({
+      where: {
+        spaceReviewId: reviewId,
+        userId,
+      },
+    });
+
+    return report;
+  }
+
   async countReviewReports(args = {} as Prisma.SpaceReviewReportCountArgs) {
     return await this.database.spaceReviewReport.count(args);
   }
@@ -237,6 +248,14 @@ export class ReviewRepository {
       },
       data: {
         isProcessed,
+      },
+    });
+  }
+
+  async deleteReviewReport(id: string) {
+    await this.database.spaceReviewReport.delete({
+      where: {
+        id,
       },
     });
   }
