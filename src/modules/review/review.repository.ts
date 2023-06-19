@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { BestPhotoDTO, CreateReviewDTO, UpdateReviewDTO } from './dto';
 import { ReviewDTO } from './dto/review.dto';
-import { REVIEW_ERROR_CODE } from './exception/errorCode';
+import { BEST_PHOTO_NOT_FOUND, REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -83,7 +83,6 @@ export class ReviewRepository {
     return reviews.map((review) => new ReviewDTO(review));
   }
 
-  //TODO: best photo review
   async findBestPhotoReviews(spaceId: string) {
     const photos = await this.database.spaceReviewImage.findMany({
       where: {
@@ -104,6 +103,57 @@ export class ReviewRepository {
           url: photo.image.url,
         })
     );
+  }
+
+  async findBestPhotoReview(reviewId: string, imageId: string) {
+    const bestPhoto = await this.database.spaceReviewImage.findUnique({
+      where: {
+        spaceReviewId_imageId: {
+          spaceReviewId: reviewId,
+          imageId,
+        },
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    if (!bestPhoto) {
+      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(BEST_PHOTO_NOT_FOUND));
+    }
+
+    return new BestPhotoDTO({
+      id: bestPhoto.image.id,
+      url: bestPhoto.image.url,
+    });
+  }
+
+  async createBestPhotoReview(reviewId: string, imageId: string) {
+    await this.database.spaceReviewImage.update({
+      where: {
+        spaceReviewId_imageId: {
+          spaceReviewId: reviewId,
+          imageId,
+        },
+      },
+      data: {
+        isBest: true,
+      },
+    });
+  }
+
+  async deleteBestPhotoReview(reviewId: string, imageId: string) {
+    await this.database.spaceReviewImage.update({
+      where: {
+        spaceReviewId_imageId: {
+          spaceReviewId: reviewId,
+          imageId,
+        },
+      },
+      data: {
+        isBest: false,
+      },
+    });
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {
