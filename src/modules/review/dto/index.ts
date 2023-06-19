@@ -7,3 +7,4 @@ export * from './update-review-answer.dto';
 export * from './best-photo.dto';
 export * from './review-report.dto';
 export * from './create-review-report.dto';
+export * from './update-review-report.dto';
