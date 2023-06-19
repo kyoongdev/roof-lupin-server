@@ -38,10 +38,15 @@ export class ReviewService {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reviewRepository.countReviews({
       where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
+      orderBy: [
+        {
+          createdAt: 'desc',
+        },
+        {
+          isBest: 'asc',
+        },
+        ...(args.orderBy && !Array.isArray(args.orderBy) && [{ ...args.orderBy }]),
+      ],
     });
     const rows = await this.reviewRepository.findReviews({
       skip,

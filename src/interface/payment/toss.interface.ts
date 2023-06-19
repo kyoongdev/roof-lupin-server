@@ -29,7 +29,7 @@ export type CashReceiptType = '소득공제' | '지출증빙' | '미발행';
 export type TransactionType = 'CONFIRM' | 'CANCEL';
 export type IssueStatus = 'IN_PROGRESS' | 'COMPLETE' | 'FAILED';
 
-export interface CreateTossPaymentRequest {
+export interface TossCreatePaymentRequest {
   /** 결제 수단 */
   method: PaymentMethod;
   /** 결제 금액 */
@@ -46,6 +46,14 @@ export interface CreateTossPaymentRequest {
   easyPay?: string;
   /** 앱 스킴 */
   appScheme?: string;
+}
+export interface TossConfirmPayment {
+  /** 결제 키 값 */
+  paymentKey: String;
+  /** 주문 ID */
+  orderId: string;
+  /** 결제 금액 */
+  amount: number;
 }
 
 export interface Cancel {

@@ -316,6 +316,7 @@ model SpaceReview {
 
   images  SpaceReviewImage[]
   answers SpaceReviewAnswer[]
+  reports SpaceReviewReport[]
 }
 
 //INFO: 공간 리뷰 이미지
@@ -324,8 +325,18 @@ model SpaceReviewImage {
   spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   imageId       String
   image         Image       @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  isBest        Boolean     @default(false)
 
   @@id([spaceReviewId, imageId])
+}
+
+model SpaceReviewReport {
+  spaceReviewId String
+  spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([spaceReviewId, userId])
 }
 
 model SpaceReviewAnswer {
@@ -494,6 +505,7 @@ model User {
   alarms         UserAlarm[]
   reservations   Reservation[]
   recentSpaces   RecentSpace[]
+  reviewReports  SpaceReviewReport[]
 }
 
 model UserAlarm {
