@@ -5,7 +5,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateReviewReportDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
+import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
 import {
@@ -21,6 +21,12 @@ import { ReviewRepository } from './review.repository';
 @Injectable()
 export class ReviewService {
   constructor(private readonly reviewRepository: ReviewRepository, private readonly spaceRepository: SpaceRepository) {}
+
+  async getReviewSummary(spaceId: string) {
+    const score = await this.reviewRepository.getReviewAverageScore(spaceId);
+    const count = await this.reviewRepository.countReviews({ where: { spaceId } });
+    return new ReviewsSummaryDTO({ averageScore: score, count });
+  }
 
   async findReview(id: string) {
     const review = await this.reviewRepository.findReview(id);

@@ -8,7 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { UpdateReviewDTO } from './dto';
+import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewDTO } from './dto/review.dto';
@@ -17,6 +17,20 @@ import { ReviewService } from './review.service';
 @ApiController('reviews', '공간 리뷰')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
+
+  @Get(':spaceId/summary')
+  @RequestApi({
+    summary: {
+      description: '공간의 리뷰 요약',
+      summary: '공간의 리뷰 요약을 불러옵니다.',
+    },
+  })
+  @ResponseApi({
+    type: ReviewsSummaryDTO,
+  })
+  async getReviewSummary(@Param('spaceId') spaceId: string) {
+    return await this.reviewService.getReviewSummary(spaceId);
+  }
 
   @Get(':spaceId/paging')
   @RequestApi({
@@ -160,6 +174,29 @@ export class ReviewController {
   )
   async createReview(@Body() body: CreateReviewDTO, @ReqUser() user: RequestUser) {
     return await this.reviewService.createReview(body, user.id);
+  }
+
+  @Post(':reviewId/report')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '공간 리뷰 신고',
+      summary: '공간 리뷰를 신고합니다. 유저만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createReviewReport(
+    @Param('reviewId') id: string,
+    @ReqUser() user: RequestUser,
+    @Body() body: CreateReviewReportDTO
+  ) {
+    return await this.reviewService.createReviewReport(id, user.id, body);
   }
 
   @Patch(':reviewId')

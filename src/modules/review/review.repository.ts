@@ -56,6 +56,18 @@ export class ReviewRepository {
     return await this.database.spaceReview.count(args);
   }
 
+  async getReviewAverageScore(spaceId: string) {
+    const score = await this.database.spaceReview.aggregate({
+      where: {
+        spaceId,
+      },
+      _avg: {
+        score: true,
+      },
+    });
+    return score._avg.score;
+  }
+
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
     const reviews = await this.database.spaceReview.findMany({
       where: {
