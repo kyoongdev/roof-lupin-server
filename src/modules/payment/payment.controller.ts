@@ -1,31 +1,31 @@
-import { Get } from '@nestjs/common';
+import { Body, Get } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { KakaoPayProvider } from '@/common/payment';
-import { ApiController } from '@/utils';
+import { RequestUser } from '@/interface/role.interface';
+import { ApiController, ReqUser } from '@/utils';
+import { JwtAuthGuard } from '@/utils/guards';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { CreatePaymentDTO } from '../reservation/dto';
+
+import { PaymentService } from './payment.service';
+
+@Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('payments', '결제')
 export class PaymentController {
-  constructor(private readonly kakaoPayment: KakaoPayProvider) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
-  @Get('/kakao/pre')
+  @Get('/kakao/prepare')
   @RequestApi({
     summary: {
-      summary: '카카오 결제 승인',
-      description: '카카오 결제 승인',
+      summary: '카카오 결제 준비하기 - 성공 시',
+      description: '카카오 결제 준비하기',
     },
   })
   @ResponseApi({})
-  async kakaoPayTest() {
-    const result = await this.kakaoPayment.preparePayment({
-      quantity: 1,
-      total_amount: 1000,
-      tax_free_amount: 900,
-      vat_amount: 100,
-      item_name: '테스트 상품',
-    });
-    console.log(result);
-    return result;
+  async prepareKakaoPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
+    return await this.paymentService.prepareKakaoPayment(user.id, data);
   }
 }
