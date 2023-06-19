@@ -56,6 +56,24 @@ export interface TossConfirmPayment {
   amount: number;
 }
 
+export interface TossCancelPayment {
+  /** 취소 사유 */
+  cancelReason: string;
+  /** 취소 금액 */
+  cancelAmount: number;
+  /** 환불 계좌 정보 */
+  refundReceiveAccount: RefundReceiveAccount;
+}
+
+export interface RefundReceiveAccount {
+  /**은행 코드 */
+  bank: string;
+  /**계좌번호 */
+  accountNumber: string;
+  /**예금주 */
+  holderName: string;
+}
+
 export interface Cancel {
   /** 결제를 취소한 금액 */
   cancelAmount: number;
