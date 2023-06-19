@@ -44,6 +44,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   publicTransportations: TransportationDTOProps[];
   sizes: SizeDTOProps[];
   bestPhotos: BestPhotoDTOProps[];
+  reviews: ReviewDTOProps[];
 }
 
 export class SpaceDetailDTO {
@@ -104,6 +105,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: RefundPolicyDTO, isArray: true, description: '환불 정책 목록' } })
   refundPolicies: RefundPolicyDTO[];
 
+  @Property({ apiProperty: { type: ReviewDTO, isArray: true, description: '리뷰 목록' } })
+  reviews: ReviewDTO[];
+
   @Property({ apiProperty: { type: CautionDTO, isArray: true, description: '주의 사항 목록' } })
   cautions: CautionDTO[];
 
@@ -157,6 +161,7 @@ export class SpaceDetailDTO {
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
+    this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
   }
 }

@@ -374,7 +374,6 @@ export const seedDatabase = async (database: PrismaService) => {
                         url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
                       },
                     },
-                    isBest: true,
                   },
                   {
                     image: {
@@ -441,7 +440,6 @@ export const seedDatabase = async (database: PrismaService) => {
                         url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
                       },
                     },
-                    isBest: true,
                   },
                   {
                     image: {
@@ -456,7 +454,6 @@ export const seedDatabase = async (database: PrismaService) => {
                         url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
                       },
                     },
-                    isBest: true,
                   },
                 ],
               },

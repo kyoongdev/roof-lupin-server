@@ -105,8 +105,8 @@ export class ReviewRepository {
   async findBestPhotoReviews(spaceId: string) {
     const photos = await this.database.spaceReviewImage.findMany({
       where: {
-        isBest: true,
         spaceReview: {
+          isBest: true,
           spaceId,
         },
       },
@@ -144,34 +144,6 @@ export class ReviewRepository {
     return new BestPhotoDTO({
       id: bestPhoto.image.id,
       url: bestPhoto.image.url,
-    });
-  }
-
-  async createBestPhotoReview(reviewId: string, imageId: string) {
-    await this.database.spaceReviewImage.update({
-      where: {
-        spaceReviewId_imageId: {
-          spaceReviewId: reviewId,
-          imageId,
-        },
-      },
-      data: {
-        isBest: true,
-      },
-    });
-  }
-
-  async deleteBestPhotoReview(reviewId: string, imageId: string) {
-    await this.database.spaceReviewImage.update({
-      where: {
-        spaceReviewId_imageId: {
-          spaceReviewId: reviewId,
-          imageId,
-        },
-      },
-      data: {
-        isBest: false,
-      },
     });
   }
 
