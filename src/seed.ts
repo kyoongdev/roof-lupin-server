@@ -1,4 +1,4 @@
-import { Space } from '@prisma/client';
+import { Prisma, Space } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -109,7 +109,7 @@ export const seedDatabase = async (database: PrismaService) => {
         overflowUserCount: 5,
         buildingType: 1,
         minSize: 12,
-        averageScore: 4,
+        averageScore: new Prisma.Decimal(4.0),
         sizes: {
           create: [
             {

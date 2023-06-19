@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -178,7 +177,7 @@ export class ReviewRepository {
         id: review.spaceId,
       },
       data: {
-        averageScore: Number(newAverageScore.toFixed(1)),
+        averageScore: new Prisma.Decimal(Number(newAverageScore.toFixed(1))),
       },
     });
   }

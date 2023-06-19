@@ -95,7 +95,7 @@ model Space {
   overflowUserCount Int     @db.TinyInt
   minCost           Int     @default(0) @db.MediumInt
   minSize           Int     @default(0) @db.SmallInt
-  averageScore      Decimal @default(0) @db.Decimal(1, 1)
+  averageScore      Decimal @default(0) @db.Decimal(2, 1)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -545,9 +545,9 @@ model UserSocial {
 model UserLocation {
   id         String   @id @default(uuid())
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId String
-  location   Location @relation(fields: [locationId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   isDefault  Boolean  @default(false)
 }
 
@@ -616,9 +616,9 @@ model UserCoupon {
   createdAt DateTime @default(now())
 
   userId       String
-  user         User          @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   couponId     String
-  coupon       Coupon        @relation(fields: [couponId], references: [id])
+  coupon       Coupon        @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservations Reservation[]
 }
 

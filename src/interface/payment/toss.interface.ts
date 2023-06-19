@@ -24,6 +24,8 @@ export type AcquireStatus = 'READY' | 'REQUESTED' | 'COMPLETED' | 'CANCEL_REQUES
 export type InterestPayer = 'BUYER' | 'MERCHANT' | 'CARD_COMPANY';
 export type AccountType = '일반' | '고정';
 export type RefundStatus = 'NONE' | 'PENDING' | 'FAILED' | 'PARTIAL_FAILED' | 'COMPLETED';
+export type SettlementStatus = 'INCOMPLETED' | 'COMPLETED';
+export type CashReceiptType = '소득공제' | '지출증빙' | '미발행';
 
 export interface CreateTossPaymentRequest {
   /** 결제 수단 */
@@ -112,6 +114,74 @@ export interface VirtualAccount {
   refundReceiveAccount: any;
 }
 
+export interface MobilePhone {
+  /** 결제에 사용한 휴대폰 번호 */
+  customerMobilePhone: string;
+  /** 정산 상태 */
+  settlementStatus: SettlementStatus;
+  /** 휴대폰 결제 내역 영수증 */
+  receiptUrl: string;
+}
+
+export interface GiftCertificate {
+  /** 결제 승인 번호 */
+  approveNo: string;
+  /** 정산 상태 */
+  settlementStatus: SettlementStatus;
+}
+export interface Transfer {
+  /** 은행 숫자 코드*/
+  bankCode: string;
+  /** 정산 상태 */
+  settlementStatus: SettlementStatus;
+}
+
+export interface Receipt {
+  url: string;
+}
+export interface Checkout {
+  url: string;
+}
+
+export interface EasyPay {
+  /** 간편결제사 코드 */
+  provider: string;
+  /** 결제 금액 */
+  amount: number;
+  /** 즉시 할인된 금액 */
+  discountAmount: number;
+}
+
+export interface Failure {
+  /** 오류 타입 */
+  code: string;
+  /** 오류 메세지 */
+  message: string;
+}
+
+export interface CashReceipt {
+  /** 현금영수증 종류 */
+  type: CashReceiptType;
+  /** 현금영수증 키 값 */
+  receiptKey: string;
+  /** 현금영수증 발급 번호 */
+  issueNumber: string;
+  /** 현금영수증 주소 */
+  receiptUrl: string;
+  /** 현금영수증 처리 금액 */
+  amount: number;
+  /** 면세 처리된 금액 */
+  taxFreeAmount: number;
+}
+export interface CashReceipts {
+  /** 현금영수증의 키 값 */
+  receiptKey: string;
+  /** 주문 ID */
+  orderId: string;
+  /** 주문명 */
+  orderName: string;
+}
+
 export interface Payment {
   /** 객체의 응답 버전 */
   version: string;
@@ -161,4 +231,22 @@ export interface Payment {
   card?: Card;
   /** 가상계좌 관련 정보 */
   virtualAccount?: VirtualAccount;
+  /** 가상계좌 웹훅이 정상적인 요청인지 검증하는 값 */
+  secret?: string;
+  /** 휴대폰 결제 정보 */
+  mobilePhone?: MobilePhone;
+  /** 상품권 결제 정보 */
+  giftCertificate?: GiftCertificate;
+  /** 계좌이체 정보 */
+  transfer?: Transfer;
+  /** 발행된 영수증 정보 */
+  receipt?: Receipt;
+  /** 결제창 URL */
+  checkout?: Checkout;
+  /** 간편결제 정보 */
+  easyPay?: EasyPay;
+  /** 결제한 국가 */
+  country: string;
+  /** 결제 실패 정보 */
+  failure?: Failure;
 }
