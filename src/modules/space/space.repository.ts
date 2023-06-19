@@ -4,6 +4,8 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
+import { ReviewRepository } from '../review/review.repository';
+
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
@@ -15,7 +17,11 @@ import { RentalTypeRepository } from './rentalType/rentalType.repository';
 
 @Injectable()
 export class SpaceRepository {
-  constructor(private readonly database: PrismaService, private readonly rentalTypeRepository: RentalTypeRepository) {}
+  constructor(
+    private readonly database: PrismaService,
+    private readonly rentalTypeRepository: RentalTypeRepository,
+    private readonly reviewRepository: ReviewRepository
+  ) {}
 
   async findSpaceIds() {
     const spaces = await this.database.space.findMany({
@@ -90,6 +96,7 @@ export class SpaceRepository {
       services,
       userInterests,
     } = space;
+    const bestPhotos = await this.reviewRepository.findBestPhotoReviews(space.id);
 
     return new SpaceDetailDTO({
       ...space,
@@ -106,6 +113,7 @@ export class SpaceRepository {
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       qnaCount: space._count.spaceQnAs,
       averageScore: Number(space.averageScore),
+      bestPhotos,
     });
   }
 

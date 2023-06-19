@@ -4,6 +4,7 @@ import { type DateProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto';
 import { LocationDTO, LocationDTOProps } from '@/modules/location/dto';
+import { BestPhotoDTO, BestPhotoDTOProps } from '@/modules/review/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
@@ -42,6 +43,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   hashtags: HashtagDTOProps[];
   publicTransportations: TransportationDTOProps[];
   sizes: SizeDTOProps[];
+  bestPhotos: BestPhotoDTOProps[];
 }
 
 export class SpaceDetailDTO {
@@ -123,6 +125,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: SizeDTO, isArray: true, description: '공간 크기 목록' } })
   sizes: SizeDTO[];
 
+  @Property({ apiProperty: { type: BestPhotoDTO, isArray: true, description: '베스트 포토' } })
+  bestPhotos: BestPhotoDTO[];
+
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -152,5 +157,6 @@ export class SpaceDetailDTO {
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
+    this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
   }
 }
