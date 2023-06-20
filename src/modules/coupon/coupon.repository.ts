@@ -86,6 +86,17 @@ export class CouponRepository {
     return coupon.id;
   }
 
+  async checkUserCoupon(couponId: string, userId: string) {
+    const userCoupon = await this.database.userCoupon.findFirst({
+      where: {
+        couponId,
+        userId,
+      },
+    });
+
+    return userCoupon;
+  }
+
   async findUserCoupon(id: string) {
     const userCoupon = await this.database.userCoupon.findUnique({
       where: {
