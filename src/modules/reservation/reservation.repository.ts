@@ -99,6 +99,49 @@ export class ReservationRepository {
     });
   }
 
+  async findReservationByOrderResultId(orderResultId: string) {
+    const reservation = await this.database.reservation.findUnique({
+      where: {
+        orderResultId,
+      },
+      include: {
+        user: true,
+        rentalType: {
+          include: {
+            space: {
+              include: {
+                reviews: true,
+                location: true,
+                publicTransportations: true,
+                rentalType: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!reservation) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
+    }
+
+    const { rentalType, ...rest } = reservation;
+    const { space, ...restRentalType } = rentalType;
+    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+
+    return new ReservationDetailDTO({
+      ...rest,
+      rentalType: restRentalType,
+      space: {
+        ...space,
+        reviewCount: space.reviews.length,
+        publicTransportation: space.publicTransportations?.at(-1),
+        location: space.location?.['location'],
+        averageScore,
+      },
+    });
+  }
+
   async countReservations(args = {} as Prisma.ReservationCountArgs) {
     return this.database.reservation.count(args);
   }
