@@ -9,7 +9,7 @@ import { CreatePaymentDTO } from '../reservation/dto';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
-import { PrepareKakaoPaymentDTO } from './dto';
+import { ApproveKakaoPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
 
 @Injectable()
 export class PaymentService {
@@ -45,8 +45,8 @@ export class PaymentService {
     });
   }
 
-  async approveKakaoPayment() {
-    //
+  async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
+    const reservation = await this.reservationRepository.findReservation(data.orderId);
   }
 
   createOrderId() {
