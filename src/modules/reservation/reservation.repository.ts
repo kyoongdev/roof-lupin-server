@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
+import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 import { CommonReservation } from './type';
@@ -143,6 +143,17 @@ export class ReservationRepository {
             id: rentalTypeId,
           },
         },
+      },
+    });
+  }
+
+  async updatePayment(id: string, data: UpdatePaymentDTO) {
+    await this.database.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
       },
     });
   }

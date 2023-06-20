@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { nanoid } from 'nanoid';
+
 import { KakaoPayProvider } from '@/common/payment';
 import { TossPayProvider } from '@/common/payment/toss';
 
@@ -21,13 +23,23 @@ export class PaymentService {
     const reservation = await this.reservationRepository.createReservation(userId, data);
 
     const rentalType = await this.rentalTypeRepository.findRentalType(data.rentalTypeId);
+    const orderId = this.createOrderId();
     const result = await this.kakaoPay.preparePayment({
       item_name: rentalType.name,
       quantity: 1,
       tax_free_amount: reservation.taxFreeCost,
       total_amount: reservation.totalCost,
+      partner_order_id: orderId,
     });
 
-    await this.reservationRepository.updateReservation(reservation.id, {});
+    await this.reservationRepository.updatePayment(reservation.id, {
+      orderId,
+      orderResultId: result.tid,
+    });
+  }
+
+  createOrderId() {
+    const code = nanoid(5);
+    return `${new Date().getDate()}_${code.toUpperCase()}`;
   }
 }
