@@ -58,11 +58,11 @@ export class ReservationService {
     return reservation.id;
   }
 
-  async updateReservation(id: string, userId: string, data: UpdateReservationDTO) {
-    await this.findMyReservation(id, userId);
-    await this.validateReservation(data);
-    await this.reservationRepository.updateReservation(id, data);
-  }
+  // async updateReservation(id: string, userId: string, data: UpdateReservationDTO) {
+  //   await this.findMyReservation(id, userId);
+  //   // await this.validateReservation(data);
+  //   await this.reservationRepository.updateReservation(id, data);
+  // }
 
   async deleteMyReservation(id: string, userId: string) {
     const reservation = await this.reservationRepository.findReservation(id);

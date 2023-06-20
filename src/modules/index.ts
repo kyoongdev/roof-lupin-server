@@ -3,6 +3,7 @@ import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
+import { BlockedTimeModule } from './blocked-time/blocked-times.module';
 import { CategoryModule } from './category/category.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CurationModule } from './curation/curation.module';
@@ -50,4 +51,5 @@ export const Modules = [
   SettlementModule,
   TaxReturnModule,
   PaymentModule,
+  BlockedTimeModule,
 ];
