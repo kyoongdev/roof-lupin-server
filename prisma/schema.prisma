@@ -646,7 +646,7 @@ model Coupon {
   discountType  Int     @db.TinyInt
   discountValue Int     @db.MediumInt
   description   String  @db.VarChar(100)
-  code          String  @unique @default(uuid()) @db.Char(8)
+  code          String  @unique @db.Char(10)
   isLupinPay    Boolean @default(false)
 
   userCoupons UserCoupon[]
