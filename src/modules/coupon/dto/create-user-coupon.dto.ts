@@ -1,7 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
 export interface CreateUserCouponDTOProps {
-  count: number;
+  count?: number;
   dueDate: Date;
   isUsed: boolean;
   userId: string;
