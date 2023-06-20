@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import Firebase from 'firebase-admin';
+
+import { SendPushMessage } from '@/interface/fcm.interface';
 
 import { fcmConfig } from './fcm.config';
 
@@ -10,18 +11,28 @@ export class FCMProvider {
   private readonly firebaseApp = Firebase.initializeApp({
     credential: Firebase.credential.cert(fcmConfig),
   });
-  constructor(private readonly configService: ConfigService) {}
 
-  async sendMessage() {
-    const condition = "'stock-GOOG' in topics || 'industry-tech' in topics";
-    const topicName = 'industry-tech';
+  async sendMessage(props: SendPushMessage) {
     await this.firebaseApp.messaging().send({
-      token: '',
+      token: props.token,
       notification: {
-        body: 'asdf',
-        imageUrl: 'asdf',
-        title: 'asdf',
+        title: props.title,
+        body: props.body,
+        imageUrl: props.imageUrl,
       },
     });
+  }
+
+  async sendMessages(props: SendPushMessage[]) {
+    await this.firebaseApp.messaging().sendEach(
+      props.map((prop) => ({
+        token: prop.token,
+        notification: {
+          title: prop.title,
+          body: prop.body,
+          imageUrl: prop.imageUrl,
+        },
+      }))
+    );
   }
 }

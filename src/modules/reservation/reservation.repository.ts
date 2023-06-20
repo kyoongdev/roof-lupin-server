@@ -127,7 +127,7 @@ export class ReservationRepository {
         taxFreeCost: rest.totalCost - taxCost,
       },
     });
-    return reservation.id;
+    return reservation;
   }
 
   async updateReservation(id: string, data: UpdateReservationDTO) {

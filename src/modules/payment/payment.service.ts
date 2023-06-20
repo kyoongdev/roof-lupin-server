@@ -5,7 +5,6 @@ import { TossPayProvider } from '@/common/payment/toss';
 
 import { CreatePaymentDTO } from '../reservation/dto';
 import { ReservationRepository } from '../reservation/reservation.repository';
-import { ReservationService } from '../reservation/reservation.service';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
 @Injectable()
@@ -18,8 +17,17 @@ export class PaymentService {
   ) {}
 
   async prepareKakaoPayment(userId: string, data: CreatePaymentDTO) {
-    const reservationId = await this.reservationRepository.createReservation(userId, data);
+    //TODO: 쿠폰 적용
+    const reservation = await this.reservationRepository.createReservation(userId, data);
 
     const rentalType = await this.rentalTypeRepository.findRentalType(data.rentalTypeId);
+    const result = await this.kakaoPay.preparePayment({
+      item_name: rentalType.name,
+      quantity: 1,
+      tax_free_amount: reservation.taxFreeCost,
+      total_amount: reservation.totalCost,
+    });
+
+    await this.reservationRepository.updateReservation(reservation.id, {});
   }
 }
