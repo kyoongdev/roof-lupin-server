@@ -5,7 +5,8 @@ import { nanoid } from 'nanoid';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UserCouponDTO } from './dto';
+import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from './dto';
+import { CreateUserCouponDTO } from './dto/create-user-coupon.dto';
 import { CouponException } from './exception/coupon.exception';
 import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from './exception/errorCode';
 
@@ -137,6 +138,43 @@ export class CouponRepository {
     });
 
     return userCoupons.map((userCoupon) => new UserCouponDTO(userCoupon));
+  }
+
+  async createUserCoupon(couponId: string, data: CreateUserCouponDTO) {
+    const { userId, ...rest } = data;
+    const userCoupon = await this.database.userCoupon.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        coupon: {
+          connect: {
+            id: couponId,
+          },
+        },
+        ...rest,
+      },
+    });
+    return userCoupon.id;
+  }
+
+  async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {
+    await this.database.userCoupon.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteUserCoupon(id: string) {
+    await this.database.userCoupon.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async checkCouponCode() {
