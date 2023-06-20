@@ -7,7 +7,7 @@ import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCod
 import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
-import { CreatePaymentDTO, ReservationDTO } from './dto';
+import { CreatePaymentDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import {
   RESERVATION_ERROR_CODE,
   RESERVATION_USER_DELETE_FORBIDDEN,
@@ -58,7 +58,7 @@ export class ReservationService {
     return reservation.id;
   }
 
-  async updateReservation(id: string, userId: string, data: CreatePaymentDTO) {
+  async updateReservation(id: string, userId: string, data: UpdateReservationDTO) {
     await this.findMyReservation(id, userId);
     await this.validateReservation(data);
     await this.reservationRepository.updateReservation(id, data);

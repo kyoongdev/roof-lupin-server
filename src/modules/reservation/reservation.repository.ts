@@ -217,19 +217,11 @@ export class ReservationRepository {
   }
 
   async updateReservation(id: string, data: UpdateReservationDTO) {
-    const { rentalTypeId, ...rest } = data;
     await this.database.reservation.update({
       where: {
         id,
       },
-      data: {
-        ...rest,
-        rentalType: {
-          connect: {
-            id: rentalTypeId,
-          },
-        },
-      },
+      data,
     });
   }
 
