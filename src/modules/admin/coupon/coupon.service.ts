@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO } from '@/modules/coupon/dto';
+import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
 
 import { AdminException } from '../exception/admin.exception';
@@ -34,6 +34,22 @@ export class AdminCouponService {
     });
 
     return new PaginationDTO<CouponDTO>(coupons, { count, paging });
+  }
+
+  async findUserCoupon(id: string) {
+    return await this.couponRepository.findUserCoupon(id);
+  }
+  async findPagingUserCoupons(paging: PagingDTO, args = {} as Prisma.UserCouponFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.couponRepository.countUserCoupons({
+      where: args.where,
+    });
+    const coupons = await this.couponRepository.findUserCoupons({
+      where: args.where,
+      skip,
+      take,
+    });
+    return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
   }
 
   async createCoupon(data: CreateCouponDTO) {

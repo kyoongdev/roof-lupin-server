@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { SchedulerEvent } from '@/event/scheduler';
 
 import { AlarmRepository } from '../alarm/alarm.repository';
+import { CouponRepository } from '../coupon/coupon.repository';
 import { HostRepository } from '../host/host.repository';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
@@ -18,6 +19,8 @@ import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
 import { AdminAlarmController } from './alarm/alarm.controller';
 import { AdminAlarmService } from './alarm/alarm.service';
+import { AdminCouponController } from './coupon/coupon.controller';
+import { AdminCouponService } from './coupon/coupon.service';
 import { AdminHostController } from './host';
 import { AdminHostService } from './host/host.service';
 import { AdminQnAController } from './qna';
@@ -56,6 +59,8 @@ import { AdminSpaceService } from './space/space.service';
     RentalTypeRepository,
     AdminSettlementService,
     SettlementRepository,
+    AdminCouponService,
+    CouponRepository,
   ],
   controllers: [
     AdminController,
@@ -67,6 +72,7 @@ import { AdminSpaceService } from './space/space.service';
     AdminAlarmController,
     AdminSpaceController,
     AdminSettlementController,
+    AdminCouponController,
   ],
 })
 export class AdminModule {}
