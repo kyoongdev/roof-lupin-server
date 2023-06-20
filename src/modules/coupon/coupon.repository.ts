@@ -5,9 +5,9 @@ import { nanoid } from 'nanoid';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO } from './dto';
+import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UserCouponDTO } from './dto';
 import { CouponException } from './exception/coupon.exception';
-import { COUPON_ERROR_CODE, COUPON_NOT_FOUND } from './exception/errorCode';
+import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
 export class CouponRepository {
@@ -17,6 +17,20 @@ export class CouponRepository {
     const coupon = await this.database.coupon.findUnique({
       where: {
         id,
+      },
+    });
+
+    if (!coupon) {
+      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
+    }
+
+    return new CouponDTO(coupon);
+  }
+
+  async findCouponByCode(code: string) {
+    const coupon = await this.database.coupon.findUnique({
+      where: {
+        code,
       },
     });
 
@@ -69,6 +83,60 @@ export class CouponRepository {
     });
 
     return coupon.id;
+  }
+
+  async findUserCoupon(id: string) {
+    const userCoupon = await this.database.userCoupon.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        user: true,
+        coupon: true,
+      },
+    });
+
+    if (!userCoupon) {
+      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+    }
+
+    return new UserCouponDTO(userCoupon);
+  }
+
+  async findUserCouponByCode(code: string) {
+    const userCoupon = await this.database.userCoupon.findFirst({
+      where: {
+        coupon: {
+          code,
+        },
+      },
+      include: {
+        user: true,
+        coupon: true,
+      },
+    });
+
+    if (!userCoupon) {
+      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+    }
+
+    return new UserCouponDTO(userCoupon);
+  }
+
+  async countUserCoupons(args = {} as Prisma.UserCouponCountArgs) {
+    return this.database.userCoupon.count(args);
+  }
+
+  async findUserCoupons(args = {} as Prisma.UserCouponFindManyArgs) {
+    const userCoupons = await this.database.userCoupon.findMany({
+      ...args,
+      include: {
+        user: true,
+        coupon: true,
+      },
+    });
+
+    return userCoupons.map((userCoupon) => new UserCouponDTO(userCoupon));
   }
 
   async checkCouponCode() {
