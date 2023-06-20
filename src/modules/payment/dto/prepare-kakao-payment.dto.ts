@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-export interface KakaoPreparePaymentDTOProps {
+export interface PrepareKakaoPaymentDTOProps {
   next_redirect_app_url: string;
   next_redirect_mobile_url: string;
   next_redirect_pc_url: string;
@@ -9,7 +9,7 @@ export interface KakaoPreparePaymentDTOProps {
   orderId: string;
 }
 
-export class KakaoPreparePaymentDTO {
+export class PrepareKakaoPaymentDTO {
   @Property({
     apiProperty: { type: 'string', description: '요청한 클라이언트가 모바일 앱일 경우 카카오톡 결제 페이지' },
   })
@@ -36,7 +36,7 @@ export class KakaoPreparePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '주문 ID' } })
   orderId: string;
 
-  constructor(props: KakaoPreparePaymentDTOProps) {
+  constructor(props: PrepareKakaoPaymentDTOProps) {
     this.nextRedirectAppUrl = props.next_redirect_app_url;
     this.nextRedirectMobileUrl = props.next_redirect_mobile_url;
     this.nextRedirectPcUrl = props.next_redirect_pc_url;

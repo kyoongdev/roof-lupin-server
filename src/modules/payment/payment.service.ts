@@ -9,6 +9,8 @@ import { CreatePaymentDTO } from '../reservation/dto';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
+import { PrepareKakaoPaymentDTO } from './dto';
+
 @Injectable()
 export class PaymentService {
   constructor(
@@ -36,6 +38,15 @@ export class PaymentService {
       orderId,
       orderResultId: result.tid,
     });
+
+    return new PrepareKakaoPaymentDTO({
+      ...result,
+      orderId,
+    });
+  }
+
+  async approveKakaoPayment() {
+    //
   }
 
   createOrderId() {
