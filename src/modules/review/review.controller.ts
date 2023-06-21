@@ -53,12 +53,13 @@ export class ReviewController {
     @Paging() paging: PagingDTO,
     @Query() query: FindReviewsQuery
   ) {
+    const args = await ReviewDTO.generateQuery(query, spaceId);
     return await this.reviewService.findPagingReviews(paging, {
       where: {
         spaceId,
-        ...(await ReviewDTO.generateQuery(query, spaceId)).where,
+        ...args.where,
       },
-      orderBy: (await ReviewDTO.generateQuery(query, spaceId)).orderBy,
+      orderBy: args.orderBy,
     });
   }
 

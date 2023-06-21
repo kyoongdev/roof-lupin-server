@@ -68,8 +68,14 @@ export class ReviewDTO {
           },
         },
       });
-      includeIds.push(...images.map(({ spaceReviewId }) => spaceReviewId));
+
+      images.forEach(({ spaceReviewId }) => {
+        if (!includeIds.includes(spaceReviewId)) {
+          includeIds.push(spaceReviewId);
+        }
+      });
     }
+
     return {
       where: {
         ...(query.hasPhoto && {
@@ -78,17 +84,19 @@ export class ReviewDTO {
           })),
         }),
       },
-      orderBy: {
-        ...(query.sort === 'CREATED_AT' && {
-          createdAt: 'desc',
-        }),
-        ...(query.sort === 'SCORE_HIGH' && {
-          score: 'desc',
-        }),
-        ...(query.sort === 'SCORE_LOW' && {
-          score: 'asc',
-        }),
-      },
+      ...(query.sort && {
+        orderBy: {
+          ...(query.sort === 'CREATED_AT' && {
+            createdAt: 'desc',
+          }),
+          ...(query.sort === 'SCORE_HIGH' && {
+            score: 'desc',
+          }),
+          ...(query.sort === 'SCORE_LOW' && {
+            score: 'asc',
+          }),
+        },
+      }),
     };
   }
 }

@@ -48,6 +48,7 @@ export class ReviewService {
 
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
+    console.log('args', { ...args });
     const count = await this.reviewRepository.countReviews({
       where: args.where,
       orderBy: [
@@ -57,13 +58,17 @@ export class ReviewService {
         {
           isBest: 'asc',
         },
-        ...(args.orderBy && !Array.isArray(args.orderBy) && [{ ...args.orderBy }]),
+        {
+          ...(args.orderBy ? (args.orderBy as Prisma.SpaceReviewOrderByWithRelationInput) : { createdAt: 'desc' }),
+        },
       ],
     });
     const rows = await this.reviewRepository.findReviews({
+      where: args.where,
       skip,
       take,
     });
+
     return new PaginationDTO<ReviewDTO>(rows, { count, paging });
   }
 
