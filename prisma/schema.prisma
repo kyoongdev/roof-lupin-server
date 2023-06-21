@@ -201,8 +201,6 @@ model Reservation {
   orderResultId String? @unique //INFO: 주문 결과 번호 
   payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
 
-  isNotForSale Boolean @default(false)
-
   rentalTypeId  String
   rentalType    RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId        String
