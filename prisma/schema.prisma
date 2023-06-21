@@ -618,14 +618,24 @@ model Service {
 
 //INFO: 활용 가능한 카테고리 (ex. 회의실, 스터디룸, 세미나실, 오픈스페이스 등)
 model Category {
-  id                   String          @id @default(uuid())
-  name                 String          @db.VarChar(80)
-  highlight            String?         @db.VarChar(80)
-  isHome               Boolean         @default(false)
-  isRecommended        Boolean         @default(false)
-  isContent            Boolean         @default(false)
+  id                   String           @id @default(uuid())
+  name                 String           @db.VarChar(80)
+  highlight            String?          @db.VarChar(80)
+  isHome               Boolean          @default(false)
+  isRecommended        Boolean          @default(false)
+  isContent            Boolean          @default(false)
   iconPath             String?
   spaceUsageCategories SpaceCategory[]
+  couponCategories     CouponCategory[]
+}
+
+model CouponCategory {
+  couponId   String
+  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([couponId, categoryId])
 }
 
 //INFO: 해시태그
@@ -662,5 +672,6 @@ model Coupon {
   code          String  @unique @db.Char(10)
   isLupinPay    Boolean @default(false)
 
-  userCoupons UserCoupon[]
+  userCoupons      UserCoupon[]
+  couponCategories CouponCategory[]
 }
