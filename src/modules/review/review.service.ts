@@ -89,7 +89,7 @@ export class ReviewService {
   }
 
   async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
-    await this.findReview(reviewId);
+    const review = await this.findReview(reviewId);
     await this.checkIsUserValid(reviewId, userId);
 
     await this.reviewRepository.updateReview(reviewId, props);
