@@ -4,17 +4,23 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { ReservationRepository } from '../reservation/reservation.repository';
+import { SpaceRepository } from '../space/space.repository';
 
 import { BlockedTimeRepository } from './blocked-time.repository';
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from './dto';
 import { BlockedTimeException } from './exception/blocked-time';
-import { BLOCKED_TIME_ERROR_CODE, BLOCKED_TIME_RESERVATION_EXISTS } from './exception/errorCode';
+import {
+  BLOCKED_TIME_ERROR_CODE,
+  BLOCKED_TIME_MUTATION_FORBIDDEN,
+  BLOCKED_TIME_RESERVATION_EXISTS,
+} from './exception/errorCode';
 
 @Injectable()
 export class BlockedTimeService {
   constructor(
     private readonly blockedTimeRepository: BlockedTimeRepository,
-    private readonly reservationRepository: ReservationRepository
+    private readonly reservationRepository: ReservationRepository,
+    private readonly spaceRepository: SpaceRepository
   ) {}
 
   async findBlockedTime(id: string) {
@@ -45,7 +51,13 @@ export class BlockedTimeService {
     return new PaginationDTO<BlockedTimeDTO>(blockedTimes, { paging, count });
   }
 
-  async createBlockedTime(data: CreateBlockedTimeDTO) {
+  async createBlockedTime(hostId: string, data: CreateBlockedTimeDTO) {
+    const space = await this.spaceRepository.findSpace(data.spaceId);
+
+    if (space.host.id !== hostId) {
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+    }
+
     const reservations = await this.reservationRepository.findReservations({
       where: {
         year: data.year,
@@ -64,8 +76,13 @@ export class BlockedTimeService {
     return await this.blockedTimeRepository.createBlockedTime(data);
   }
 
-  async updateBlockedTime(id: string, data: UpdateBlockedTimeDTO) {
+  async updateBlockedTime(id: string, hostId: string, data: UpdateBlockedTimeDTO) {
     const blockedTime = await this.findBlockedTime(id);
+    const space = await this.spaceRepository.findSpace(blockedTime.spaceId);
+
+    if (space.host.id !== hostId) {
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+    }
     const reservations = await this.reservationRepository.findReservations({
       where: {
         year: data.year,
@@ -84,8 +101,14 @@ export class BlockedTimeService {
     return await this.blockedTimeRepository.updateBlockedTime(id, data);
   }
 
-  async deleteBlockedTime(id: string) {
-    await this.findBlockedTime(id);
+  async deleteBlockedTime(id: string, hostId: string) {
+    const blockedTime = await this.findBlockedTime(id);
+    const space = await this.spaceRepository.findSpace(blockedTime.spaceId);
+
+    if (space.host.id !== hostId) {
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+    }
+
     await this.blockedTimeRepository.deleteBlockedTime(id);
   }
 }

@@ -1,13 +1,15 @@
-import { Get, Param, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { ApiController } from '@/utils';
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
+import { RequestHost } from '@/interface/role.interface';
+import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { BlockedTimeService } from './blocked-time.service';
-import { BlockedTimeDTO } from './dto';
+import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from './dto';
 import { FindBlockedTimesQuery } from './dto/query';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
@@ -42,5 +44,61 @@ export class BlockedTimeController {
   })
   async getBlockedTimes(@Paging() paging: PagingDTO, @Query() query: FindBlockedTimesQuery) {
     return await this.blockedTimeService.findPagingBlockedTimes(paging, FindBlockedTimesQuery.generateQuery(query));
+  }
+
+  @Post()
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '공간 시간 차단하기',
+      summary: '공간 시간 차단하기 - 호스트만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createBlockedTime(@ReqUser() user: RequestHost, @Body() body: CreateBlockedTimeDTO) {
+    return await this.blockedTimeService.createBlockedTime(user.id, body);
+  }
+
+  @Patch(':blockTimeId')
+  @RequestApi({
+    summary: {
+      description: '공간 시간 차단 수정하기',
+      summary: '공간 시간 차단 수정하기 - 호스트만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateBlockedTime(
+    @Param('blockTimeId') id: string,
+    @ReqUser() user: RequestHost,
+    @Body() body: UpdateBlockedTimeDTO
+  ) {
+    return await this.blockedTimeService.updateBlockedTime(id, user.id, body);
+  }
+
+  @Delete(':blockTimeId')
+  @RequestApi({
+    summary: {
+      description: '공간 시간 차단 삭제하기',
+      summary: '공간 시간 차단 삭제하기 - 호스트만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteBlockedTime(@Param('blockTimeId') id: string, @ReqUser() user: RequestHost) {
+    return await this.blockedTimeService.deleteBlockedTime(id, user.id);
   }
 }
