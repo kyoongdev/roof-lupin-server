@@ -10,6 +10,7 @@ import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
 import {
   REVIEW_ERROR_CODE,
+  REVIEW_IMAGE_LENGTH_EXCEEDED,
   REVIEW_MUTATION_FORBIDDEN,
   REVIEW_REPORT_ALREADY_EXISTS,
   REVIEW_REPORT_MUTATION_FORBIDDEN,
@@ -48,7 +49,7 @@ export class ReviewService {
 
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
-    console.log('args', { ...args });
+
     const count = await this.reviewRepository.countReviews({
       where: args.where,
       orderBy: [
@@ -77,6 +78,10 @@ export class ReviewService {
 
     if (score < 1 || score > 5) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(SCORE_BAD_REQUEST));
+    }
+
+    if (props.images.length > 3) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_IMAGE_LENGTH_EXCEEDED));
     }
 
     await this.spaceRepository.findSpace(spaceId);
