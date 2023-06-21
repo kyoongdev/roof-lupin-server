@@ -41,6 +41,9 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time' } })
   updatedAt: Date;
 
+  @Property({ apiProperty: { type: 'string', description: '예약 id' } })
+  reservationId: string;
+
   @Property({ apiProperty: { type: ReviewAnswerDTO, isArray: true, description: '리뷰 답변' } })
   reviewAnswers: ReviewAnswerDTO[];
 

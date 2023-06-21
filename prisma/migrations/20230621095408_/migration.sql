@@ -161,7 +161,6 @@ CREATE TABLE `Reservation` (
     `orderId` VARCHAR(191) NULL,
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
-    `isNotForSale` BOOLEAN NOT NULL DEFAULT false,
     `rentalTypeId` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
@@ -174,6 +173,20 @@ CREATE TABLE `Reservation` (
     UNIQUE INDEX `Reservation_id_key`(`id`),
     UNIQUE INDEX `Reservation_orderId_key`(`orderId`),
     UNIQUE INDEX `Reservation_orderResultId_key`(`orderResultId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `BlockedTime` (
+    `id` VARCHAR(191) NOT NULL,
+    `year` CHAR(4) NOT NULL,
+    `month` VARCHAR(2) NOT NULL,
+    `day` VARCHAR(2) NOT NULL,
+    `startAt` TINYINT NOT NULL,
+    `endAt` TINYINT NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `BlockedTime_id_key`(`id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -255,6 +268,7 @@ CREATE TABLE `SpaceReview` (
     `isBest` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `reservationId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -263,7 +277,6 @@ CREATE TABLE `SpaceReview` (
 CREATE TABLE `SpaceReviewImage` (
     `spaceReviewId` VARCHAR(191) NOT NULL,
     `imageId` VARCHAR(191) NOT NULL,
-    `isBest` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`spaceReviewId`, `imageId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -273,7 +286,8 @@ CREATE TABLE `SpaceReviewReport` (
     `id` VARCHAR(191) NOT NULL,
     `reportType` TINYINT NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
-    `spaceReviewId` VARCHAR(191) NOT NULL,
+    `isProcessed` BOOLEAN NOT NULL DEFAULT false,
+    `spaceReviewId` VARCHAR(191) NULL,
     `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -418,6 +432,7 @@ CREATE TABLE `User` (
     `profileImage` VARCHAR(191) NULL,
     `isAdult` BOOLEAN NOT NULL DEFAULT false,
     `isAlarmAccepted` BOOLEAN NOT NULL DEFAULT false,
+    `pushToken` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -536,6 +551,14 @@ CREATE TABLE `Category` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `CouponCategory` (
+    `couponId` VARCHAR(191) NOT NULL,
+    `categoryId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`couponId`, `categoryId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Hashtag` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
@@ -553,6 +576,7 @@ CREATE TABLE `UserCoupon` (
     `userId` VARCHAR(191) NOT NULL,
     `couponId` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `UserCoupon_couponId_key`(`couponId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -563,7 +587,7 @@ CREATE TABLE `Coupon` (
     `discountType` TINYINT NOT NULL,
     `discountValue` MEDIUMINT NOT NULL,
     `description` VARCHAR(100) NOT NULL,
-    `code` CHAR(8) NOT NULL,
+    `code` CHAR(10) NOT NULL,
     `isLupinPay` BOOLEAN NOT NULL DEFAULT false,
 
     UNIQUE INDEX `Coupon_code_key`(`code`),
@@ -607,6 +631,9 @@ ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_settlementId_fkey` FOREIGN
 ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_userCounponId_fkey` FOREIGN KEY (`userCounponId`) REFERENCES `UserCoupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `BlockedTime` ADD CONSTRAINT `BlockedTime_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `TaxReturn` ADD CONSTRAINT `TaxReturn_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -634,13 +661,16 @@ ALTER TABLE `SpaceReview` ADD CONSTRAINT `SpaceReview_spaceId_fkey` FOREIGN KEY 
 ALTER TABLE `SpaceReview` ADD CONSTRAINT `SpaceReview_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `SpaceReview` ADD CONSTRAINT `SpaceReview_reservationId_fkey` FOREIGN KEY (`reservationId`) REFERENCES `Reservation`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `SpaceReviewImage` ADD CONSTRAINT `SpaceReviewImage_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SpaceReviewImage` ADD CONSTRAINT `SpaceReviewImage_imageId_fkey` FOREIGN KEY (`imageId`) REFERENCES `Image`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReviewReport` ADD CONSTRAINT `SpaceReviewReport_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `SpaceReviewReport` ADD CONSTRAINT `SpaceReviewReport_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 -- AddForeignKey
 ALTER TABLE `SpaceReviewReport` ADD CONSTRAINT `SpaceReviewReport_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -713,6 +743,12 @@ ALTER TABLE `UserLocation` ADD CONSTRAINT `UserLocation_locationId_fkey` FOREIGN
 
 -- AddForeignKey
 ALTER TABLE `SpaceLocation` ADD CONSTRAINT `SpaceLocation_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CouponCategory` ADD CONSTRAINT `CouponCategory_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `Coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CouponCategory` ADD CONSTRAINT `CouponCategory_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `UserCoupon` ADD CONSTRAINT `UserCoupon_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

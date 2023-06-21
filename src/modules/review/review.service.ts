@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
@@ -21,7 +22,11 @@ import { ReviewRepository } from './review.repository';
 
 @Injectable()
 export class ReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository, private readonly spaceRepository: SpaceRepository) {}
+  constructor(
+    private readonly reviewRepository: ReviewRepository,
+    private readonly spaceRepository: SpaceRepository,
+    private readonly reservationRepository: ReservationRepository
+  ) {}
 
   async getReviewSummary(spaceId: string) {
     const score = await this.reviewRepository.getReviewAverageScore(spaceId);
@@ -74,6 +79,7 @@ export class ReviewService {
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {
+    const reservation = await this.reservationRepository.findReservation(props.reservationId);
     const { score, spaceId } = props;
 
     if (score < 1 || score > 5) {

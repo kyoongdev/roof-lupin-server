@@ -270,6 +270,11 @@ export class ReviewRepository {
             id: userId,
           },
         },
+        reservation: {
+          connect: {
+            id: props.reservationId,
+          },
+        },
       },
     });
     await this.updateReviewAverageScore(review.id, score);

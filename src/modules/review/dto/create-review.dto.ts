@@ -7,6 +7,7 @@ interface Props {
   images: string[];
   score: number;
   spaceId: string;
+  reservationId: string;
 }
 
 export class CreateReviewDTO {
@@ -22,6 +23,9 @@ export class CreateReviewDTO {
 
   @Property({ apiProperty: { type: 'string', description: '공간 아이디' } })
   spaceId: string;
+
+  @Property({ apiProperty: { type: 'string', description: '예약 아이디' } })
+  reservationId: string;
 
   constructor(props?: Props) {
     if (props) {
