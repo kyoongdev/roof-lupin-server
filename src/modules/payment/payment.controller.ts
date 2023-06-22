@@ -18,6 +18,18 @@ import { PaymentService } from './payment.service';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @Post('/kakao/prepare/test')
+  @RequestApi({
+    summary: {
+      summary: '카카오 결제 준비 테스트하기 ',
+      description: '카카오 결제 준비 테스트하기',
+    },
+  })
+  @ResponseApi({})
+  async testPrepareKakaoPayment() {
+    return await this.paymentService.testKakaoPayment();
+  }
+
   @Post('/kakao/prepare')
   @RequestApi({
     summary: {
@@ -43,6 +55,18 @@ export class PaymentController {
   })
   async completeKakaoPayment(@Body() data: ApproveKakaoPaymentDTO) {
     return await this.paymentService.approveKakaoPayment(data);
+  }
+
+  @Post('/toss/prepare/test')
+  @RequestApi({
+    summary: {
+      summary: '토스 결제 준비 테스트하기 ',
+      description: '토스 결제 준비 테스트하기',
+    },
+  })
+  @ResponseApi({})
+  async testPrepareTossPayment() {
+    return await this.paymentService.testTossPayment();
   }
 
   @Post('/toss/prepare')
