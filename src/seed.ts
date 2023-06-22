@@ -390,6 +390,342 @@ export const seedDatabase = async (database: PrismaService) => {
 
   await Promise.all(
     spaces.map(async (spaces, index) => {
+      const rentalTypes = await database.rentalType.findMany({
+        where: {
+          spaceId: spaces.id,
+        },
+      });
+      await Promise.all(
+        rentalTypes.map(async (rentalType) => {
+          if (rentalType.rentalType === 1) {
+            const taxCost = Math.floor(2000 / 1.1);
+            const reservation = await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '10',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 14,
+                endAt: 15,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+                      isBest: true,
+                      images: {
+                        create: [
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                      answers: {
+                        create: [
+                          {
+                            content: '테스트 답변',
+                            host: {
+                              connect: {
+                                id: host.id,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '15',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '14',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+                      images: {
+                        create: [
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '13',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+                      images: {
+                        create: [
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '12',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+                      images: {
+                        create: [
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
+                day: '11',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+                      images: {
+                        create: [
+                          {
+                            image: {
+                              create: {
+                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+                              },
+                            },
+                          },
+                        ],
+                      },
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+          }
+        })
+      );
+
       if (index < 5) {
         await database.category.update({
           where: {
