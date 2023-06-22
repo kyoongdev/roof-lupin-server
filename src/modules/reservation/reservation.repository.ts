@@ -273,6 +273,17 @@ export class ReservationRepository {
     });
   }
 
+  async updatePaymentWithTransaction(database: TransactionPrisma, id: string, data: UpdatePaymentDTO) {
+    await database.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
+  }
+
   async deleteReservation(id: string) {
     await this.database.reservation.update({
       where: {

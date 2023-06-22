@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
@@ -45,30 +45,36 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
     }
     //TODO: 쿠폰 적용
-    this.database.$transaction(async (database) => {
-      const { possibleRentalType, rentalType } = await this.validatePayment(data);
+    const result = await this.database.$transaction(async (database) => {
+      const { rentalType } = await this.validatePayment(data);
       const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
+      try {
+        const orderId = this.createOrderId();
 
-      const orderId = this.createOrderId();
-      const result = await this.kakaoPay.preparePayment({
-        item_name: rentalType.name,
-        quantity: 1,
-        tax_free_amount: reservation.taxFreeCost,
-        total_amount: reservation.totalCost,
-        partner_order_id: orderId,
-      });
+        const result = await this.kakaoPay.preparePayment({
+          item_name: rentalType.name,
+          quantity: 1,
+          tax_free_amount: reservation.taxFreeCost,
+          total_amount: reservation.totalCost,
+          partner_order_id: orderId,
+        });
 
-      await this.reservationRepository.updatePayment(reservation.id, {
-        orderId,
-        orderResultId: result.tid,
-      });
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          orderId,
+          orderResultId: result.tid,
+        });
 
-      return new PrepareKakaoPaymentDTO({
-        ...result,
-        orderId,
-        orderResultId: result.tid,
-      });
+        return new PrepareKakaoPaymentDTO({
+          ...result,
+          orderId,
+          orderResultId: result.tid,
+        });
+      } catch (err) {
+        await this.reservationRepository.deleteReservation(reservation.id);
+        throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
+      }
     });
+    return result;
   }
 
   async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
@@ -86,7 +92,6 @@ export class PaymentService {
 
   async validatePayment(data: CreatePaymentDTO) {
     const rentalType = await this.rentalTypeRepository.findRentalType(data.rentalTypeId);
-
     const possibleRentalType = await this.rentalTypeService.findPossibleRentalTypesById(data.rentalTypeId, {
       year: data.year,
       month: data.month,
