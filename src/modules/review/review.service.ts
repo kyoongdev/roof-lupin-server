@@ -16,6 +16,7 @@ import {
   REVIEW_REPORT_ALREADY_EXISTS,
   REVIEW_REPORT_MUTATION_FORBIDDEN,
   REVIEW_SPACE_BAD_REQUEST,
+  REVIEW_WRITE_DUE_DATE,
   SCORE_BAD_REQUEST,
 } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
@@ -82,6 +83,18 @@ export class ReviewService {
   async createReview(props: CreateReviewDTO, userId: string) {
     const reservation = await this.reservationRepository.findReservation(props.reservationId);
     const { score, spaceId } = props;
+    const reservationDate = new Date(
+      Number(reservation.year),
+      Number(reservation.month) - 1,
+      Number(reservation.day),
+      9
+    ).getTime();
+    const currentDate = new Date().getTime();
+    const diffDate = currentDate - reservationDate;
+
+    if (Math.abs(diffDate / (1000 * 60 * 60 * 24)) > 14) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
+    }
 
     if (reservation.space.id !== props.spaceId) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_SPACE_BAD_REQUEST));

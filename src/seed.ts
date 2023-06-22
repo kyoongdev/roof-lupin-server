@@ -481,6 +481,47 @@ export const seedDatabase = async (database: PrismaService) => {
               data: {
                 year: '2023',
                 month: '6',
+                day: '8',
+                rentalType: {
+                  connect: {
+                    id: rentalType.id,
+                  },
+                },
+                startAt: 17,
+                endAt: 18,
+                originalCost: 2000,
+                taxFreeCost: 2000 - taxCost,
+                totalCost: 2000,
+                user: {
+                  connect: {
+                    id: testUser.id,
+                  },
+                },
+                spaceReviews: {
+                  create: [
+                    {
+                      content: '테스트 리뷰2',
+                      score: 4,
+                      space: {
+                        connect: {
+                          id: spaces.id,
+                        },
+                      },
+
+                      user: {
+                        connect: {
+                          id: testUser.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '6',
                 day: '15',
                 rentalType: {
                   connect: {
