@@ -94,7 +94,7 @@ export class CouponRepository {
     const coupon = await this.database.coupon.create({
       data: {
         ...rest,
-        code,
+        code: rest.code || code,
         ...(categoryIds && {
           couponCategories: {
             create: categoryIds.map((categoryId) => ({
@@ -126,6 +126,7 @@ export class CouponRepository {
     if (categoryIds) {
       updateArgs.data = {
         ...updateArgs.data,
+
         couponCategories: {
           deleteMany: {},
           create: categoryIds.map((categoryId) => ({

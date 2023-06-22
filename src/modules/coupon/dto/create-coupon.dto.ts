@@ -4,6 +4,7 @@ export interface CreateCouponDTOProps {
   name: string;
   discountType: number;
   discountValue: number;
+  code?: string;
   description: string;
   isLupinPay: boolean;
   categoryIds?: string[];
@@ -12,6 +13,9 @@ export interface CreateCouponDTOProps {
 export class CreateCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '쿠폰 이름' } })
   name: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '쿠폰 코드' } })
+  code?: string;
 
   @Property({ apiProperty: { type: 'number', description: '쿠폰 할인 타입' } })
   discountType: number;
@@ -31,6 +35,7 @@ export class CreateCouponDTO {
   constructor(props?: CreateCouponDTOProps) {
     if (props) {
       this.name = props.name;
+      this.code = props.code;
       this.discountType = props.discountType;
       this.discountValue = props.discountValue;
       this.description = props.description;
