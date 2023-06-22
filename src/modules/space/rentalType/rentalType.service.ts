@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { range } from 'lodash';
 
+import { BlockedTimeRepository } from '@/modules/blocked-time/blocked-time.repository';
+import { BlockedTimeDTO } from '@/modules/blocked-time/dto';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
 import { PossibleRentalTypeQuery } from '../dto/query';
@@ -17,7 +19,8 @@ import { RentalTypeRepository } from './rentalType.repository';
 export class RentalTypeService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeRepository: RentalTypeRepository
+    private readonly rentalTypeRepository: RentalTypeRepository,
+    private readonly blockedTimeRepository: BlockedTimeRepository
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
@@ -54,8 +57,16 @@ export class RentalTypeService {
         },
       }
     );
+    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
+      where: {
+        spaceId,
+        year: query.year,
+        month: query.month,
+        day: query.day,
+      },
+    });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes);
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes);
   }
 
   async findPossibleRentalTypesBySpaces(query: PossibleRentalTypeQuery, args = {} as Prisma.SpaceFindManyArgs) {
@@ -75,10 +86,20 @@ export class RentalTypeService {
         },
       }
     );
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes);
+    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
+      where: {
+        space: {
+          ...args.where,
+        },
+        year: query.year,
+        month: query.month,
+        day: query.day,
+      },
+    });
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes);
   }
 
-  getPossibleRentalTypesBySpaceId(rentalTypes: RentalTypeWithReservationDTO[]) {
+  async getPossibleRentalTypesBySpaceId(rentalTypes: RentalTypeWithReservationDTO[], blockedTimes: BlockedTimeDTO[]) {
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
@@ -96,13 +117,24 @@ export class RentalTypeService {
               timeCostInfos[hour].isPossible = false;
             });
           });
+          blockedTimes.forEach((blockedTime) => {
+            for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
+              timeCostInfos[time].isPossible = false;
+            }
+          });
 
           acc.time.push({
             ...next,
             timeCostInfos,
           });
         } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-          const isPossible = next.reservations.length === 0;
+          let isPossible = next.reservations.length === 0;
+          blockedTimes.forEach((blockedTime) => {
+            if (blockedTime.startAt <= next.endAt && blockedTime.endAt >= next.startAt) {
+              isPossible = false;
+            }
+          });
+
           acc.package.push({
             ...next,
             isPossible,

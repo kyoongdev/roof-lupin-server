@@ -348,7 +348,20 @@ export const seedDatabase = async (database: PrismaService) => {
         },
       },
     });
-
+    await database.blockedTime.create({
+      data: {
+        year: '2023',
+        month: '6',
+        day: '20',
+        startAt: 14,
+        endAt: 15,
+        space: {
+          connect: {
+            id: space.id,
+          },
+        },
+      },
+    });
     spaces.push(space);
   }
 

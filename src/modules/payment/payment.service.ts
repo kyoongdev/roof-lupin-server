@@ -7,6 +7,9 @@ import { TossPayProvider } from '@/common/payment/toss';
 
 import { CreatePaymentDTO } from '../reservation/dto';
 import { ReservationRepository } from '../reservation/reservation.repository';
+import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
+import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCode';
+import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
 import { ApproveKakaoPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
@@ -64,5 +67,29 @@ export class PaymentService {
   createOrderId() {
     const code = nanoid(5);
     return `${new Date().getDate()}_${code.toUpperCase()}`;
+  }
+
+  async validateReservation(data: CreatePaymentDTO) {
+    const { rentalTypeId } = data;
+    const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
+    const existingReservations = await this.reservationRepository.findReservations({
+      where: {
+        rentalTypeId,
+        year: data.year,
+        month: data.month,
+        day: data.day,
+      },
+    });
+
+    //INFO: 예약 시도하는 시간에 예약된 건이 있는지 여부 확인
+    if (existingReservations.length > 0) {
+      data.validateIsReservationExist(existingReservations);
+    }
+
+    if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
+      data.validateTimeReservation(rentalType);
+    } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+      data.validatePackageReservation(rentalType);
+    } else throw new SpaceException(SPACE_ERROR_CODE.INTERNAL_SERVER_ERROR(RENTAL_TYPE_ERROR));
   }
 }
