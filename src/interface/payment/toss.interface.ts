@@ -46,6 +46,8 @@ export interface TossCreatePaymentRequest {
   easyPay?: string;
   /** 앱 스킴 */
   appScheme?: string;
+  /** 주문명 */
+  orderName: string;
 }
 export interface TossConfirmPayment {
   /** 결제 키 값 */
