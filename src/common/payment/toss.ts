@@ -53,11 +53,23 @@ export class TossPayProvider {
     }
   }
 
-  async createPayment(data: TossCreatePaymentRequest) {
+  async createPayment({
+    successUrl = this.configService.get('TOSS_REDIRECT_SUCCESS_URL'),
+    failUrl = this.configService.get('TOSS_REDIRECT_FAIL_URL'),
+    easyPay = '간편결제',
+    flowMode = 'DIRECT',
+    ...rest
+  }: TossCreatePaymentRequest) {
     try {
-      const response = await this.apiClient.post<Payment>('/payments', data, {
-        headers: this.getHeader(),
-      });
+      const response = await this.apiClient.post<Payment>(
+        '/payments',
+        {
+          ...rest,
+        },
+        {
+          headers: this.getHeader(),
+        }
+      );
 
       return response.data;
     } catch (err) {

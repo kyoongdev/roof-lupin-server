@@ -37,9 +37,9 @@ export interface TossCreatePaymentRequest {
   /** 주문 ID */
   orderId: string;
   /** 성공 redirect url */
-  successUrl: string;
+  successUrl?: string;
   /** 실패 redirect url */
-  failUrl: string;
+  failUrl?: string;
   /** 결제창 유형 */
   flowMode?: string;
   /** 간편결제사 코드 */

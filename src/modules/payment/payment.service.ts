@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 import { KakaoPayProvider } from '@/common/payment';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
+import { TossCreatePaymentRequest } from '@/interface/payment/toss.interface';
 
 import { CreatePaymentDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
@@ -15,7 +16,7 @@ import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 
-import { ApproveKakaoPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
+import { ApproveKakaoPaymentDTO, CreateTossPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
 import {
   PAYMENT_CONFLICT,
   PAYMENT_DATE_BAD_REQUEST,
@@ -83,13 +84,52 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
     }
 
-    const result = await this.kakaoPay.approvePayment({
+    await this.kakaoPay.approvePayment({
       partner_order_id: reservation.orderId,
       tid: reservation.orderResultId,
       pg_token: data.pg_token,
       total_amount: reservation.totalCost,
     });
     return reservation.id;
+  }
+  async createTossPayment(userId: string, data: CreatePaymentDTO) {
+    const totalCost = data.originalCost - data.discountCost;
+
+    if (totalCost !== data.totalCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+    }
+
+    if (totalCost !== data.totalCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+    }
+    //TODO: 쿠폰 적용
+    const result = await this.database.$transaction(async (database) => {
+      const { rentalType } = await this.validatePayment(data);
+      const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
+      try {
+        const orderId = this.createOrderId();
+
+        const result = await this.tossPay.createPayment({
+          amount: reservation.totalCost,
+          orderName: rentalType.name,
+          method: '카드',
+          orderId,
+        });
+
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          orderId,
+          orderResultId: result.mId,
+        });
+
+        return new CreateTossPaymentDTO({
+          url: result.checkout.url,
+        });
+      } catch (err) {
+        await this.reservationRepository.deleteReservation(reservation.id);
+        throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
+      }
+    });
+    return result;
   }
 
   createOrderId() {
