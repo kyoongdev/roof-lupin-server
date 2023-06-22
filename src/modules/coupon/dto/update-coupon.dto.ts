@@ -6,6 +6,7 @@ export interface UpdateCouponDTOProps {
   discountValue?: number;
   description?: string;
   isLupinPay?: boolean;
+  categoryIds?: string[];
 }
 
 export class UpdateCouponDTO {
@@ -24,6 +25,9 @@ export class UpdateCouponDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '루팡페이 쿠폰 여부' } })
   isLupinPay?: boolean;
 
+  @Property({ apiProperty: { type: 'string', isArray: true, nullable: true, description: '카테고리 id 배열' } })
+  categoryIds?: string[];
+
   constructor(props?: UpdateCouponDTOProps) {
     if (props) {
       this.name = props.name;
@@ -31,6 +35,7 @@ export class UpdateCouponDTO {
       this.discountValue = props.discountValue;
       this.description = props.description;
       this.isLupinPay = props.isLupinPay;
+      this.categoryIds = props.categoryIds;
     }
   }
 }
