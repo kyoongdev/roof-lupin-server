@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
 import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
@@ -16,7 +17,10 @@ import {
 
 @Injectable()
 export class AdminCouponService {
-  constructor(private readonly couponRepository: CouponRepository) {}
+  constructor(
+    private readonly couponRepository: CouponRepository,
+    private readonly categoryRepository: CategoryRepository
+  ) {}
 
   async findCoupon(id: string) {
     return await this.couponRepository.findCoupon(id);
@@ -53,6 +57,9 @@ export class AdminCouponService {
   }
 
   async createCoupon(data: CreateCouponDTO) {
+    if (data.categoryIds) {
+      await Promise.all(data.categoryIds.map(async (id) => await this.categoryRepository.findCategory(id)));
+    }
     return await this.couponRepository.createCoupon(data);
   }
 
@@ -72,6 +79,9 @@ export class AdminCouponService {
 
   async updateCoupon(id: string, data: UpdateCouponDTO) {
     await this.findCoupon(id);
+    if (data.categoryIds) {
+      await Promise.all(data.categoryIds.map(async (id) => await this.categoryRepository.findCategory(id)));
+    }
     await this.couponRepository.updateCoupon(id, data);
   }
 
