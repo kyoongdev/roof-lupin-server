@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
 import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
@@ -213,6 +213,28 @@ export class ReservationRepository {
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
     const reservation = await this.database.reservation.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        rentalType: {
+          connect: {
+            id: rentalTypeId,
+          },
+        },
+        ...rest,
+        taxFreeCost: rest.totalCost - taxCost,
+      },
+    });
+    return reservation;
+  }
+  async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
+    const { rentalTypeId, spaceId, ...rest } = data;
+    const taxCost = Math.floor(rest.totalCost / 1.1);
+
+    const reservation = await database.reservation.create({
       data: {
         user: {
           connect: {

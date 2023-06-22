@@ -97,6 +97,43 @@ export class RentalTypeRepository {
     );
   }
 
+  async findRentalTypeWithReservations(id: string, reservationArgs = {} as Prisma.ReservationFindManyArgs) {
+    const rentalType = await this.database.rentalType.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        timeCostInfo: {
+          orderBy: {
+            time: 'asc',
+          },
+        },
+        reservations: {
+          where: {
+            ...reservationArgs.where,
+          },
+        },
+      },
+    });
+
+    if (!rentalType) {
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+    }
+
+    return new RentalTypeWithReservationDTO({
+      id: rentalType.id,
+      baseCost: rentalType.baseCost,
+      name: rentalType.name,
+      rentalType: rentalType.rentalType,
+      timeCostInfo: rentalType.timeCostInfo,
+      reservations: rentalType.reservations,
+      baseHour: rentalType.baseHour,
+      endAt: rentalType.endAt,
+      startAt: rentalType.startAt,
+      spaceId: rentalType.spaceId,
+    });
+  }
+
   async findSpaceRentalTypeDetail(spaceId: string) {
     const rentalTypes = await this.database.rentalType.findMany({
       where: {
