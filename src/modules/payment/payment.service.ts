@@ -7,7 +7,7 @@ import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
 import { TossCreatePaymentRequest } from '@/interface/payment/toss.interface';
 
-import { CreatePaymentDTO } from '../reservation/dto';
+import { CreatePaymentDTO, PayMethod } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -16,12 +16,13 @@ import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 
-import { ApproveKakaoPaymentDTO, CreateTossPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
+import { ApproveKakaoPaymentDTO, ConfirmTossPaymentDTO, CreateTossPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
 import {
   PAYMENT_CONFLICT,
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
+  PAYMENT_PAY_METHOD_BAD_REQUEST,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
   PAYMENT_TOTAL_COST_BAD_REQUEST,
 } from './exception/errorCode';
@@ -62,6 +63,7 @@ export class PaymentService {
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderId,
           orderResultId: result.tid,
+          payMethod: PayMethod.KAKAO_PAY,
         });
 
         return new PrepareKakaoPaymentDTO({
@@ -82,6 +84,9 @@ export class PaymentService {
 
     if (data.orderResultId !== reservation.orderResultId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+    }
+    if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
     }
 
     await this.kakaoPay.approvePayment({
@@ -118,7 +123,8 @@ export class PaymentService {
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderId,
-          orderResultId: result.mId,
+          orderResultId: result.paymentKey,
+          payMethod: PayMethod.TOSS_PAY,
         });
 
         return new CreateTossPaymentDTO({
@@ -130,6 +136,26 @@ export class PaymentService {
       }
     });
     return result;
+  }
+
+  async confirmTossPayment(data: ConfirmTossPaymentDTO) {
+    const { paymentKey } = data;
+    const reservation = await this.reservationRepository.findReservationByOrderResultId(paymentKey);
+
+    if (data.paymentKey !== reservation.orderResultId) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+    }
+
+    if (reservation.payMethod !== PayMethod.TOSS_PAY) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+    }
+
+    await this.tossPay.confirmPayment({
+      amount: reservation.totalCost,
+      orderId: reservation.orderId,
+      paymentKey: reservation.orderResultId,
+    });
+    return reservation.id;
   }
 
   createOrderId() {
