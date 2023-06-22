@@ -4,7 +4,7 @@ import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 export interface ReviewReportDTOProps {
   id: string;
-  reportType: number;
+
   content: string;
   isProcessed: boolean;
   createdAt: Date;
@@ -14,9 +14,6 @@ export interface ReviewReportDTOProps {
 export class ReviewReportDTO {
   @Property({ apiProperty: { type: 'string', description: '리뷰 신고 id' } })
   id: string;
-
-  @Property({ apiProperty: { type: 'number', description: '신고 타입' } })
-  reportType: number;
 
   @Property({ apiProperty: { type: 'string', description: '신고 내용' } })
   content: string;
@@ -32,7 +29,6 @@ export class ReviewReportDTO {
 
   constructor(props: ReviewReportDTOProps) {
     this.id = props.id;
-    this.reportType = props.reportType;
     this.content = props.content;
     this.isProcessed = props.isProcessed;
     this.createdAt = props.createdAt;

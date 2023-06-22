@@ -348,7 +348,6 @@ model SpaceReviewImage {
 model SpaceReviewReport {
   id String @id @default(uuid())
 
-  reportType  Int     @db.TinyInt
   content     String  @db.MediumText
   isProcessed Boolean @default(false)
 
@@ -670,7 +669,7 @@ model UserCoupon {
 model Coupon {
   id            String  @id @default(uuid())
   name          String  @db.VarChar(80)
-  discountType  Int     @db.TinyInt
+  discountType  Int     @db.TinyInt //INFO: 0: 정액, 1: 정률
   discountValue Int     @db.MediumInt
   description   String  @db.VarChar(100)
   code          String  @unique @db.Char(10)
