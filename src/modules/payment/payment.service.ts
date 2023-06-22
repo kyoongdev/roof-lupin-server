@@ -39,6 +39,18 @@ export class PaymentService {
     private readonly database: PrismaService
   ) {}
 
+  async testKakaoPayment() {
+    const result = await this.kakaoPay.preparePayment({
+      item_name: 'test',
+      quantity: 1,
+      tax_free_amount: 0,
+      total_amount: 100,
+      partner_order_id: this.createOrderId(),
+    });
+
+    return result;
+  }
+
   async prepareKakaoPayment(userId: string, data: CreatePaymentDTO) {
     const totalCost = data.originalCost - data.discountCost;
 
@@ -97,6 +109,18 @@ export class PaymentService {
     });
     return reservation.id;
   }
+
+  async testTossPayment() {
+    const result = await this.tossPay.createPayment({
+      amount: 100,
+      orderName: 'test',
+      method: '카드',
+      orderId: this.createOrderId(),
+    });
+
+    return result;
+  }
+
   async createTossPayment(userId: string, data: CreatePaymentDTO) {
     const totalCost = data.originalCost - data.discountCost;
 
