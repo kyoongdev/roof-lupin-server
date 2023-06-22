@@ -86,11 +86,11 @@ export interface KakaoPayReadyResponse {
 }
 
 export interface KakaoPayApproveRequest {
-  cid: string;
+  cid?: string;
   cid_secret?: string;
   tid: string;
-  partner_order_id: string;
-  partner_user_id: string;
+  partner_order_id?: string;
+  partner_user_id?: string;
   pg_token: string;
   payload?: string;
   total_amount?: number;

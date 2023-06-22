@@ -54,10 +54,24 @@ export class KakaoPayProvider {
     }
   }
 
-  async approvePayment(data: KakaoPayApproveRequest): Promise<KakaoPayApproveResponse> {
-    const response = await this.apiClient.post<KakaoPayApproveResponse>('/payment/approve', data, {
-      headers: this.getHeader(),
-    });
+  async approvePayment({
+    cid = this.configService.get('KAKAO_PAY_CID'),
+    partner_order_id = this.configService.get('KAKAO_PAY_PARTNER_ORDER_ID'),
+    partner_user_id = this.configService.get('KAKAO_PAY_PARTNER_USER_ID'),
+    ...rest
+  }: KakaoPayApproveRequest): Promise<KakaoPayApproveResponse> {
+    const response = await this.apiClient.post<KakaoPayApproveResponse>(
+      '/payment/approve',
+      {
+        cid,
+        partner_order_id,
+        partner_user_id,
+        ...rest,
+      },
+      {
+        headers: this.getHeader(),
+      }
+    );
 
     return response.data;
   }

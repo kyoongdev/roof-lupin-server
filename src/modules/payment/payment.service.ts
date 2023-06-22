@@ -12,8 +12,6 @@ import { ReservationException } from '../reservation/exception/reservation.excep
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../space/dto/rentalType';
 import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
-import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCode';
-import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 
@@ -22,6 +20,7 @@ import {
   PAYMENT_CONFLICT,
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
+  PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
   PAYMENT_TOTAL_COST_BAD_REQUEST,
 } from './exception/errorCode';
@@ -80,9 +79,17 @@ export class PaymentService {
   async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
     const reservation = await this.reservationRepository.findReservationByOrderId(data.orderId);
 
-    // if(data.orderResultId !== reservation.) {
+    if (data.orderResultId !== reservation.orderResultId) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+    }
 
-    // }
+    const result = await this.kakaoPay.approvePayment({
+      partner_order_id: reservation.orderId,
+      tid: reservation.orderResultId,
+      pg_token: data.pg_token,
+      total_amount: reservation.totalCost,
+    });
+    return reservation.id;
   }
 
   createOrderId() {
