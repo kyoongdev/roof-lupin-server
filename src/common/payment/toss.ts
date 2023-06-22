@@ -54,9 +54,9 @@ export class TossPayProvider {
   }
 
   async createPayment({
-    successUrl = this.configService.get('TOSS_REDIRECT_SUCCESS_URL'),
-    failUrl = this.configService.get('TOSS_REDIRECT_FAIL_URL'),
-    easyPay = '간편결제',
+    successUrl = `${this.configService.get('CLIENT_URL')}/payments/toss/approve`,
+    failUrl = `${this.configService.get('CLIENT_URL')}/payments/toss/fail`,
+    easyPay = '토스페이',
     flowMode = 'DIRECT',
     ...rest
   }: TossCreatePaymentRequest) {
@@ -64,6 +64,10 @@ export class TossPayProvider {
       const response = await this.apiClient.post<Payment>(
         '/payments',
         {
+          successUrl,
+          failUrl,
+          easyPay,
+          flowMode,
           ...rest,
         },
         {
@@ -73,6 +77,7 @@ export class TossPayProvider {
 
       return response.data;
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException(err);
     }
   }

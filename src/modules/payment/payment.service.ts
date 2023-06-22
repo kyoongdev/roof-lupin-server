@@ -166,7 +166,7 @@ export class PaymentService {
     const { paymentKey } = data;
     const reservation = await this.reservationRepository.findReservationByOrderResultId(paymentKey);
 
-    if (data.paymentKey !== reservation.orderResultId) {
+    if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
     }
 
@@ -184,7 +184,7 @@ export class PaymentService {
 
   createOrderId() {
     const code = nanoid(5);
-    return `${new Date().getDate()}_${code.toUpperCase()}`;
+    return `${new Date().getTime()}_${code.toUpperCase()}`;
   }
 
   async validatePayment(data: CreatePaymentDTO) {

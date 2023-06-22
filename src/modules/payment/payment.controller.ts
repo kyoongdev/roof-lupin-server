@@ -30,6 +30,7 @@ export class PaymentController {
     return await this.paymentService.testKakaoPayment();
   }
 
+  //INFO: redirect localhost:3000/payments/kakao/approve?pg_token=d5e92b8ef98ab269e0cc
   @Post('/kakao/prepare')
   @RequestApi({
     summary: {
@@ -69,6 +70,7 @@ export class PaymentController {
     return await this.paymentService.testTossPayment();
   }
 
+  //INFO: localhost:3000/payments/toss/approve?orderId=22_ESLTK&paymentKey=MKlA4XDvdYoEjb0gm23P0p5zR1lGv3pGwBJn5eya1RPQkx9q&amount=100
   @Post('/toss/prepare')
   @RequestApi({
     summary: {
