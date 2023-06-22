@@ -497,25 +497,6 @@ export const seedDatabase = async (database: PrismaService) => {
                     id: testUser.id,
                   },
                 },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
               },
             });
             await database.reservation.create({

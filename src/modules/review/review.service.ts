@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { getDateDiff } from '@/common/date';
+
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceRepository } from '../space/space.repository';
 
@@ -88,11 +90,10 @@ export class ReviewService {
       Number(reservation.month) - 1,
       Number(reservation.day),
       9
-    ).getTime();
-    const currentDate = new Date().getTime();
-    const diffDate = currentDate - reservationDate;
+    );
+    const currentDate = new Date();
 
-    if (Math.abs(diffDate / (1000 * 60 * 60 * 24)) > 14) {
+    if (getDateDiff(reservationDate, currentDate) > 14) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
     }
 
@@ -113,7 +114,21 @@ export class ReviewService {
   }
 
   async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
-    await this.findReview(reviewId);
+    const review = await this.findReview(reviewId);
+    const reservation = await this.reservationRepository.findReservation(review.reservationId);
+
+    const reservationDate = new Date(
+      Number(reservation.year),
+      Number(reservation.month) - 1,
+      Number(reservation.day),
+      9
+    );
+    const currentDate = new Date();
+
+    if (getDateDiff(reservationDate, currentDate) > 14) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
+    }
+
     await this.checkIsUserValid(reviewId, userId);
 
     await this.reviewRepository.updateReview(reviewId, props);

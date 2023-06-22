@@ -22,6 +22,7 @@ export class ReservationRepository {
         user: true,
         rentalType: {
           include: {
+            timeCostInfo: true,
             space: {
               include: {
                 reviews: true,
@@ -32,6 +33,7 @@ export class ReservationRepository {
             },
           },
         },
+        spaceReviews: true,
       },
     });
 
@@ -46,6 +48,7 @@ export class ReservationRepository {
     return new ReservationDetailDTO({
       ...rest,
       rentalType: restRentalType,
+      isReviewed: rest.spaceReviews.length > 0,
       space: {
         ...space,
         reviewCount: space.reviews.length,
@@ -65,6 +68,7 @@ export class ReservationRepository {
         user: true,
         rentalType: {
           include: {
+            timeCostInfo: true,
             space: {
               include: {
                 reviews: true,
@@ -75,6 +79,7 @@ export class ReservationRepository {
             },
           },
         },
+        spaceReviews: true,
       },
     });
 
@@ -89,6 +94,7 @@ export class ReservationRepository {
     return new ReservationDetailDTO({
       ...rest,
       rentalType: restRentalType,
+      isReviewed: rest.spaceReviews.length > 0,
       space: {
         ...space,
         reviewCount: space.reviews.length,
@@ -108,6 +114,7 @@ export class ReservationRepository {
         user: true,
         rentalType: {
           include: {
+            timeCostInfo: true,
             space: {
               include: {
                 reviews: true,
@@ -118,6 +125,7 @@ export class ReservationRepository {
             },
           },
         },
+        spaceReviews: true,
       },
     });
 
@@ -139,6 +147,7 @@ export class ReservationRepository {
         location: space.location?.['location'],
         averageScore,
       },
+      isReviewed: rest.spaceReviews.length > 0,
     });
   }
 
@@ -148,11 +157,14 @@ export class ReservationRepository {
 
   async findReservations(args = {} as Prisma.ReservationFindManyArgs) {
     const reservations = await this.database.reservation.findMany({
-      where: args.where,
+      where: {
+        ...args.where,
+      },
       include: {
         user: true,
         rentalType: {
           include: {
+            timeCostInfo: true,
             space: {
               include: {
                 reviews: true,
@@ -164,6 +176,7 @@ export class ReservationRepository {
             },
           },
         },
+        spaceReviews: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -177,6 +190,7 @@ export class ReservationRepository {
       const { space, ...restRentalType } = rentalType as CommonReservation;
 
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+
       return new ReservationDTO({
         ...rest,
         user: rest.user,
@@ -188,6 +202,7 @@ export class ReservationRepository {
           location: space.location?.['location'],
           averageScore: averageScore,
         },
+        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
       });
     });
   }

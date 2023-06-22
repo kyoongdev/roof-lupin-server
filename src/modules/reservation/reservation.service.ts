@@ -30,6 +30,7 @@ export class ReservationService {
         userId,
       },
     });
+
     const reservations = await this.reservationRepository.findReservations({
       where: {
         userId,

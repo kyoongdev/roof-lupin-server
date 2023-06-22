@@ -10,6 +10,7 @@ export interface ReservationDTOProps extends BaseReservationDTOProps {
   user: CommonUserProps;
   rentalType: RentalTypeDTOProps;
   space: SpaceDTOProps;
+  isReviewed: boolean;
 }
 
 export class ReservationDTO extends BaseReservationDTO {
@@ -22,9 +23,12 @@ export class ReservationDTO extends BaseReservationDTO {
   @Property({ apiProperty: { type: SpaceDTO, description: '공간 정보' } })
   space: SpaceDTO;
 
+  @Property({ apiProperty: { type: 'boolean', description: '리뷰 작성 여부' } })
+  isReviewed: boolean;
+
   constructor(props: ReservationDTOProps) {
     super(props);
-
+    this.isReviewed = props.isReviewed;
     this.user = new CommonUserDTO(props.user);
     this.rentalType = new RentalTypeDTO(props.rentalType);
     this.space = new SpaceDTO(props.space);

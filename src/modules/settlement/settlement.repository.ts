@@ -44,8 +44,10 @@ export class SettlementRepository {
         reservations: {
           include: {
             user: true,
+            spaceReviews: true,
             rentalType: {
               include: {
+                timeCostInfo: true,
                 space: {
                   include: {
                     reviews: true,
@@ -84,6 +86,7 @@ export class SettlementRepository {
           location: space.location?.['location'],
           averageScore: averageScore,
         },
+        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
       };
     });
 
