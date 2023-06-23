@@ -32,4 +32,18 @@ export class FileService {
       console.log(error);
     }
   }
+
+  async deleteFile() {
+    await new AWS.S3({
+      region: this.configService.get('AWS_REGION'),
+      credentials: {
+        accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+        secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
+      },
+    }).deleteObject({
+      Key: 'key',
+
+      Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+    });
+  }
 }
