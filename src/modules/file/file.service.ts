@@ -26,7 +26,7 @@ export class FileService {
       });
 
       const url = `${this.configService.get('AWS_S3_BUCKET_URL')}${key}`;
-
+      console.log(url.split(this.configService.get('AWS_S3_BUCKET_NAME')));
       return new ImageDTO({ url });
     } catch (error) {
       console.log(error);
@@ -42,7 +42,6 @@ export class FileService {
       },
     }).deleteObject({
       Key: 'key',
-
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
     });
   }
