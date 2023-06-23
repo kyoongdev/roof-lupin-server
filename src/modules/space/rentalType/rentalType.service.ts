@@ -128,11 +128,18 @@ export class RentalTypeService {
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          const timeCostInfos: PossibleTimeCostInfoDTOProps[] = range(0, 24).map((hour) => ({
-            cost: 0,
-            isPossible: false,
-            time: hour,
-          }));
+          const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
+            ...range(9, 24).map((hour: number) => ({
+              cost: 0,
+              isPossible: false,
+              time: hour,
+            })),
+            ...range(0, 9).map((hour: number) => ({
+              cost: 0,
+              isPossible: false,
+              time: hour,
+            })),
+          ];
           next.timeCostInfos.forEach((timeInfo) => {
             timeCostInfos[timeInfo.time].cost = timeInfo.cost;
             timeCostInfos[timeInfo.time].isPossible = true;

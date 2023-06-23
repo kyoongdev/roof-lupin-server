@@ -10,7 +10,7 @@ import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
 import { CreateHostDTO } from '../host/dto';
 
 import { AuthService } from './auth.service';
-import { AdminAuthDTO, HostAuthDTO, TokenDTO } from './dto';
+import { AdminAuthDTO, AppleLoginCallbackDTO, HostAuthDTO, TokenDTO } from './dto';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
@@ -85,11 +85,11 @@ export class AuthController {
     this.appleService.getRest(res);
   }
 
-  @Get('social/apple/callback')
+  @Post('social/apple/callback')
   @RequestApi({})
   @ResponseApi({})
-  async appleLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
-    await this.authService.appleLoginCallback(code, res);
+  async appleLoginCallback(@Body() body: AppleLoginCallbackDTO, @Response() res: ResponseType) {
+    await this.authService.appleLoginCallback(body.id_token, res);
   }
 
   @Post('refresh')
