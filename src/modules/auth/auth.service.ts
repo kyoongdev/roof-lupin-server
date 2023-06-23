@@ -81,7 +81,7 @@ export class AuthService {
     const user = result;
     this.socialCallback(
       new CreateSocialUserDTO({
-        nickname: user.name ?? undefined,
+        nickname: user.name ?? '',
         socialId: `${user.id}`,
         socialType: 'apple',
         email: user.email ?? undefined,
