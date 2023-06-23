@@ -396,7 +396,7 @@ model RefundPolicy {
   id          String @id @default(uuid())
   refundRate  Int    @db.TinyInt
   dueDate     Int    @db.TinyInt
-  dueDateType Int    @db.TinyInt // 1 = 시간, 2 = 일, 3 = 주
+  dueDateType Int    @db.TinyInt //INFO: 1 = 시간, 2 = 일, 3 = 주
 
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)

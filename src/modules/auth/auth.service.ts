@@ -5,7 +5,7 @@ import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
-import { KakaoLogin, NaverLogin } from 'wemacu-nestjs';
+import { AppleLogin, KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
 import { Encrypt } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
@@ -45,6 +45,7 @@ export class AuthService {
     private readonly jwt: Jsonwebtoken,
     private readonly kakaoService: KakaoLogin,
     private readonly naverService: NaverLogin,
+    private readonly appleService: AppleLogin,
     private readonly configService: ConfigService
   ) {}
 
@@ -73,6 +74,23 @@ export class AuthService {
     });
 
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
+  }
+
+  async appleLoginCallback(code: string, res: Response) {
+    const result = await this.appleService.getRestCallback(code);
+    const user = result;
+    this.socialCallback(
+      new CreateSocialUserDTO({
+        nickname: user.name ?? undefined,
+        socialId: `${user.id}`,
+        socialType: 'apple',
+        email: user.email ?? undefined,
+      }),
+      `${user.id}`,
+      'apple',
+      code,
+      res
+    );
   }
 
   async kakaoLoginCallback(code: string, res: Response) {

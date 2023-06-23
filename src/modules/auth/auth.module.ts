@@ -27,6 +27,16 @@ const config = new ConfigService();
         clientSecret: config.get('NAVER_CLIENT_SECRET'),
         redirectUrl: config.get('NAVER_REDIRECT_URL'),
       },
+      apple: {
+        appleConfig: {
+          client_id: config.get('APPLE_CLIENT_ID'),
+          key_id: config.get('APPLE_KEY_ID'),
+          redirect_uri: config.get('APPLE_REDIRECT_URL'),
+          scope: 'name email',
+          team_id: config.get('APPLE_TEAM_ID'),
+        },
+        path: '../../config/appleAuthKey.p8',
+      },
     }),
   ],
   providers: [AuthService, UserRepository, AdminRepository, HostRepository, Jsonwebtoken],

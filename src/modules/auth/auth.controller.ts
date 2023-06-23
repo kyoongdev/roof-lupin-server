@@ -2,7 +2,7 @@ import { Body, Get, Post, Query, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
 import { nanoid } from 'nanoid';
-import { KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { AppleLogin, KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 
@@ -17,7 +17,8 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly kakaoService: KakaoLogin,
-    private readonly naverService: NaverLogin
+    private readonly naverService: NaverLogin,
+    private readonly appleService: AppleLogin
   ) {}
 
   @Get('test')
@@ -71,6 +72,24 @@ export class AuthController {
   @ResponseApi({})
   async naverLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.naverLoginCallback(code, res);
+  }
+  @Get('social/apple')
+  @RequestApi({
+    summary: {
+      description: '애플 로그인',
+      summary: '애플 로그인',
+    },
+  })
+  @ResponseApi({})
+  appleLogin(@Response() res: ResponseType) {
+    this.appleService.getRest(res);
+  }
+
+  @Get('social/apple/callback')
+  @RequestApi({})
+  @ResponseApi({})
+  async appleLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
+    await this.authService.appleLoginCallback(code, res);
   }
 
   @Post('refresh')
