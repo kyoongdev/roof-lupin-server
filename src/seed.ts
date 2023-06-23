@@ -82,6 +82,353 @@ export const seedDatabase = async (database: PrismaService) => {
       },
     });
   }
+  const hostPassword2 = Encrypt.hashPassword(salt, 'real1234');
+  const realHost = await database.host.create({
+    data: {
+      password: hostPassword2,
+      salt,
+      email: '9898junjun2@gmail.com',
+      gender: 1,
+      name: '박용준',
+      phoneNumber: '01040597883',
+      hostAccount: {
+        create: {
+          ownerName: '박용준',
+          account: '110161509211',
+          accountOwner: '박용준',
+          bankName: 12,
+          businessRegistrationNumber: '1234567890',
+        },
+      },
+    },
+  });
+  await database.space.create({
+    data: {
+      title: '디난트 파티룸',
+      description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
+      건대후문 바로 앞 어린이대공원역 도보 3분컷!
+      
+      다양한 컨셉으로 포토존 가득한 파티룸
+      넓은 공간에서 단체 또는 연인 친구들과 즐거운 시간을 보낼 수 있는 프라이빗한 공간을 대여해 보세요
+      
+      친구들과 생일파티
+      결혼 전 브라이덜샤워
+      연인의 프로포즈
+      단체로 단합할수 있는 파티
+      촬영용 공간대여
+      일일 공간대여로 안성맞춤
+      
+      우리들만의 프라이빗 루프탑에서 즐기는 바베큐파티
+      80인치 대형 티비로 영화감상
+      블링블링 파티컨셉에 맞춰 사진촬영
+      큐티한 바비박스에서 바비로 변신!
+      숯불바베큐가 가능하며
+      불은 호스트가 직접피어 드립니다
+      넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
+      thumbnail: 'https://dev-image.cumuco.net/IMG_5913.jpg',
+      minUser: 0,
+      maxUser: 0,
+      overflowUserCount: 6,
+      overflowUserCost: 15000,
+      buildingType: 1,
+      minSize: 80,
+      rentalType: {
+        create: [
+          {
+            baseCost: 5000,
+            name: '시간당 요금',
+            rentalType: 1,
+            baseHour: 2,
+            startAt: 14,
+            endAt: 24,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 5000,
+                  time: 14,
+                },
+                {
+                  cost: 5000,
+                  time: 15,
+                },
+                {
+                  cost: 5000,
+                  time: 16,
+                },
+                {
+                  cost: 7000,
+                  time: 17,
+                },
+                {
+                  cost: 7000,
+                  time: 18,
+                },
+                {
+                  cost: 7000,
+                  time: 19,
+                },
+                {
+                  cost: 7000,
+                  time: 20,
+                },
+                {
+                  cost: 7000,
+                  time: 21,
+                },
+                {
+                  cost: 7000,
+                  time: 22,
+                },
+                {
+                  cost: 7000,
+                  time: 23,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 100000,
+            name: '올데이 패키지',
+            startAt: 11,
+            endAt: 16,
+            rentalType: 2,
+            baseHour: 5,
+          },
+          {
+            baseCost: 150000,
+            name: '올나잇 패키지',
+            startAt: 19,
+            endAt: 9,
+            rentalType: 2,
+            baseHour: 5,
+          },
+        ],
+      },
+
+      host: {
+        connect: {
+          id: realHost.id,
+        },
+      },
+      sizes: {
+        create: [
+          {
+            size: 80,
+            floor: '3층',
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.cumuco.net/IMG_5917.jpg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.cumuco.net/IMG_5918.jpg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.cumuco.net/IMG_5925.jpg',
+              },
+            },
+          },
+        ],
+      },
+      refundPolicies: {
+        create: [
+          {
+            dueDate: 1,
+            dueDateType: 3,
+            refundRate: 10,
+          },
+          {
+            dueDate: 2,
+            dueDateType: 3,
+            refundRate: 20,
+          },
+          {
+            dueDate: 3,
+            dueDateType: 3,
+            refundRate: 50,
+          },
+        ],
+      },
+      cautions: {
+        create: [
+          {
+            content:
+              '이용 후 쓰레기분리수거, 설거지, 음식물쓰레기정리, 사용한 물품 제자리로 정리정돈 후 퇴실 해 주세요 (미처리시 보증금 반환불가)',
+          },
+          {
+            content: '실내 모든 집기등은 편안하게 쓰시고 제자리에 정리 해 주세요',
+          },
+          {
+            content: `☆☆취사금지/ 불사용금지☆☆
+            화재발생 시 모든 책임 및 보상 해 주셔야 합니다`,
+          },
+          {
+            content: `루프탑 이용시 계단이 가파르니 손잡이를 잡고오르락 내리락 해 주세요 본인 부주의로 인한 사고에 대해서 디난트파티룸은 전혀 책임 지지 않습니다
+            ☆☆낙상주의☆☆`,
+          },
+        ],
+      },
+      location: {
+        create: {
+          roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
+          jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
+          lng: '127.07668323717',
+          lat: '37.545277604771',
+        },
+      },
+      buildings: {
+        create: [
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '주차 0대',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '3층',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '엘리베이터 없음',
+              },
+            },
+          },
+        ],
+      },
+      services: {
+        create: [
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '바베큐',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '반려동물 동반가능',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '전기',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '금연',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '인터넷/WIFI',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '장비대여',
+              },
+            },
+          },
+        ],
+      },
+      hashtags: {
+        create: [
+          {
+            hashtag: {
+              create: {
+                name: '건대',
+              },
+            },
+          },
+          {
+            hashtag: {
+              create: {
+                name: '파티룸',
+              },
+            },
+          },
+        ],
+      },
+      publicTransportations: {
+        create: [
+          {
+            name: '어린이대공원역',
+            timeTaken: 10,
+          },
+        ],
+      },
+      categories: {
+        create: [
+          {
+            category: {
+              create: {
+                name: '파티룸',
+              },
+            },
+          },
+          {
+            category: {
+              create: {
+                name: '바베큐',
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
 
   for (let i = 0; i < 50; i++) {
     await database.userAlarm.create({
@@ -178,6 +525,7 @@ export const seedDatabase = async (database: PrismaService) => {
             },
           ],
         },
+
         rentalType: {
           create: [
             {

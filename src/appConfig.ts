@@ -68,7 +68,7 @@ class AppConfig {
     const config = this.app.get(ConfigService);
     const database = this.app.get(PrismaService);
 
-    config.get('NODE_ENV') === 'local' && (await seedDatabase(database));
+    await seedDatabase(database);
     await database.enableShutdownHooks(this.app);
   }
 }
