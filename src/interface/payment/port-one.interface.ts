@@ -11,6 +11,11 @@ export interface PortOneGetToken {
   /** REST API Secret */
   imp_secret: string;
 }
+export interface PortOneToken {
+  access_token: string;
+  expried_at: number;
+  now: number;
+}
 
 export interface PortOneGetPayment {
   /** 결제 고유번호 */
