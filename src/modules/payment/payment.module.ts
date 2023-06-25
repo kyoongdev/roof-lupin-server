@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { KakaoPayProvider } from '@/common/payment';
+import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 
 import { BlockedTimeRepository } from '../blocked-time/blocked-time.repository';
@@ -17,6 +18,7 @@ import { PaymentService } from './payment.service';
   providers: [
     TossPayProvider,
     KakaoPayProvider,
+    PortOneProvider,
     PaymentService,
     ReservationRepository,
     RentalTypeRepository,

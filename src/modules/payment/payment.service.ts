@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 import { KakaoPayProvider } from '@/common/payment';
+import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
 import { TossCreatePaymentRequest } from '@/interface/payment/toss.interface';
@@ -36,6 +37,7 @@ export class PaymentService {
     private readonly rentalTypeService: RentalTypeService,
     private readonly kakaoPay: KakaoPayProvider,
     private readonly tossPay: TossPayProvider,
+    private readonly portOne: PortOneProvider,
     private readonly database: PrismaService
   ) {}
 
@@ -49,6 +51,35 @@ export class PaymentService {
     });
 
     return result;
+  }
+
+  async preparePortOne(userId: string, data: CreatePaymentDTO) {
+    const totalCost = data.originalCost - data.discountCost;
+
+    if (totalCost !== data.totalCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+    }
+
+    const result = await this.database.$transaction(async (database) => {
+      const { rentalType } = await this.validatePayment(data);
+      const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
+      try {
+        const orderId = this.createOrderId();
+
+        const result = await this.portOne.preparePayment({
+          amount: reservation.totalCost,
+          merchant_uid: orderId,
+        });
+
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          orderId,
+          payMethod: PayMethod.PORT_ONE,
+        });
+      } catch (err) {
+        await this.reservationRepository.deleteReservation(reservation.id);
+        throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
+      }
+    });
   }
 
   async prepareKakaoPayment(userId: string, data: CreatePaymentDTO) {
