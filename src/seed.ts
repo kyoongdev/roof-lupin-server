@@ -1,4 +1,4 @@
-import { Prisma, Space } from '@prisma/client';
+import { Category, Prisma, Space } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -57,6 +57,7 @@ export const seedDatabase = async (database: PrismaService) => {
   });
 
   const spaces: Space[] = [];
+  const categories: Category[] = [];
 
   for (let i = 0; i < 5; i++) {
     await database.curation.create({
@@ -73,7 +74,7 @@ export const seedDatabase = async (database: PrismaService) => {
         },
       },
     });
-    await database.category.create({
+    const category = await database.category.create({
       data: {
         name: `카테고리${i + 1}`,
         iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -81,6 +82,7 @@ export const seedDatabase = async (database: PrismaService) => {
         isRecommended: i === 4,
       },
     });
+    categories.push(category);
   }
   const hostPassword2 = Encrypt.hashPassword(salt, 'real1234');
   const realHost = await database.host.create({
@@ -700,6 +702,13 @@ export const seedDatabase = async (database: PrismaService) => {
               category: {
                 connect: {
                   id: barbequeCategory.id,
+                },
+              },
+            },
+            {
+              category: {
+                connect: {
+                  id: categories[i % 4].id,
                 },
               },
             },
