@@ -16,6 +16,7 @@ import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../space/dto/rentalTy
 import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
+import { SpaceRepository } from '../space/space.repository';
 
 import {
   ApproveKakaoPaymentDTO,
@@ -40,6 +41,7 @@ import { PaymentException } from './exception/payment.exception';
 @Injectable()
 export class PaymentService {
   constructor(
+    private readonly spaceRepository: SpaceRepository,
     private readonly reservationRepository: ReservationRepository,
     private readonly rentalTypeRepository: RentalTypeRepository,
     private readonly rentalTypeService: RentalTypeService,
@@ -70,6 +72,7 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const { rentalType } = await this.validatePayment(data);
+
       const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
       try {
         const orderId = this.createOrderId();

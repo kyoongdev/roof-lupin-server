@@ -123,6 +123,17 @@ model Space {
   sizes                 SpaceSize[]
   recentSpaces          RecentSpace[]
   blockedTimes          BlockedTime[]
+  additionalServices    AdditionalService[]
+}
+
+model AdditionalService {
+  id String @id @default(uuid())
+
+  name String @db.VarChar(50)
+  cost Int    @db.MediumInt
+
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model RecentSpace {

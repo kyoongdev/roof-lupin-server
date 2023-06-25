@@ -26,6 +26,7 @@ export interface CreatePaymentDTOProps {
   originalCost: number;
   rentalTypeId: string;
   spaceId: string;
+  userCouponId?: string;
 }
 
 export class CreatePaymentDTO {
@@ -64,6 +65,9 @@ export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 아이디' } })
   spaceId: string;
 
+  @Property({ apiProperty: { type: 'string', description: '유저가 가지고 있는 쿠폰 ID' } })
+  userCouponId?: string;
+
   constructor(props?: CreatePaymentDTOProps) {
     if (props) {
       this.year = props.year;
@@ -77,6 +81,7 @@ export class CreatePaymentDTO {
       this.userCount = props.userCount;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
+      this.userCouponId = props.userCouponId;
     }
   }
 
