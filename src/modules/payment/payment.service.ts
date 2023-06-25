@@ -17,11 +17,19 @@ import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 
-import { ApproveKakaoPaymentDTO, ConfirmTossPaymentDTO, CreateTossPaymentDTO, PrepareKakaoPaymentDTO } from './dto';
+import {
+  ApproveKakaoPaymentDTO,
+  CompletePortOnePaymentDTO,
+  ConfirmTossPaymentDTO,
+  CreateTossPaymentDTO,
+  PortOnePreparePaymentDTO,
+  PrepareKakaoPaymentDTO,
+} from './dto';
 import {
   PAYMENT_CONFLICT,
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
+  PAYMENT_INTERNAL_SERVER_ERROR,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
   PAYMENT_PAY_METHOD_BAD_REQUEST,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
@@ -66,7 +74,7 @@ export class PaymentService {
       try {
         const orderId = this.createOrderId();
 
-        const result = await this.portOne.preparePayment({
+        await this.portOne.preparePayment({
           amount: reservation.totalCost,
           merchant_uid: orderId,
         });
@@ -75,11 +83,51 @@ export class PaymentService {
           orderId,
           payMethod: PayMethod.PORT_ONE,
         });
+
+        return new PortOnePreparePaymentDTO({
+          amount: reservation.totalCost,
+          merchant_uid: orderId,
+          name: rentalType.name,
+        });
       } catch (err) {
         await this.reservationRepository.deleteReservation(reservation.id);
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
     });
+    return result;
+  }
+
+  async completePortOnePayment(props: CompletePortOnePaymentDTO) {
+    const reservation = await this.reservationRepository.findReservationByOrderId(props.merchant_uid);
+    try {
+      const payment = await this.portOne.completePayment({ imp_uid: props.imp_uid });
+
+      if (!payment) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+      }
+
+      if (payment.amount !== reservation.totalCost) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+      }
+
+      if (reservation.payMethod !== PayMethod.PORT_ONE) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+      }
+
+      if (payment.status !== 'paid') {
+        throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+      }
+
+      await this.reservationRepository.updatePayment(reservation.id, {
+        orderResultId: props.imp_uid,
+        payedAt: new Date(),
+      });
+    } catch (err) {
+      await this.reservationRepository.deleteReservation(reservation.id);
+      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+    }
+
+    return reservation.id;
   }
 
   async prepareKakaoPayment(userId: string, data: CreatePaymentDTO) {
@@ -124,20 +172,29 @@ export class PaymentService {
 
   async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
     const reservation = await this.reservationRepository.findReservationByOrderId(data.orderId);
+    try {
+      if (data.orderResultId !== reservation.orderResultId) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+      }
+      if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+      }
 
-    if (data.orderResultId !== reservation.orderResultId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
-    }
-    if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+      await this.kakaoPay.approvePayment({
+        partner_order_id: reservation.orderId,
+        tid: reservation.orderResultId,
+        pg_token: data.pg_token,
+        total_amount: reservation.totalCost,
+      });
+
+      await this.reservationRepository.updatePayment(reservation.id, {
+        payedAt: new Date(),
+      });
+    } catch (err) {
+      await this.reservationRepository.deleteReservation(reservation.id);
+      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
 
-    await this.kakaoPay.approvePayment({
-      partner_order_id: reservation.orderId,
-      tid: reservation.orderResultId,
-      pg_token: data.pg_token,
-      total_amount: reservation.totalCost,
-    });
     return reservation.id;
   }
 
@@ -197,19 +254,29 @@ export class PaymentService {
     const { paymentKey } = data;
     const reservation = await this.reservationRepository.findReservationByOrderResultId(paymentKey);
 
-    if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+    try {
+      if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+      }
+
+      if (reservation.payMethod !== PayMethod.TOSS_PAY) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+      }
+
+      await this.tossPay.confirmPayment({
+        amount: reservation.totalCost,
+        orderId: reservation.orderId,
+        paymentKey: reservation.orderResultId,
+      });
+
+      await this.reservationRepository.updatePayment(reservation.id, {
+        payedAt: new Date(),
+      });
+    } catch (err) {
+      await this.reservationRepository.deleteReservation(reservation.id);
+      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
 
-    if (reservation.payMethod !== PayMethod.TOSS_PAY) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-    }
-
-    await this.tossPay.confirmPayment({
-      amount: reservation.totalCost,
-      orderId: reservation.orderId,
-      paymentKey: reservation.orderResultId,
-    });
     return reservation.id;
   }
 

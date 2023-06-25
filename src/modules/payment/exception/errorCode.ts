@@ -4,6 +4,7 @@ import { ErrorCode } from 'wemacu-nestjs';
 
 export const PAYMENT_TOTAL_COST_BAD_REQUEST = '결제 비용을 다시 확인해주세요.' as const;
 export const PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR = '대여하려는 상품에 문제가 있습니다.' as const;
+export const PAYMENT_INTERNAL_SERVER_ERROR = '결제에 문제가 생겼습니다.' as const;
 export const PAYMENT_DATE_BAD_REQUEST = '대여 날짜를 다시 확인해주세요.' as const;
 export const PAYMENT_CONFLICT = '예약이 불가합니다.' as const;
 export const PAYMENT_ORDER_RESULT_ID_BAD_REQUEST = '주문결과를 다시 확인해주세요.' as const;
