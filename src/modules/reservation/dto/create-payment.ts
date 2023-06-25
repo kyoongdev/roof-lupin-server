@@ -21,6 +21,7 @@ export interface CreatePaymentDTOProps {
   startAt: number;
   endAt: number;
   totalCost: number;
+  userCount: number;
   discountCost: number;
   originalCost: number;
   rentalTypeId: string;
@@ -44,6 +45,9 @@ export class CreatePaymentDTO {
   @TimeValidation()
   @Property({ apiProperty: { type: 'number', description: '예약 종료 시간 (0 ~ 24)' } })
   endAt: number;
+
+  @Property({ apiProperty: { type: 'number', description: '이용 인원' } })
+  userCount: number;
 
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
   totalCost: number;
@@ -70,6 +74,9 @@ export class CreatePaymentDTO {
       this.totalCost = props.totalCost;
       this.rentalTypeId = props.rentalTypeId;
       this.spaceId = props.spaceId;
+      this.userCount = props.userCount;
+      this.discountCost = props.discountCost;
+      this.originalCost = props.originalCost;
     }
   }
 

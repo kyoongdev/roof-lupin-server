@@ -197,6 +197,8 @@ model Reservation {
   serviceDiscountCost Int @default(0) @db.MediumInt
   originalCost        Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
 
+  userCount Int
+
   orderId       String? @unique //INFO: 주문 번호
   orderResultId String? @unique //INFO: 주문 결과 번호 
   payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이

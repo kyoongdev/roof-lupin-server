@@ -799,6 +799,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -877,6 +878,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -899,6 +901,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -940,6 +943,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -991,6 +995,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -1042,6 +1047,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
@@ -1093,6 +1099,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 originalCost: 2000,
                 taxFreeCost: 2000 - taxCost,
                 totalCost: 2000,
+                userCount: 3,
                 user: {
                   connect: {
                     id: testUser.id,
