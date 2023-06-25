@@ -102,6 +102,19 @@ export const seedDatabase = async (database: PrismaService) => {
       },
     },
   });
+
+  const partyRoomCategory = await database.category.create({
+    data: {
+      name: '파티룸',
+    },
+  });
+
+  const barbequeCategory = await database.category.create({
+    data: {
+      name: '바베큐',
+    },
+  });
+
   await database.space.create({
     data: {
       title: '디난트 파티룸',
@@ -413,15 +426,15 @@ export const seedDatabase = async (database: PrismaService) => {
         create: [
           {
             category: {
-              create: {
-                name: '파티룸',
+              connect: {
+                id: partyRoomCategory.id,
               },
             },
           },
           {
             category: {
-              create: {
-                name: '바베큐',
+              connect: {
+                id: barbequeCategory.id,
               },
             },
           },
@@ -676,6 +689,17 @@ export const seedDatabase = async (database: PrismaService) => {
               hashtag: {
                 create: {
                   name: '테스트해시태그1',
+                },
+              },
+            },
+          ],
+        },
+        categories: {
+          create: [
+            {
+              category: {
+                connect: {
+                  id: barbequeCategory.id,
                 },
               },
             },
