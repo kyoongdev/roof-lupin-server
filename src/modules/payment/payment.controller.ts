@@ -10,13 +10,49 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreatePaymentDTO } from '../reservation/dto';
 
-import { ApproveKakaoPaymentDTO, ConfirmTossPaymentDTO } from './dto';
+import {
+  ApproveKakaoPaymentDTO,
+  CompletePortOnePaymentDTO,
+  ConfirmTossPaymentDTO,
+  CreateTossPaymentDTO,
+  PortOnePreparePaymentDTO,
+  PrepareKakaoPaymentDTO,
+} from './dto';
 import { PaymentService } from './payment.service';
 
 @Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('payments', '결제')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
+
+  @Post('/port-one/prepare')
+  @RequestApi({
+    summary: {
+      summary: '포트원 결제 준비하기 ',
+      description: '포트원 결제 준비하기',
+    },
+  })
+  @ResponseApi({
+    type: PortOnePreparePaymentDTO,
+  })
+  async preparePortOnePayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
+    return await this.paymentService.preparePortOnePayment(user.id, data);
+  }
+
+  @Post('/port-one/complete')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      summary: '포트원 결제 완료하기 ',
+      description: '포트원 결제 완료하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async completePortOnePayment(@Body() data: CompletePortOnePaymentDTO) {
+    return await this.paymentService.completePortOnePayment(data);
+  }
 
   @Post('/kakao/prepare/test')
   @RequestApi({
@@ -38,7 +74,9 @@ export class PaymentController {
       description: '카카오 결제 준비하기',
     },
   })
-  @ResponseApi({})
+  @ResponseApi({
+    type: PrepareKakaoPaymentDTO,
+  })
   async prepareKakaoPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
     return await this.paymentService.prepareKakaoPayment(user.id, data);
   }
@@ -78,7 +116,9 @@ export class PaymentController {
       description: '토스 결제 준비하기',
     },
   })
-  @ResponseApi({})
+  @ResponseApi({
+    type: CreateTossPaymentDTO,
+  })
   async prepareTossPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
     return await this.paymentService.createTossPayment(user.id, data);
   }

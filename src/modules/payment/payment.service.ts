@@ -61,7 +61,7 @@ export class PaymentService {
     return result;
   }
 
-  async preparePortOne(userId: string, data: CreatePaymentDTO) {
+  async preparePortOnePayment(userId: string, data: CreatePaymentDTO) {
     const totalCost = data.originalCost - data.discountCost;
 
     if (totalCost !== data.totalCost) {
