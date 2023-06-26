@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-import { JobCallback } from 'node-schedule';
-import { EventEmitter } from 'stream';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { CreateReservationUsageAlarm, CreateReviewRecommendAlarm } from '@/interface/fcm.interface';
 
@@ -9,7 +7,7 @@ import { FCM_EVENT_NAME } from './constants';
 
 @Injectable()
 export class FCMEvent {
-  constructor(private readonly eventEmitter: EventEmitter) {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM, data);

@@ -10,6 +10,7 @@ import { Filters, Interceptors } from '@/utils';
 import { AppController } from './app.controller';
 import { FCMProvider } from './common/fcm';
 import { EventProviders } from './event';
+import { FCMEvent } from './event/fcm';
 import { SchedulerEvent } from './event/scheduler';
 import { AOPProvider } from './utils/aop';
 
@@ -22,11 +23,11 @@ const providers: Provider[] = [
   AOPProvider,
   FCMProvider,
   SchedulerEvent,
+  FCMEvent,
 ];
 
 @Module({
   imports: [
-    ...Modules,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -36,6 +37,7 @@ const providers: Provider[] = [
     CacheModule.register({
       isGlobal: true,
     }),
+    ...Modules,
   ],
   controllers: [AppController],
   providers,
