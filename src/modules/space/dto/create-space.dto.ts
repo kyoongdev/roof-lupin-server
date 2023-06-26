@@ -2,6 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 
+import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from './additionalService';
 import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './category';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
@@ -33,6 +34,7 @@ export interface CreateSpaceDTOProps {
   hashtags: CreateHashtagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
+  additionalServices: CreateAdditionalServiceDTOProps[];
 }
 
 export class CreateSpaceDTO {
@@ -96,6 +98,9 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateSizeDTO, isArray: true, description: '면적' } })
   sizes: CreateSizeDTO[];
 
+  @Property({ apiProperty: { type: CreateAdditionalServiceDTO, isArray: true, description: '추가 서비스' } })
+  additionalServices: CreateAdditionalServiceDTO[];
+
   constructor(props?: CreateSpaceDTOProps) {
     if (props) {
       this.title = props.title;
@@ -120,6 +125,9 @@ export class CreateSpaceDTO {
         (transportation) => new CreateTransportationDTO(transportation)
       );
       this.sizes = props.sizes.map((size) => new CreateSizeDTO(size));
+      this.additionalServices = props.additionalServices.map(
+        (additionalService) => new CreateAdditionalServiceDTO(additionalService)
+      );
     }
   }
 }
