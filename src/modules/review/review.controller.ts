@@ -33,6 +33,7 @@ export class ReviewController {
   }
 
   @Get(':spaceId/paging')
+  @Auth([JwtAuthGuard])
   @RequestApi({
     summary: {
       description: '공간의 리뷰 목록',

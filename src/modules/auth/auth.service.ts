@@ -188,14 +188,16 @@ export class AuthService {
     const token = await this.createTokens({ id: host, role: 'HOST' });
     return token;
   }
-
+  sleep(ms: number) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
   async refresh(tokens: TokenDTO) {
     const { accessToken, refreshToken } = tokens;
     const accessTokenPayload = this.jwt.verifyJwt<TokenPayload>(accessToken, {
       ignoreExpiration: true,
     }) as TokenPayload | null | undefined;
     const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken) as TokenPayload | null | undefined;
-
+    await this.sleep(10000);
     if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
     if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
 
@@ -210,10 +212,7 @@ export class AuthService {
   async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
     const key = nanoid();
 
-    const accessToken = this.jwt.signJwt<TokenPayload>(
-      { ...value, key },
-      { ...options, expiresIn: this.accessTokenExpiresIn }
-    );
+    const accessToken = this.jwt.signJwt<TokenPayload>({ ...value, key }, { ...options, expiresIn: '2s' });
     const refreshToken = this.jwt.signJwt<TokenPayload>(
       { ...value, key },
       { ...options, expiresIn: this.refreshTokenExpiresIn }

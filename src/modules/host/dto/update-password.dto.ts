@@ -5,8 +5,5 @@ export class UpdateHostPasswordDTO {
   email: string;
 
   @Property({ apiProperty: { type: 'string' } })
-  password: string;
-
-  @Property({ apiProperty: { type: 'string' } })
   phoneNumber: string;
 }

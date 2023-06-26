@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
+import { nanoid } from 'nanoid';
+
 import { Encrypt } from '@/common/encrypt';
 
 import {
   CheckHostDTO,
   CreateHostAccountDTO,
   IsHostCheckedDTO,
+  NewPasswordDTO,
   UpdateHostAccountDTO,
   UpdateHostDTO,
   UpdateHostPasswordDTO,
@@ -49,12 +52,13 @@ export class HostService {
     if (host.phoneNumber !== data.phoneNumber) {
       throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_PHONE_NUMBER_BAD_REQUEST));
     }
-
-    const password = Encrypt.hashPassword(host.salt, data.password);
+    const newPassword = nanoid(10).toUpperCase();
+    const password = Encrypt.hashPassword(host.salt, newPassword);
 
     await this.hostRepository.updateHost(host.id, {
       password,
     });
+    return new NewPasswordDTO({ newPassword });
   }
 
   async updateHost(id: string, data: UpdateHostDTO) {
