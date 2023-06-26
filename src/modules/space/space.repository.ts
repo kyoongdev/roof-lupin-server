@@ -98,6 +98,7 @@ export class SpaceRepository {
         },
         userInterests: true,
         sizes: true,
+        additionalServices: true,
       },
     });
 
@@ -227,6 +228,7 @@ export class SpaceRepository {
       hashtags: hashtagProps,
       publicTransportations,
       sizes,
+      additionalServices,
       ...rest
     } = data;
 
@@ -292,6 +294,9 @@ export class SpaceRepository {
               ...locationProps,
             },
           },
+          additionalServices: {
+            create: additionalServices.map((additionalService) => additionalService),
+          },
         },
       });
       await this.rentalTypeRepository.createRentalTypes(prisma, space.id, rentalTypes);
@@ -315,6 +320,7 @@ export class SpaceRepository {
       hashtags: hashtagProps,
       publicTransportations,
       sizes,
+      additionalServices,
       ...rest
     } = data;
 
@@ -506,6 +512,22 @@ export class SpaceRepository {
           },
         };
       }
+
+      if (additionalServices) {
+        await prisma.additionalService.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+
+        updateArgs.data = {
+          ...updateArgs.data,
+          additionalServices: {
+            create: additionalServices.map((additionalService) => additionalService),
+          },
+        };
+      }
+
       await prisma.space.update(updateArgs);
     });
   }

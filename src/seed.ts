@@ -219,7 +219,12 @@ export const seedDatabase = async (database: PrismaService) => {
           },
         ],
       },
-
+      additionalServices: {
+        create: {
+          name: '바베큐',
+          cost: 10000,
+        },
+      },
       host: {
         connect: {
           id: realHost.id,
