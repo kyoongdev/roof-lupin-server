@@ -48,7 +48,7 @@ export class HostService {
 
   async updateHostPassword(data: UpdateHostPasswordDTO) {
     const host = await this.hostRepository.findHostByEmail(data.email);
-
+    console.log(host);
     if (host.phoneNumber !== data.phoneNumber) {
       throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_PHONE_NUMBER_BAD_REQUEST));
     }

@@ -10,6 +10,7 @@ export interface HostDTOProps extends DateProps {
   name: string;
   profileImage?: string;
   gender: number;
+  phoneNumber: string;
 }
 
 export class HostDTO extends BaseHostDTO {
@@ -37,6 +38,7 @@ export class HostDTO extends BaseHostDTO {
     this.email = props.email;
     this.name = props.name;
     this.profileImage = props.profileImage;
+    this.phoneNumber = props.phoneNumber;
     this.gender = this.hostGenderConverter(props.gender);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
