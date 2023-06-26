@@ -1,6 +1,6 @@
-import { getEnumValues, Property } from 'wemacu-nestjs';
+import { Property } from 'wemacu-nestjs';
 
-import { SOCIAL_TYPE, type SocialType } from '@/interface/user.interface';
+import { type SocialType } from '@/interface/user.interface';
 
 import { socialTypeToNumber } from '../utils';
 
