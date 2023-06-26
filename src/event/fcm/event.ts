@@ -11,19 +11,19 @@ import { FCM_EVENT_NAME } from './constants';
 export class FCMEvent {
   constructor(private readonly eventEmitter: EventEmitter) {}
 
-  createReservationUsageAlarm(jobId: string, data: CreateReservationUsageAlarm, callback: JobCallback) {
-    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM, jobId, data, callback);
+  createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM, data);
   }
 
-  createReviewRecommendAlarm(jobId: string, data: CreateReviewRecommendAlarm, callback: JobCallback) {
-    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM, jobId, data, callback);
+  createReviewRecommendAlarm(data: CreateReviewRecommendAlarm) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM, data);
   }
 
-  createCouponDurationAlarm(jobId: string, data: CreateReviewRecommendAlarm, callback: JobCallback) {
-    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_COUPON_DURATION_ALARM, jobId, data, callback);
+  createCouponDurationAlarm(data: CreateReviewRecommendAlarm) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_COUPON_DURATION_ALARM, data);
   }
 
-  createQnAAnswerAlarm(jobId: string, data: CreateReviewRecommendAlarm, callback: JobCallback) {
-    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM, jobId, data, callback);
+  createQnAAnswerAlarm(data: CreateReviewRecommendAlarm) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM, data);
   }
 }

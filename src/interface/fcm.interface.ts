@@ -11,8 +11,12 @@ export interface BaseAlarmProps {
 }
 
 export interface CreateReservationUsageAlarm extends BaseAlarmProps {
-  date: string;
+  jobId: string;
+  year: string;
+  month: string;
+  day: string;
   time: number;
+  spaceName: string;
 }
 export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   spaceName: string;

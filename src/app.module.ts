@@ -8,7 +8,9 @@ import { Modules } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
+import { FCMProvider } from './common/fcm';
 import { EventProviders } from './event';
+import { SchedulerEvent } from './event/scheduler';
 import { AOPProvider } from './utils/aop';
 
 const providers: Provider[] = [
@@ -18,6 +20,8 @@ const providers: Provider[] = [
   DiscoveryService,
   MetadataScanner,
   AOPProvider,
+  FCMProvider,
+  SchedulerEvent,
 ];
 
 @Module({
