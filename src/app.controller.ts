@@ -2,7 +2,6 @@ import { Controller, Get, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
 
-import { FCMProvider } from './common/fcm';
 import { FCMEvent } from './event/fcm';
 
 @Controller()
