@@ -9,6 +9,7 @@ interface Props {
   birth?: string;
   gender?: number;
   profileImage?: string;
+  pushToken?: string;
 }
 
 export class UpdateUserDTO {
@@ -31,6 +32,9 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '프로필 사진', nullable: true } })
   profileImage?: string;
 
+  @Property({ apiProperty: { type: 'string', description: '푸시 토큰', nullable: true } })
+  pushToken?: string;
+
   constructor(props?: Props) {
     if (props) {
       this.nickname = props.nickname;
@@ -39,6 +43,7 @@ export class UpdateUserDTO {
       this.birth = props.birth;
       this.gender = props.gender;
       this.profileImage = props.profileImage;
+      this.pushToken = props.pushToken;
     }
   }
 }
