@@ -34,6 +34,15 @@ export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
 }
 
-export interface SendScheduleAlarm extends SendPushMessage {
+export interface SendAlarmTarget {
+  userId: string;
+  pushToken: string;
+}
+
+export interface SendAlarm {
+  body: string;
+  title: string;
+}
+export interface SendScheduleAlarm extends SendAlarm {
   targetDate: Date;
 }

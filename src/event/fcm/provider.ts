@@ -8,7 +8,10 @@ import {
   CreateQnAAnswerAlarm,
   CreateReservationUsageAlarm,
   CreateReviewRecommendAlarm,
+  SendAlarm,
+  SendAlarmTarget,
   SendPushMessage,
+  SendScheduleAlarm,
 } from '@/interface/fcm.interface';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
 
@@ -23,6 +26,56 @@ export class FCMEventProvider {
     private readonly fcmService: FCMProvider,
     private schedulerEvent: SchedulerEvent
   ) {}
+
+  @OnEvent(FCM_EVENT_NAME.SEND_ALARM)
+  async sendAlarm(user: SendAlarmTarget, data: SendAlarm) {
+    const alarm = await this.createAlarm({
+      title: data.title,
+      content: data.body,
+      isPush: true,
+      userId: user.userId,
+    });
+    await this.fcmService.sendMessage({
+      ...data,
+      token: user.pushToken,
+    });
+    await this.updatePushedAlarm(alarm.id);
+  }
+
+  @OnEvent(FCM_EVENT_NAME.SEND_ALARMS)
+  async sendAlarms(users: SendAlarmTarget[], data: SendAlarm) {
+    await Promise.all(
+      users.map(async (user) => {
+        this.sendAlarm(user, data);
+      })
+    );
+  }
+
+  @OnEvent(FCM_EVENT_NAME.SEND_SCHEDULE_ALARM)
+  async sendScheduleAlarm(user: SendAlarmTarget, data: SendScheduleAlarm) {
+    const alarm = await this.createAlarm({
+      title: data.title,
+      content: data.body,
+      isPush: true,
+      userId: user.userId,
+    });
+    this.schedulerEvent.createSchedule(user.userId, data.targetDate, async () => {
+      await this.fcmService.sendMessage({
+        ...data,
+        token: user.pushToken,
+      });
+      await this.updatePushedAlarm(alarm.id);
+    });
+  }
+
+  @OnEvent(FCM_EVENT_NAME.SEND_SCHEDULE_ALARMS)
+  async sendScheduleAlarms(users: SendAlarmTarget[], data: SendScheduleAlarm) {
+    await Promise.all(
+      users.map(async (user) => {
+        this.sendScheduleAlarm(user, data);
+      })
+    );
+  }
 
   @OnEvent(FCM_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM)
   async createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
@@ -43,7 +96,7 @@ export class FCMEventProvider {
     });
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      await this.sendAlarm(alarm.id, alarmData);
+      await this.sendAlarmWithUpdate(alarm.id, alarmData);
     });
   }
 
@@ -63,7 +116,7 @@ export class FCMEventProvider {
       userId: data.userId,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      await this.sendAlarm(alarm.id, alarmData);
+      await this.sendAlarmWithUpdate(alarm.id, alarmData);
     });
   }
 
@@ -84,7 +137,7 @@ export class FCMEventProvider {
       userId: data.userId,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      await this.sendAlarm(alarm.id, alarmData);
+      await this.sendAlarmWithUpdate(alarm.id, alarmData);
     });
   }
 
@@ -106,7 +159,7 @@ export class FCMEventProvider {
     await this.updatePushedAlarm(alarm.id);
   }
 
-  async sendAlarm(alarmId: string, data: SendPushMessage) {
+  async sendAlarmWithUpdate(alarmId: string, data: SendPushMessage) {
     await this.fcmService.sendMessage(data);
     await this.updatePushedAlarm(alarmId);
   }
