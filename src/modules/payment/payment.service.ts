@@ -8,6 +8,7 @@ import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CouponRepository } from '../coupon/coupon.repository';
+import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
 import { CreatePaymentDTO, PayMethod } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
@@ -32,6 +33,7 @@ import {
   PAYMENT_COUPON_DUE_DATE_EXPIRED,
   PAYMENT_COUPON_IS_USED,
   PAYMENT_DATE_BAD_REQUEST,
+  PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_INTERNAL_SERVER_ERROR,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
@@ -324,9 +326,9 @@ export class PaymentService {
         }
         return acc;
       }, 0);
-
+      const realCost = await this.getRealCost(cost, data);
       //INFO: 가격 정보가 올바르지 않을 때
-      if (cost !== data.originalCost) {
+      if (realCost !== data.totalCost || cost !== data.originalCost) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
       }
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
@@ -334,9 +336,9 @@ export class PaymentService {
       if (data.startAt !== possibleRentalType.startAt || data.endAt !== possibleRentalType.endAt) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
       }
-
+      const realCost = await this.getRealCost(rentalType.baseCost, data);
       //INFO: 가격 정보가 올바르지 않을 때
-      if (rentalType.baseCost !== data.originalCost) {
+      if (rentalType.baseCost !== data.originalCost || realCost !== data.totalCost) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
       }
 
@@ -353,7 +355,7 @@ export class PaymentService {
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO) {
-    const discountCost = 0;
+    let discountCost = 0;
     let additionalCost = 0;
 
     if (data.userCouponIds) {
@@ -362,8 +364,8 @@ export class PaymentService {
           OR: data.userCouponIds.map((id) => ({ id })),
         },
       });
-      data.userCouponIds.forEach((userCoupon) => {
-        const isExist = userCoupons.find((userCoupon) => userCoupon.id === userCoupon.id);
+      data.userCouponIds.forEach((couponId) => {
+        const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
         if (isExist) {
           if (isExist.isUsed) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_IS_USED));
@@ -377,9 +379,17 @@ export class PaymentService {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
           }
           //TODO: 쿠폰 정액 / 정률
-          // if(isExist.coupon.discountValue ===)
+          if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
+            discountCost += cost * (isExist.coupon.discountValue / 100);
+          } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
+            discountCost += isExist.coupon.discountValue;
+          } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
         }
       });
+    }
+
+    if (data.discountCost !== discountCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
     }
 
     const space = await this.spaceRepository.findSpace(data.spaceId);
@@ -396,5 +406,6 @@ export class PaymentService {
       const userCount = data.userCount - space.overflowUserCount;
       additionalCost += space.overflowUserCost * userCount;
     }
+    return cost - discountCost + additionalCost;
   }
 }
