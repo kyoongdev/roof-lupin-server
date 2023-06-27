@@ -39,6 +39,7 @@ import {
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
   PAYMENT_PAY_METHOD_BAD_REQUEST,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
+  PAYMENT_SPACE_ID_BAD_REQUEST,
   PAYMENT_TOTAL_COST_BAD_REQUEST,
 } from './exception/errorCode';
 import { PaymentException } from './exception/payment.exception';
@@ -296,6 +297,11 @@ export class PaymentService {
 
   async validatePayment(data: CreatePaymentDTO) {
     const rentalType = await this.rentalTypeRepository.findRentalType(data.rentalTypeId);
+
+    if (rentalType.spaceId !== data.spaceId) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_SPACE_ID_BAD_REQUEST));
+    }
+
     const possibleRentalType = await this.rentalTypeService.findPossibleRentalTypesById(data.rentalTypeId, {
       year: data.year,
       month: data.month,
@@ -336,15 +342,14 @@ export class PaymentService {
       if (data.startAt !== possibleRentalType.startAt || data.endAt !== possibleRentalType.endAt) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
       }
+      //INFO: 대여하려는 시간이 예약 불가할 때
+      if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+      }
       const realCost = await this.getRealCost(rentalType.baseCost, data);
       //INFO: 가격 정보가 올바르지 않을 때
       if (rentalType.baseCost !== data.originalCost || realCost !== data.totalCost) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
-      }
-
-      //INFO: 대여하려는 시간이 예약 불가할 때
-      if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
       }
     } else
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR));

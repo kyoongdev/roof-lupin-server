@@ -13,6 +13,7 @@ export const PAYMENT_COUPON_DUE_DATE_EXPIRED = '쿠폰 사용 일자가 지났�
 export const PAYMENT_COUPON_IS_USED = '이미 쿠폰을 사용했습니다.' as const;
 export const PAYMENT_COUPON_COUNT_ZERO = '사용 가능한 쿠폰이 없습니다.' as const;
 export const PAYMENT_DISCOUNT_COST_BAD_REQUEST = '할인 비용을 다시 확인해주세요.' as const;
+export const PAYMENT_SPACE_ID_BAD_REQUEST = '공간 정보가 일치하지 않습니다..' as const;
 
 export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT'> = {
   BAD_REQUEST: (message = 'BAD_REQUEST') => ({
