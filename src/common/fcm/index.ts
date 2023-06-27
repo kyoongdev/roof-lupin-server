@@ -18,7 +18,10 @@ export class FCMProvider {
       notification: {
         title: props.title,
         body: props.body,
-        imageUrl: props.imageUrl,
+      },
+      data: {
+        title: props.title,
+        body: props.body,
       },
     });
   }
@@ -30,7 +33,10 @@ export class FCMProvider {
         notification: {
           title: prop.title,
           body: prop.body,
-          imageUrl: prop.imageUrl,
+        },
+        data: {
+          title: prop.title,
+          body: prop.body,
         },
       }))
     );

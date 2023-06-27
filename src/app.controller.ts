@@ -20,15 +20,12 @@ export class AppController {
 
   @Get('fcm')
   test() {
-    this.fcmEvent.createReservationUsageAlarm({
-      year: '2023',
-      month: '6',
-      day: '26',
-      time: 16,
-      jobId: 'jobId',
-      nickname: 'nickname',
-      pushToken: 'asdfas',
-      spaceName: 'spaceName',
+    this.fcmEvent.createQnAAnswerAlarm({
+      pushToken:
+        'cFk0PIyjgU9Ls_syUneKGp:APA91bHGiUamBsWmDiJyC2xx7gWJUIT_D-WtSqHK_39Hm7nTSuvnm2j-lhAdYLm82uqsK99vlSr_ktEQosF8ikldxIaddNQ-Rr0SakxZjD3_kjH-ZozPAXO_XHgXj0DqdouD80rbGBWn',
+      nickname: 'ㅁㄴㄹㄴㅁㅇ',
+      spaceName: 'ㅁㄴㅇㄹㄴㅁ',
+      userId: '',
     });
     return { asdf: 'asdf' };
   }

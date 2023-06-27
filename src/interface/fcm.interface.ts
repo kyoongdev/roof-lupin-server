@@ -2,12 +2,12 @@ export interface SendPushMessage {
   token: string;
   body: string;
   title: string;
-  imageUrl: string;
 }
 
 export interface BaseAlarmProps {
   pushToken: string;
   nickname: string;
+  userId: string;
 }
 
 export interface CreateReservationUsageAlarm extends BaseAlarmProps {
@@ -19,10 +19,17 @@ export interface CreateReservationUsageAlarm extends BaseAlarmProps {
   spaceName: string;
 }
 export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
+  jobId: string;
+  year: string;
+  month: string;
+  day: string;
   spaceName: string;
 }
 
-export type CreateCouponDurationAlarm = BaseAlarmProps;
+export interface CreateCouponDurationAlarm extends BaseAlarmProps {
+  jobId: string;
+  dueDate: Date;
+}
 export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
 }
