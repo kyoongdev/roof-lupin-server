@@ -14,6 +14,10 @@ export class UserService {
     return await this.userRepository.findUser(id);
   }
 
+  async findMyPushToken(id: string) {
+    return await this.userRepository.findUserPushToken(id);
+  }
+
   async findPagingUser(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.userRepository.countUsers({

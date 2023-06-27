@@ -37,6 +37,7 @@ const providers: Provider[] = [
     CacheModule.register({
       isGlobal: true,
     }),
+
     ...Modules,
   ],
   controllers: [AppController],

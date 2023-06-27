@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CommonUserDTO, CreateSocialUserDTO, CreateUserDTO, UpdateUserDTO } from './dto';
+import { CommonUserDTO, CreateSocialUserDTO, CreateUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
@@ -40,6 +40,23 @@ export class UserRepository {
     }
 
     return new CommonUserDTO(user);
+  }
+
+  async findUserPushToken(id: string) {
+    const user = await this.database.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        pushToken: true,
+      },
+    });
+
+    if (!user) {
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+    }
+
+    return new PushTokenDTO({ pushToken: user.pushToken });
   }
 
   async findUserByEmail(email: string) {

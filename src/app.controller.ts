@@ -1,7 +1,6 @@
 import { Controller, Get, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
-import { register } from 'prom-client';
 
 import { FCMEvent } from './event/fcm';
 
@@ -17,12 +16,6 @@ export class AppController {
   @Get('')
   redirectSwagger(@Response() response: ResponseType) {
     response.redirect('/api-docs');
-  }
-
-  @Get('/metrics')
-  metrics(@Response() response: ResponseType) {
-    response.set('Content-Type', register.contentType);
-    response.end(register.metrics());
   }
 
   @Get('fcm')

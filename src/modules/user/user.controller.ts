@@ -8,7 +8,7 @@ import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } fro
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateUserDTO, UpdateUserDTO } from './dto';
+import { CreateUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CommonUserDTO } from './dto/common-user.dto';
 import { UserService } from './user.service';
 
@@ -52,6 +52,20 @@ export class UserController {
   })
   async getUser(@Param('userId') userId: string) {
     return await this.userService.findUser(userId);
+  }
+  @Get('/me/push-token')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '나의 푸시토큰 불러오기',
+      summary: '나의 푸시토큰 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: PushTokenDTO,
+  })
+  async getMyPushToken(@ReqUser() user: RequestUser) {
+    return await this.userService.findMyPushToken(user.id);
   }
 
   @Get('me')
