@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { FCMEvent } from '@/event/fcm';
+
 import { AlarmRepository } from './alarm.repository';
 import { AlarmDTO } from './dto';
 import { AlarmException } from './exception/alarm.exception';
@@ -10,7 +12,9 @@ import { ALARM_ERROR_CODE, ALARM_MUTATION_FORBIDDEN } from './exception/errorCod
 
 @Injectable()
 export class AlarmService {
-  constructor(private readonly alarmRepository: AlarmRepository) {}
+  constructor(private readonly alarmRepository: AlarmRepository, private readonly fcmEvent: FCMEvent) {}
+
+  // async sendAlarm() {}
 
   async findAlarm(id: string) {
     return await this.alarmRepository.findAlarm(id);

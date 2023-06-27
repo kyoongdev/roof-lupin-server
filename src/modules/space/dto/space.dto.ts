@@ -1,9 +1,8 @@
-import { Prisma, RentalType } from '@prisma/client';
+import { RentalType } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
 
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
-import { FindSpacesQuery } from './query';
 import { TransportationDTO, type TransportationDTOProps } from './transportaion';
 
 export interface SpaceDTOProps {
@@ -69,108 +68,5 @@ export class SpaceDTO {
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
     this.packageCost =
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
-  }
-
-  static findSpacesFindManyClause(query: FindSpacesQuery, userId?: string): Prisma.SpaceFindManyArgs {
-    let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
-      createdAt: 'desc',
-    };
-
-    if (query.sort === 'POPULARITY') {
-      orderBy = [
-        {
-          userInterests: {
-            _count: 'desc',
-          },
-        },
-        {
-          averageScore: 'desc',
-        },
-        {
-          reviews: {
-            _count: 'desc',
-          },
-        },
-      ];
-    } else if (query.sort === 'RECENT') {
-      orderBy = {
-        createdAt: 'desc',
-      };
-    } else if (query.sort === 'PRICE_HIGH') {
-      orderBy = {
-        minCost: 'desc',
-      };
-    } else if (query.sort === 'PRICE_LOW') {
-      orderBy = {
-        minCost: 'asc',
-      };
-    }
-    return {
-      where: {
-        ...(query.userCount && {
-          minUser: {
-            lte: query.userCount,
-          },
-        }),
-        ...(query.category && {
-          categories: {
-            some: {
-              category: {
-                name: {
-                  contains: query.category,
-                },
-              },
-            },
-          },
-        }),
-        ...(query.locationName && {
-          location: {
-            OR: [
-              {
-                jibunAddress: {
-                  contains: query.locationName,
-                },
-              },
-              {
-                roadAddress: {
-                  contains: query.locationName,
-                },
-              },
-            ],
-          },
-        }),
-        ...(userId && {
-          NOT: [
-            {
-              reports: {
-                some: {
-                  userId,
-                },
-              },
-            },
-          ],
-        }),
-      },
-      orderBy,
-    };
-  }
-  static generateSqlWhereClause(query: FindSpacesQuery, excludeSpaces: string[], includeSpaces?: string[]) {
-    const userCountWhere = query.userCount ? Prisma.sql`minUser <= ${query.userCount}` : Prisma.sql`1=1`;
-    const locationWhere = query.locationName
-      ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(
-          query.locationName
-        )}%' OR sl.roadAddress LIKE '%${Prisma.raw(query.locationName)}%')`
-      : Prisma.sql``;
-
-    const categoryWhere = query.category
-      ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(query.category)}%'`
-      : Prisma.sql``;
-
-    const excludeIds =
-      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.raw(excludeSpaces.join(','))})` : Prisma.sql``;
-    const includeIds =
-      includeSpaces.length > 0 ? Prisma.sql`AND sp.id IN (${Prisma.raw(includeSpaces.join(','))})` : Prisma.sql``;
-    const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${locationWhere} ${excludeIds} ${includeIds}`;
-    return where;
   }
 }

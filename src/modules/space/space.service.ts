@@ -87,7 +87,14 @@ export class SpaceService {
     userId?: string
   ) {
     const { skip, take } = paging.getSkipTake();
-    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(paging, args, location, date);
+
+    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(
+      paging,
+      args,
+      location,
+      date,
+      userId
+    );
 
     const whereArgs: Prisma.SpaceWhereInput = {
       ...(location && {
@@ -100,10 +107,9 @@ export class SpaceService {
           id: spaceId,
         })),
       }),
-
       ...args.where,
     };
-
+    console.log(args.where);
     const count = await this.spaceRepository.countSpaces({
       where: whereArgs,
     });
@@ -112,7 +118,7 @@ export class SpaceService {
     if (query.sort === 'POPULARITY') {
       const popularitySpaces = await this.findSpacesWithPopularity(
         paging,
-        SpaceDTO.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
+        FindSpacesQuery.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
       );
       spaces = await Promise.all(
         popularitySpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
@@ -127,7 +133,7 @@ export class SpaceService {
           lng: query.lng,
         },
         paging,
-        SpaceDTO.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
+        FindSpacesQuery.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
       );
       spaces = await Promise.all(
         distanceSpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
