@@ -12,6 +12,7 @@ export interface UserCouponDTOProps {
   createdAt: Date;
   user: CommonUserProps;
   coupon: CouponDTOProps;
+  reservationId?: string;
 }
 
 export class UserCouponDTO {
@@ -30,6 +31,9 @@ export class UserCouponDTO {
   @Property({ apiProperty: { type: 'date', description: '쿠폰 생성일' } })
   createdAt: Date;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 id' } })
+  reservationId?: string;
+
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
@@ -41,6 +45,7 @@ export class UserCouponDTO {
     this.count = props.count;
     this.dueDate = props.dueDate;
     this.isUsed = props.isUsed;
+    this.reservationId = props.reservationId ?? null;
     this.createdAt = props.createdAt;
     this.user = new CommonUserDTO(props.user);
     this.coupon = new CouponDTO(props.coupon);

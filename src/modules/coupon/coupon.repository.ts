@@ -190,6 +190,7 @@ export class CouponRepository {
 
     return new UserCouponDTO({
       ...userCoupon,
+      isUsed: !!userCoupon.reservationId,
       coupon: {
         ...userCoupon.coupon,
         categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
@@ -224,6 +225,7 @@ export class CouponRepository {
 
     return new UserCouponDTO({
       ...userCoupon,
+      isUsed: !!userCoupon.reservationId,
       coupon: {
         ...userCoupon.coupon,
         categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
@@ -253,6 +255,7 @@ export class CouponRepository {
     return userCoupons.map((userCoupon) => {
       return new UserCouponDTO({
         ...userCoupon,
+        isUsed: !!userCoupon.reservationId,
         coupon: {
           ...userCoupon.coupon,
           categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
