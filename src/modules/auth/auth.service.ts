@@ -65,7 +65,7 @@ export class AuthService {
 
     const user = await this.userRepository.findUserBySocialId(socialId);
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
-    console.log({ tokens });
+
     const query = queryString.stringify({
       status: 200,
       accessToken: tokens.accessToken,

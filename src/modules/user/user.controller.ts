@@ -41,11 +41,6 @@ export class UserController {
       description: '유저 상세 정보',
       summary: '유저 상세 정보 불러오기',
     },
-    params: {
-      name: 'userId',
-      type: 'string',
-      description: '유저 아이디',
-    },
   })
   @ResponseApi({
     type: CommonUserDTO,
@@ -84,15 +79,11 @@ export class UserController {
   }
 
   @Post('')
-  // @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '유저 생성',
       summary: '유저 생성하기 - 로그인 필요, 관리자만 사용 가능',
-    },
-    body: {
-      type: CreateUserDTO,
     },
   })
   @ResponseApi(
@@ -112,14 +103,6 @@ export class UserController {
       description: '유저 수정',
       summary: '유저 수정하기 - 로그인 필요, 관리자만 사용 가능',
     },
-    params: {
-      name: 'userId',
-      type: 'string',
-      description: '유저 아이디',
-    },
-    body: {
-      type: UpdateUserDTO,
-    },
   })
   @ResponseApi(
     {
@@ -127,7 +110,7 @@ export class UserController {
     },
     204
   )
-  async updateUser(@Param('userId') userId: string, @Body() body: CreateUserDTO) {
+  async updateUser(@Param('userId') userId: string, @Body() body: UpdateUserDTO) {
     await this.userService.updateUser(userId, body);
   }
 
@@ -138,10 +121,6 @@ export class UserController {
       description: '내 정보 수정',
       summary: '유저 수정하기 - 로그인 필요, 유저만 사용 가능',
     },
-
-    body: {
-      type: UpdateUserDTO,
-    },
   })
   @ResponseApi(
     {
@@ -149,7 +128,7 @@ export class UserController {
     },
     204
   )
-  async updateMe(@ReqUser() user: RequestUser, @Body() body: CreateUserDTO) {
+  async updateMe(@ReqUser() user: RequestUser, @Body() body: UpdateUserDTO) {
     await this.userService.updateUser(user.id, body);
   }
 
@@ -159,11 +138,6 @@ export class UserController {
     summary: {
       description: '유저 삭제',
       summary: '유저 삭제하기 - 로그인 필요, 관리자만 사용 가능',
-    },
-    params: {
-      name: 'userId',
-      type: 'string',
-      description: '유저 아이디',
     },
   })
   @ResponseApi(
@@ -182,11 +156,6 @@ export class UserController {
     summary: {
       description: '유저 삭제 [hard delete]',
       summary: '유저 삭제하기 (사용 시 유저가 DB에서 사라집니다.) - 로그인 필요, 관리자만 사용 가능',
-    },
-    params: {
-      name: 'userId',
-      type: 'string',
-      description: '유저 아이디',
     },
   })
   @ResponseApi(
