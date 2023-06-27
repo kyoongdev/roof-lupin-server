@@ -20,13 +20,6 @@ export class AppController {
 
   @Get('fcm')
   test() {
-    this.fcmEvent.createQnAAnswerAlarm({
-      pushToken:
-        'cFk0PIyjgU9Ls_syUneKGp:APA91bHGiUamBsWmDiJyC2xx7gWJUIT_D-WtSqHK_39Hm7nTSuvnm2j-lhAdYLm82uqsK99vlSr_ktEQosF8ikldxIaddNQ-Rr0SakxZjD3_kjH-ZozPAXO_XHgXj0DqdouD80rbGBWn',
-      nickname: 'ㅁㄴㄹㄴㅁㅇ',
-      spaceName: 'ㅁㄴㅇㄹㄴㅁ',
-      userId: '',
-    });
     return { asdf: 'asdf' };
   }
 }

@@ -33,3 +33,7 @@ export interface CreateCouponDurationAlarm extends BaseAlarmProps {
 export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
 }
+
+export interface SendScheduleAlarm extends SendPushMessage {
+  targetDate: Date;
+}
