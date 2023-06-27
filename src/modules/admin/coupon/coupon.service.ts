@@ -70,10 +70,6 @@ export class AdminCouponService {
       throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_USER_COUPON_ALREADY_EXISTS));
     }
 
-    if (new Date(data.dueDate) < new Date()) {
-      throw new AdminException(ADMIN_ERROR_CODE.BAD_REQUEST(ADMIN_USER_COUPON_DUE_DATE_BAD_REQUEST));
-    }
-
     return await this.couponRepository.createUserCoupon(couponId, data);
   }
 
@@ -87,11 +83,6 @@ export class AdminCouponService {
 
   async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {
     await this.couponRepository.findUserCoupon(id);
-
-    if (data.dueDate && new Date(data.dueDate) < new Date()) {
-      throw new AdminException(ADMIN_ERROR_CODE.BAD_REQUEST(ADMIN_USER_COUPON_DUE_DATE_BAD_REQUEST));
-    }
-
     await this.couponRepository.updateUserCoupon(id, data);
   }
 

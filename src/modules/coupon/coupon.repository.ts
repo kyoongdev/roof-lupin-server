@@ -126,7 +126,6 @@ export class CouponRepository {
     if (categoryIds) {
       updateArgs.data = {
         ...updateArgs.data,
-
         couponCategories: {
           deleteMany: {},
           create: categoryIds.map((categoryId) => ({
@@ -266,6 +265,12 @@ export class CouponRepository {
 
   async createUserCoupon(couponId: string, data: CreateUserCouponDTO) {
     const { userId, ...rest } = data;
+    const coupon = await this.findCoupon(couponId);
+
+    const dueDate = new Date();
+    dueDate.setUTCHours(0, 0, 0, 0);
+    dueDate.setUTCDate(dueDate.getUTCDate() + coupon.defaultDueDay);
+
     const userCoupon = await this.database.userCoupon.create({
       data: {
         user: {
@@ -278,6 +283,7 @@ export class CouponRepository {
             id: couponId,
           },
         },
+        dueDate,
         ...rest,
       },
     });

@@ -14,6 +14,7 @@ export interface CouponDTOProps {
   description: string;
   code: string;
   isLupinPay: boolean;
+  defaultDueDay: number;
   categories: CategoryDTOProps[];
 }
 
@@ -40,6 +41,9 @@ export class CouponDTO {
   @Property({ apiProperty: { type: 'boolean', description: '루팡페이 쿠폰 여부' } })
   isLupinPay: boolean;
 
+  @Property({ apiProperty: { type: 'number', description: '쿠폰 기본 유효기간' } })
+  defaultDueDay: number;
+
   @Property({ apiProperty: { type: CategoryDTO, isArray: true, nullable: true, description: '쿠폰 카테고리' } })
   categories?: CategoryDTO[];
 
@@ -50,6 +54,7 @@ export class CouponDTO {
     this.discountValue = props.discountValue;
     this.description = props.description;
     this.code = props.code;
+    this.defaultDueDay = props.defaultDueDay;
     this.isLupinPay = props.isLupinPay;
     this.categories = props.categories ? props.categories.map((category) => new CategoryDTO(category)) : null;
   }
