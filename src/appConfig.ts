@@ -3,6 +3,8 @@ import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { collectDefaultMetrics, Registry } from 'prom-client';
+
 import { PrismaService } from '@/database/prisma.service';
 
 import { seedDatabase } from './seed';
@@ -15,11 +17,21 @@ class AppConfig {
   }
   async init() {
     this.configureSwagger();
+    this.enableGrafana();
     await this.configureDatabase();
     await this.app.listen(8000, () => {
       console.info('🔥Server started at 8000🔥');
     });
   }
+  enableGrafana() {
+    const register = new Registry();
+
+    register.setDefaultLabels({
+      app: 'example-nodejs-app',
+    });
+    collectDefaultMetrics({ labels: register });
+  }
+
   enableCors(options?: CorsOptions | CorsOptionsDelegate<any>) {
     this.app.enableCors(options);
     return this;

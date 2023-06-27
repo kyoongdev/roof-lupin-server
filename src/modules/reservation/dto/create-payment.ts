@@ -1,5 +1,9 @@
 import { Property } from 'wemacu-nestjs';
 
+import {
+  AdditionalServiceReservationDTO,
+  AdditionalServiceReservationDTOProps,
+} from '@/modules/space/dto/additionalService';
 import { RentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '@/modules/space/exception/errorCode';
 import { SpaceException } from '@/modules/space/exception/space.exception';
@@ -27,6 +31,7 @@ export interface CreatePaymentDTOProps {
   rentalTypeId: string;
   spaceId: string;
   userCouponId?: string;
+  additionalServices?: AdditionalServiceReservationDTOProps[];
 }
 
 export class CreatePaymentDTO {
@@ -68,6 +73,11 @@ export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '유저가 가지고 있는 쿠폰 ID' } })
   userCouponId?: string;
 
+  @Property({
+    apiProperty: { type: AdditionalServiceReservationDTO, isArray: true, nullable: true, description: '추가 서비스들' },
+  })
+  additionalServices?: AdditionalServiceReservationDTO[];
+
   constructor(props?: CreatePaymentDTOProps) {
     if (props) {
       this.year = props.year;
@@ -82,6 +92,9 @@ export class CreatePaymentDTO {
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.userCouponId = props.userCouponId;
+      this.additionalServices = props.additionalServices?.map(
+        (service) => new AdditionalServiceReservationDTO(service)
+      );
     }
   }
 

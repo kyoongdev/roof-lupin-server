@@ -5,7 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
+import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
@@ -33,7 +33,6 @@ export class ReviewController {
   }
 
   @Get(':spaceId/paging')
-  @Auth([JwtAuthGuard])
   @RequestApi({
     summary: {
       description: '공간의 리뷰 목록',
