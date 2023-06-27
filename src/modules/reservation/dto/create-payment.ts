@@ -30,7 +30,7 @@ export interface CreatePaymentDTOProps {
   originalCost: number;
   rentalTypeId: string;
   spaceId: string;
-  userCouponId?: string;
+  userCouponIds?: string[];
   additionalServices?: AdditionalServiceReservationDTOProps[];
 }
 
@@ -70,8 +70,10 @@ export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 아이디' } })
   spaceId: string;
 
-  @Property({ apiProperty: { type: 'string', description: '유저가 가지고 있는 쿠폰 ID' } })
-  userCouponId?: string;
+  @Property({
+    apiProperty: { type: 'string', isArray: true, nullable: true, description: '유저가 가지고 있는 쿠폰 IDs' },
+  })
+  userCouponIds?: string[];
 
   @Property({
     apiProperty: { type: AdditionalServiceReservationDTO, isArray: true, nullable: true, description: '추가 서비스들' },
@@ -91,7 +93,7 @@ export class CreatePaymentDTO {
       this.userCount = props.userCount;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
-      this.userCouponId = props.userCouponId;
+      this.userCouponIds = props.userCouponIds;
       this.additionalServices = props.additionalServices?.map(
         (service) => new AdditionalServiceReservationDTO(service)
       );

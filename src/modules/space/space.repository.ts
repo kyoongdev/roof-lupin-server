@@ -8,6 +8,7 @@ import { BestPhotoDTO } from '../review/dto';
 import { ReviewRepository } from '../review/review.repository';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
+import { AdditionalServiceDTO } from './dto/additionalService';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
@@ -549,6 +550,15 @@ export class SpaceRepository {
         id,
       },
     });
+  }
+
+  async findSpaceAdditionalServices(spaceId: string) {
+    const additionalServices = await this.database.additionalService.findMany({
+      where: {
+        spaceId,
+      },
+    });
+    return additionalServices.map((additionalService) => new AdditionalServiceDTO(additionalService));
   }
 
   async findOrCreateBuildings(prisma: TransactionPrisma, data: CreateBuildingDTO[]) {

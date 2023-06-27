@@ -6,8 +6,8 @@ import { KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
-import { TossCreatePaymentRequest } from '@/interface/payment/toss.interface';
 
+import { CouponRepository } from '../coupon/coupon.repository';
 import { CreatePaymentDTO, PayMethod } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
@@ -28,6 +28,9 @@ import {
 } from './dto';
 import {
   PAYMENT_CONFLICT,
+  PAYMENT_COUPON_COUNT_ZERO,
+  PAYMENT_COUPON_DUE_DATE_EXPIRED,
+  PAYMENT_COUPON_IS_USED,
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_INTERNAL_SERVER_ERROR,
@@ -45,6 +48,7 @@ export class PaymentService {
     private readonly reservationRepository: ReservationRepository,
     private readonly rentalTypeRepository: RentalTypeRepository,
     private readonly rentalTypeService: RentalTypeService,
+    private readonly couponRepository: CouponRepository,
     private readonly kakaoPay: KakaoPayProvider,
     private readonly tossPay: TossPayProvider,
     private readonly portOne: PortOneProvider,
@@ -314,7 +318,7 @@ export class PaymentService {
         }
       });
 
-      const realCost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
+      const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
         if (data.startAt <= next.time && next.time <= data.endAt) {
           acc += next.cost;
         }
@@ -322,7 +326,7 @@ export class PaymentService {
       }, 0);
 
       //INFO: 가격 정보가 올바르지 않을 때
-      if (realCost !== data.originalCost) {
+      if (cost !== data.originalCost) {
         throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
       }
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
@@ -346,5 +350,51 @@ export class PaymentService {
       rentalType,
       possibleRentalType,
     };
+  }
+
+  async getRealCost(cost: number, data: CreatePaymentDTO) {
+    const discountCost = 0;
+    let additionalCost = 0;
+
+    if (data.userCouponIds) {
+      const userCoupons = await this.couponRepository.findUserCoupons({
+        where: {
+          OR: data.userCouponIds.map((id) => ({ id })),
+        },
+      });
+      data.userCouponIds.forEach((userCoupon) => {
+        const isExist = userCoupons.find((userCoupon) => userCoupon.id === userCoupon.id);
+        if (isExist) {
+          if (isExist.isUsed) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_IS_USED));
+          }
+          if (isExist.count === 0) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
+          }
+
+          const dateDiff = isExist.dueDate.getTime() - new Date().getTime();
+          if (dateDiff < 0) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+          }
+          //TODO: 쿠폰 정액 / 정률
+          // if(isExist.coupon.discountValue ===)
+        }
+      });
+    }
+
+    const space = await this.spaceRepository.findSpace(data.spaceId);
+
+    if (data.additionalServices) {
+      data.additionalServices.forEach((service) => {
+        const isExist = space.additionalServices.find((additionalService) => additionalService.id === service.id);
+        if (isExist) {
+          additionalCost += isExist.cost * service.count;
+        }
+      });
+    }
+    if (space.overflowUserCount < data.userCount) {
+      const userCount = data.userCount - space.overflowUserCount;
+      additionalCost += space.overflowUserCost * userCount;
+    }
   }
 }

@@ -1,6 +1,10 @@
+import { InternalServerErrorException } from '@nestjs/common';
+
 import { Property } from 'wemacu-nestjs';
 
 import { CategoryDTO, CategoryDTOProps } from '@/modules/category/dto';
+
+import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../validation/discount-value.validation';
 
 export interface CouponDTOProps {
   id: string;
@@ -20,7 +24,8 @@ export class CouponDTO {
   @Property({ apiProperty: { type: 'string', description: '쿠폰 이름' } })
   name: string;
 
-  @Property({ apiProperty: { type: 'number', description: '쿠폰 할인 타입' } })
+  @DiscountTypeResTransform()
+  @Property({ apiProperty: { type: 'string', description: '쿠폰 할인 타입', example: DISCOUNT_TYPE_VALUES.join(',') } })
   discountType: number;
 
   @Property({ apiProperty: { type: 'number', description: '쿠폰 할인 값' } })

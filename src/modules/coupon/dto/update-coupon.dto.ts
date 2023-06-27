@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { DiscountTypeReqDecorator } from '../validation/discount-value.validation';
+
 export interface UpdateCouponDTOProps {
   name?: string;
   discountType?: number;
@@ -17,7 +19,7 @@ export class UpdateCouponDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '쿠폰 코드' } })
   code?: string;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '쿠폰 할인 타입' } })
+  @DiscountTypeReqDecorator(true)
   discountType?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '쿠폰 할인 값' } })
