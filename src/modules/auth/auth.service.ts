@@ -212,7 +212,10 @@ export class AuthService {
   async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
     const key = nanoid();
 
-    const accessToken = this.jwt.signJwt<TokenPayload>({ ...value, key }, { ...options, expiresIn: '2s' });
+    const accessToken = this.jwt.signJwt<TokenPayload>(
+      { ...value, key },
+      { ...options, expiresIn: this.accessTokenExpiresIn }
+    );
     const refreshToken = this.jwt.signJwt<TokenPayload>(
       { ...value, key },
       { ...options, expiresIn: this.refreshTokenExpiresIn }
