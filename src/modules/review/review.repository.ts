@@ -66,7 +66,7 @@ export class ReviewRepository {
       },
     });
 
-    return score._avg.score ?? 0;
+    return score._avg.score;
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
