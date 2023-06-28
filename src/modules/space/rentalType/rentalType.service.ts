@@ -5,7 +5,6 @@ import { range } from 'lodash';
 
 import { BlockedTimeRepository } from '@/modules/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/blocked-time/dto';
-import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
 import { PossibleRentalTypeQuery } from '../dto/query';
 import {

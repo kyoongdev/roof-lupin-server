@@ -4,9 +4,8 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { FCMEvent } from '@/event/fcm';
-import { SchedulerEvent } from '@/event/scheduler';
 import { AlarmRepository } from '@/modules/alarm/alarm.repository';
-import { AlarmDTO, CreateAlarmDTO, UpdateAlarmDTO } from '@/modules/alarm/dto';
+import { AlarmDTO } from '@/modules/alarm/dto';
 import {
   AlarmResultDTO,
   AlarmResultsDTO,

@@ -3,9 +3,7 @@ import { Property } from 'wemacu-nestjs';
 import { DayReqDecorator } from '@/utils/validation/day.validation';
 
 import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
-import { RENTAL_TYPE_KEYS, RentalTypeReqDecorator } from '../validation/rental-type.validation';
-
-import { RentalTypeValidation } from './validation/rental-type.validation';
+import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
 export interface UpdateRentalTypeDTOProps {
   name?: string;

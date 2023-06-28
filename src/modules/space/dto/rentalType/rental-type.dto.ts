@@ -3,12 +3,7 @@ import { Property } from 'wemacu-nestjs';
 import { DayResDecorator } from '@/utils/validation/day.validation';
 
 import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '../timeCostInfo';
-import {
-  RENTAL_TYPE_ENUM,
-  RENTAL_TYPE_KEYS,
-  RentalTypeRequestTransForm,
-  RentalTypeResTransForm,
-} from '../validation/rental-type.validation';
+import { RENTAL_TYPE_ENUM, RENTAL_TYPE_KEYS, RentalTypeResTransForm } from '../validation/rental-type.validation';
 
 export interface RentalTypeDTOProps {
   id: string;
