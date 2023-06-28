@@ -19,6 +19,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Holiday {
+  id    String @id @default(uuid())
+  name  String @db.VarChar(120)
+  year  String
+  month String
+  day   String
+}
+
 model AppInfo {
   id             String @id @default(uuid())
   iosVersion     String @db.VarChar(20)

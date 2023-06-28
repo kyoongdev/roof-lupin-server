@@ -31,6 +31,11 @@ export enum DAY_ENUM {
 export const DAY_KEYS = Object.keys(DAY);
 export const DAY_VALUES = Object.values(DAY);
 
+export const getDay = (year: number, month: number, day: number) => {
+  const date = new Date(year, month - 1, day);
+  return date.getDay();
+};
+
 @ValidatorConstraint()
 export class DayValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
