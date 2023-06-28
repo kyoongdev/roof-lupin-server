@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { BlockedTimeRepository } from '../blocked-time/blocked-time.repository';
+import { HolidayService } from '../holiday/holiday.service';
 import { LocationRepository } from '../location/location.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
@@ -21,6 +22,7 @@ import { SpaceService } from './space.service';
     ReservationRepository,
     RentalTypeRepository,
     BlockedTimeRepository,
+    HolidayService,
   ],
   controllers: [SpaceController, RentalTypeController],
 })

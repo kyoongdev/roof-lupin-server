@@ -16,4 +16,16 @@ export class HolidayService {
 
     return holidays;
   }
+
+  async checkIsHoliday(year: string, month: string, day: string) {
+    const holiday = await this.database.holiday.findFirst({
+      where: {
+        year: year,
+        month: month,
+        day: day,
+      },
+    });
+
+    return !!holiday;
+  }
 }

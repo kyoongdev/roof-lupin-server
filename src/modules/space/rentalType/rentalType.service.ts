@@ -5,9 +5,10 @@ import { range } from 'lodash';
 
 import { BlockedTimeRepository } from '@/modules/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/blocked-time/dto';
-import { dayNumberToString, getDay } from '@/utils/validation/day.validation';
+import { HolidayService } from '@/modules/holiday/holiday.service';
+import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
-import { PossibleRentalTypeQuery } from '../dto/query';
+import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
 import {
   PossiblePackageDTO,
   PossibleRentalTypeDTO,
@@ -26,7 +27,8 @@ export class RentalTypeService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly rentalTypeRepository: RentalTypeRepository,
-    private readonly blockedTimeRepository: BlockedTimeRepository
+    private readonly blockedTimeRepository: BlockedTimeRepository,
+    private readonly holidayService: HolidayService
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
@@ -47,10 +49,15 @@ export class RentalTypeService {
     return await this.rentalTypeRepository.findSpaceRentalTypeDetail(spaceId);
   }
 
-  async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
+  async findPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, query: PossibleRentalTypeByMonthQuery) {
     await this.spaceRepository.findSpace(spaceId);
-    //
-    const targetDay = getDay(Number(query.year), Number(query.month) - 1, Number(query.day));
+  }
+
+  async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
+    const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
+    const targetDay = isHoliday
+      ? DAY_ENUM.HOLIDAY
+      : getDay(Number(query.year), Number(query.month) - 1, Number(query.day));
 
     const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
       {
@@ -67,6 +74,7 @@ export class RentalTypeService {
         },
       }
     );
+
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
         spaceId,

@@ -6,7 +6,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { PossibleRentalTypeQuery } from '../dto/query';
+import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
 import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from '../dto/rentalType';
 
 import { RentalTypeService } from './rentalType.service';
@@ -75,5 +75,22 @@ export class RentalTypeController {
   })
   async getPossibleSpaceRentalTypes(@Param('spaceId') spaceId: string, @Query() query: PossibleRentalTypeQuery) {
     return await this.rentalTypeService.findPossibleRentalTypesBySpaceId(spaceId, query);
+  }
+  @Get(':spaceId/possible/month')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 및 날짜별 가능한 대여 타입  조회하기',
+      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 -유저만 사용 가능',
+    },
+  })
+  @ResponseApi({
+    type: PossibleRentalTypesDTO,
+  })
+  async getPossibleSpaceRentalTypesByMoth(
+    @Param('spaceId') spaceId: string,
+    @Query() query: PossibleRentalTypeByMonthQuery
+  ) {
+    return await this.rentalTypeService.findPossibleRentalTypesBySpaceIdWithMonth(spaceId, query);
   }
 }
