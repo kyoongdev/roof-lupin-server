@@ -9,7 +9,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminReservationService } from './reservation.service';
 
-@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+// @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins/reservations', '[관리자] 예약 관리')
 export class AdminReservationController {
   constructor(private readonly adminReservationService: AdminReservationService) {}

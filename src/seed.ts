@@ -24,7 +24,6 @@ export const seedDatabase = async (database: PrismaService) => {
     range(2023, 2031).map(async (i) => {
       await Promise.all(
         range(1, 13).map(async (j) => {
-          console.log({ i });
           const month = `${j}`.length === 1 ? `0${j}` : `${j}`;
 
           const response = await axios.get<OpenAPI>(

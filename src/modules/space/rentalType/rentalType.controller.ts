@@ -76,6 +76,7 @@ export class RentalTypeController {
   async getPossibleSpaceRentalTypes(@Param('spaceId') spaceId: string, @Query() query: PossibleRentalTypeQuery) {
     return await this.rentalTypeService.findPossibleRentalTypesBySpaceId(spaceId, query);
   }
+
   @Get(':spaceId/possible/month')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
