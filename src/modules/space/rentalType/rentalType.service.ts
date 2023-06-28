@@ -49,7 +49,7 @@ export class RentalTypeService {
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
     await this.spaceRepository.findSpace(spaceId);
-    //TODO: 공공 데이터 활용
+    //
     const targetDay = getDay(Number(query.year), Number(query.month) - 1, Number(query.day));
 
     const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
