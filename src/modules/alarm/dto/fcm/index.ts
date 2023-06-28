@@ -4,3 +4,5 @@ export * from './send-message.dto';
 export * from './send-messages.dto';
 export * from './send-schedule-message.dto';
 export * from './send-schedule-messages.dto';
+export * from './alarm-result.dto';
+export * from './alarm-results.dto';
