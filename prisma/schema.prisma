@@ -171,6 +171,7 @@ model RentalType {
   name       String @db.VarChar(120)
   baseCost   Int    @db.MediumInt // 기본 비용
   rentalType Int    @db.TinyInt //INFO: 1 : 시간, 2 : 패키지
+  day        Int //INFO: 0 : 일, 1 : 월 , 2 : 화 , 3 : 수 , 4 : 목 , 5 : 금 , 6 : 토  , 7 : 공휴일
   baseHour   Int?   @db.TinyInt // 기본 이용시간
   startAt    Int    @default(0) @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
   endAt      Int    @default(24) @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)

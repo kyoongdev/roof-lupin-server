@@ -156,6 +156,7 @@ export const seedDatabase = async (database: PrismaService) => {
             baseHour: 2,
             startAt: 14,
             endAt: 24,
+            day: 1,
             timeCostInfo: {
               create: [
                 {
@@ -206,6 +207,7 @@ export const seedDatabase = async (database: PrismaService) => {
             name: '올데이 패키지',
             startAt: 11,
             endAt: 16,
+            day: 1,
             rentalType: 2,
             baseHour: 5,
           },
@@ -214,6 +216,7 @@ export const seedDatabase = async (database: PrismaService) => {
             name: '올나잇 패키지',
             startAt: 19,
             endAt: 9,
+            day: 1,
             rentalType: 2,
             baseHour: 5,
           },
@@ -554,6 +557,7 @@ export const seedDatabase = async (database: PrismaService) => {
               endAt: 22,
               name: '시간대여',
               rentalType: 1,
+              day: 1,
               baseHour: 2,
               timeCostInfo: {
                 create: [
@@ -599,6 +603,7 @@ export const seedDatabase = async (database: PrismaService) => {
               name: '패키지 대여',
               rentalType: 2,
               baseHour: 6,
+              day: 1,
             },
           ],
         },

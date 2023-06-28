@@ -10,6 +10,7 @@ export interface CreateRentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
+  day: number;
   timeCostInfos?: CreateTimeCostInfoDTOProps[];
 }
 
@@ -25,6 +26,9 @@ export class CreateRentalTypeDTO {
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })
   baseHour?: number;
+
+  @Property({ apiProperty: { type: 'number', description: '대여타입 시작 요일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'number', description: '시작 시간' } })
   startAt: number;

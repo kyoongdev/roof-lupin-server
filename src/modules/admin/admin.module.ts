@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { FCMEvent } from '@/event/fcm';
 import { SchedulerEvent } from '@/event/scheduler';
 
 import { AlarmRepository } from '../alarm/alarm.repository';
@@ -14,6 +15,7 @@ import { ReviewRepository } from '../review/review.repository';
 import { SettlementRepository } from '../settlement/settlement.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
+import { UserRepository } from '../user/user.repository';
 
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
@@ -63,6 +65,8 @@ import { AdminSpaceService } from './space/space.service';
     AdminCouponService,
     CouponRepository,
     CategoryRepository,
+    UserRepository,
+    FCMEvent,
   ],
   controllers: [
     AdminController,
