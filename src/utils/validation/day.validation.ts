@@ -103,14 +103,26 @@ export const dayNumberToString = (day: number) => {
 
 export const DayRequestTransForm = () => Transform(({ value }) => dayStringToNumber(value));
 export const DayResponseTransForm = () => Transform(({ value }) => dayNumberToString(value));
-export const DatTypeReqDecorator = (nullable = false) =>
+export const DayResDecorator = (nullable = false) =>
+  applyDecorators(
+    DayResponseTransForm(),
+    ApiProperty({
+      description: '요일',
+      enum: DAY_VALUES,
+      type: 'string',
+      example: DAY_VALUES.join(' | '),
+      nullable,
+    })
+  );
+export const DayReqDecorator = (nullable = false) =>
   applyDecorators(
     DayRequestTransForm(),
     DayValidation(),
     ApiProperty({
+      description: '요일',
       enum: DAY_VALUES,
       nullable,
       type: 'string',
-      description: DAY_KEYS.join(','),
+      example: DAY_VALUES.join(' | '),
     })
   );

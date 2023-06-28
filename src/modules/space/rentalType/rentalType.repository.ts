@@ -93,6 +93,7 @@ export class RentalTypeRepository {
           endAt: rentalType.endAt,
           startAt: rentalType.startAt,
           spaceId: rentalType.spaceId,
+          day: rentalType.day,
         })
     );
   }
@@ -128,6 +129,7 @@ export class RentalTypeRepository {
       timeCostInfo: rentalType.timeCostInfo,
       reservations: rentalType.reservations,
       baseHour: rentalType.baseHour,
+      day: rentalType.day,
       endAt: rentalType.endAt,
       startAt: rentalType.startAt,
       spaceId: rentalType.spaceId,

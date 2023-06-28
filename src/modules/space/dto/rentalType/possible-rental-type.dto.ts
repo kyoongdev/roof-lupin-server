@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { DayResDecorator } from '@/utils/validation/day.validation';
+
 import {
   PossibleTimeCostInfoDTO,
   type PossibleTimeCostInfoDTOProps,
@@ -14,6 +16,7 @@ export interface PossibleRentalTypeDTOProps {
   baseHour?: number;
   startAt?: number;
   endAt?: number;
+  day: number;
   spaceId?: string;
   timeCostInfos?: PossibleTimeCostInfoDTOProps[];
 }
@@ -41,6 +44,9 @@ export class PossibleRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '종료 시간' } })
   endAt: number;
 
+  @DayResDecorator()
+  day: number;
+
   @Property({ apiProperty: { type: 'string', description: '공간 id' } })
   spaceId: string;
 
@@ -63,6 +69,7 @@ export class PossibleRentalTypeDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.spaceId = props.spaceId;
+    this.day = props.day;
     this.timeCostInfos = props.timeCostInfos
       ? props.timeCostInfos?.map((timeCostInfo) => new PossibleTimeCostInfoDTO(timeCostInfo))
       : null;

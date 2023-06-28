@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { DayReqDecorator } from '@/utils/validation/day.validation';
+
 import { CreateTimeCostInfoDTO, CreateTimeCostInfoDTOProps } from '../timeCostInfo';
 import { RENTAL_TYPE_KEYS, RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
@@ -27,7 +29,7 @@ export class CreateRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })
   baseHour?: number;
 
-  @Property({ apiProperty: { type: 'number', description: '대여타입 시작 요일' } })
+  @DayReqDecorator()
   day: number;
 
   @Property({ apiProperty: { type: 'number', description: '시작 시간' } })
@@ -47,6 +49,7 @@ export class CreateRentalTypeDTO {
       this.baseHour = props.baseHour;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
+      this.day = props.day;
       this.timeCostInfos = props.timeCostInfos
         ?.map((timeCostInfo) => new CreateTimeCostInfoDTO(timeCostInfo))
         .sort((a, b) => a.time - b.time);

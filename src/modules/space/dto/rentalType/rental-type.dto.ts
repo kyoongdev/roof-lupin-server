@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { DayResDecorator } from '@/utils/validation/day.validation';
+
 import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '../timeCostInfo';
 import {
   RENTAL_TYPE_ENUM,
@@ -13,6 +15,7 @@ export interface RentalTypeDTOProps {
   name: string;
   baseCost: number;
   rentalType: number;
+  day: number;
   baseHour?: number;
   startAt?: number;
   endAt?: number;
@@ -34,6 +37,9 @@ export class RentalTypeDTO {
   @Property({ apiProperty: { type: 'string', description: RENTAL_TYPE_KEYS.join(',') } })
   rentalType: number;
 
+  @DayResDecorator()
+  day: number;
+
   @Property({ apiProperty: { type: 'number', nullable: true, description: '기본 시간' } })
   baseHour?: number;
 
@@ -54,6 +60,7 @@ export class RentalTypeDTO {
     this.name = props.name;
     this.baseCost = props.baseCost;
     this.rentalType = props.rentalType;
+    this.day = props.day;
     this.baseHour = props.baseHour ?? null;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
