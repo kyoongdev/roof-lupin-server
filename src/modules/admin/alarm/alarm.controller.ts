@@ -1,16 +1,24 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { AlarmDTO, CreateAlarmDTO, UpdateAlarmDTO } from '@/modules/alarm/dto';
-import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { EmptyResponseDTO } from '@/common';
+import { AlarmDTO } from '@/modules/alarm/dto';
+import {
+  AlarmResultDTO,
+  AlarmResultsDTO,
+  SendMessageDTO,
+  SendMessagesDTO,
+  SendScheduleMessageDTO,
+  SendScheduleMessagesDTO,
+} from '@/modules/alarm/dto/fcm';
+import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminAlarmService } from './alarm.service';
 
-// @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('admins/alarms', '[관리자] 알람 관리')
 export class AdminAlarmController {
   constructor(private readonly alarmService: AdminAlarmService) {}
@@ -53,51 +61,60 @@ export class AdminAlarmController {
     return await this.alarmService.findAlarm(id);
   }
 
-  @Post()
-  @UseInterceptors(ResponseWithIdInterceptor)
+  @Post('/fcm')
   @RequestApi({
     summary: {
-      description: '알람 생성하기',
-      summary: '알람 생성하기 - 관리자만 사용 가능합니다.',
-    },
-    body: {
-      type: CreateAlarmDTO,
+      description: '알람 보내기',
+      summary: '알람 보내기 - 관리자만 사용 가능합니다.',
     },
   })
-  @ResponseApi(
-    {
-      type: ResponseWithIdDTO,
-    },
-    201
-  )
-  async createAlarm(@Body() createAlarmDTO: CreateAlarmDTO) {
-    return await this.alarmService.createAlarm(createAlarmDTO);
+  @ResponseApi({
+    type: AlarmResultDTO,
+  })
+  async sendAlarm(@Body() body: SendMessageDTO) {
+    return await this.sendAlarm(body);
   }
 
-  @Patch(':alarmId')
+  @Post('/fcm/many')
   @RequestApi({
     summary: {
-      description: '알람 수정하기',
-      summary: '알람 수정하기 - 관리자만 사용 가능합니다.',
-    },
-    body: {
-      type: UpdateAlarmDTO,
-    },
-    params: {
-      name: 'alarmId',
-      type: 'string',
-      required: true,
-      description: '알람 ID',
+      description: '다수 알람 보내기',
+      summary: '다수 알람 보내기 - 관리자만 사용 가능합니다.',
     },
   })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
+  @ResponseApi({
+    type: AlarmResultsDTO,
+  })
+  async sendAlarms(@Body() body: SendMessagesDTO) {
+    return await this.sendAlarms(body);
+  }
+
+  @Post('/fcm/schedule')
+  @RequestApi({
+    summary: {
+      description: '특정 시간대 알람 보내기',
+      summary: '특정 알람 보내기 - 관리자만 사용 가능합니다.',
     },
-    204
-  )
-  async updateAlarm(@Param('alarmId') id: string, @Body() body: UpdateAlarmDTO) {
-    await this.alarmService.updateAlarm(id, body);
+  })
+  @ResponseApi({
+    type: AlarmResultDTO,
+  })
+  async sendScheduleAlarm(@Body() body: SendScheduleMessageDTO) {
+    return await this.sendScheduleAlarm(body);
+  }
+
+  @Post('/fcm/schedule/many')
+  @RequestApi({
+    summary: {
+      description: '특정 시간대 다수 알람 보내기',
+      summary: '특정 시간대 다수 알람 보내기 - 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: AlarmResultsDTO,
+  })
+  async sendScheduleAlarms(@Body() body: SendScheduleMessagesDTO) {
+    return await this.sendScheduleAlarms(body);
   }
 
   @Delete(':alarmId')

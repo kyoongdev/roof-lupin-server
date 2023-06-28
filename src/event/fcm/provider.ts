@@ -159,6 +159,11 @@ export class FCMEventProvider {
     await this.updatePushedAlarm(alarm.id);
   }
 
+  @OnEvent(FCM_EVENT_NAME.DELETE_ALARM)
+  async deleteAlarm(jobId: string) {
+    this.schedulerEvent.deleteSchedule(jobId);
+  }
+
   async sendAlarmWithUpdate(alarmId: string, data: SendPushMessage) {
     await this.fcmService.sendMessage(data);
     await this.updatePushedAlarm(alarmId);

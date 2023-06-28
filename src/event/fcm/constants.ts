@@ -7,4 +7,5 @@ export const FCM_EVENT_NAME = {
   SEND_ALARMS: Symbol('fcm.send.alarms'),
   SEND_SCHEDULE_ALARM: Symbol('fcm.send.schedule.alarm'),
   SEND_SCHEDULE_ALARMS: Symbol('fcm.send.schedule.alarms'),
+  DELETE_ALARM: Symbol('fcm.delete.alarm'),
 };

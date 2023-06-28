@@ -45,4 +45,8 @@ export class FCMEvent {
   createQnAAnswerAlarm(data: CreateReviewRecommendAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM, data);
   }
+
+  deleteAlarm(alarmId: string) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.DELETE_ALARM, alarmId);
+  }
 }
