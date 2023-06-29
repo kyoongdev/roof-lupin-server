@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
 import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from './dto';
 import { CreateUserCouponDTO } from './dto/create-user-coupon.dto';
@@ -288,6 +288,27 @@ export class CouponRepository {
       },
     });
     return userCoupon.id;
+  }
+
+  async useUserCoupon(database: TransactionPrisma, id: string) {
+    await database.userCoupon.update({
+      where: {
+        id,
+      },
+      data: {
+        isUsed: true,
+      },
+    });
+  }
+  async resetUserCoupon(id: string) {
+    await this.database.userCoupon.update({
+      where: {
+        id,
+      },
+      data: {
+        isUsed: false,
+      },
+    });
   }
 
   async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {

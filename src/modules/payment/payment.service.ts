@@ -166,6 +166,12 @@ export class PaymentService {
           orderResultId: result.tid,
           payMethod: PayMethod.KAKAO_PAY,
         });
+        await Promise.all(
+          data.userCouponIds.map(async (couponId) => {
+            await this.couponRepository.findUserCoupon(couponId);
+            await this.couponRepository.useUserCoupon(database, couponId);
+          })
+        );
 
         return new PrepareKakaoPaymentDTO({
           ...result,
@@ -173,6 +179,11 @@ export class PaymentService {
           orderResultId: result.tid,
         });
       } catch (err) {
+        await Promise.all(
+          data.userCouponIds.map(async (couponId) => {
+            await this.couponRepository.resetUserCoupon(couponId);
+          })
+        );
         await this.reservationRepository.deleteReservation(reservation.id);
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
@@ -182,6 +193,12 @@ export class PaymentService {
 
   async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
     const reservation = await this.reservationRepository.findReservationByOrderId(data.orderId);
+    const coupons = await this.couponRepository.findUserCoupons({
+      where: {
+        userId: reservation.user.id,
+        reservationId: reservation.id,
+      },
+    });
     try {
       if (data.orderResultId !== reservation.orderResultId) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
@@ -201,6 +218,11 @@ export class PaymentService {
         payedAt: new Date(),
       });
     } catch (err) {
+      await Promise.all(
+        coupons.map(async (coupon) => {
+          await this.couponRepository.resetUserCoupon(coupon.id);
+        })
+      );
       await this.reservationRepository.deleteReservation(reservation.id);
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
@@ -249,6 +271,13 @@ export class PaymentService {
           payMethod: PayMethod.TOSS_PAY,
         });
 
+        await Promise.all(
+          data.userCouponIds.map(async (couponId) => {
+            await this.couponRepository.findUserCoupon(couponId);
+            await this.couponRepository.useUserCoupon(database, couponId);
+          })
+        );
+
         return new CreateTossPaymentDTO({
           url: result.checkout.url,
         });
@@ -263,7 +292,12 @@ export class PaymentService {
   async confirmTossPayment(data: ConfirmTossPaymentDTO) {
     const { paymentKey } = data;
     const reservation = await this.reservationRepository.findReservationByOrderResultId(paymentKey);
-
+    const coupons = await this.couponRepository.findUserCoupons({
+      where: {
+        userId: reservation.user.id,
+        reservationId: reservation.id,
+      },
+    });
     try {
       if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
@@ -283,6 +317,11 @@ export class PaymentService {
         payedAt: new Date(),
       });
     } catch (err) {
+      await Promise.all(
+        coupons.map(async (coupon) => {
+          await this.couponRepository.resetUserCoupon(coupon.id);
+        })
+      );
       await this.reservationRepository.deleteReservation(reservation.id);
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
