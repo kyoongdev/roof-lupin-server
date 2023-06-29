@@ -11,6 +11,7 @@ export interface UpdateCouponDTOProps {
   isLupinPay?: boolean;
   defaultDueDay?: number;
   categoryIds?: string[];
+  link?: string;
 }
 
 export class UpdateCouponDTO {
@@ -38,6 +39,9 @@ export class UpdateCouponDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, nullable: true, description: '카테고리 id 배열' } })
   categoryIds?: string[];
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '쿠폰 링크' } })
+  link?: string;
+
   constructor(props?: UpdateCouponDTOProps) {
     if (props) {
       this.name = props.name;
@@ -48,6 +52,7 @@ export class UpdateCouponDTO {
       this.isLupinPay = props.isLupinPay;
       this.categoryIds = props.categoryIds;
       this.defaultDueDay = props.defaultDueDay;
+      this.link = props.link;
     }
   }
 }

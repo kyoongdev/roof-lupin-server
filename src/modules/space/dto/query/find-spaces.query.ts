@@ -41,12 +41,12 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, enum: SPACE_SORT_OPTION_VALUES } })
   sort?: keyof typeof SPACE_SORT_OPTION;
 
-  static findSpacesFindManyClause(query: FindSpacesQuery, userId?: string): Prisma.SpaceFindManyArgs {
+  findSpacesFindManyClause(userId?: string): Prisma.SpaceFindManyArgs {
     let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
       createdAt: 'desc',
     };
 
-    if (query.sort === 'POPULARITY') {
+    if (this.sort === 'POPULARITY') {
       orderBy = [
         {
           userInterests: {
@@ -62,56 +62,56 @@ export class FindSpacesQuery extends PagingDTO {
           },
         },
       ];
-    } else if (query.sort === 'RECENT') {
+    } else if (this.sort === 'RECENT') {
       orderBy = {
         createdAt: 'desc',
       };
-    } else if (query.sort === 'PRICE_HIGH') {
+    } else if (this.sort === 'PRICE_HIGH') {
       orderBy = {
         minCost: 'desc',
       };
-    } else if (query.sort === 'PRICE_LOW') {
+    } else if (this.sort === 'PRICE_LOW') {
       orderBy = {
         minCost: 'asc',
       };
     }
     return {
       where: {
-        ...(query.userCount && {
+        ...(this.userCount && {
           minUser: {
-            lte: query.userCount,
+            lte: this.userCount,
           },
         }),
-        ...(query.category && {
+        ...(this.category && {
           categories: {
             some: {
               category: {
                 name: {
-                  contains: query.category,
+                  contains: this.category,
                 },
               },
             },
           },
         }),
-        ...(query.categoryIds && {
+        ...(this.categoryIds && {
           categories: {
             some: {
-              OR: query.categoryIds.split(',').map((categoryId) => ({ categoryId })),
+              OR: this.categoryIds.split(',').map((categoryId) => ({ categoryId })),
             },
           },
         }),
 
-        ...(query.locationName && {
+        ...(this.locationName && {
           location: {
             OR: [
               {
                 jibunAddress: {
-                  contains: query.locationName,
+                  contains: this.locationName,
                 },
               },
               {
                 roadAddress: {
-                  contains: query.locationName,
+                  contains: this.locationName,
                 },
               },
             ],
@@ -132,19 +132,17 @@ export class FindSpacesQuery extends PagingDTO {
       orderBy,
     };
   }
-  static generateSqlWhereClause(query: FindSpacesQuery, excludeSpaces: string[], includeSpaces?: string[]) {
-    const userCountWhere = query.userCount ? Prisma.sql`minUser <= ${query.userCount}` : Prisma.sql`1=1`;
-    const locationWhere = query.locationName
-      ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(
-          query.locationName
-        )}%' OR sl.roadAddress LIKE '%${Prisma.raw(query.locationName)}%')`
+  generateSqlWhereClause(excludeSpaces: string[], includeSpaces?: string[]) {
+    const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.sql`1=1`;
+    const locationWhere = this.locationName
+      ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
+          this.locationName
+        )}%')`
       : Prisma.sql``;
 
-    const categoryWhere = query.category
-      ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(query.category)}%'`
-      : Prisma.sql``;
-    const categoryIdWhere = query.categoryIds
-      ? Prisma.sql`AND ca.id IN (${Prisma.join(query.categoryIds.split(','), ',')})`
+    const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.sql``;
+    const categoryIdWhere = this.categoryIds
+      ? Prisma.sql`AND ca.id IN (${Prisma.join(this.categoryIds.split(','), ',')})`
       : Prisma.sql``;
 
     const excludeIds =

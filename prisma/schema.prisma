@@ -697,6 +697,7 @@ model Coupon {
   code          String  @unique @db.Char(10)
   isLupinPay    Boolean @default(false)
   defaultDueDay Int     @default(0) @db.SmallInt
+  link          String?
 
   userCoupons      UserCoupon[]
   couponCategories CouponCategory[]

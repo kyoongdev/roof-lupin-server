@@ -65,18 +65,28 @@ export class SearchService {
   }
 
   async createSearchRecord(userId: string, data: CreateSearchRecordDTO) {
-    const searchRecord = await this.database.searchRecord.create({
-      data: {
-        ...data,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
+    const isExist = await this.database.searchRecord.findFirst({
+      where: {
+        userId,
+        content: data.content,
       },
     });
 
-    return searchRecord.id;
+    if (!isExist) {
+      const searchRecord = await this.database.searchRecord.create({
+        data: {
+          ...data,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+      return searchRecord.id;
+    }
+
+    return isExist.id;
   }
 
   async deleteSearchRecord(id: string, userId: string) {

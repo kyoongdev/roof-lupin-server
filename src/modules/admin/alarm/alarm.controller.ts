@@ -72,7 +72,7 @@ export class AdminAlarmController {
     type: AlarmResultDTO,
   })
   async sendAlarm(@Body() body: SendMessageDTO) {
-    return await this.sendAlarm(body);
+    return await this.alarmService.sendAlarm(body);
   }
 
   @Post('/fcm/many')
@@ -86,7 +86,7 @@ export class AdminAlarmController {
     type: AlarmResultsDTO,
   })
   async sendAlarms(@Body() body: SendMessagesDTO) {
-    return await this.sendAlarms(body);
+    return await this.alarmService.sendAlarms(body);
   }
 
   @Post('/fcm/schedule')
@@ -100,7 +100,7 @@ export class AdminAlarmController {
     type: AlarmResultDTO,
   })
   async sendScheduleAlarm(@Body() body: SendScheduleMessageDTO) {
-    return await this.sendScheduleAlarm(body);
+    return await this.alarmService.sendScheduleAlarm(body);
   }
 
   @Post('/fcm/schedule/many')
@@ -114,7 +114,7 @@ export class AdminAlarmController {
     type: AlarmResultsDTO,
   })
   async sendScheduleAlarms(@Body() body: SendScheduleMessagesDTO) {
-    return await this.sendScheduleAlarms(body);
+    return await this.alarmService.sendScheduleAlarms(body);
   }
 
   @Delete(':alarmId')

@@ -108,7 +108,7 @@ export class SpaceController {
 
     return await this.spaceService.findPagingSpaces(
       paging,
-      FindSpacesQuery.findSpacesFindManyClause(query, user?.id),
+      query.findSpacesFindManyClause(user?.id),
       query,
       location,
       date,

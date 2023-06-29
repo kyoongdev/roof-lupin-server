@@ -109,19 +109,21 @@ export class SpaceService {
       }),
       ...args.where,
     };
-    console.log(args.where);
+
     const count = await this.spaceRepository.countSpaces({
       where: whereArgs,
     });
 
-    let spaces: SpaceDTO[] = [];
+    const spaces: SpaceDTO[] = [];
     if (query.sort === 'POPULARITY') {
       const popularitySpaces = await this.findSpacesWithPopularity(
         paging,
-        FindSpacesQuery.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
+        query.generateSqlWhereClause(excludeSpaces, includeSpaces)
       );
-      spaces = await Promise.all(
-        popularitySpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
+      spaces.push(
+        ...(await Promise.all(
+          popularitySpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
+        ))
       );
     } else if (query.sort === 'DISTANCE') {
       if (!query.lat && !query.lng) {
@@ -133,20 +135,24 @@ export class SpaceService {
           lng: query.lng,
         },
         paging,
-        FindSpacesQuery.generateSqlWhereClause(query, excludeSpaces, includeSpaces)
+        query.generateSqlWhereClause(excludeSpaces, includeSpaces)
       );
-      spaces = await Promise.all(
-        distanceSpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
+      spaces.push(
+        ...(await Promise.all(
+          distanceSpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
+        ))
       );
     } else {
-      spaces = await this.spaceRepository.findSpaces(
-        {
-          where: whereArgs,
-          orderBy: args.orderBy,
-          skip,
-          take,
-        },
-        userId
+      spaces.push(
+        ...(await this.spaceRepository.findSpaces(
+          {
+            where: whereArgs,
+            orderBy: args.orderBy,
+            skip,
+            take,
+          },
+          userId
+        ))
       );
     }
 
