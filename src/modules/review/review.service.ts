@@ -35,7 +35,7 @@ export class ReviewService {
   async getReviewSummary(spaceId: string) {
     const score = await this.reviewRepository.getReviewAverageScore(spaceId);
     const count = await this.reviewRepository.countReviews({ where: { spaceId } });
-    return new ReviewsSummaryDTO({ averageScore: score, count });
+    return new ReviewsSummaryDTO({ averageScore: score || 0, count });
   }
 
   async findReview(id: string) {
