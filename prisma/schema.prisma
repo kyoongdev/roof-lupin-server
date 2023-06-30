@@ -495,7 +495,7 @@ model HostAccount {
   id String @id @default(uuid())
 
   ownerName                  String @db.VarChar(20)
-  bankName                   Int    @db.TinyInt
+  bankName                   String @db.VarChar(5)
   businessRegistrationNumber String @db.Char(10)
   account                    String @db.VarChar(40)
   accountOwner               String @db.VarChar(20)

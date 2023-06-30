@@ -5,9 +5,9 @@ import { range } from 'lodash';
 import { PrismaService } from '@/database/prisma.service';
 
 import { Encrypt } from './common/encrypt';
-import { Holiday, OpenAPI } from './interface/holiday.interface';
+import { OpenAPI } from './interface/holiday.interface';
 import { COUPON_CODE } from './modules/coupon/constants';
-import { DISCOUNT_TYPE, DISCOUNT_TYPE_ENUM } from './modules/coupon/validation';
+import { DISCOUNT_TYPE_ENUM } from './modules/coupon/validation';
 
 export const seedDatabase = async (database: PrismaService) => {
   await database.space.deleteMany({});
@@ -186,7 +186,7 @@ export const seedDatabase = async (database: PrismaService) => {
           ownerName: '박용준',
           account: '110161509211',
           accountOwner: '박용준',
-          bankName: 12,
+          bankName: '46',
           businessRegistrationNumber: '1234567890',
         },
       },

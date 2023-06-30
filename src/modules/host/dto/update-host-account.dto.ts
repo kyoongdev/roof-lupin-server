@@ -2,7 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 export interface UpdateHostAccountProps {
   ownerName?: string;
-  bankName?: number;
+  bankName?: string;
   businessRegistrationNumber?: string;
   account?: string;
   accountOwner?: string;
@@ -13,7 +13,7 @@ export class UpdateHostAccountDTO {
   ownerName?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '은행 이름 (코드는 엑셀 참고)' } })
-  bankName?: number;
+  bankName?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '사업자등록번호' } })
   businessRegistrationNumber?: string;

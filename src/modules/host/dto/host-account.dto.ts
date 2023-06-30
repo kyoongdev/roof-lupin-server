@@ -3,7 +3,7 @@ import { Property } from 'wemacu-nestjs';
 export interface HostAccountDTOProps {
   id: string;
   ownerName: string;
-  bankName: number;
+  bankName: string;
   businessRegistrationNumber: string;
   account: string;
   accountOwner: string;
@@ -17,7 +17,7 @@ export class HostAccountDTO {
   ownerName: string;
 
   @Property({ apiProperty: { type: 'string', description: '은행 이름 (코드는 엑셀 참고)' } })
-  bankName: number;
+  bankName: string;
 
   @Property({ apiProperty: { type: 'string', description: '사업자등록번호' } })
   businessRegistrationNumber: string;
