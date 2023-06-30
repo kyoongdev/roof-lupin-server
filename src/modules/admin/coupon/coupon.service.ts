@@ -5,7 +5,15 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from '@/modules/coupon/dto';
+import {
+  AdminCouponDTO,
+  CouponDTO,
+  CreateCouponDTO,
+  UpdateCouponDTO,
+  UpdateUserCouponDTO,
+  UserAdminCouponDTO,
+  UserCouponDTO,
+} from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
 
 import { AdminException } from '../exception/admin.exception';
@@ -15,45 +23,49 @@ import {
   ADMIN_USER_COUPON_DUE_DATE_BAD_REQUEST,
 } from '../exception/errorCode';
 
+import { AdminCouponRepository } from './coupon.repository';
+
 @Injectable()
 export class AdminCouponService {
   constructor(
     private readonly couponRepository: CouponRepository,
+    private readonly adminCouponRepository: AdminCouponRepository,
+
     private readonly categoryRepository: CategoryRepository
   ) {}
 
   async findCoupon(id: string) {
-    return await this.couponRepository.findCoupon(id);
+    return await this.adminCouponRepository.findCoupon(id);
   }
 
   async findPagingCoupons(paging: PagingDTO, args = {} as Prisma.CouponFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
-    const count = await this.couponRepository.countCoupons({
+    const count = await this.adminCouponRepository.countCoupons({
       where: args.where,
     });
-    const coupons = await this.couponRepository.findCoupons({
+    const coupons = await this.adminCouponRepository.findCoupons({
       where: args.where,
       skip,
       take,
     });
 
-    return new PaginationDTO<CouponDTO>(coupons, { count, paging });
+    return new PaginationDTO<AdminCouponDTO>(coupons, { count, paging });
   }
 
   async findUserCoupon(id: string) {
-    return await this.couponRepository.findUserCoupon(id);
+    return await this.adminCouponRepository.findUserCoupon(id);
   }
   async findPagingUserCoupons(paging: PagingDTO, args = {} as Prisma.UserCouponFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
-    const count = await this.couponRepository.countUserCoupons({
+    const count = await this.adminCouponRepository.countUserCoupons({
       where: args.where,
     });
-    const coupons = await this.couponRepository.findUserCoupons({
+    const coupons = await this.adminCouponRepository.findUserCoupons({
       where: args.where,
       skip,
       take,
     });
-    return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
+    return new PaginationDTO<UserAdminCouponDTO>(coupons, { count, paging });
   }
 
   async createCoupon(data: CreateCouponDTO) {

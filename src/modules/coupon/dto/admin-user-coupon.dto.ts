@@ -2,9 +2,10 @@ import { Property } from 'wemacu-nestjs';
 
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
+import { AdminCouponDTO, AdminCouponDTOProps } from './admin-coupon.dto';
 import { CouponDTO, CouponDTOProps } from './coupon.dto';
 
-export interface UserCouponDTOProps {
+export interface UserAdminCouponDTOProps {
   id: string;
   count: number;
   dueDateStartAt: Date;
@@ -12,11 +13,11 @@ export interface UserCouponDTOProps {
   isUsed: boolean;
   createdAt: Date;
   user: CommonUserProps;
-  coupon: CouponDTOProps;
+  coupon: AdminCouponDTOProps;
   reservationId?: string;
 }
 
-export class UserCouponDTO {
+export class UserAdminCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 쿠폰 id' } })
   id: string;
 
@@ -41,10 +42,10 @@ export class UserCouponDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
-  @Property({ apiProperty: { type: CouponDTO, description: '쿠폰 정보' } })
-  coupon: CouponDTO;
+  @Property({ apiProperty: { type: AdminCouponDTO, description: '쿠폰 정보' } })
+  coupon: AdminCouponDTO;
 
-  constructor(props: UserCouponDTOProps) {
+  constructor(props: UserAdminCouponDTOProps) {
     this.id = props.id;
     this.count = props.count;
     this.dueDateStartAt = props.dueDateStartAt;
@@ -53,6 +54,6 @@ export class UserCouponDTO {
     this.reservationId = props.reservationId ?? null;
     this.createdAt = props.createdAt;
     this.user = new CommonUserDTO(props.user);
-    this.coupon = new CouponDTO(props.coupon);
+    this.coupon = new AdminCouponDTO(props.coupon);
   }
 }

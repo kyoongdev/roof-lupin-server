@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { nanoid } from 'nanoid';
 
-import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from './dto';
-import { CreateUserCouponDTO } from './dto/create-user-coupon.dto';
-import { CouponException } from './exception/coupon.exception';
-import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from './exception/errorCode';
+import { PrismaService } from '@/database/prisma.service';
+import { CreateCouponDTO, UserAdminCouponDTO } from '@/modules/coupon/dto';
+import { AdminCouponDTO } from '@/modules/coupon/dto/admin-coupon.dto';
+import { CouponException } from '@/modules/coupon/exception/coupon.exception';
+import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from '@/modules/coupon/exception/errorCode';
 
 @Injectable()
-export class CouponRepository {
+export class AdminCouponRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findCoupon(id: string) {
@@ -32,7 +30,7 @@ export class CouponRepository {
       throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
     }
     const { couponCategories, ...rest } = coupon;
-    return new CouponDTO({
+    return new AdminCouponDTO({
       ...rest,
       categories: couponCategories.map(({ category }) => category),
     });
@@ -57,7 +55,7 @@ export class CouponRepository {
     }
 
     const { couponCategories, ...rest } = coupon;
-    return new CouponDTO({
+    return new AdminCouponDTO({
       ...rest,
       categories: couponCategories.map(({ category }) => category),
     });
@@ -81,76 +79,11 @@ export class CouponRepository {
 
     return coupons.map((coupon) => {
       const { couponCategories, ...rest } = coupon;
-      return new CouponDTO({
+      return new AdminCouponDTO({
         ...rest,
         categories: couponCategories.map(({ category }) => category),
       });
     });
-  }
-
-  async createCoupon(data: CreateCouponDTO) {
-    const code = await this.checkCouponCode();
-    const { categoryIds, ...rest } = data;
-    const coupon = await this.database.coupon.create({
-      data: {
-        ...rest,
-        code: rest.code || code,
-        ...(categoryIds && {
-          couponCategories: {
-            create: categoryIds.map((categoryId) => ({
-              category: {
-                connect: {
-                  id: categoryId,
-                },
-              },
-            })),
-          },
-        }),
-      },
-    });
-
-    return coupon.id;
-  }
-
-  async updateCoupon(id: string, data: UpdateCouponDTO) {
-    const { categoryIds, ...rest } = data;
-    const updateArgs: Prisma.CouponUpdateArgs = {
-      where: {
-        id,
-      },
-      data: {
-        ...rest,
-      },
-    };
-
-    if (categoryIds) {
-      updateArgs.data = {
-        ...updateArgs.data,
-        couponCategories: {
-          deleteMany: {},
-          create: categoryIds.map((categoryId) => ({
-            category: {
-              connect: {
-                id: categoryId,
-              },
-            },
-          })),
-        },
-      };
-    }
-    const coupon = await this.database.coupon.update(updateArgs);
-
-    return coupon.id;
-  }
-
-  async deleteCoupon(id: string) {
-    const coupon = await this.database.coupon.delete({
-      where: {
-        id,
-      },
-    });
-
-    return coupon.id;
   }
 
   async checkUserCoupon(couponId: string, userId: string) {
@@ -187,7 +120,7 @@ export class CouponRepository {
       throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
     }
 
-    return new UserCouponDTO({
+    return new UserAdminCouponDTO({
       ...userCoupon,
       isUsed: !!userCoupon.reservationId,
       coupon: {
@@ -222,7 +155,7 @@ export class CouponRepository {
       throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
     }
 
-    return new UserCouponDTO({
+    return new UserAdminCouponDTO({
       ...userCoupon,
       isUsed: !!userCoupon.reservationId,
       coupon: {
@@ -252,7 +185,7 @@ export class CouponRepository {
     });
 
     return userCoupons.map((userCoupon) => {
-      return new UserCouponDTO({
+      return new UserAdminCouponDTO({
         ...userCoupon,
         isUsed: !!userCoupon.reservationId,
         coupon: {
@@ -261,82 +194,5 @@ export class CouponRepository {
         },
       });
     });
-  }
-
-  async createUserCoupon(couponId: string, data: CreateUserCouponDTO) {
-    const { userId, ...rest } = data;
-    const coupon = await this.findCoupon(couponId);
-
-    const userCoupon = await this.database.userCoupon.create({
-      data: {
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-        coupon: {
-          connect: {
-            id: couponId,
-          },
-        },
-
-        ...rest,
-      },
-    });
-    return userCoupon.id;
-  }
-
-  async useUserCoupon(database: TransactionPrisma, id: string) {
-    await database.userCoupon.update({
-      where: {
-        id,
-      },
-      data: {
-        isUsed: true,
-      },
-    });
-  }
-  async resetUserCoupon(id: string) {
-    await this.database.userCoupon.update({
-      where: {
-        id,
-      },
-      data: {
-        isUsed: false,
-      },
-    });
-  }
-
-  async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {
-    await this.database.userCoupon.update({
-      where: {
-        id,
-      },
-      data,
-    });
-  }
-
-  async deleteUserCoupon(id: string) {
-    await this.database.userCoupon.delete({
-      where: {
-        id,
-      },
-    });
-  }
-
-  async checkCouponCode() {
-    let isExist = true;
-    while (isExist) {
-      const code = nanoid(10);
-      const coupon = await this.database.coupon.findUnique({
-        where: {
-          code,
-        },
-      });
-      if (!coupon) {
-        isExist = false;
-        return code;
-      }
-    }
   }
 }

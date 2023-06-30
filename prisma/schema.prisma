@@ -674,9 +674,10 @@ model UserCoupon {
   id String @id @default(uuid())
 
   //INFO: 기본 6자리 랜덤 생성
-  count     Int      @default(1) @db.TinyInt
-  dueDate   DateTime @db.DateTime
-  createdAt DateTime @default(now())
+  count          Int      @default(1) @db.TinyInt
+  dueDateStartAt DateTime @db.DateTime
+  dueDateEndAt   DateTime @db.DateTime
+  createdAt      DateTime @default(now())
 
   isUsed Boolean @default(false)
 

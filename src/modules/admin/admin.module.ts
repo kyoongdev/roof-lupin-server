@@ -23,6 +23,7 @@ import { AdminService } from './admin.service';
 import { AdminAlarmController } from './alarm/alarm.controller';
 import { AdminAlarmService } from './alarm/alarm.service';
 import { AdminCouponController } from './coupon/coupon.controller';
+import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
 import { AdminHostController } from './host';
 import { AdminHostService } from './host/host.service';
@@ -64,6 +65,7 @@ import { AdminSpaceService } from './space/space.service';
     SettlementRepository,
     AdminCouponService,
     CouponRepository,
+    AdminCouponRepository,
     CategoryRepository,
     UserRepository,
     FCMEvent,

@@ -8,6 +8,8 @@ import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
+import { CouponRepository } from '../coupon/coupon.repository';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
@@ -39,7 +41,7 @@ const config = new ConfigService();
       },
     }),
   ],
-  providers: [AuthService, UserRepository, AdminRepository, HostRepository, Jsonwebtoken],
+  providers: [AuthService, UserRepository, AdminRepository, HostRepository, Jsonwebtoken, CouponRepository],
   controllers: [AuthController],
 })
 export class AuthModule {}

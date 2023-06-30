@@ -16,6 +16,8 @@ import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
 import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
+import { COUPON_CODE } from '../coupon/constants';
+import { CouponRepository } from '../coupon/coupon.repository';
 import { CreateHostDTO } from '../host/dto';
 import { CreateSocialUserDTO } from '../user/dto';
 
@@ -42,6 +44,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly adminRepository: AdminRepository,
     private readonly hostRepository: HostRepository,
+    private readonly couponRepository: CouponRepository,
     private readonly jwt: Jsonwebtoken,
     private readonly kakaoService: KakaoLogin,
     private readonly naverService: NaverLogin,
@@ -65,6 +68,14 @@ export class AuthService {
 
     const user = await this.userRepository.findUserBySocialId(socialId);
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
+    const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
+    const dueDateStartAt = new Date();
+    const dueDateEndAt = new Date(dueDateStartAt.setDate(dueDateStartAt.getDate() + 7));
+    await this.couponRepository.createUserCoupon(coupon.id, {
+      userId: user.id,
+      dueDateEndAt,
+      dueDateStartAt,
+    });
 
     const query = queryString.stringify({
       status: 200,

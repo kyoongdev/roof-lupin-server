@@ -30,6 +30,7 @@ import {
 import {
   PAYMENT_CONFLICT,
   PAYMENT_COUPON_COUNT_ZERO,
+  PAYMENT_COUPON_DUE_DATE_BEFORE,
   PAYMENT_COUPON_DUE_DATE_EXPIRED,
   PAYMENT_COUPON_IS_USED,
   PAYMENT_DATE_BAD_REQUEST,
@@ -408,28 +409,41 @@ export class PaymentService {
           OR: data.userCouponIds.map((id) => ({ id })),
         },
       });
-      data.userCouponIds.forEach((couponId) => {
-        const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
-        if (isExist) {
-          if (isExist.isUsed) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_IS_USED));
-          }
-          if (isExist.count === 0) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
-          }
+      await Promise.all(
+        data.userCouponIds.map(async (couponId) => {
+          const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
+          if (isExist) {
+            if (isExist.isUsed) {
+              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_IS_USED));
+            }
+            if (isExist.count === 0) {
+              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
+            }
 
-          const dateDiff = isExist.dueDate.getTime() - new Date().getTime();
-          if (dateDiff < 0) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+            //TODO: 쿠폰 만료일 체크
+            const dueDateStart = isExist.dueDateStartAt.getTime();
+            const dueDateEnd = isExist.dueDateEndAt.getTime();
+            const currentDate = new Date().getTime();
+
+            if (dueDateStart > currentDate) {
+              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
+            }
+
+            if (dueDateEnd < currentDate) {
+              if (!isExist.isUsed) {
+                await this.couponRepository.updateUserCoupon(isExist.id, { isUsed: true });
+              }
+              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+            }
+
+            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
+              discountCost += cost * (isExist.coupon.discountValue / 100);
+            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
+              discountCost += isExist.coupon.discountValue;
+            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
           }
-          //TODO: 쿠폰 정액 / 정률
-          if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-            discountCost += cost * (isExist.coupon.discountValue / 100);
-          } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
-            discountCost += isExist.coupon.discountValue;
-          } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
-        }
-      });
+        })
+      );
     }
 
     if (data.discountCost !== discountCost) {

@@ -6,6 +6,8 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { Encrypt } from './common/encrypt';
 import { Holiday, OpenAPI } from './interface/holiday.interface';
+import { COUPON_CODE } from './modules/coupon/constants';
+import { DISCOUNT_TYPE, DISCOUNT_TYPE_ENUM } from './modules/coupon/validation';
 
 export const seedDatabase = async (database: PrismaService) => {
   await database.space.deleteMany({});
@@ -17,9 +19,32 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.location.deleteMany({});
   await database.category.deleteMany({});
   await database.holiday.deleteMany({});
+  await database.coupon.deleteMany({});
   const salt = Encrypt.createSalt();
   const hostPassword = Encrypt.hashPassword(salt, '1234');
   const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
+  await database.coupon.create({
+    data: {
+      name: '회원가입',
+      code: COUPON_CODE.REGISTER,
+      description: '회원가입시 발급되는 쿠폰입니다.',
+      discountType: DISCOUNT_TYPE_ENUM.PERCENTAGE,
+      discountValue: 10,
+      isLupinPay: true,
+      defaultDueDay: 14,
+    },
+  });
+  await database.coupon.create({
+    data: {
+      name: '생일',
+      code: COUPON_CODE.BIRTHDAY,
+      description: '생일에 발급되는 쿠폰입니다.',
+      discountType: DISCOUNT_TYPE_ENUM.PERCENTAGE,
+      discountValue: 10,
+      isLupinPay: true,
+      defaultDueDay: 7,
+    },
+  });
   await Promise.all(
     range(2023, 2031).map(async (i) => {
       await Promise.all(
@@ -660,6 +685,51 @@ export const seedDatabase = async (database: PrismaService) => {
               },
             },
             {
+              baseCost: 1000,
+              startAt: 14,
+              endAt: 22,
+              name: '시간대여2',
+              rentalType: 1,
+              day: 2,
+              baseHour: 2,
+              timeCostInfo: {
+                create: [
+                  {
+                    cost: 1000,
+                    time: 14,
+                  },
+                  {
+                    cost: 1000,
+                    time: 15,
+                  },
+                  {
+                    cost: 1000,
+                    time: 16,
+                  },
+                  {
+                    cost: 2000,
+                    time: 17,
+                  },
+                  {
+                    cost: 2000,
+                    time: 18,
+                  },
+                  {
+                    cost: 2000,
+                    time: 19,
+                  },
+                  {
+                    cost: 2000,
+                    time: 20,
+                  },
+                  {
+                    cost: 2000,
+                    time: 21,
+                  },
+                ],
+              },
+            },
+            {
               baseCost: 100000,
               startAt: 13,
               endAt: i % 50 === 0 ? 24 : 22,
@@ -667,6 +737,15 @@ export const seedDatabase = async (database: PrismaService) => {
               rentalType: 2,
               baseHour: 6,
               day: 1,
+            },
+            {
+              baseCost: 100000,
+              startAt: 13,
+              endAt: i % 50 === 0 ? 24 : 22,
+              name: '패키지 대여2',
+              rentalType: 2,
+              baseHour: 6,
+              day: 2,
             },
           ],
         },
