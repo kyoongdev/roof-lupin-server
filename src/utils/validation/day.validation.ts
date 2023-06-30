@@ -33,7 +33,7 @@ export const DAY_VALUES = Object.values(DAY);
 
 export const getDay = (year: number, month: number, day: number) => {
   const date = new Date(year, month - 1, day);
-  console.log({ date });
+
   return date.getDay();
 };
 
