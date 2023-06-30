@@ -44,7 +44,7 @@ import {
   PAYMENT_TOTAL_COST_BAD_REQUEST,
 } from './exception/errorCode';
 import { PaymentException } from './exception/payment.exception';
-
+//TODO: 환불 로직 추가
 @Injectable()
 export class PaymentService {
   constructor(
@@ -147,7 +147,7 @@ export class PaymentService {
     if (totalCost !== data.totalCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
     }
-    //TODO: 쿠폰 적용
+
     const result = await this.database.$transaction(async (database) => {
       const { rentalType } = await this.validatePayment(data);
       const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
@@ -252,7 +252,7 @@ export class PaymentService {
     if (totalCost !== data.totalCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
     }
-    //TODO: 쿠폰 적용
+
     const result = await this.database.$transaction(async (database) => {
       const { rentalType } = await this.validatePayment(data);
       const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
@@ -420,7 +420,6 @@ export class PaymentService {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
             }
 
-            //TODO: 쿠폰 만료일 체크
             const dueDateStart = isExist.dueDateStartAt.getTime();
             const dueDateEnd = isExist.dueDateEndAt.getTime();
             const currentDate = new Date().getTime();

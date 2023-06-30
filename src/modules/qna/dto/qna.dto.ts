@@ -1,6 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
 import { DateDTO, DateProps } from '@/common';
+import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
 
 import { QnAAnswerDTO, QnAAnswerProps } from './qna-answer.dto';
@@ -10,6 +11,7 @@ export interface QnADTOProps extends DateProps {
   content: string;
   user: CommonUserProps;
   answers: QnAAnswerProps[];
+  space: SpaceDTOProps;
 }
 
 //TODO: space dto 추가
@@ -32,6 +34,9 @@ export class QnADTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time' } })
   updatedAt: Date;
 
+  @Property({ apiProperty: { type: SpaceDTO, description: '공간' } })
+  space: SpaceDTO;
+
   constructor(props: QnADTOProps) {
     this.id = props.id;
     this.content = props.content;
@@ -39,5 +44,6 @@ export class QnADTO {
     this.answers = props.answers.map((answer) => new QnAAnswerDTO(answer));
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+    this.space = new SpaceDTO(props.space);
   }
 }

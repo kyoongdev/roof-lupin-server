@@ -25,7 +25,15 @@ export class QnARepository {
           },
         },
         user: true,
-        space: true,
+        space: {
+          include: {
+            location: true,
+            reviews: true,
+            publicTransportations: true,
+            userInterests: true,
+            rentalType: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -35,7 +43,20 @@ export class QnARepository {
       take: args.take,
     });
 
-    return qnas.map((qna) => new QnADTO(qna));
+    return qnas.map(
+      (qna) =>
+        new QnADTO({
+          ...qna,
+          space: {
+            ...qna.space,
+            reviewCount: qna.space.reviews.length,
+            publicTransportation: qna.space.publicTransportations?.at(-1),
+            location: qna.space.location,
+            averageScore: Number(qna.space.averageScore),
+            isInterested: false,
+          },
+        })
+    );
   }
 
   async countQna(args = {} as Prisma.SpaceQnACountArgs) {
@@ -48,7 +69,15 @@ export class QnARepository {
         id,
       },
       include: {
-        space: true,
+        space: {
+          include: {
+            location: true,
+            reviews: true,
+            publicTransportations: true,
+            userInterests: true,
+            rentalType: true,
+          },
+        },
         answers: {
           include: {
             host: true,
@@ -64,7 +93,17 @@ export class QnARepository {
       throw new QnAException(QNA_ERROR_CODE.NOT_FOUND());
     }
 
-    return new QnADTO(qna);
+    return new QnADTO({
+      ...qna,
+      space: {
+        ...qna.space,
+        reviewCount: qna.space.reviews.length,
+        publicTransportation: qna.space.publicTransportations?.at(-1),
+        location: qna.space.location,
+        averageScore: Number(qna.space.averageScore),
+        isInterested: false,
+      },
+    });
   }
 
   async createQnA(userId: string, data: CreateQnADTO) {
