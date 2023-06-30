@@ -1,8 +1,9 @@
-import { Body, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Get, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ResponseWithIdDTO } from '@/common';
+import { BANK_CODE } from '@/common/constants';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -12,6 +13,7 @@ import { CreatePaymentDTO } from '../reservation/dto';
 
 import {
   ApproveKakaoPaymentDTO,
+  BankCodeDTO,
   CompletePortOnePaymentDTO,
   ConfirmTossPaymentDTO,
   CreateTossPaymentDTO,
@@ -20,12 +22,32 @@ import {
 } from './dto';
 import { PaymentService } from './payment.service';
 
-@Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('payments', '결제')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @Get('/bank-code')
+  @RequestApi({
+    summary: {
+      summary: '은행 코드 조회하기 ',
+      description: '은행 코드 조회하기',
+    },
+  })
+  @ResponseApi({
+    type: BankCodeDTO,
+    isArray: true,
+  })
+  async getBankCode() {
+    return Object.entries(BANK_CODE).map(([key, value]) => {
+      return new BankCodeDTO({
+        code: key,
+        name: value,
+      });
+    });
+  }
+
   @Post('/port-one/prepare')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '포트원 결제 준비하기 ',
@@ -40,6 +62,7 @@ export class PaymentController {
   }
 
   @Post('/port-one/complete')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -55,6 +78,7 @@ export class PaymentController {
   }
 
   @Post('/kakao/prepare/test')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '카카오 결제 준비 테스트하기 ',
@@ -66,8 +90,8 @@ export class PaymentController {
     return await this.paymentService.testKakaoPayment();
   }
 
-  //INFO: redirect localhost:3000/payments/kakao/approve?pg_token=d5e92b8ef98ab269e0cc
   @Post('/kakao/prepare')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '카카오 결제 준비하기 ',
@@ -82,6 +106,7 @@ export class PaymentController {
   }
 
   @Post('/kakao/complete')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -97,6 +122,7 @@ export class PaymentController {
   }
 
   @Post('/toss/prepare/test')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '토스 결제 준비 테스트하기 ',
@@ -108,8 +134,8 @@ export class PaymentController {
     return await this.paymentService.testTossPayment();
   }
 
-  //INFO: localhost:3000/payments/toss/approve?orderId=22_ESLTK&paymentKey=MKlA4XDvdYoEjb0gm23P0p5zR1lGv3pGwBJn5eya1RPQkx9q&amount=100
   @Post('/toss/prepare')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       summary: '토스 결제 준비하기 ',
@@ -124,6 +150,7 @@ export class PaymentController {
   }
 
   @Post('/toss/complete')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
