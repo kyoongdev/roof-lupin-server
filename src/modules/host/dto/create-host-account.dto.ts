@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { BankCodeResDecorator } from '@/utils/validation';
+
 export interface CreateHostAccountProps {
   ownerName: string;
   bankName: string;
@@ -12,7 +14,7 @@ export class CreateHostAccountDTO {
   @Property({ apiProperty: { type: 'string', description: '사업주 이름' } })
   ownerName: string;
 
-  @Property({ apiProperty: { type: 'string', description: '은행 이름 (코드는 엑셀 참고)' } })
+  @BankCodeResDecorator()
   bankName: string;
 
   @Property({ apiProperty: { type: 'string', description: '사업자등록번호' } })
