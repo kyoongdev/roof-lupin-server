@@ -8,7 +8,8 @@ interface Props {
   nickname: string;
   email?: string;
   phoneNumber?: string;
-  birth?: string;
+  birthDay?: string;
+  birthYear?: string;
   gender?: number;
   profileImage?: string;
 }
@@ -23,8 +24,11 @@ export class CreateUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, maxLength: 11 } })
   phoneNumber?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true } })
-  birth?: string;
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
+  birthDay?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
+  birthYear?: string;
 
   @GenderReqDecorators(true)
   gender?: number;
@@ -37,7 +41,8 @@ export class CreateUserDTO {
       this.nickname = props.nickname;
       this.email = props.email;
       this.phoneNumber = props.phoneNumber;
-      this.birth = props.birth;
+      this.birthDay = props.birthDay;
+      this.birthYear = props.birthYear;
       this.gender = props.gender;
       this.profileImage = props.profileImage;
     }

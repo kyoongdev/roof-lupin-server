@@ -8,7 +8,8 @@ interface Props {
   nickname: string;
   email?: string;
   phoneNumber?: string;
-  birth?: string;
+  birthDay?: string;
+  birthYear?: string;
   gender?: number;
   profileImage?: string;
   socialId: string;
@@ -25,8 +26,11 @@ export class CreateSocialUserDTO {
   @Property({ apiProperty: { type: 'string', description: '연락처', nullable: true } })
   phoneNumber?: string;
 
-  @Property({ apiProperty: { type: 'string', description: '생년월일', nullable: true } })
-  birth?: string;
+  @Property({ apiProperty: { type: 'string', description: '생일 월일', nullable: true, minLength: 4, maxLength: 4 } })
+  birthDay?: string;
+
+  @Property({ apiProperty: { type: 'string', description: '생일 연도', nullable: true, minLength: 4, maxLength: 4 } })
+  birthYear?: string;
 
   @Property({ apiProperty: { type: 'number', description: '성별', nullable: true } })
   gender?: number;
@@ -47,7 +51,8 @@ export class CreateSocialUserDTO {
       this.nickname = props.nickname;
       this.email = props.email;
       this.phoneNumber = props.phoneNumber;
-      this.birth = props.birth;
+      this.birthDay = props.birthDay;
+      this.birthYear = props.birthYear;
       this.gender = props.gender;
       this.profileImage = props.profileImage;
       this.socialId = props.socialId;

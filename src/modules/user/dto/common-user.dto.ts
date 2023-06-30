@@ -21,8 +21,11 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '-을 제외한 11자리 입니다.' } })
   phoneNumber?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true } })
-  birth?: string;
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
+  birthDay?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
+  birthYear?: string;
 
   @GenderResTransForm()
   @Property({ apiProperty: { type: 'string', nullable: true, example: GENDER_VALUE.join(',') + ',NULL' } })
@@ -37,7 +40,8 @@ export class CommonUserDTO extends BaseUserDTO {
     this.nickname = props.nickname;
     this.email = props.email ?? null;
     this.phoneNumber = props.phoneNumber ?? null;
-    this.birth = props.birth ?? null;
+    this.birthYear = props.birthYear ?? null;
+    this.birthDay = props.birthDay ?? null;
     this.gender = props.gender;
     this.profileImage = props.profileImage ?? null;
     this.createdAt = props.createdAt;

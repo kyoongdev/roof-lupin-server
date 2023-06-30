@@ -524,7 +524,8 @@ model User {
   nickname        String
   email           String?
   phoneNumber     String? @db.Char(11)
-  birth           String? @db.Char(8)
+  birthYear       String? @db.Char(4)
+  birthDay        String? @db.Char(4)
   gender          Int?    @db.TinyInt
   profileImage    String?
   isAdult         Boolean @default(false)
