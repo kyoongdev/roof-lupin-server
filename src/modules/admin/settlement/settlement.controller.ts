@@ -3,7 +3,7 @@ import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/settlement/dto';
+import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/host/dto/settlement';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -13,7 +13,7 @@ import { AdminFindSettlementsQuery } from '../dto/query';
 import { AdminSettlementService } from './settlement.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/settlements', '[관리자] 정산')
+@ApiController('settlements', '[관리자] 정산')
 export class AdminSettlementController {
   constructor(private readonly settlementService: AdminSettlementService) {}
 

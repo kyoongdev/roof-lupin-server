@@ -3,11 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { ReservationRepository } from '../reservation/reservation.repository';
-import { SpaceRepository } from '../space/space.repository';
+import { ReservationRepository } from '@/modules/reservation/reservation.repository';
+import { SpaceRepository } from '@/modules/space/space.repository';
+
+import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
 
 import { BlockedTimeRepository } from './blocked-time.repository';
-import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from './dto';
 import { BlockedTimeException } from './exception/blocked-time';
 import {
   BLOCKED_TIME_ERROR_CODE,

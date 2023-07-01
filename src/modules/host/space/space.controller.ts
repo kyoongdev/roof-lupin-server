@@ -15,7 +15,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { HostSpaceService } from './space.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
-@ApiController('hosts/spaces', '[호스트] 공간 관리')
+@ApiController('spaces', '[호스트] 공간 관리')
 export class HostSpaceController {
   constructor(private readonly spaceService: HostSpaceService) {}
 

@@ -11,7 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { HostTaxReturnService } from './tax-return.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
-@ApiController('hosts/tax-returns', '[호스트] 세금신고')
+@ApiController('tax-returns', '[호스트] 세금신고')
 export class HostTaxReturnController {
   constructor(private readonly taxReturnService: HostTaxReturnService) {}
 

@@ -6,8 +6,6 @@ import { FCMEvent } from './event/fcm';
 
 @Controller()
 export class AppController {
-  constructor(private readonly fcmEvent: FCMEvent) {}
-
   @Get('/health')
   healthCheck(@Response() response: ResponseType) {
     response.status(200).json({ status: 'HEALTHY' });

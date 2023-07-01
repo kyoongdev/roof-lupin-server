@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/host/dto/settlement';
+import { SettlementRepository } from '@/modules/host/settlement/settlement.repository';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
-import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/settlement/dto';
-import { SettlementRepository } from '@/modules/settlement/settlement.repository';
 
 import { AdminException } from '../exception/admin.exception';
 import { ADMIN_ERROR_CODE, ADMIN_SETTLEMENT_ALREADY_EXISTS } from '../exception/errorCode';

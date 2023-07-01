@@ -11,7 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { AdminReviewService } from './review.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/reviews', '[관리자] 리뷰 관리')
+@ApiController('reviews', '[관리자] 리뷰 관리')
 export class AdminReviewController {
   constructor(private readonly reviewService: AdminReviewService) {}
 

@@ -11,7 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { HostReviewService } from './review.service';
 
-@ApiController('hosts/reviews', '[호스트] 리뷰 관리')
+@ApiController('reviews', '[호스트] 리뷰 관리')
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
 export class HostReviewController {
   constructor(private readonly reviewService: HostReviewService) {}

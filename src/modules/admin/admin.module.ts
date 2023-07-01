@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Controller, Module } from '@nestjs/common';
 
 import { FCMEvent } from '@/event/fcm';
 import { SchedulerEvent } from '@/event/scheduler';
@@ -6,13 +6,14 @@ import { SchedulerEvent } from '@/event/scheduler';
 import { AlarmRepository } from '../alarm/alarm.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
+import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { HostRepository } from '../host/host.repository';
+import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
-import { SettlementRepository } from '../settlement/settlement.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
@@ -25,7 +26,9 @@ import { AdminAlarmService } from './alarm/alarm.service';
 import { AdminCouponController } from './coupon/coupon.controller';
 import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
-import { AdminHostController } from './host';
+import { AdminExhibitionController } from './exhibition/exhibition.controller';
+import { AdminExhibitionService } from './exhibition/exhibition.service';
+import { AdminHostController } from './host/host.controller';
 import { AdminHostService } from './host/host.service';
 import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
@@ -69,6 +72,8 @@ import { AdminSpaceService } from './space/space.service';
     CategoryRepository,
     UserRepository,
     FCMEvent,
+    ExhibitionRepository,
+    AdminExhibitionService,
   ],
   controllers: [
     AdminController,
@@ -81,6 +86,7 @@ import { AdminSpaceService } from './space/space.service';
     AdminSpaceController,
     AdminSettlementController,
     AdminCouponController,
+    AdminExhibitionController,
   ],
 })
 export class AdminModule {}

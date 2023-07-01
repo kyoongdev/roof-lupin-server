@@ -10,7 +10,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { AdminSpaceService } from './space.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/spaces', '[관리자] 공간 관리')
+@ApiController('spaces', '[관리자] 공간 관리')
 export class AdminSpaceController {
   constructor(private readonly spaceService: AdminSpaceService) {}
 

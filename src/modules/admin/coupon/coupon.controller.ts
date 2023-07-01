@@ -12,7 +12,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { AdminCouponService } from './coupon.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/coupons', '[관리자] 쿠폰 관리')
+@ApiController('coupons', '[관리자] 쿠폰 관리')
 export class AdminCouponController {
   constructor(private readonly couponService: AdminCouponService) {}
 

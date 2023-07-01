@@ -3,15 +3,14 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { range } from 'lodash';
 
-import { BlockedTimeRepository } from '@/modules/blocked-time/blocked-time.repository';
-import { BlockedTimeDTO } from '@/modules/blocked-time/dto';
 import { HolidayService } from '@/modules/holiday/holiday.service';
+import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
+import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
 import {
   PossiblePackageDTO,
-  PossibleRentalTypeByMonthDTO,
   PossibleRentalTypeByMonthDTOProps,
   PossibleRentalTypeDTO,
   PossibleRentalTypesByMonthDTOProps,

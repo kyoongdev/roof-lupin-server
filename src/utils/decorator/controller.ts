@@ -3,5 +3,4 @@ import { ApiTags } from '@nestjs/swagger';
 
 const API_PREFIX = '/api/v1' as const;
 
-export const ApiController = (path: string, tag: string) =>
-  applyDecorators(ApiTags(tag), Controller(`${API_PREFIX}/${path}`));
+export const ApiController = (path = '', tag: string) => applyDecorators(ApiTags(tag), Controller(path));

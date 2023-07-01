@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { SettlementDTO } from './dto';
-import { FindSettlementsQuery } from './dto/query';
+import { SettlementDTO } from '../dto/settlement';
+
 import { SettlementRepository } from './settlement.repository';
 
 @Injectable()

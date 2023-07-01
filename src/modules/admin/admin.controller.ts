@@ -18,7 +18,7 @@ import {
   UpdateAdminPasswordDTO,
 } from './dto';
 
-@ApiController('admins', '통합관리자')
+@ApiController('', '통합관리자')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

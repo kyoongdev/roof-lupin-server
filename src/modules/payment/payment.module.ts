@@ -4,9 +4,9 @@ import { KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 
-import { BlockedTimeRepository } from '../blocked-time/blocked-time.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HolidayService } from '../holiday/holiday.service';
+import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';

@@ -4,7 +4,8 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from './dto';
+import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
+
 import { BlockedTimeException } from './exception/blocked-time';
 import { BLOCKED_TIME_ERROR_CODE, BLOCKED_TIME_NOT_FOUND } from './exception/errorCode';
 

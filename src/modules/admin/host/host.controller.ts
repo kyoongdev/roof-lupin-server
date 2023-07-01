@@ -10,7 +10,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminHostService } from './host.service';
 
-@ApiController('admins/hosts', '[관리자] 호스트 관리')
+@ApiController('hosts', '[관리자] 호스트 관리')
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 export class AdminHostController {
   constructor(private readonly hostService: AdminHostService) {}

@@ -4,13 +4,14 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
-import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
+import { FindBlockedTimesQuery } from '../dto/blocked-time/query';
+
 import { BlockedTimeService } from './blocked-time.service';
-import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from './dto';
-import { FindBlockedTimesQuery } from './dto/query';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
 @ApiController('blocked-times', '[호스트] 시간 차단')

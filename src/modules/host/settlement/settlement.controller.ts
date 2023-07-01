@@ -7,8 +7,9 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { SettlementDetailDTO, SettlementDTO } from './dto';
-import { FindSettlementsQuery } from './dto/query';
+import { SettlementDetailDTO, SettlementDTO } from '../dto/settlement';
+import { FindSettlementsQuery } from '../dto/settlement/query';
+
 import { SettlementService } from './settlement.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])

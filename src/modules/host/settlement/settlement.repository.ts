@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
+import { ReservationDTOProps } from '@/modules/reservation/dto';
 
-import { ReservationDTO, ReservationDTOProps } from '../reservation/dto';
+import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 
-import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from './dto';
 import { SETTLEMENT_ERROR_CODE, SETTLEMENT_HOST_NOT_FOUND, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
 

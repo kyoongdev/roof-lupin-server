@@ -11,7 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { HostQnAService } from './qna.service';
 
-@ApiController('hosts/qnas', '[호스트] QnA 관리')
+@ApiController('qnas', '[호스트] QnA 관리')
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
 export class HostQnAController {
   constructor(private readonly qnaService: HostQnAService) {}

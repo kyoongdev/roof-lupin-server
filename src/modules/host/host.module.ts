@@ -3,11 +3,15 @@ import { Module } from '@nestjs/common';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
+import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { TaxReturnRepository } from '../tax-return/tax-return.repository';
 
+import { BlockedTimeController } from './blocked-time/blocked-time.controller';
+import { BlockedTimeRepository } from './blocked-time/blocked-time.repository';
+import { BlockedTimeService } from './blocked-time/blocked-time.service';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
 import { HostService } from './host.service';
@@ -17,6 +21,9 @@ import { HostReportController } from './report/report.controller';
 import { HostReportService } from './report/report.service';
 import { HostReviewController } from './review/review.controller';
 import { HostReviewService } from './review/review.service';
+import { SettlementController } from './settlement/settlement.controller';
+import { SettlementRepository } from './settlement/settlement.repository';
+import { SettlementService } from './settlement/settlement.service';
 import { HostSpaceController } from './space/space.controller';
 import { HostSpaceService } from './space/space.service';
 import { HostTaxReturnController } from './tax-return/tax-return.controller';
@@ -38,6 +45,11 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     RentalTypeRepository,
     HostTaxReturnService,
     TaxReturnRepository,
+    SettlementService,
+    SettlementRepository,
+    BlockedTimeRepository,
+    BlockedTimeService,
+    ReservationRepository,
   ],
   controllers: [
     HostController,
@@ -46,6 +58,8 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     HostReportController,
     HostSpaceController,
     HostTaxReturnController,
+    SettlementController,
+    BlockedTimeController,
   ],
 })
 export class HostModule {}

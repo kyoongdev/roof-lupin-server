@@ -11,7 +11,7 @@ import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from './dto';
 import { TaxReturnService } from './tax-return.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('tax-returns', '[관리자] 세금 계산')
+@ApiController('admins/tax-returns', '[관리자] 세금 계산')
 export class TaxReturnController {
   constructor(private readonly taxReturnService: TaxReturnService) {}
 

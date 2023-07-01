@@ -13,7 +13,7 @@ import { AdminUpdateReportDTO } from '../dto/report';
 import { AdminReportService } from './report.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/reports', '[관리자] 신고 관리')
+@ApiController('reports', '[관리자] 신고 관리')
 export class AdminReportController {
   constructor(private readonly adminReportService: AdminReportService) {}
 

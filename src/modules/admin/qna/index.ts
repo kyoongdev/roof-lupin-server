@@ -11,7 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { AdminQnAService } from './qna.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/qnas', '[관리자] Q&A 관리')
+@ApiController('qnas', '[관리자] Q&A 관리')
 export class AdminQnAController {
   constructor(private readonly adminQnAService: AdminQnAService) {}
 

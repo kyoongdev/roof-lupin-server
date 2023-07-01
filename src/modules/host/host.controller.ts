@@ -22,7 +22,7 @@ import {
 import { HostDetailDTO } from './dto/host-detail.dto';
 import { HostService } from './host.service';
 
-@ApiController('hosts', '호스트')
+@ApiController('', '호스트')
 export class HostController {
   constructor(private readonly hostService: HostService) {}
 
