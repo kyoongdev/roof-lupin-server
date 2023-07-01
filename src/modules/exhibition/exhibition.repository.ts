@@ -68,7 +68,7 @@ export class ExhibitionRepository {
     });
   }
 
-  async countExhibition(args: Prisma.ExhibitionCountArgs) {
+  async countExhibitions(args: Prisma.ExhibitionCountArgs) {
     return this.database.exhibition.count(args);
   }
 
