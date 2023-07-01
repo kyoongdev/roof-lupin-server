@@ -2,7 +2,8 @@ import { Get, Param } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { ApiController } from '@/utils';
+import { RequestUser } from '@/interface/role.interface';
+import { ApiController, ReqUser } from '@/utils';
 import { JwtNullableAuthGuard } from '@/utils/guards';
 
 import { ExhibitionDetailDTO, ExhibitionDTO } from './dto';
@@ -23,8 +24,8 @@ export class ExhibitionController {
   @ResponseApi({
     type: ExhibitionDetailDTO,
   })
-  async getExhibition(@Param('exhibitionId') id: string) {
-    return this.exhibitionService.findExhibition(id);
+  async getExhibition(@Param('exhibitionId') id: string, @ReqUser() user?: RequestUser) {
+    return this.exhibitionService.findExhibition(id, user?.id);
   }
 
   @Get()

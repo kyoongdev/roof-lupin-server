@@ -5,6 +5,8 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateExhibitionDTO, ExhibitionDetailDTO, ExhibitionDTO, UpdateExhibitionDTO } from './dto';
+import { EXHIBITION_ERROR_CODE, EXHIBITION_NOT_FOUND } from './exception/errorCode';
+import { ExhibitionException } from './exception/exhibition.exception';
 
 @Injectable()
 export class ExhibitionRepository {
@@ -49,6 +51,8 @@ export class ExhibitionRepository {
         },
       },
     });
+
+    if (!exhibition) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
 
     return new ExhibitionDetailDTO({
       ...exhibition,
