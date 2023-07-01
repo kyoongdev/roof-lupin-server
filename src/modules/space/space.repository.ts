@@ -4,9 +4,6 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
-import { BestPhotoDTO } from '../review/dto';
-import { ReviewRepository } from '../review/review.repository';
-
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { AdditionalServiceDTO } from './dto/additionalService';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
@@ -172,7 +169,6 @@ export class SpaceRepository {
     space.rentalType;
     return new SpaceDTO({
       ...space,
-
       reviewCount: space.reviews.length,
       publicTransportation: space.publicTransportations?.at(-1),
       location: space.location,
