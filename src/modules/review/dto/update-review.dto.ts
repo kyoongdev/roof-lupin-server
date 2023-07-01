@@ -16,7 +16,7 @@ export class UpdateReviewDTO {
   @ScoreValidation({ message: '별점은 0~5 사이의 정수만 가능합니다.' })
   score?: number;
 
-  @Property({ apiProperty: { type: 'string', isArray: true } })
+  @Property({ apiProperty: { type: 'string', isArray: true, description: '이미지 url' } })
   images?: string[];
 
   @Property({ apiProperty: { type: 'boolean', isArray: true } })

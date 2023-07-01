@@ -253,8 +253,12 @@ export class SpaceRepository {
             },
           },
           images: {
-            create: images.map((image) => ({
-              imageId: image,
+            create: images.map((url) => ({
+              image: {
+                create: {
+                  url,
+                },
+              },
             })),
           },
           refundPolicies: {
@@ -336,17 +340,25 @@ export class SpaceRepository {
 
     await this.database.$transaction(async (prisma) => {
       if (images) {
-        await prisma.spaceImage.deleteMany({
+        await prisma.image.deleteMany({
           where: {
-            spaceId,
+            spaceImages: {
+              some: {
+                spaceId,
+              },
+            },
           },
         });
 
         updateArgs.data = {
           ...updateArgs.data,
           images: {
-            create: images.map((image) => ({
-              imageId: image,
+            create: images.map((url) => ({
+              image: {
+                create: {
+                  url,
+                },
+              },
             })),
           },
         };

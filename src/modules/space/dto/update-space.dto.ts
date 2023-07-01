@@ -44,7 +44,7 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '초과 인원' } })
   overflowUserCount?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '생성된 이미지 id' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '생성된 이미지 url' } })
   images?: string[];
 
   @Property({ apiProperty: { type: CreateRefundPolicyDTO, nullable: true, isArray: true, description: '환불 정책' } })

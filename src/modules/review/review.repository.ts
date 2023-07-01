@@ -285,6 +285,17 @@ export class ReviewRepository {
     if (props.score) {
       await this.updateReviewAverageScore(id, props.score);
     }
+    if (props.images) {
+      await this.database.image.deleteMany({
+        where: {
+          spaceReviewImages: {
+            some: {
+              spaceReviewId: id,
+            },
+          },
+        },
+      });
+    }
 
     await this.database.spaceReview.update({
       where: {
@@ -294,7 +305,6 @@ export class ReviewRepository {
         content: props.content,
         score: props.score,
         images: props.images && {
-          deleteMany: {},
           create: props.images.map((url) => ({
             image: {
               create: {

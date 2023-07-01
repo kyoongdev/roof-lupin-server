@@ -14,7 +14,7 @@ export class CreateReviewDTO {
   @Property({ apiProperty: { type: 'string', description: '리뷰 내용' } })
   content: string;
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '리뷰 내용' } })
+  @Property({ apiProperty: { type: 'string', isArray: true, description: '이미지 url' } })
   images: string[];
 
   @Property({ apiProperty: { type: 'number', description: '별점' } })
