@@ -70,6 +70,7 @@ model Image {
 
   spaceImages       SpaceImage[]
   spaceReviewImages SpaceReviewImage[]
+  exhibitionImages  ExhibitionImage[]
 }
 
 model MainImage {
@@ -132,6 +133,7 @@ model Space {
   recentSpaces          RecentSpace[]
   blockedTimes          BlockedTime[]
   additionalServices    AdditionalService[]
+  exhibitions           ExhibitionSpace[]
 }
 
 model AdditionalService {
@@ -705,4 +707,51 @@ model Coupon {
 
   userCoupons      UserCoupon[]
   couponCategories CouponCategory[]
+  exhibitions      ExhibitionCoupon[]
+}
+
+model ExhibitionImage {
+  exhibitionId String
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  imageId      String
+  image        Image      @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([exhibitionId, imageId])
+}
+
+model ExhibitionSpace {
+  exhibitionId String
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId      String
+  space        Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([exhibitionId, spaceId])
+}
+
+model ExhibitionCoupon {
+  exhibitionId String
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  couponId     String
+  coupon       Coupon     @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([exhibitionId, couponId])
+}
+
+model Exhibition {
+  id String @id @default(uuid())
+
+  title       String @db.VarChar(80)
+  thumbnail   String
+  description String @db.VarChar(120)
+
+  content String @db.MediumText
+
+  startAt DateTime @db.DateTime
+  endAt   DateTime @db.DateTime
+
+  createdAt DateTime @default(now())
+
+  images  ExhibitionImage[]
+  spaces  ExhibitionSpace[]
+  coupons ExhibitionCoupon[]
 }
