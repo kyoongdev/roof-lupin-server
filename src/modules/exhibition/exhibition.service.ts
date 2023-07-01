@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { FileService } from '../file/file.service';
+
 import { ExhibitionDTO } from './dto';
 import { ExhibitionRepository } from './exhibition.repository';
 

@@ -8,6 +8,7 @@ import { AlarmRepository } from '../alarm/alarm.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
+import { FileService } from '../file/file.service';
 import { HostRepository } from '../host/host.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { LocationRepository } from '../location/location.repository';
@@ -76,6 +77,7 @@ import { AdminSpaceService } from './space/space.service';
     ExhibitionRepository,
     AdminExhibitionService,
     EncryptProvider,
+    FileService,
   ],
   controllers: [
     AdminController,

@@ -5,6 +5,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { getDateDiff } from '@/common/date';
 
+import { FileService } from '../file/file.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceRepository } from '../space/space.repository';
 
@@ -29,7 +30,8 @@ export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
     private readonly spaceRepository: SpaceRepository,
-    private readonly reservationRepository: ReservationRepository
+    private readonly reservationRepository: ReservationRepository,
+    private readonly fileService: FileService
   ) {}
 
   async getReviewSummary(spaceId: string) {
@@ -130,13 +132,27 @@ export class ReviewService {
     }
 
     await this.checkIsUserValid(reviewId, userId);
-
+    if (props.images) {
+      await Promise.all(
+        props.images.map(async (image) => {
+          await this.fileService.deleteFile(image);
+        })
+      );
+    }
     await this.reviewRepository.updateReview(reviewId, props);
   }
 
   async deleteReview(reviewId: string, userId: string) {
-    await this.findReview(reviewId);
+    const review = await this.findReview(reviewId);
     await this.checkIsUserValid(reviewId, userId);
+
+    if (review.images) {
+      await Promise.all(
+        review.images.map(async (image) => {
+          await this.fileService.deleteFile(image.url);
+        })
+      );
+    }
 
     await this.reviewRepository.deleteReview(reviewId);
   }

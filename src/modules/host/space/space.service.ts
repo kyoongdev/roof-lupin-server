@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { FileService } from '@/modules/file/file.service';
 import { SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
@@ -22,7 +23,8 @@ import { HostException } from '../exception/host.exception';
 export class HostSpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeRepository: RentalTypeRepository
+    private readonly rentalTypeRepository: RentalTypeRepository,
+    private readonly fileService: FileService
   ) {}
 
   async findSpace(id: string, hostId: string) {
@@ -105,7 +107,13 @@ export class HostSpaceService {
     if (space.host.id !== hostId) {
       throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
     }
-
+    if (data.images) {
+      await Promise.all(
+        data.images.map(async (image) => {
+          await this.fileService.deleteFile(image);
+        })
+      );
+    }
     await this.spaceRepository.updateSpace(id, data);
   }
 
@@ -114,6 +122,14 @@ export class HostSpaceService {
 
     if (space.host.id !== hostId) {
       throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+    }
+
+    if (space.images) {
+      await Promise.all(
+        space.images.map(async (image) => {
+          await this.fileService.deleteFile(image.url);
+        })
+      );
     }
 
     await this.spaceRepository.deleteSpace(id);

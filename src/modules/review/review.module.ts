@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { FileService } from '../file/file.service';
 import { LocationRepository } from '../location/location.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
@@ -11,6 +12,13 @@ import { ReviewService } from './review.service';
 
 @Module({
   controllers: [ReviewController],
-  providers: [ReviewService, SpaceRepository, ReviewRepository, RentalTypeRepository, ReservationRepository],
+  providers: [
+    ReviewService,
+    SpaceRepository,
+    ReviewRepository,
+    RentalTypeRepository,
+    ReservationRepository,
+    FileService,
+  ],
 })
 export class ReviewModule {}

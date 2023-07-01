@@ -5,10 +5,11 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CreateExhibitionDTO, ExhibitionDTO, UpdateExhibitionDTO } from '@/modules/exhibition/dto';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
+import { FileService } from '@/modules/file/file.service';
 
 @Injectable()
 export class AdminExhibitionService {
-  constructor(private readonly exhibitionRepository: ExhibitionRepository) {}
+  constructor(private readonly exhibitionRepository: ExhibitionRepository, private readonly fileService: FileService) {}
 
   async findExhibition(id: string) {
     return await this.exhibitionRepository.findExhibition(id);
@@ -34,6 +35,13 @@ export class AdminExhibitionService {
 
   async updateExhibition(id: string, data: UpdateExhibitionDTO) {
     await this.findExhibition(id);
+    if (data.images) {
+      await Promise.all(
+        data.images.map(async (image) => {
+          await this.fileService.deleteFile(image);
+        })
+      );
+    }
     await this.exhibitionRepository.updateExhibition(id, data);
   }
 

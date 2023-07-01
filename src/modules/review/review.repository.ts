@@ -125,29 +125,6 @@ export class ReviewRepository {
     );
   }
 
-  async findBestPhotoReview(reviewId: string, imageId: string) {
-    const bestPhoto = await this.database.spaceReviewImage.findUnique({
-      where: {
-        spaceReviewId_imageId: {
-          spaceReviewId: reviewId,
-          imageId,
-        },
-      },
-      include: {
-        image: true,
-      },
-    });
-
-    if (!bestPhoto) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(BEST_PHOTO_NOT_FOUND));
-    }
-
-    return new BestPhotoDTO({
-      id: bestPhoto.image.id,
-      url: bestPhoto.image.url,
-    });
-  }
-
   async findReviewReport(id: string) {
     const report = await this.database.spaceReviewReport.findUnique({
       where: {
