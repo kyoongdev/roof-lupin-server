@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { Encrypt } from '@/common/encrypt';
+import { EncryptProvider } from '@/common/encrypt';
 
 import { AdminRepository } from './admin.repository';
 import {
@@ -17,7 +17,7 @@ import {
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly adminRepository: AdminRepository) {}
+  constructor(private readonly adminRepository: AdminRepository, private readonly encrypt: EncryptProvider) {}
 
   async findAdmin(id: string) {
     return await this.adminRepository.findAdmin(id);
@@ -55,7 +55,7 @@ export class AdminService {
 
   async updateAdminPassword(data: UpdateAdminPasswordDTO) {
     const admin = await this.adminRepository.findAdminByUserId(data.userId);
-    const password = Encrypt.hashPassword(admin.salt, data.password);
+    const password = this.encrypt.hashPassword(admin.salt, data.password);
 
     await this.adminRepository.updateAdmin(admin.id, { password });
   }

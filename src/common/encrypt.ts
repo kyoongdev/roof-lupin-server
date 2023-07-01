@@ -1,10 +1,12 @@
+import { Injectable } from '@nestjs/common';
+
 import crypto from 'crypto';
 
 import { CommonException } from './exception/common.exception';
 import { COMMON_ERROR_CODE, ENCRYPT_ERROR } from './exception/errorCode';
-
-export class Encrypt {
-  public static comparePassword(salt: string, password: string, hashedPassword: string) {
+@Injectable()
+export class EncryptProvider {
+  public comparePassword(salt: string, password: string, hashedPassword: string) {
     try {
       return this.hashPassword(salt, password) === hashedPassword;
     } catch (err) {
@@ -12,7 +14,7 @@ export class Encrypt {
     }
   }
 
-  public static hashPassword(salt: string, password: string) {
+  public hashPassword(salt: string, password: string) {
     try {
       return crypto.pbkdf2Sync(password, salt, 1, 32, 'sha512').toString('base64');
     } catch (err) {
@@ -20,7 +22,7 @@ export class Encrypt {
     }
   }
 
-  public static createSalt() {
+  public createSalt() {
     try {
       return crypto.randomBytes(32).toString('base64');
     } catch (err) {

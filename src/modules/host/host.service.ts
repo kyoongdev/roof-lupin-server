@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
-import { Encrypt } from '@/common/encrypt';
+import { EncryptProvider } from '@/common/encrypt';
 
 import {
   CheckHostDTO,
@@ -19,7 +19,7 @@ import { HostRepository } from './host.repository';
 
 @Injectable()
 export class HostService {
-  constructor(private readonly hostRepository: HostRepository) {}
+  constructor(private readonly hostRepository: HostRepository, private readonly encrypt: EncryptProvider) {}
 
   async findHost(id: string) {
     return await this.hostRepository.findHost(id);
@@ -53,7 +53,7 @@ export class HostService {
       throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_PHONE_NUMBER_BAD_REQUEST));
     }
     const newPassword = nanoid(10).toUpperCase();
-    const password = Encrypt.hashPassword(host.salt, newPassword);
+    const password = this.encrypt.hashPassword(host.salt, newPassword);
 
     await this.hostRepository.updateHost(host.id, {
       password,

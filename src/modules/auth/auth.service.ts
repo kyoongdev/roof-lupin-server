@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 import { AppleLogin, KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
-import { Encrypt } from '@/common/encrypt';
+import { EncryptProvider } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
 import { AdminRepository } from '@/modules/admin/admin.repository';
@@ -49,7 +49,8 @@ export class AuthService {
     private readonly kakaoService: KakaoLogin,
     private readonly naverService: NaverLogin,
     private readonly appleService: AppleLogin,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly encrypt: EncryptProvider
   ) {}
 
   async testUserLogin() {
@@ -154,7 +155,7 @@ export class AuthService {
   async adminLogin(props: AdminAuthDTO) {
     const admin = await this.adminRepository.findAdminByUserId(props.userId);
 
-    const isMatch = Encrypt.comparePassword(admin.salt, props.password, admin.password);
+    const isMatch = this.encrypt.comparePassword(admin.salt, props.password, admin.password);
     if (!isMatch) {
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
     }
@@ -181,7 +182,7 @@ export class AuthService {
   async hostLogin(props: HostAuthDTO) {
     const host = await this.hostRepository.findHostByEmail(props.email);
 
-    const isMatch = Encrypt.comparePassword(host.salt, props.password, host.password);
+    const isMatch = this.encrypt.comparePassword(host.salt, props.password, host.password);
     if (!isMatch) {
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
     }

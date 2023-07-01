@@ -48,11 +48,9 @@ const providers: Provider[] = [
       {
         path: '/api/v1',
         module: V1Module,
-        children: [...Modules, { path: '/admins', module: AdminModule }, { path: '/hosts', module: HostModule }] as
-          | Routes
-          | Type<any>[],
+        children: [...Modules, { path: '/admins', module: AdminModule }, { path: '/hosts', module: HostModule }],
       },
-    ]),
+    ] as Routes),
   ],
   controllers: [AppController],
   providers,

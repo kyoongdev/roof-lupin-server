@@ -4,7 +4,7 @@ import { range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { Encrypt } from './common/encrypt';
+import { EncryptProvider } from './common/encrypt';
 import { OpenAPI } from './interface/holiday.interface';
 import { COUPON_CODE } from './modules/coupon/constants';
 import { DISCOUNT_TYPE_ENUM } from './modules/coupon/validation';
@@ -20,9 +20,10 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.category.deleteMany({});
   await database.holiday.deleteMany({});
   await database.coupon.deleteMany({});
-  const salt = Encrypt.createSalt();
-  const hostPassword = Encrypt.hashPassword(salt, '1234');
-  const adminPassword = Encrypt.hashPassword(salt, 'admin1234');
+  const encrypt = new EncryptProvider();
+  const salt = encrypt.createSalt();
+  const hostPassword = encrypt.hashPassword(salt, '1234');
+  const adminPassword = encrypt.hashPassword(salt, 'admin1234');
   await database.coupon.create({
     data: {
       name: '회원가입',
@@ -172,7 +173,7 @@ export const seedDatabase = async (database: PrismaService) => {
     });
     categories.push(category);
   }
-  const hostPassword2 = Encrypt.hashPassword(salt, 'real1234');
+  const hostPassword2 = encrypt.hashPassword(salt, 'real1234');
   const realHost = await database.host.create({
     data: {
       password: hostPassword2,

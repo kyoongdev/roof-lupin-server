@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { SocialLoginModule } from 'wemacu-nestjs';
 
+import { EncryptProvider } from '@/common/encrypt';
 import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
@@ -41,7 +42,15 @@ const config = new ConfigService();
       },
     }),
   ],
-  providers: [AuthService, UserRepository, AdminRepository, HostRepository, Jsonwebtoken, CouponRepository],
+  providers: [
+    AuthService,
+    UserRepository,
+    AdminRepository,
+    HostRepository,
+    Jsonwebtoken,
+    CouponRepository,
+    EncryptProvider,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

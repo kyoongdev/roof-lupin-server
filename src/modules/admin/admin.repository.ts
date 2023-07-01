@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 
-import { Encrypt } from '@/common/encrypt';
+import { EncryptProvider } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import { AdminDetailDTO, AdminDTO, UpdateAdminDTO } from './dto';
@@ -12,7 +12,7 @@ import { ADMIN_ERROR_CODE, ADMIN_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
 export class AdminRepository {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly database: PrismaService, private readonly encrypt: EncryptProvider) {}
 
   async findAdmins(args = {} as Prisma.AdminFindManyArgs) {
     const admins = await this.database.admin.findMany({
@@ -84,11 +84,11 @@ export class AdminRepository {
   }
 
   async createAdmin(data: CreateAdminDTO, byAdmin = false) {
-    const salt = Encrypt.createSalt();
+    const salt = this.encrypt.createSalt();
     const admin = await this.database.admin.create({
       data: {
         ...data,
-        password: Encrypt.hashPassword(salt, data.password),
+        password: this.encrypt.hashPassword(salt, data.password),
         salt,
         isAccepted: byAdmin,
       },
@@ -101,9 +101,9 @@ export class AdminRepository {
     const updateArgs: Prisma.AdminUpdateInput = data;
 
     if (data.password) {
-      const salt = Encrypt.createSalt();
+      const salt = this.encrypt.createSalt();
       updateArgs.salt = salt;
-      updateArgs.password = Encrypt.hashPassword(salt, data.password);
+      updateArgs.password = this.encrypt.hashPassword(salt, data.password);
     }
     await this.database.admin.update({
       where: {

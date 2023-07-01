@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PagingDTO } from 'wemacu-nestjs';
 
-import { Encrypt } from '@/common/encrypt';
+import { EncryptProvider } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import {
@@ -21,7 +21,7 @@ import { HostException } from './exception/host.exception';
 
 @Injectable()
 export class HostRepository {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly database: PrismaService, private readonly encrypt: EncryptProvider) {}
 
   async findHosts(args = {} as Prisma.HostFindManyArgs) {
     const hosts = await this.database.host.findMany({
@@ -103,8 +103,8 @@ export class HostRepository {
   }
 
   async createHost(data: CreateHostDTO) {
-    const salt = Encrypt.createSalt();
-    const password = Encrypt.hashPassword(data.password, salt);
+    const salt = this.encrypt.createSalt();
+    const password = this.encrypt.hashPassword(data.password, salt);
 
     const host = await this.database.host.create({
       data: {
@@ -121,9 +121,9 @@ export class HostRepository {
     const updateArgs: Prisma.HostUpdateInput = data;
 
     if (data.password) {
-      const salt = Encrypt.createSalt();
+      const salt = this.encrypt.createSalt();
       updateArgs.salt = salt;
-      updateArgs.password = Encrypt.hashPassword(data.password, salt);
+      updateArgs.password = this.encrypt.hashPassword(data.password, salt);
     }
 
     await this.database.host.update({

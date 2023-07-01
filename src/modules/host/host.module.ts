@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { EncryptProvider } from '@/common/encrypt';
+
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
@@ -50,6 +52,7 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     BlockedTimeRepository,
     BlockedTimeService,
     ReservationRepository,
+    EncryptProvider,
   ],
   controllers: [
     HostController,

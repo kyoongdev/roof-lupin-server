@@ -1,5 +1,6 @@
 import { Controller, Module } from '@nestjs/common';
 
+import { EncryptProvider } from '@/common/encrypt';
 import { FCMEvent } from '@/event/fcm';
 import { SchedulerEvent } from '@/event/scheduler';
 
@@ -74,6 +75,7 @@ import { AdminSpaceService } from './space/space.service';
     FCMEvent,
     ExhibitionRepository,
     AdminExhibitionService,
+    EncryptProvider,
   ],
   controllers: [
     AdminController,
