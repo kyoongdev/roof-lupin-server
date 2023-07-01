@@ -37,7 +37,7 @@ export class FileController {
   })
   @ResponseApi(
     {
-      type: ImageDTO,
+      type: UploadedFileDTO,
     },
     201
   )
@@ -70,7 +70,7 @@ export class FileController {
   })
   @ResponseApi(
     {
-      type: ImageDTO,
+      type: UploadedFileDTO,
       isArray: true,
     },
     201

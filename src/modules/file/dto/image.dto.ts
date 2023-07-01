@@ -2,15 +2,20 @@ import { ConfigService } from '@nestjs/config';
 
 import { Property } from 'wemacu-nestjs';
 
-export interface Props {
+export interface ImageDTOProps {
+  id: string;
   url: string;
 }
 
 export class ImageDTO {
   @Property({ apiProperty: { type: 'string' } })
+  id: string;
+
+  @Property({ apiProperty: { type: 'string' } })
   url: string;
 
-  constructor(props: Props) {
+  constructor(props: ImageDTOProps) {
+    this.id = props.id;
     this.url = props.url;
   }
 

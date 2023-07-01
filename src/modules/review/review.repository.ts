@@ -281,6 +281,7 @@ export class ReviewRepository {
     await this.updateReviewAverageScore(review.id, score);
     return review.id;
   }
+
   async updateReview(id: string, props: UpdateReviewDTO) {
     if (props.score) {
       await this.updateReviewAverageScore(id, props.score);

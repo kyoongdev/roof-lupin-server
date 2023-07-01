@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import * as AWS from '@aws-sdk/client-s3';
 
-import { ImageDTO } from './dto';
+import { ImageDTO, UploadedFileDTO } from './dto';
 
 @Injectable()
 export class FileService {
@@ -27,7 +27,7 @@ export class FileService {
 
       const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${key}`;
 
-      return new ImageDTO({ url });
+      return new UploadedFileDTO(url);
     } catch (error) {
       console.log(error);
     }
