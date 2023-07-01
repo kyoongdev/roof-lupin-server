@@ -53,18 +53,6 @@ export class ReservationService {
     return reservation;
   }
 
-  async createReservation(userId: string, data: CreatePaymentDTO) {
-    await this.validateReservation(data);
-    const reservation = await this.reservationRepository.createReservation(userId, data);
-    return reservation.id;
-  }
-
-  // async updateReservation(id: string, userId: string, data: UpdateReservationDTO) {
-  //   await this.findMyReservation(id, userId);
-  //   // await this.validateReservation(data);
-  //   await this.reservationRepository.updateReservation(id, data);
-  // }
-
   async deleteMyReservation(id: string, userId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
 
@@ -73,29 +61,5 @@ export class ReservationService {
     }
 
     await this.reservationRepository.deleteReservation(id);
-  }
-
-  async validateReservation(data: CreatePaymentDTO) {
-    const { rentalTypeId } = data;
-    const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
-    const existingReservations = await this.reservationRepository.findReservations({
-      where: {
-        rentalTypeId,
-        year: data.year,
-        month: data.month,
-        day: data.day,
-      },
-    });
-
-    //INFO: 예약 시도하는 시간에 예약된 건이 있는지 여부 확인
-    if (existingReservations.length > 0) {
-      data.validateIsReservationExist(existingReservations);
-    }
-
-    if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
-      data.validateTimeReservation(rentalType);
-    } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-      data.validatePackageReservation(rentalType);
-    } else throw new SpaceException(SPACE_ERROR_CODE.INTERNAL_SERVER_ERROR(RENTAL_TYPE_ERROR));
   }
 }
