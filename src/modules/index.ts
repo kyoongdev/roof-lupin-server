@@ -7,6 +7,7 @@ import { BlockedTimeModule } from './blocked-time/blocked-times.module';
 import { CategoryModule } from './category/category.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CurationModule } from './curation/curation.module';
+import { ExhibitionModule } from './exhibition/exhibition.module';
 import { FaqModule } from './faq/faq.module';
 import { FileModule } from './file/file.module';
 import { GlobalModule } from './global';
@@ -52,4 +53,5 @@ export const Modules = [
   CategoryModule,
   CurationModule,
   PaymentModule,
+  ExhibitionModule,
 ];
