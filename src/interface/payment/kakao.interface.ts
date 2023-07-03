@@ -282,7 +282,7 @@ export interface KakaoPayOrderDetailResponse {
 
 export interface KakaoPayCancelRequest {
   /** 가맹점 코드, 10자	*/
-  cid: string;
+  cid?: string;
   /** 가맹점 코드 인증키, 24자, 숫자+영문 소문자 조합	 */
   cid_secret?: string;
   /** 결제 고유번호	 */

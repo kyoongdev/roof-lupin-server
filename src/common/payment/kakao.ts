@@ -84,10 +84,20 @@ export class KakaoPayProvider {
 
     return response.data;
   }
-  async cancelPayment(data: KakaoPayCancelRequest): Promise<KakaoPayCancelResponse> {
-    const response = await this.apiClient.post<KakaoPayCancelResponse>('/payment/cancel', data, {
-      headers: this.getHeader(),
-    });
+  async cancelPayment({
+    cid = this.configService.get('KAKAO_PAY_CID'),
+    ...rest
+  }: KakaoPayCancelRequest): Promise<KakaoPayCancelResponse> {
+    const response = await this.apiClient.post<KakaoPayCancelResponse>(
+      '/payment/cancel',
+      {
+        cid,
+        ...rest,
+      },
+      {
+        headers: this.getHeader(),
+      }
+    );
 
     return response.data;
   }

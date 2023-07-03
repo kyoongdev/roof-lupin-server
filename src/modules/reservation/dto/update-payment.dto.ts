@@ -15,6 +15,7 @@ export interface UpdatePaymentDTOProps {
   orderResultId?: string;
   payMethod?: PayMethod;
   payedAt?: Date;
+  refundCost?: number;
 }
 
 export class UpdatePaymentDTO {
@@ -41,6 +42,9 @@ export class UpdatePaymentDTO {
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '결제일' } })
   payedAt?: Date;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '환불 금액' } })
+  refundCost?: number;
 
   constructor(props?: UpdatePaymentDTOProps) {
     if (props) {

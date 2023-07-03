@@ -15,8 +15,12 @@ export const PAYMENT_COUPON_IS_USED = '이미 쿠폰을 사용했습니다.' as 
 export const PAYMENT_COUPON_COUNT_ZERO = '사용 가능한 쿠폰이 없습니다.' as const;
 export const PAYMENT_DISCOUNT_COST_BAD_REQUEST = '할인 비용을 다시 확인해주세요.' as const;
 export const PAYMENT_SPACE_ID_BAD_REQUEST = '공간 정보가 일치하지 않습니다..' as const;
+export const PAYMENT_REFUND_FORBIDDEN = '환불 권한이 없습니다.' as const;
+export const PAYMENT_NOT_COMPLETED = '아직 결제가 완료되지 않았습니다.' as const;
+export const PAYMENT_ALREADY_REFUNDED = '이미 환불된 결제입니다.' as const;
+export const PAYMENT_MERCHANT_UID_BAD_REQUEST = '주문번호를 다시 확인해주세요.' as const;
 
-export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT'> = {
+export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT' | 'FORBIDDEN'> = {
   BAD_REQUEST: (message = 'BAD_REQUEST') => ({
     code: HttpStatus.BAD_REQUEST,
     message,
@@ -27,6 +31,10 @@ export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERRO
   }),
   CONFLICT: (message = 'CONFLICT') => ({
     code: HttpStatus.CONFLICT,
+    message,
+  }),
+  FORBIDDEN: (message = 'FORBIDDEN') => ({
+    code: HttpStatus.FORBIDDEN,
     message,
   }),
 };

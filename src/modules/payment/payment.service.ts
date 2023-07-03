@@ -26,8 +26,10 @@ import {
   CreateTossPaymentDTO,
   PortOnePreparePaymentDTO,
   PrepareKakaoPaymentDTO,
+  RefundPaymentDTO,
 } from './dto';
 import {
+  PAYMENT_ALREADY_REFUNDED,
   PAYMENT_CONFLICT,
   PAYMENT_COUPON_COUNT_ZERO,
   PAYMENT_COUPON_DUE_DATE_BEFORE,
@@ -37,8 +39,11 @@ import {
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_INTERNAL_SERVER_ERROR,
+  PAYMENT_MERCHANT_UID_BAD_REQUEST,
+  PAYMENT_NOT_COMPLETED,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
   PAYMENT_PAY_METHOD_BAD_REQUEST,
+  PAYMENT_REFUND_FORBIDDEN,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
   PAYMENT_SPACE_ID_BAD_REQUEST,
   PAYMENT_TOTAL_COST_BAD_REQUEST,
@@ -157,7 +162,7 @@ export class PaymentService {
         const result = await this.kakaoPay.preparePayment({
           item_name: rentalType.name,
           quantity: 1,
-          tax_free_amount: reservation.taxFreeCost,
+          tax_free_amount: 0,
           total_amount: reservation.totalCost,
           partner_order_id: orderId,
         });
@@ -328,6 +333,47 @@ export class PaymentService {
     }
 
     return reservation.id;
+  }
+
+  async refundPayment(userId: string, data: RefundPaymentDTO) {
+    const reservation = await this.reservationRepository.findReservation(data.reservationId);
+    //TODO: 기간에 따른 환불금 정하기
+    const refundCost = reservation.totalCost;
+    const taxCost = Math.floor(refundCost / 1.1);
+
+    if (reservation.user.id !== userId) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+    }
+
+    if (!reservation.payedAt) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_NOT_COMPLETED));
+    }
+
+    if (reservation.refundCost === 0) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_ALREADY_REFUNDED));
+    }
+
+    if (reservation.payMethod === PayMethod.KAKAO_PAY) {
+      await this.kakaoPay.cancelPayment({
+        cancel_amount: refundCost,
+        cancel_tax_free_amount: 0,
+        cancel_vat_amount: taxCost,
+        tid: reservation.orderResultId,
+      });
+    } else if (reservation.payMethod === PayMethod.TOSS_PAY) {
+      await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
+        cancelAmount: refundCost,
+        cancelReason: '사용자 환불 요청',
+      });
+    } else if (reservation.payMethod === PayMethod.PORT_ONE) {
+      if (!data.merchant_uid) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MERCHANT_UID_BAD_REQUEST));
+      }
+
+      // await this.portOne.
+    } else {
+      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+    }
   }
 
   createOrderId() {

@@ -64,7 +64,7 @@ export interface TossCancelPayment {
   /** 취소 금액 */
   cancelAmount: number;
   /** 환불 계좌 정보 */
-  refundReceiveAccount: RefundReceiveAccount;
+  refundReceiveAccount?: RefundReceiveAccount;
 }
 
 export interface RefundReceiveAccount {

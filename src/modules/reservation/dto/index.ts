@@ -4,3 +4,4 @@ export * from './create-payment';
 export * from './update-reservation.dto';
 export * from './base-reservation.dto';
 export * from './update-payment.dto';
+export * from './refund-payment.dto';
