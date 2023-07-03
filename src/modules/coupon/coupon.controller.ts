@@ -1,14 +1,15 @@
-import { Get, Param } from '@nestjs/common';
+import { Body, Get, Param, Post, Res, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
+import { ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
-import { ApiController, ReqUser } from '@/utils';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CouponService } from './coupon.service';
-import { UserCouponDTO } from './dto';
+import { RegisterCouponByCodeDTO, UserCouponDTO } from './dto';
 
 @ApiController('coupons', '쿠폰')
 export class CouponController {
@@ -46,5 +47,24 @@ export class CouponController {
   })
   async getMyCoupons(@ReqUser() user: RequestUser, @Paging() paging: PagingDTO) {
     return await this.couponService.findPagingUserCoupons(paging, user.id);
+  }
+
+  @Post('/reigster')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '쿠폰 등록',
+      summary: '쿠폰 등록 - 유저만 사용 가능',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async registerCouponByCode(@ReqUser() user: RequestUser, @Body() body: RegisterCouponByCodeDTO) {
+    return await this.couponService.registerCouponByCode(user.id, body);
   }
 }

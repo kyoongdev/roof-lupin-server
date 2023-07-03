@@ -703,7 +703,7 @@ model Coupon {
   description         String    @db.VarChar(100)
   code                String    @unique @db.Char(10)
   isLupinPay          Boolean   @default(false)
-  defualtDueDateStart DateTime? @db.DateTime
+  defaultDueDateStart DateTime? @db.DateTime
   defaultDueDay       Int       @default(0) @db.SmallInt
   link                String?
 

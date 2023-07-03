@@ -33,5 +33,17 @@ export class CouponService {
 
   async registerCouponByCode(userId: string, data: RegisterCouponByCodeDTO) {
     const coupon = await this.couponRepository.findCouponByCode(data.code);
+
+    const now = new Date();
+    now.setUTCHours(0, 0, 0, 0);
+    const dueDateStartAt = coupon.defaultDueDateStart || new Date(now);
+
+    const dueDateEndAt = new Date(now.setUTCDate(now.getUTCDate() + coupon.defaultDueDay));
+    const userCouponId = await this.couponRepository.createUserCoupon(coupon.id, {
+      userId,
+      dueDateStartAt,
+      dueDateEndAt,
+    });
+    return userCouponId;
   }
 }

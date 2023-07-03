@@ -340,11 +340,12 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
-    const reservationDate = new Date(2023, 6, 3).getTime();
+    const reservationDate = new Date(2023, 6, 3);
+    reservationDate.setUTCHours(0, 0, 0, 0);
     const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    now.setUTCHours(0, 0, 0, 0);
 
-    const diffDate = reservationDate - now.getTime();
+    const diffDate = reservationDate.getTime() - now.getTime();
     if (diffDate < 0) {
       throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_REFUND_DUE_DATE_PASSED));
     }
@@ -497,13 +498,14 @@ export class PaymentService {
 
             const dueDateStart = isExist.dueDateStartAt.getTime();
             const dueDateEnd = isExist.dueDateEndAt.getTime();
-            const currentDate = new Date().getTime();
+            const currentDate = new Date();
+            currentDate.setUTCHours(0, 0, 0, 0);
 
-            if (dueDateStart > currentDate) {
+            if (dueDateStart > currentDate.getTime()) {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
             }
 
-            if (dueDateEnd < currentDate) {
+            if (dueDateEnd < currentDate.getTime()) {
               if (!isExist.isUsed) {
                 await this.couponRepository.updateUserCoupon(isExist.id, { isUsed: true });
               }
