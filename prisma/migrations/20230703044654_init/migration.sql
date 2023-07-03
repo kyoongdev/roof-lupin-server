@@ -1,4 +1,15 @@
 -- CreateTable
+CREATE TABLE `Holiday` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(120) NOT NULL,
+    `year` VARCHAR(191) NOT NULL,
+    `month` VARCHAR(191) NOT NULL,
+    `day` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `AppInfo` (
     `id` VARCHAR(191) NOT NULL,
     `iosVersion` VARCHAR(20) NOT NULL,
@@ -92,6 +103,16 @@ CREATE TABLE `Space` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `AdditionalService` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(50) NOT NULL,
+    `cost` MEDIUMINT NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `RecentSpace` (
     `userId` VARCHAR(191) NOT NULL,
     `spaceId` VARCHAR(191) NOT NULL,
@@ -126,6 +147,7 @@ CREATE TABLE `RentalType` (
     `name` VARCHAR(120) NOT NULL,
     `baseCost` MEDIUMINT NOT NULL,
     `rentalType` TINYINT NOT NULL,
+    `day` INTEGER NOT NULL,
     `baseHour` TINYINT NULL,
     `startAt` TINYINT NOT NULL DEFAULT 0,
     `endAt` TINYINT NOT NULL DEFAULT 24,
@@ -158,13 +180,14 @@ CREATE TABLE `Reservation` (
     `discountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `serviceDiscountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `originalCost` MEDIUMINT NOT NULL,
+    `refundCost` MEDIUMINT NOT NULL DEFAULT 0,
+    `userCount` INTEGER NOT NULL,
     `orderId` VARCHAR(191) NULL,
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
     `rentalTypeId` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
-    `userCounponId` VARCHAR(191) NULL,
     `payedAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -284,7 +307,6 @@ CREATE TABLE `SpaceReviewImage` (
 -- CreateTable
 CREATE TABLE `SpaceReviewReport` (
     `id` VARCHAR(191) NOT NULL,
-    `reportType` TINYINT NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
     `isProcessed` BOOLEAN NOT NULL DEFAULT false,
     `spaceReviewId` VARCHAR(191) NULL,
@@ -324,9 +346,8 @@ CREATE TABLE `SpaceImage` (
 -- CreateTable
 CREATE TABLE `RefundPolicy` (
     `id` VARCHAR(191) NOT NULL,
+    `daysBefore` TINYINT NOT NULL,
     `refundRate` TINYINT NOT NULL,
-    `dueDate` TINYINT NOT NULL,
-    `dueDateType` TINYINT NOT NULL,
     `spaceId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -395,7 +416,7 @@ CREATE TABLE `Host` (
 CREATE TABLE `HostAccount` (
     `id` VARCHAR(191) NOT NULL,
     `ownerName` VARCHAR(20) NOT NULL,
-    `bankName` TINYINT NOT NULL,
+    `bankName` VARCHAR(5) NOT NULL,
     `businessRegistrationNumber` CHAR(10) NOT NULL,
     `account` VARCHAR(40) NOT NULL,
     `accountOwner` VARCHAR(20) NOT NULL,
@@ -427,7 +448,8 @@ CREATE TABLE `User` (
     `nickname` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NULL,
     `phoneNumber` CHAR(11) NULL,
-    `birth` CHAR(8) NULL,
+    `birthYear` CHAR(4) NULL,
+    `birthDay` CHAR(4) NULL,
     `gender` TINYINT NULL,
     `profileImage` VARCHAR(191) NULL,
     `isAdult` BOOLEAN NOT NULL DEFAULT false,
@@ -570,11 +592,13 @@ CREATE TABLE `Hashtag` (
 CREATE TABLE `UserCoupon` (
     `id` VARCHAR(191) NOT NULL,
     `count` TINYINT NOT NULL DEFAULT 1,
-    `dueDate` DATETIME NOT NULL,
-    `isUsed` BOOLEAN NOT NULL DEFAULT false,
+    `dueDateStartAt` DATETIME NOT NULL,
+    `dueDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `isUsed` BOOLEAN NOT NULL DEFAULT false,
     `userId` VARCHAR(191) NOT NULL,
     `couponId` VARCHAR(191) NOT NULL,
+    `reservationId` VARCHAR(191) NULL,
 
     UNIQUE INDEX `UserCoupon_couponId_key`(`couponId`),
     PRIMARY KEY (`id`)
@@ -589,8 +613,48 @@ CREATE TABLE `Coupon` (
     `description` VARCHAR(100) NOT NULL,
     `code` CHAR(10) NOT NULL,
     `isLupinPay` BOOLEAN NOT NULL DEFAULT false,
+    `defaultDueDay` SMALLINT NOT NULL DEFAULT 0,
+    `link` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Coupon_code_key`(`code`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ExhibitionImage` (
+    `exhibitionId` VARCHAR(191) NOT NULL,
+    `imageId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`exhibitionId`, `imageId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ExhibitionSpace` (
+    `exhibitionId` VARCHAR(191) NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`exhibitionId`, `spaceId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ExhibitionCoupon` (
+    `exhibitionId` VARCHAR(191) NOT NULL,
+    `couponId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`exhibitionId`, `couponId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Exhibition` (
+    `id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(80) NOT NULL,
+    `thumbnail` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(120) NOT NULL,
+    `content` MEDIUMTEXT NOT NULL,
+    `startAt` DATETIME NOT NULL,
+    `endAt` DATETIME NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -599,6 +663,9 @@ ALTER TABLE `Curation` ADD CONSTRAINT `Curation_userId_fkey` FOREIGN KEY (`userI
 
 -- AddForeignKey
 ALTER TABLE `Space` ADD CONSTRAINT `Space_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AdditionalService` ADD CONSTRAINT `AdditionalService_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `RecentSpace` ADD CONSTRAINT `RecentSpace_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -626,9 +693,6 @@ ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_userId_fkey` FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_settlementId_fkey` FOREIGN KEY (`settlementId`) REFERENCES `Settlement`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_userCounponId_fkey` FOREIGN KEY (`userCounponId`) REFERENCES `UserCoupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `BlockedTime` ADD CONSTRAINT `BlockedTime_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -755,3 +819,24 @@ ALTER TABLE `UserCoupon` ADD CONSTRAINT `UserCoupon_userId_fkey` FOREIGN KEY (`u
 
 -- AddForeignKey
 ALTER TABLE `UserCoupon` ADD CONSTRAINT `UserCoupon_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `Coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `UserCoupon` ADD CONSTRAINT `UserCoupon_reservationId_fkey` FOREIGN KEY (`reservationId`) REFERENCES `Reservation`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionImage` ADD CONSTRAINT `ExhibitionImage_exhibitionId_fkey` FOREIGN KEY (`exhibitionId`) REFERENCES `Exhibition`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionImage` ADD CONSTRAINT `ExhibitionImage_imageId_fkey` FOREIGN KEY (`imageId`) REFERENCES `Image`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionSpace` ADD CONSTRAINT `ExhibitionSpace_exhibitionId_fkey` FOREIGN KEY (`exhibitionId`) REFERENCES `Exhibition`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionSpace` ADD CONSTRAINT `ExhibitionSpace_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionCoupon` ADD CONSTRAINT `ExhibitionCoupon_exhibitionId_fkey` FOREIGN KEY (`exhibitionId`) REFERENCES `Exhibition`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ExhibitionCoupon` ADD CONSTRAINT `ExhibitionCoupon_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `Coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

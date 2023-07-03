@@ -422,7 +422,7 @@ model RefundPolicy {
   daysBefore Int @db.TinyInt
   refundRate Int @db.TinyInt
 
-  spaceId String @unique
+  spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
