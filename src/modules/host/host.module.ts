@@ -22,6 +22,8 @@ import { HostQnAController } from './qna/qna.controller';
 import { HostQnAService } from './qna/qna.service';
 import { HostReportController } from './report/report.controller';
 import { HostReportService } from './report/report.service';
+import { HostReservationController } from './reservation/reservation.controller';
+import { HostReservationService } from './reservation/reservation.service';
 import { HostReviewController } from './review/review.controller';
 import { HostReviewService } from './review/review.service';
 import { SettlementController } from './settlement/settlement.controller';
@@ -55,6 +57,8 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     ReservationRepository,
     EncryptProvider,
     FileService,
+    HostReservationService,
+    ReservationRepository,
   ],
   controllers: [
     HostController,
@@ -65,6 +69,7 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     HostTaxReturnController,
     SettlementController,
     BlockedTimeController,
+    HostReservationController,
   ],
 })
 export class HostModule {}

@@ -12,6 +12,7 @@ export interface UpdateReservationDTOProps {
   totalCost?: number;
   discountCost?: number;
   originalCost?: number;
+  isApproved?: boolean;
 }
 
 export class UpdateReservationDTO {
@@ -41,6 +42,9 @@ export class UpdateReservationDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '할인제외 예약 비용' } })
   originalCost?: number;
 
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
+  isApproved?: boolean;
+
   constructor(props?: UpdateReservationDTOProps) {
     if (props) {
       this.year = props.year;
@@ -51,6 +55,7 @@ export class UpdateReservationDTO {
       this.totalCost = props.totalCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
+      this.isApproved = props.isApproved;
     }
   }
 }
