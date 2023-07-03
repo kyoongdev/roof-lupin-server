@@ -19,6 +19,7 @@ import {
   CreateTossPaymentDTO,
   PortOnePreparePaymentDTO,
   PrepareKakaoPaymentDTO,
+  RefundPaymentDTO,
 } from './dto';
 import { PaymentService } from './payment.service';
 
@@ -163,5 +164,21 @@ export class PaymentController {
   })
   async completeTossPayment(@Body() data: ConfirmTossPaymentDTO) {
     return await this.paymentService.confirmTossPayment(data);
+  }
+
+  @Post('/refund')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      summary: '결제 취소하기 ',
+      description: '결제 취소하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async refundPayment(@ReqUser() user: RequestUser, @Body() body: RefundPaymentDTO) {
+    return await this.paymentService.refundPayment(user.id, body);
   }
 }
