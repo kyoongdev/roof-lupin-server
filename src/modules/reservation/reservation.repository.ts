@@ -209,7 +209,7 @@ export class ReservationRepository {
 
   //TODO: 결제 시스템까지 도입
   async createReservation(userId: string, data: CreatePaymentDTO) {
-    const { rentalTypeId, spaceId, userCouponIds, ...rest } = data;
+    const { rentalTypeId, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
     const reservation = await this.database.reservation.create({
@@ -224,15 +224,18 @@ export class ReservationRepository {
             id: rentalTypeId,
           },
         },
-        userCoupon: {
-          connect: userCouponIds.map((id) => ({ id })),
-        },
+        ...(userCouponIds && {
+          userCoupon: {
+            connect: userCouponIds.map((id) => ({ id })),
+          },
+        }),
         taxFreeCost: rest.totalCost - taxCost,
         ...rest,
       },
     });
     return reservation;
   }
+
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
     const { rentalTypeId, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);

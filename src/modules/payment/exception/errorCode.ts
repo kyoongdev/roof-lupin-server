@@ -21,6 +21,7 @@ export const PAYMENT_ALREADY_REFUNDED = '이미 환불된 결제입니다.' as c
 export const PAYMENT_REFUND_DUE_DATE_PASSED = '환불 기간이 지났습니다.' as const;
 export const PAYMENT_MERCHANT_UID_BAD_REQUEST = '주문번호를 다시 확인해주세요.' as const;
 export const PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN = '즉시 결제가 불가한 공간입니다.' as const;
+export const PAYMENT_NOT_APPROVED = '아직 예약 승인이 되지 않았습니다.' as const;
 
 export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT' | 'FORBIDDEN'> = {
   BAD_REQUEST: (message = 'BAD_REQUEST') => ({
