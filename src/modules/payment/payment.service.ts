@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 
 import { CouponRepository } from '../coupon/coupon.repository';
@@ -40,6 +40,7 @@ import {
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
+  PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
   PAYMENT_INTERNAL_SERVER_ERROR,
   PAYMENT_MERCHANT_UID_BAD_REQUEST,
   PAYMENT_NOT_COMPLETED,
@@ -80,6 +81,17 @@ export class PaymentService {
 
     return result;
   }
+  async getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
+    if (data.reservationId) {
+      const space = await this.spaceRepository.findSpace(data.spaceId);
+      if (!space.isImmediateReservation) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
+      }
+      return await this.reservationRepository.findReservation(data.reservationId);
+    } else {
+      return await this.reservationRepository.createReservationWithTransaction(database, userId, data);
+    }
+  }
 
   async preparePortOnePayment(userId: string, data: CreatePaymentDTO) {
     const totalCost = data.originalCost - data.discountCost;
@@ -91,7 +103,7 @@ export class PaymentService {
     const result = await this.database.$transaction(async (database) => {
       const { rentalType } = await this.validatePayment(data);
 
-      const reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, data);
+      const reservation = await this.getReservation(database, userId, data);
       try {
         const orderId = this.createOrderId();
 

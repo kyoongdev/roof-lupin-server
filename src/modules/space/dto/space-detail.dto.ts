@@ -35,6 +35,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   qnaCount: number;
   isInterested?: boolean;
   host: HostDTOProps;
+  isImmediateReservation: boolean;
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
   cautions: CautionDTOProps[];
@@ -101,6 +102,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: HostDTO, description: '호스트 정보' } })
   host: HostDTO;
 
+  @Property({ apiProperty: { type: 'boolean', description: '즉시 예약 가능 여부' } })
+  isImmediateReservation: boolean;
+
   @Property({ apiProperty: { type: ImageDTO, isArray: true, description: '공간 이미지 목록' } })
   images: ImageDTO[];
 
@@ -154,6 +158,7 @@ export class SpaceDetailDTO {
     this.overflowUserCount = props.overflowUserCount;
     this.qnaCount = props.qnaCount;
     this.isInterested = props.isInterested ?? false;
+    this.isImmediateReservation = props.isImmediateReservation;
     this.host = new HostDTO(props.host);
     this.images = props.images.map((image) => new ImageDTO(image));
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));

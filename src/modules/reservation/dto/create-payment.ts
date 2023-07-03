@@ -32,6 +32,7 @@ export interface CreatePaymentDTOProps {
   spaceId: string;
   userCouponIds?: string[];
   additionalServices?: AdditionalServiceReservationDTOProps[];
+  reservationId?: string;
 }
 
 export class CreatePaymentDTO {
@@ -80,6 +81,11 @@ export class CreatePaymentDTO {
   })
   additionalServices?: AdditionalServiceReservationDTO[];
 
+  @Property({
+    apiProperty: { type: 'string', nullable: true, description: '승인결제 예약 id' },
+  })
+  reservationId?: string;
+
   constructor(props?: CreatePaymentDTOProps) {
     if (props) {
       this.year = props.year;
@@ -97,6 +103,7 @@ export class CreatePaymentDTO {
       this.additionalServices = props.additionalServices?.map(
         (service) => new AdditionalServiceReservationDTO(service)
       );
+      this.reservationId = props.reservationId;
     }
   }
 
