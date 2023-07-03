@@ -417,12 +417,12 @@ model SpaceImage {
 
 //INFO: 공간 환불 정보
 model RefundPolicy {
-  id          String @id @default(uuid())
-  refundRate  Int    @db.TinyInt
-  dueDate     Int    @db.TinyInt
-  dueDateType Int    @db.TinyInt //INFO: 1 = 시간, 2 = 일, 3 = 주
+  id String @id @default(uuid())
 
-  spaceId String
+  daysBefore Int @db.TinyInt
+  refundRate Int @db.TinyInt
+
+  spaceId String @unique
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 

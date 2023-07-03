@@ -1,6 +1,10 @@
+import { range } from 'lodash';
 import { Property } from 'wemacu-nestjs';
 
 import { CreateLocationDTO } from '@/modules/location/dto';
+
+import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
+import { SpaceException } from '../exception/space.exception';
 
 import { CreateAdditionalServiceDTO } from './additionalService';
 import { CreateSpaceCategoryDTO } from './category';
@@ -110,5 +114,18 @@ export class UpdateSpaceDTO {
         (additionalService) => new CreateAdditionalServiceDTO(additionalService)
       );
     }
+  }
+
+  validateRefundPolicies() {
+    if (!this.refundPolicies) return;
+    if (this.refundPolicies.length !== 9) {
+      throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_LENGTH));
+    }
+    range(0, 9).forEach((idx) => {
+      const isExist = this.refundPolicies.find((refundPolicy) => refundPolicy.daysBefore === idx);
+      if (!isExist) {
+        throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_DAYS_BEFORE_TYPE));
+      }
+    });
   }
 }

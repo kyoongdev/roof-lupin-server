@@ -104,7 +104,7 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: ImageDTO, isArray: true, description: '공간 이미지 목록' } })
   images: ImageDTO[];
 
-  @Property({ apiProperty: { type: RefundPolicyDTO, isArray: true, description: '환불 정책 목록' } })
+  @Property({ apiProperty: { type: RefundPolicyDTO, isArray: true, description: '환불 정책' } })
   refundPolicies: RefundPolicyDTO[];
 
   @Property({ apiProperty: { type: ReviewDTO, isArray: true, description: '리뷰 목록' } })

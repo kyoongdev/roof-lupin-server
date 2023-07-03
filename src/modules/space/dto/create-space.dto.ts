@@ -1,6 +1,10 @@
+import { range } from 'lodash';
 import { Property } from 'wemacu-nestjs';
 
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
+
+import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
+import { SpaceException } from '../exception/space.exception';
 
 import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from './additionalService';
 import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './category';
@@ -68,22 +72,22 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, description: '생성된 이미지 url' } })
   images: string[];
 
-  @Property({ apiProperty: { type: CreateRefundPolicyDTO, isArray: true, description: '환불 정책' } })
-  refundPolicies?: CreateRefundPolicyDTO[];
+  @Property({ apiProperty: { type: CreateRefundPolicyDTO, description: '환불 정책' } })
+  refundPolicies: CreateRefundPolicyDTO[];
 
-  @Property({ apiProperty: { type: CreateCautionDTO, isArray: true, description: '주의 사항' } })
+  @Property({ apiProperty: { type: CreateCautionDTO, description: '주의 사항' } })
   cautions: CreateCautionDTO[];
 
-  @Property({ apiProperty: { type: CreateRentalTypeDTO, isArray: true, description: '대여 유형' } })
+  @Property({ apiProperty: { type: CreateRentalTypeDTO, description: '대여 유형' } })
   rentalTypes: CreateRentalTypeDTO[];
 
   @Property({ apiProperty: { type: CreateLocationDTO, description: '위치' } })
   location: CreateLocationDTO;
 
-  @Property({ apiProperty: { type: CreateBuildingDTO, isArray: true, description: '시설' } })
+  @Property({ apiProperty: { type: CreateBuildingDTO, description: '시설' } })
   buildings: CreateBuildingDTO[];
 
-  @Property({ apiProperty: { type: CreateServiceDTO, isArray: true, description: '서비스' } })
+  @Property({ apiProperty: { type: CreateServiceDTO, description: '서비스' } })
   services: CreateServiceDTO[];
 
   @Property({ apiProperty: { type: CreateSpaceCategoryDTO, isArray: true, description: '카테고리' } })
@@ -92,10 +96,10 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateHashtagDTO, isArray: true, description: '해시태그' } })
   hashtags: CreateHashtagDTO[];
 
-  @Property({ apiProperty: { type: CreateTransportationDTO, isArray: true, description: '대중교통' } })
+  @Property({ apiProperty: { type: CreateTransportationDTO, description: '대중교통' } })
   publicTransportations: CreateTransportationDTO[];
 
-  @Property({ apiProperty: { type: CreateSizeDTO, isArray: true, description: '면적' } })
+  @Property({ apiProperty: { type: CreateSizeDTO, description: '면적' } })
   sizes: CreateSizeDTO[];
 
   @Property({ apiProperty: { type: CreateAdditionalServiceDTO, isArray: true, description: '추가 서비스' } })
@@ -129,5 +133,17 @@ export class CreateSpaceDTO {
         (additionalService) => new CreateAdditionalServiceDTO(additionalService)
       );
     }
+  }
+
+  validateRefundPolicies() {
+    if (this.refundPolicies.length !== 9) {
+      throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_LENGTH));
+    }
+    range(0, 9).forEach((idx) => {
+      const isExist = this.refundPolicies.find((refundPolicy) => refundPolicy.daysBefore === idx);
+      if (!isExist) {
+        throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_DAYS_BEFORE_TYPE));
+      }
+    });
   }
 }

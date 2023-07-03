@@ -88,7 +88,11 @@ export class SpaceRepository {
         },
         location: true,
         publicTransportations: true,
-        refundPolicies: true,
+        refundPolicies: {
+          orderBy: {
+            daysBefore: 'asc',
+          },
+        },
         services: {
           include: {
             service: true,
@@ -112,9 +116,9 @@ export class SpaceRepository {
       host,
       images,
       publicTransportations,
-      refundPolicies,
       services,
       userInterests,
+      refundPolicies,
     } = space;
     const bestPhotos = await this.database.spaceReviewImage.findMany({
       where: {
@@ -138,8 +142,8 @@ export class SpaceRepository {
       host,
       images: images.map(({ image }) => image),
       publicTransportations: publicTransportations.map((publicTransportation) => publicTransportation),
-      refundPolicies: refundPolicies.map((refundPolicy) => refundPolicy),
       services: services.map(({ service }) => service),
+      refundPolicies,
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       qnaCount: space._count.spaceQnAs,
       averageScore: Number(space.averageScore),
@@ -228,6 +232,8 @@ export class SpaceRepository {
       additionalServices,
       ...rest
     } = data;
+
+    data.validateRefundPolicies();
 
     const minCost = Math.min(...rentalTypes.map((rentalType) => rentalType.baseCost));
     const minSize = Math.min(...sizes.map((size) => size.size));
@@ -325,6 +331,7 @@ export class SpaceRepository {
       ...rest
     } = data;
 
+    data.validateRefundPolicies();
     const updateArgs: Prisma.SpaceUpdateArgs = {
       where: {
         id: spaceId,

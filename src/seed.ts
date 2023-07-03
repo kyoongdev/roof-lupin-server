@@ -372,19 +372,16 @@ export const seedDatabase = async (database: PrismaService) => {
       refundPolicies: {
         create: [
           {
-            dueDate: 1,
-            dueDateType: 3,
+            daysBefore: 0,
             refundRate: 10,
           },
           {
-            dueDate: 2,
-            dueDateType: 3,
+            daysBefore: 1,
             refundRate: 20,
           },
           {
-            dueDate: 3,
-            dueDateType: 3,
-            refundRate: 50,
+            daysBefore: 2,
+            refundRate: 30,
           },
         ],
       },
@@ -605,19 +602,12 @@ export const seedDatabase = async (database: PrismaService) => {
         refundPolicies: {
           create: [
             {
-              dueDate: 1,
-              dueDateType: 3,
+              daysBefore: 0,
               refundRate: 10,
             },
             {
-              dueDate: 2,
-              dueDateType: 3,
+              daysBefore: 0,
               refundRate: 20,
-            },
-            {
-              dueDate: 3,
-              dueDateType: 3,
-              refundRate: 50,
             },
           ],
         },
