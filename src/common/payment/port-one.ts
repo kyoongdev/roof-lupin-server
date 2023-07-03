@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 import {
+  CancelPortOnePayment,
   PortOneGetPayment,
   PortOneGetToken,
   PortOnePayment,
@@ -47,6 +48,18 @@ export class PortOneProvider {
     const response = await this.apiClient.post<PortOneToken>('/users/getToken', data);
 
     return response.data.access_token;
+  }
+
+  async cancelPayment(data: CancelPortOnePayment) {
+    const token = await this.getToken({
+      imp_key: this.configService.get('PORT_ONE_IMP_KEY'),
+      imp_secret: this.configService.get('PORT_ONE_IMP_SECRET_KEY'),
+    });
+    const response = await this.apiClient.post<PortOnePayment>('/payments/cancel', data, {
+      headers: this.getHeader(token),
+    });
+
+    return response.data;
   }
 
   getHeader(token: string) {

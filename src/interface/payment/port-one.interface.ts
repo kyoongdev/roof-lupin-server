@@ -79,3 +79,13 @@ export interface PortOnePayment {
   customer_uid: string;
   customer_uid_usage: string;
 }
+
+export interface CancelPortOnePayment {
+  /** 환불 사유 */
+  reason: string;
+  imp_uid: string;
+  /** 환불 금액 */
+  amount: number;
+  /** 환불 가능 금액 */
+  checksum: string;
+}

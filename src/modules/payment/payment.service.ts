@@ -349,7 +349,8 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_NOT_COMPLETED));
     }
 
-    if (reservation.refundCost === 0) {
+    const cancelableAmount = reservation.totalCost - reservation.refundCost;
+    if (cancelableAmount <= 0) {
       throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_ALREADY_REFUNDED));
     }
 
@@ -374,6 +375,10 @@ export class PaymentService {
     } else {
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
+
+    await this.reservationRepository.updatePayment(reservation.id, {
+      refundCost,
+    });
   }
 
   createOrderId() {
