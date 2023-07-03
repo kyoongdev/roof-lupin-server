@@ -6,10 +6,11 @@ import { KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService } from '@/database/prisma.service';
+import { FCMEvent } from '@/event/fcm';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
-import { CreatePaymentDTO, PayMethod } from '../reservation/dto';
+import { CreatePaymentDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -18,6 +19,7 @@ import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 import { SpaceRepository } from '../space/space.repository';
+import { UserRepository } from '../user/user.repository';
 
 import {
   ApproveKakaoPaymentDTO,
@@ -62,7 +64,9 @@ export class PaymentService {
     private readonly kakaoPay: KakaoPayProvider,
     private readonly tossPay: TossPayProvider,
     private readonly portOne: PortOneProvider,
-    private readonly database: PrismaService
+    private readonly database: PrismaService,
+    private readonly fcmEvent: FCMEvent,
+    private readonly userRepository: UserRepository
   ) {}
 
   async testKakaoPayment() {
@@ -139,6 +143,7 @@ export class PaymentService {
         orderResultId: props.imp_uid,
         payedAt: new Date(),
       });
+      await this.sendMessage(reservation);
     } catch (err) {
       await this.reservationRepository.deleteReservation(reservation.id);
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
@@ -226,6 +231,7 @@ export class PaymentService {
       await this.reservationRepository.updatePayment(reservation.id, {
         payedAt: new Date(),
       });
+      await this.sendMessage(reservation);
     } catch (err) {
       await Promise.all(
         coupons.map(async (coupon) => {
@@ -331,6 +337,7 @@ export class PaymentService {
       await this.reservationRepository.updatePayment(reservation.id, {
         payedAt: new Date(),
       });
+      await this.sendMessage(reservation);
     } catch (err) {
       await Promise.all(
         coupons.map(async (coupon) => {
@@ -413,6 +420,22 @@ export class PaymentService {
       refundCost,
     });
     return reservation.id;
+  }
+
+  async sendMessage(reservation: ReservationDetailDTO) {
+    const pushToken = await this.userRepository.findUserPushToken(reservation.user.id);
+    if (pushToken.pushToken)
+      this.fcmEvent.createReservationUsageAlarm({
+        year: reservation.year,
+        month: reservation.month,
+        day: reservation.day,
+        jobId: reservation.id,
+        nickname: reservation.user.nickname,
+        pushToken: pushToken.pushToken,
+        spaceName: reservation.space.title,
+        time: reservation.startAt,
+        userId: reservation.user.id,
+      });
   }
 
   createOrderId() {

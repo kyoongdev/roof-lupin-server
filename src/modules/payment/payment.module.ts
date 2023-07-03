@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
+import { FCMEvent } from '@/event/fcm';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HolidayService } from '../holiday/holiday.service';
@@ -11,6 +12,7 @@ import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { RentalTypeService } from '../space/rentalType/rentalType.service';
 import { SpaceRepository } from '../space/space.repository';
+import { UserRepository } from '../user/user.repository';
 
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
@@ -28,6 +30,8 @@ import { PaymentService } from './payment.service';
     RentalTypeService,
     SpaceRepository,
     HolidayService,
+    UserRepository,
+    FCMEvent,
   ],
   controllers: [PaymentController],
 })
