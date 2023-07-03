@@ -84,7 +84,7 @@ export class PaymentService {
     return result;
   }
 
-  async requestReservation(userId: string, data: CreatePaymentDTO) {
+  async requestPayment(userId: string, data: CreatePaymentDTO) {
     const space = await this.spaceRepository.findSpace(data.spaceId);
     await this.validatePayment(data, space);
 
