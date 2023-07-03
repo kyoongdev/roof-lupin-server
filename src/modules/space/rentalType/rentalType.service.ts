@@ -306,10 +306,15 @@ export class RentalTypeService {
           time: hour,
         })),
       ];
-      timeCostInfos.forEach((timeInfo) => {
-        timeCostInfos[timeInfo.time].cost = timeInfo.cost;
-        timeCostInfos[timeInfo.time].isPossible = true;
+      rentalType.timeCostInfos.forEach((timeInfo) => {
+        timeCostInfos.forEach((info) => {
+          if (info.time === timeInfo.time) {
+            info.cost = timeInfo.cost;
+            info.isPossible = true;
+          }
+        });
       });
+      console.log(timeCostInfos);
       rentalType.reservations.forEach((reservation) => {
         range(reservation.startAt, reservation.endAt).forEach((hour) => {
           timeCostInfos[hour].isPossible = false;

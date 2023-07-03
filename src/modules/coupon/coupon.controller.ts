@@ -49,7 +49,7 @@ export class CouponController {
     return await this.couponService.findPagingUserCoupons(paging, user.id);
   }
 
-  @Post('/reigster')
+  @Post('/register')
   @UseInterceptors(ResponseWithIdInterceptor)
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({

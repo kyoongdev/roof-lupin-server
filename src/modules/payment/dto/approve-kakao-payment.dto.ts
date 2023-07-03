@@ -17,7 +17,7 @@ export class ApproveKakaoPaymentDTO {
   pg_token: string;
 
   constructor(props?: ApproveKakaoPaymentDTOProps) {
-    if (!props) {
+    if (props) {
       this.orderId = props.orderId;
       this.orderResultId = props.orderResultId;
       this.pg_token = props.pg_token;

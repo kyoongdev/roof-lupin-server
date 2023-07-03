@@ -213,6 +213,7 @@ export class PaymentService {
       if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
       }
+      console.log({ reservation });
 
       await this.kakaoPay.approvePayment({
         partner_order_id: reservation.orderId,
@@ -340,7 +341,7 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
-    const reservationDate = new Date(2023, 6, 3);
+    const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
     reservationDate.setUTCHours(0, 0, 0, 0);
     const now = new Date();
     now.setUTCHours(0, 0, 0, 0);
@@ -354,6 +355,7 @@ export class PaymentService {
     const refundPolicy = refundPolicies.reverse().find((policy) => policy.daysBefore <= refundTargetDate);
 
     const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
+
     const taxCost = Math.floor(refundCost / 1.1);
 
     if (reservation.user.id !== userId) {
@@ -443,11 +445,13 @@ export class PaymentService {
       });
 
       const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
-        if (data.startAt <= next.time && next.time <= data.endAt) {
+        if (data.startAt <= next.time && next.time < data.endAt) {
+          console.log('data.startAt', data.startAt, 'next.time', next.time, 'data.endAt', data.endAt, next);
           acc += next.cost;
         }
         return acc;
       }, 0);
+
       const realCost = await this.getRealCost(cost, data);
       //INFO: 가격 정보가 올바르지 않을 때
       if (realCost !== data.totalCost || cost !== data.originalCost) {
@@ -511,9 +515,10 @@ export class PaymentService {
               }
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
             }
-
+            console.log(isExist.coupon.discountType, isExist.coupon.discountValue, DISCOUNT_TYPE_ENUM.PERCENTAGE);
             if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
               discountCost += cost * (isExist.coupon.discountValue / 100);
+              console.log({ isExist, discountCost, cost });
             } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
               discountCost += isExist.coupon.discountValue;
             } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');

@@ -5,6 +5,8 @@ import AppConfig from '@/appConfig';
 import { winstonLogger } from '@/log';
 
 import { AppModule } from './app.module';
+import { PrismaService } from './database/prisma.service';
+import { getDay } from './utils/validation';
 
 (async function () {
   const app = await NestFactory.create(AppModule, {
@@ -25,4 +27,6 @@ import { AppModule } from './app.module';
       })
     )
     .init();
+  const database = app.get(PrismaService);
+  // await database.user.deleteMany({});
 })();

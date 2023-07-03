@@ -234,7 +234,7 @@ export class ReservationRepository {
     return reservation;
   }
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
-    const { rentalTypeId, spaceId, ...rest } = data;
+    const { rentalTypeId, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
     const reservation = await database.reservation.create({
@@ -249,8 +249,11 @@ export class ReservationRepository {
             id: rentalTypeId,
           },
         },
-        ...rest,
+        userCoupon: {
+          connect: userCouponIds.map((id) => ({ id })),
+        },
         taxFreeCost: rest.totalCost - taxCost,
+        ...rest,
       },
     });
     return reservation;

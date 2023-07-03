@@ -225,6 +225,7 @@ export class SpaceRepository {
         daysBefore: 'asc',
       },
     });
+
     return refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
   }
 
