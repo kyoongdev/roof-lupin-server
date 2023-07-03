@@ -51,6 +51,9 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '생성된 이미지 url' } })
   images?: string[];
 
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '즉시 예약 가능 여부' } })
+  isImmediateReservation?: boolean;
+
   @Property({ apiProperty: { type: CreateRefundPolicyDTO, nullable: true, isArray: true, description: '환불 정책' } })
   refundPolicies?: CreateRefundPolicyDTO[];
 
@@ -100,6 +103,7 @@ export class UpdateSpaceDTO {
       this.images = props.images;
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
+      this.isImmediateReservation = props.isImmediateReservation;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
