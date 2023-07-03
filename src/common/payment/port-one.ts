@@ -10,6 +10,7 @@ import {
   PortOnePayment,
   PortOnePreparePayment,
   PortOneToken,
+  ProtOneResponse,
 } from '@/interface/payment/port-one.interface';
 
 @Injectable()
@@ -20,9 +21,9 @@ export class PortOneProvider {
   constructor(private readonly configService: ConfigService) {}
 
   async preparePayment(data: PortOnePreparePayment) {
-    const response = await this.apiClient.post<PortOnePreparePayment>('/payments/prepare', data);
+    const response = await this.apiClient.post<ProtOneResponse<PortOnePreparePayment>>('/payments/prepare', data);
 
-    return response.data;
+    return response.data.response;
   }
 
   async completePayment(props: PortOneGetPayment) {
@@ -37,17 +38,17 @@ export class PortOneProvider {
       imp_secret: this.configService.get('PORT_ONE_IMP_SECRET_KEY'),
     });
 
-    const response = await this.apiClient.get<PortOnePayment>(`/payments/${props.imp_uid}`, {
+    const response = await this.apiClient.get<ProtOneResponse<PortOnePayment>>(`/payments/${props.imp_uid}`, {
       headers: this.getHeader(token),
     });
 
-    return response.data;
+    return response.data.response;
   }
 
   async getToken(data: PortOneGetToken) {
-    const response = await this.apiClient.post<PortOneToken>('/users/getToken', data);
+    const response = await this.apiClient.post<ProtOneResponse<PortOneToken>>('/users/getToken', data);
 
-    return response.data.access_token;
+    return response.data.response.access_token;
   }
 
   async cancelPayment(data: CancelPortOnePayment) {
@@ -55,7 +56,7 @@ export class PortOneProvider {
       imp_key: this.configService.get('PORT_ONE_IMP_KEY'),
       imp_secret: this.configService.get('PORT_ONE_IMP_SECRET_KEY'),
     });
-    const response = await this.apiClient.post<PortOnePayment>('/payments/cancel', data, {
+    const response = await this.apiClient.post<ProtOneResponse<PortOnePayment>>('/payments/cancel', data, {
       headers: this.getHeader(token),
     });
 

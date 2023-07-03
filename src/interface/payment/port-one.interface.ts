@@ -87,5 +87,11 @@ export interface CancelPortOnePayment {
   /** 환불 금액 */
   amount: number;
   /** 환불 가능 금액 */
-  checksum: string;
+  checksum: number;
 }
+
+export type ProtOneResponse<T> = {
+  code: number;
+  message: string;
+  response: T;
+};

@@ -9,6 +9,7 @@ import { AdditionalServiceDTO } from './dto/additionalService';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
+import { RefundPolicyDTO } from './dto/refund';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
@@ -214,6 +215,17 @@ export class SpaceRepository {
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
         })
     );
+  }
+  async findRefundPolicyBySpaceId(spaceId: string) {
+    const refundPolicies = await this.database.refundPolicy.findMany({
+      where: {
+        spaceId,
+      },
+      orderBy: {
+        daysBefore: 'asc',
+      },
+    });
+    return refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
   }
 
   async createSpace(hostId: string, data: CreateSpaceDTO) {

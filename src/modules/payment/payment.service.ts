@@ -43,6 +43,7 @@ import {
   PAYMENT_NOT_COMPLETED,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
   PAYMENT_PAY_METHOD_BAD_REQUEST,
+  PAYMENT_REFUND_DUE_DATE_PASSED,
   PAYMENT_REFUND_FORBIDDEN,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
   PAYMENT_SPACE_ID_BAD_REQUEST,
@@ -337,8 +338,21 @@ export class PaymentService {
 
   async refundPayment(userId: string, data: RefundPaymentDTO) {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
-    //TODO: 기간에 따른 환불금 정하기
-    const refundCost = reservation.totalCost;
+    const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
+
+    const reservationDate = new Date(2023, 6, 3).getTime();
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const diffDate = reservationDate - now.getTime();
+    if (diffDate < 0) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_REFUND_DUE_DATE_PASSED));
+    }
+
+    const refundTargetDate = diffDate / (1000 * 60 * 60 * 24);
+    const refundPolicy = refundPolicies.reverse().find((policy) => policy.daysBefore <= refundTargetDate);
+
+    const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
     const taxCost = Math.floor(refundCost / 1.1);
 
     if (reservation.user.id !== userId) {
@@ -371,7 +385,16 @@ export class PaymentService {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MERCHANT_UID_BAD_REQUEST));
       }
 
-      // await this.portOne.
+      const result = await this.portOne.cancelPayment({
+        imp_uid: reservation.orderResultId,
+        amount: refundCost,
+        checksum: reservation.totalCost - refundCost,
+        reason: '사용자 환불 요청',
+      });
+
+      if (result.code !== 0) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+      }
     } else {
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
@@ -379,6 +402,7 @@ export class PaymentService {
     await this.reservationRepository.updatePayment(reservation.id, {
       refundCost,
     });
+    return reservation.id;
   }
 
   createOrderId() {
