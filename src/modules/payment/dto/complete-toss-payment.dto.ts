@@ -16,9 +16,11 @@ export class ConfirmTossPaymentDTO {
   @Property({ apiProperty: { type: 'number', description: '결제된 금액' } })
   amount: number;
 
-  constructor(props: ConfirmTossPaymentDTOProps) {
-    this.paymentKey = props.paymentKey;
-    this.orderId = props.orderId;
-    this.amount = props.amount;
+  constructor(props?: ConfirmTossPaymentDTOProps) {
+    if (props) {
+      this.paymentKey = props.paymentKey;
+      this.orderId = props.orderId;
+      this.amount = props.amount;
+    }
   }
 }

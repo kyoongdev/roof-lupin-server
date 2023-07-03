@@ -249,9 +249,11 @@ export class ReservationRepository {
             id: rentalTypeId,
           },
         },
-        userCoupon: {
-          connect: userCouponIds.map((id) => ({ id })),
-        },
+        ...(userCouponIds && {
+          userCoupon: {
+            connect: userCouponIds.map((id) => ({ id })),
+          },
+        }),
         taxFreeCost: rest.totalCost - taxCost,
         ...rest,
       },

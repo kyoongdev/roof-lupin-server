@@ -173,12 +173,13 @@ export class PaymentService {
           orderResultId: result.tid,
           payMethod: PayMethod.KAKAO_PAY,
         });
-        await Promise.all(
-          data.userCouponIds.map(async (couponId) => {
-            await this.couponRepository.findUserCoupon(couponId);
-            await this.couponRepository.useUserCoupon(database, couponId);
-          })
-        );
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.useUserCoupon(database, couponId);
+            })
+          );
 
         return new PrepareKakaoPaymentDTO({
           ...result,
@@ -186,12 +187,13 @@ export class PaymentService {
           orderResultId: result.tid,
         });
       } catch (err) {
-        await Promise.all(
-          data.userCouponIds.map(async (couponId) => {
-            await this.couponRepository.resetUserCoupon(couponId);
-          })
-        );
-        await this.reservationRepository.deleteReservation(reservation.id);
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              await this.couponRepository.resetUserCoupon(couponId);
+            })
+          );
+
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
     });
@@ -213,7 +215,6 @@ export class PaymentService {
       if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
       }
-      console.log({ reservation });
 
       await this.kakaoPay.approvePayment({
         partner_order_id: reservation.orderId,
@@ -278,19 +279,25 @@ export class PaymentService {
           orderResultId: result.paymentKey,
           payMethod: PayMethod.TOSS_PAY,
         });
-
-        await Promise.all(
-          data.userCouponIds.map(async (couponId) => {
-            await this.couponRepository.findUserCoupon(couponId);
-            await this.couponRepository.useUserCoupon(database, couponId);
-          })
-        );
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.useUserCoupon(database, couponId);
+            })
+          );
 
         return new CreateTossPaymentDTO({
           url: result.checkout.url,
         });
       } catch (err) {
-        await this.reservationRepository.deleteReservation(reservation.id);
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              await this.couponRepository.resetUserCoupon(couponId);
+            })
+          );
+
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
     });
@@ -446,7 +453,6 @@ export class PaymentService {
 
       const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
         if (data.startAt <= next.time && next.time < data.endAt) {
-          console.log('data.startAt', data.startAt, 'next.time', next.time, 'data.endAt', data.endAt, next);
           acc += next.cost;
         }
         return acc;
@@ -490,7 +496,7 @@ export class PaymentService {
         },
       });
       await Promise.all(
-        data.userCouponIds.map(async (couponId) => {
+        data.userCouponIds?.map(async (couponId) => {
           const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
           if (isExist) {
             if (isExist.isUsed) {
@@ -515,10 +521,9 @@ export class PaymentService {
               }
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
             }
-            console.log(isExist.coupon.discountType, isExist.coupon.discountValue, DISCOUNT_TYPE_ENUM.PERCENTAGE);
+
             if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
               discountCost += cost * (isExist.coupon.discountValue / 100);
-              console.log({ isExist, discountCost, cost });
             } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
               discountCost += isExist.coupon.discountValue;
             } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
