@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CouponRepository } from './coupon.repository';
-import { UserCouponDTO } from './dto';
+import { RegisterCouponByCodeDTO, UserCouponDTO } from './dto';
 
 @Injectable()
 export class CouponService {
@@ -29,5 +29,9 @@ export class CouponService {
       take,
     });
     return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
+  }
+
+  async registerCouponByCode(userId: string, data: RegisterCouponByCodeDTO) {
+    const coupon = await this.couponRepository.findCouponByCode(data.code);
   }
 }

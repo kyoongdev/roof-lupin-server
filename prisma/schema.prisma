@@ -696,15 +696,16 @@ model UserCoupon {
 
 //INFO: 쿠폰
 model Coupon {
-  id            String  @id @default(uuid())
-  name          String  @db.VarChar(80)
-  discountType  Int     @db.TinyInt //INFO: 0: 정액, 1: 정률
-  discountValue Int     @db.MediumInt
-  description   String  @db.VarChar(100)
-  code          String  @unique @db.Char(10)
-  isLupinPay    Boolean @default(false)
-  defaultDueDay Int     @default(0) @db.SmallInt
-  link          String?
+  id                  String    @id @default(uuid())
+  name                String    @db.VarChar(80)
+  discountType        Int       @db.TinyInt //INFO: 0: 정액, 1: 정률
+  discountValue       Int       @db.MediumInt
+  description         String    @db.VarChar(100)
+  code                String    @unique @db.Char(10)
+  isLupinPay          Boolean   @default(false)
+  defualtDueDateStart DateTime? @db.DateTime
+  defaultDueDay       Int       @default(0) @db.SmallInt
+  link                String?
 
   userCoupons      UserCoupon[]
   couponCategories CouponCategory[]
