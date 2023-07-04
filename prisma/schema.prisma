@@ -144,8 +144,9 @@ model AdditionalService {
   name String @db.VarChar(50)
   cost Int    @db.MediumInt
 
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId      String
+  space        Space                       @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reservations ReservedAdditionalService[]
 }
 
 model RecentSpace {
@@ -205,6 +206,16 @@ model TimeCostInfo {
   rentalType   RentalType @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model ReservedAdditionalService {
+  reservationId       String
+  reservation         Reservation       @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  additionalServiceId String
+  additionalService   AdditionalService @relation(fields: [additionalServiceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  count               Int               @default(1)
+
+  @@id([reservationId, additionalServiceId])
+}
+
 //INFO: 예약 정보
 model Reservation {
   id String @id @unique @default(uuid())
@@ -236,12 +247,13 @@ model Reservation {
   settlementId String?
   settlement   Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  payedAt      DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  deletedAt    DateTime?
-  spaceReviews SpaceReview[]
-  userCoupon   UserCoupon[]
+  payedAt            DateTime?
+  createdAt          DateTime                    @default(now())
+  updatedAt          DateTime                    @updatedAt
+  deletedAt          DateTime?
+  spaceReviews       SpaceReview[]
+  userCoupon         UserCoupon[]
+  additionalServices ReservedAdditionalService[]
 }
 
 model BlockedTime {

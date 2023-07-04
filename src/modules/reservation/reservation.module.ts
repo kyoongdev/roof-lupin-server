@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 
