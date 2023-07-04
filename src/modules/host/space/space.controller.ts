@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -11,6 +11,8 @@ import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { FindSpacesQuery } from '../dto/query';
 
 import { HostSpaceService } from './space.service';
 
@@ -57,10 +59,10 @@ export class HostSpaceController {
   })
   @ResponseApi({
     type: SpaceDTO,
-    isArray: true,
+    isPaging: true,
   })
-  async getSpaces(@ReqUser() user: RequestHost) {
-    return await this.spaceService.findSpaces(user.id);
+  async getSpaces(@ReqUser() user: RequestHost, @Query() query: FindSpacesQuery, @Paging() paging: PagingDTO) {
+    return await this.spaceService.findPagingSpaces(paging, user.id, query.generateQuery());
   }
 
   @Get('paging')
