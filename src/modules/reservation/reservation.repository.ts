@@ -229,6 +229,18 @@ export class ReservationRepository {
             connect: userCouponIds.map((id) => ({ id })),
           },
         }),
+        ...(additionalServices && {
+          additionalServices: {
+            create: additionalServices.map((service) => ({
+              additionalService: {
+                connect: {
+                  id: service.id,
+                },
+                count: service.count,
+              },
+            })),
+          },
+        }),
         taxFreeCost: rest.totalCost - taxCost,
         ...rest,
       },
@@ -255,6 +267,18 @@ export class ReservationRepository {
         ...(userCouponIds && {
           userCoupon: {
             connect: userCouponIds.map((id) => ({ id })),
+          },
+        }),
+        ...(additionalServices && {
+          additionalServices: {
+            create: additionalServices.map((service) => ({
+              additionalService: {
+                connect: {
+                  id: service.id,
+                },
+                count: service.count,
+              },
+            })),
           },
         }),
         taxFreeCost: rest.totalCost - taxCost,
