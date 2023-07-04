@@ -1,5 +1,5 @@
 import { CacheInterceptor } from '@nestjs/cache-manager';
-import { Body, Delete, Get, Header, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -15,7 +15,7 @@ import { CategoryDTO } from '../category/dto';
 import { CurationService } from '../curation/curation.service';
 import { CurationDTO } from '../curation/dto';
 
-import { HOME_CATEGORY_CACHE, HOME_CONTENT_CACHE, HOME_CURATION_CACHE } from './cache';
+import { HOME_CATEGORY_CACHE, HOME_CURATION_CACHE } from './cache';
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HomeService } from './home.service';
 

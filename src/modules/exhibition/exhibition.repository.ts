@@ -4,8 +4,6 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { FileService } from '../file/file.service';
-
 import { CreateExhibitionDTO, ExhibitionDetailDTO, ExhibitionDTO, UpdateExhibitionDTO } from './dto';
 import { EXHIBITION_ERROR_CODE, EXHIBITION_NOT_FOUND } from './exception/errorCode';
 import { ExhibitionException } from './exception/exhibition.exception';

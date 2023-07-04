@@ -10,7 +10,6 @@ import { FCMEvent } from '@/event/fcm';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
-import { CreateSettlementDTO } from '../host/dto/settlement';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { CreatePaymentDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';

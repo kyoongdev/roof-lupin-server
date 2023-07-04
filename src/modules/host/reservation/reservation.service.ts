@@ -8,7 +8,6 @@ import {
   RESERVATION_ALREADY_APPROVED,
   RESERVATION_ERROR_CODE,
   RESERVATION_HOST_FIND_FORBIDDEN,
-  RESERVATION_NOT_FOUND,
   RESERVATION_SPACE_NOT_IMMEDIATE,
 } from '@/modules/reservation/exception/errorCode';
 import { ReservationException } from '@/modules/reservation/exception/reservation.exception';

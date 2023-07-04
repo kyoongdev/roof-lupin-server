@@ -1,14 +1,13 @@
 /* eslint-disable no-undef */
-import { Controller, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
 
-import { ImageDTO, UploadedFileDTO } from './dto';
+import { UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')

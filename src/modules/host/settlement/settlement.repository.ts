@@ -7,7 +7,7 @@ import { ReservationDTOProps } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 
-import { SETTLEMENT_ERROR_CODE, SETTLEMENT_HOST_NOT_FOUND, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
+import { SETTLEMENT_ERROR_CODE, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
 
 @Injectable()
