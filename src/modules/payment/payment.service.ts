@@ -163,28 +163,32 @@ export class PaymentService {
   async completePortOnePayment(props: CompletePortOnePaymentDTO) {
     const reservation = await this.reservationRepository.findReservationByOrderId(props.merchant_uid);
     try {
-      const payment = await this.portOne.completePayment({ imp_uid: props.imp_uid });
+      await this.database.$transaction(async (database) => {
+        const payment = await this.portOne.completePayment({ imp_uid: props.imp_uid });
 
-      if (!payment) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
-      }
+        if (!payment) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+        }
 
-      if (payment.amount !== reservation.totalCost) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-      }
+        if (payment.amount !== reservation.totalCost) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+        }
 
-      if (reservation.payMethod !== PayMethod.PORT_ONE) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-      }
+        if (reservation.payMethod !== PayMethod.PORT_ONE) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
+        }
 
-      if (payment.status !== 'paid') {
-        throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-      }
+        if (payment.status !== 'paid') {
+          throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+        }
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          orderResultId: props.imp_uid,
+          payedAt: new Date(),
+        });
 
-      await this.reservationRepository.updatePayment(reservation.id, {
-        orderResultId: props.imp_uid,
-        payedAt: new Date(),
+        await this.createSettlement(database, reservation);
       });
+
       await this.sendMessage(reservation);
     } catch (err) {
       const coupons = await this.couponRepository.findUserCoupons({
@@ -270,16 +274,20 @@ export class PaymentService {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
       }
 
-      await this.kakaoPay.approvePayment({
-        partner_order_id: reservation.orderId,
-        tid: reservation.orderResultId,
-        pg_token: data.pg_token,
-        total_amount: reservation.totalCost,
+      await this.database.$transaction(async (database) => {
+        await this.kakaoPay.approvePayment({
+          partner_order_id: reservation.orderId,
+          tid: reservation.orderResultId,
+          pg_token: data.pg_token,
+          total_amount: reservation.totalCost,
+        });
+
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          payedAt: new Date(),
+        });
+        await this.createSettlement(database, reservation);
       });
 
-      await this.reservationRepository.updatePayment(reservation.id, {
-        payedAt: new Date(),
-      });
       await this.sendMessage(reservation);
     } catch (err) {
       const coupons = await this.couponRepository.findUserCoupons({
@@ -378,16 +386,19 @@ export class PaymentService {
       if (reservation.payMethod !== PayMethod.TOSS_PAY) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
       }
+      await this.database.$transaction(async (database) => {
+        await this.tossPay.confirmPayment({
+          amount: reservation.totalCost,
+          orderId: reservation.orderId,
+          paymentKey: reservation.orderResultId,
+        });
 
-      await this.tossPay.confirmPayment({
-        amount: reservation.totalCost,
-        orderId: reservation.orderId,
-        paymentKey: reservation.orderResultId,
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          payedAt: new Date(),
+        });
+        await this.createSettlement(database, reservation);
       });
 
-      await this.reservationRepository.updatePayment(reservation.id, {
-        payedAt: new Date(),
-      });
       await this.sendMessage(reservation);
     } catch (err) {
       const coupons = await this.couponRepository.findUserCoupons({
@@ -479,19 +490,29 @@ export class PaymentService {
     return reservation.id;
   }
 
-  async createSettlement(data: ReservationDetailDTO, hostId: string) {
-    const isExist = await this.settlementRepository.checkSettlementByDate(data.year, data.month, data.day, hostId);
+  async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
+    const isExist = await this.settlementRepository.checkSettlementByDate(
+      data.year,
+      data.month,
+      data.day,
+      data.space.hostId
+    );
     if (isExist) {
-      await this.settlementRepository.updateSettlement(isExist.id, {
-        discountCost: data.discountCost,
+      await this.settlementRepository.updateSettlementWithTransaction(database, isExist.id, {
+        discountCost: isExist.discountCost + data.discountCost,
+        originalCost: isExist.originalCost + data.originalCost,
+        settlementCost: isExist.settlementCost + data.totalCost * (100 / 111),
+        totalCost: isExist.totalCost + data.totalCost,
+        vatCost: isExist.vatCost + data.vatCost,
+        reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
       });
     } else {
-      await this.settlementRepository.createSettlement({
+      await this.settlementRepository.createSettlementWithTransaction(database, {
         year: data.year,
         month: data.month,
         day: data.day,
-        hostId,
-        settlementCost: 0,
+        hostId: data.space.hostId,
+        settlementCost: data.totalCost * (100 / 111),
         totalCost: data.totalCost,
         vatCost: data.vatCost,
         discountCost: data.discountCost,

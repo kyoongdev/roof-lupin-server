@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { ReservationDTOProps } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
@@ -102,6 +102,29 @@ export class SettlementRepository {
         year,
         month,
         day,
+        hostId,
+      },
+      include: {
+        reservations: {
+          include: {
+            user: true,
+            spaceReviews: true,
+            rentalType: {
+              include: {
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    rentalType: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        host: true,
       },
     });
 
@@ -109,7 +132,32 @@ export class SettlementRepository {
       throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
     }
 
-    return new SettlementDTO(settlement);
+    const { reservations, ...rest } = settlement;
+
+    const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
+      const { rentalType, ...rest } = reservation;
+      const { space, ...restRentalType } = rentalType;
+
+      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+      return {
+        ...rest,
+        user: rest.user,
+        rentalType: restRentalType,
+        space: {
+          ...space,
+          reviewCount: space.reviews.length,
+          publicTransportation: space.publicTransportations?.at(-1),
+          location: space.location?.['location'],
+          averageScore: averageScore,
+        },
+        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
+      };
+    });
+
+    return new SettlementDetailDTO({
+      ...rest,
+      reservations: reservationDTOs,
+    });
   }
 
   async checkSettlementByDate(year: string, month: string, day: string, hostId: string) {
@@ -118,10 +166,61 @@ export class SettlementRepository {
         year,
         month,
         day,
+        hostId,
+      },
+      include: {
+        reservations: {
+          include: {
+            user: true,
+            spaceReviews: true,
+            rentalType: {
+              include: {
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    rentalType: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        host: true,
       },
     });
+    if (!settlement) {
+      return false;
+    }
 
-    return new SettlementDTO(settlement);
+    const { reservations, ...rest } = settlement;
+
+    const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
+      const { rentalType, ...rest } = reservation;
+      const { space, ...restRentalType } = rentalType;
+
+      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+      return {
+        ...rest,
+        user: rest.user,
+        rentalType: restRentalType,
+        space: {
+          ...space,
+          reviewCount: space.reviews.length,
+          publicTransportation: space.publicTransportations?.at(-1),
+          location: space.location?.['location'],
+          averageScore: averageScore,
+        },
+        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
+      };
+    });
+
+    return new SettlementDetailDTO({
+      ...rest,
+      reservations: reservationDTOs,
+    });
   }
 
   async countSettlements(args = {} as Prisma.SettlementCountArgs) {
@@ -145,7 +244,27 @@ export class SettlementRepository {
 
   async createSettlement(data: CreateSettlementDTO) {
     const { reservationIds, hostId, ...rest } = data;
+
     const settlement = await this.database.settlement.create({
+      data: {
+        ...rest,
+        reservations: {
+          connect: [...reservationIds.map((id) => ({ id }))],
+        },
+        host: {
+          connect: {
+            id: hostId,
+          },
+        },
+      },
+    });
+    return settlement.id;
+  }
+
+  async createSettlementWithTransaction(database: TransactionPrisma, data: CreateSettlementDTO) {
+    const { reservationIds, hostId, ...rest } = data;
+
+    const settlement = await database.settlement.create({
       data: {
         ...rest,
         reservations: {
@@ -183,6 +302,30 @@ export class SettlementRepository {
     }
 
     await this.database.settlement.update(updateArgs);
+  }
+
+  async updateSettlementWithTransaction(database: TransactionPrisma, id: string, data: UpdateSettlementDTO) {
+    const { reservationIds, ...rest } = data;
+    const updateArgs: Prisma.SettlementUpdateArgs = {
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+      },
+    };
+
+    if (data.reservationIds) {
+      updateArgs.data = {
+        ...updateArgs.data,
+        reservations: {
+          deleteMany: {},
+          connect: [...reservationIds.map((id) => ({ id }))],
+        },
+      };
+    }
+
+    await database.settlement.update(updateArgs);
   }
 
   async deleteSettlement(id: string) {
