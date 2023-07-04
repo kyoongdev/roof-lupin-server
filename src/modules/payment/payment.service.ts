@@ -10,6 +10,8 @@ import { FCMEvent } from '@/event/fcm';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
+import { CreateSettlementDTO } from '../host/dto/settlement';
+import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { CreatePaymentDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
@@ -69,7 +71,8 @@ export class PaymentService {
     private readonly portOne: PortOneProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
+    private readonly settlementRepository: SettlementRepository
   ) {}
 
   async testKakaoPayment() {
@@ -474,6 +477,28 @@ export class PaymentService {
       refundCost,
     });
     return reservation.id;
+  }
+
+  async createSettlement(data: ReservationDetailDTO, hostId: string) {
+    const isExist = await this.settlementRepository.checkSettlementByDate(data.year, data.month, data.day, hostId);
+    if (isExist) {
+      await this.settlementRepository.updateSettlement(isExist.id, {
+        discountCost: data.discountCost,
+      });
+    } else {
+      await this.settlementRepository.createSettlement({
+        year: data.year,
+        month: data.month,
+        day: data.day,
+        hostId,
+        settlementCost: 0,
+        totalCost: data.totalCost,
+        vatCost: data.vatCost,
+        discountCost: data.discountCost,
+        originalCost: data.originalCost,
+        reservationIds: [data.id],
+      });
+    }
   }
 
   async sendMessage(reservation: ReservationDetailDTO) {

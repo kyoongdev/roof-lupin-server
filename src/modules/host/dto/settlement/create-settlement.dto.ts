@@ -7,7 +7,7 @@ export interface CreateSettlementDTOProps {
   hostId: string;
   settlementCost: number;
   totalCost: number;
-  taxFreeCost: number;
+  vatCost: number;
   discountCost: number;
   originalCost: number;
   reservationIds?: string[];
@@ -32,8 +32,8 @@ export class CreateSettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '총 결제 금액' } })
   totalCost: number;
 
-  @Property({ apiProperty: { type: 'number', description: '비과세 금액' } })
-  taxFreeCost: number;
+  @Property({ apiProperty: { type: 'number', description: 'VAT 금액' } })
+  vatCost: number;
 
   @Property({ apiProperty: { type: 'number', description: '할인 금액' } })
   discountCost: number;
@@ -52,7 +52,7 @@ export class CreateSettlementDTO {
       this.hostId = props.hostId;
       this.settlementCost = props.settlementCost;
       this.totalCost = props.totalCost;
-      this.taxFreeCost = props.taxFreeCost;
+      this.vatCost = props.vatCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.reservationIds = props.reservationIds;

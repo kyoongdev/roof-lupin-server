@@ -8,7 +8,7 @@ export interface BaseReservationDTOProps {
   startAt: number;
   endAt: number;
   totalCost: number;
-  taxFreeCost: number;
+  vatCost: number;
   discountCost: number;
   originalCost: number;
   payedAt?: Date;
@@ -38,8 +38,8 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'number', description: '결제 금액 (originalCost - discountCost)' } })
   totalCost: number;
 
-  @Property({ apiProperty: { type: 'number', description: '비과세 금액' } })
-  taxFreeCost: number;
+  @Property({ apiProperty: { type: 'number', description: 'VAT 금액' } })
+  vatCost: number;
 
   @Property({ apiProperty: { type: 'number', description: '할인금액' } })
   discountCost: number;
@@ -61,7 +61,7 @@ export class BaseReservationDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.totalCost = props.totalCost;
-    this.taxFreeCost = props.taxFreeCost;
+    this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
     this.createdAt = props.createdAt;

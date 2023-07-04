@@ -10,7 +10,7 @@ export interface SettlementDTOProps {
   day: string;
   settlementCost: number;
   totalCost: number;
-  taxFreeCost: number;
+  vatCost: number;
   discountCost: number;
   originalCost: number;
   isPayed: boolean;
@@ -35,8 +35,8 @@ export class SettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '최종 매출 금액' } })
   totalCost: number;
 
-  @Property({ apiProperty: { type: 'number', description: '비과세 금액' } })
-  taxFreeCost: number;
+  @Property({ apiProperty: { type: 'number', description: 'VAT 금액' } })
+  vatCost: number;
 
   @Property({ apiProperty: { type: 'number', description: '할인 금액' } })
   discountCost: number;
@@ -54,7 +54,7 @@ export class SettlementDTO {
     this.day = props.day;
     this.settlementCost = props.settlementCost;
     this.totalCost = props.totalCost;
-    this.taxFreeCost = props.taxFreeCost;
+    this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
     this.isPayed = props.isPayed;

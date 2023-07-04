@@ -8,7 +8,7 @@ export enum PayMethod {
 
 export interface UpdatePaymentDTOProps {
   totalCost?: number;
-  taxFreeCost?: number;
+  vatCost?: number;
   discountCost?: number;
   originalCost?: number;
   orderId?: string;
@@ -22,8 +22,8 @@ export class UpdatePaymentDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '결제 비용' } })
   totalCost?: number;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '비과세 금액' } })
-  taxFreeCost?: number;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: 'VAT 금액' } })
+  vatCost?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '할인 금액' } })
   discountCost?: number;
@@ -49,7 +49,7 @@ export class UpdatePaymentDTO {
   constructor(props?: UpdatePaymentDTOProps) {
     if (props) {
       this.totalCost = props.totalCost;
-      this.taxFreeCost = props.taxFreeCost;
+      this.vatCost = props.vatCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.orderId = props.orderId;

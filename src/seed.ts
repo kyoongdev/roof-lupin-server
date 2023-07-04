@@ -949,7 +949,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 14,
                 endAt: 15,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1028,7 +1028,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1051,7 +1051,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1093,7 +1093,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1145,7 +1145,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1197,7 +1197,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {
@@ -1249,7 +1249,7 @@ export const seedDatabase = async (database: PrismaService) => {
                 startAt: 17,
                 endAt: 18,
                 originalCost: 2000,
-                taxFreeCost: 2000 - taxCost,
+                vatCost: 2000 - taxCost,
                 totalCost: 2000,
                 userCount: 3,
                 user: {

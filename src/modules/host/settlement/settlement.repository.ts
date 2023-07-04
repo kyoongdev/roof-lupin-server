@@ -60,6 +60,7 @@ export class SettlementRepository {
             },
           },
         },
+        host: true,
       },
     });
 
@@ -67,13 +68,12 @@ export class SettlementRepository {
       throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
     }
 
-    let hostId: string | null = null;
     const { reservations, ...rest } = settlement;
 
     const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
       const { rentalType, ...rest } = reservation;
       const { space, ...restRentalType } = rentalType;
-      if (!hostId) hostId = space.hostId;
+
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
       return {
         ...rest,
@@ -90,25 +90,38 @@ export class SettlementRepository {
       };
     });
 
-    if (!hostId) {
-      throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_HOST_NOT_FOUND));
-    }
-
-    const host = await this.database.host.findUnique({
-      where: {
-        id: hostId,
-      },
-    });
-
-    if (!host) {
-      throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_HOST_NOT_FOUND));
-    }
-
     return new SettlementDetailDTO({
       ...rest,
       reservations: reservationDTOs,
-      host,
     });
+  }
+
+  async findSettlementByDate(year: string, month: string, day: string, hostId: string) {
+    const settlement = await this.database.settlement.findFirst({
+      where: {
+        year,
+        month,
+        day,
+      },
+    });
+
+    if (!settlement) {
+      throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
+    }
+
+    return new SettlementDTO(settlement);
+  }
+
+  async checkSettlementByDate(year: string, month: string, day: string, hostId: string) {
+    const settlement = await this.database.settlement.findFirst({
+      where: {
+        year,
+        month,
+        day,
+      },
+    });
+
+    return new SettlementDTO(settlement);
   }
 
   async countSettlements(args = {} as Prisma.SettlementCountArgs) {
@@ -131,12 +144,17 @@ export class SettlementRepository {
   }
 
   async createSettlement(data: CreateSettlementDTO) {
-    const { reservationIds, ...rest } = data;
+    const { reservationIds, hostId, ...rest } = data;
     const settlement = await this.database.settlement.create({
       data: {
         ...rest,
         reservations: {
           connect: [...reservationIds.map((id) => ({ id }))],
+        },
+        host: {
+          connect: {
+            id: hostId,
+          },
         },
       },
     });

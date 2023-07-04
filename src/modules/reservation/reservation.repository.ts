@@ -241,7 +241,7 @@ export class ReservationRepository {
             })),
           },
         }),
-        taxFreeCost: rest.totalCost - taxCost,
+        vatCost: rest.totalCost - taxCost,
         ...rest,
       },
     });
@@ -281,7 +281,7 @@ export class ReservationRepository {
             })),
           },
         }),
-        taxFreeCost: rest.totalCost - taxCost,
+        vatCost: rest.totalCost - taxCost,
         ...rest,
       },
     });
