@@ -15,7 +15,7 @@ export interface SpaceDTOProps {
   isImmediateReservation: boolean;
   thumbnail: string;
   hostId: string;
-  publicTransportation?: TransportationDTOProps; //대중 교통
+  publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
   rentalType: RentalType[];
 }
@@ -54,8 +54,8 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'string', description: '호스트 id' } })
   hostId: string;
 
-  @Property({ apiProperty: { type: TransportationDTO, nullable: true, description: '공간 대중 교통' } })
-  publicTransportation: TransportationDTO | null;
+  @Property({ apiProperty: { type: TransportationDTO, isArray: true, nullable: true, description: '공간 대중 교통' } })
+  publicTransportations: TransportationDTO[];
 
   @Property({ apiProperty: { type: LocationDTO, nullable: true, description: '공간 위치' } })
   location: LocationDTO | null;
@@ -71,7 +71,7 @@ export class SpaceDTO {
     this.isBest = props.isBest ?? false;
     this.isInterested = props.isInterested ?? false;
     this.thumbnail = props.thumbnail;
-    this.publicTransportation = props.publicTransportation ? new TransportationDTO(props.publicTransportation) : null;
+    this.publicTransportations = props.publicTransportations.map((target) => new TransportationDTO(target));
     this.location = props.location ? new LocationDTO(props.location) : null;
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
     this.packageCost =

@@ -175,7 +175,6 @@ export class SpaceRepository {
     return new SpaceDTO({
       ...space,
       reviewCount: space.reviews.length,
-      publicTransportation: space.publicTransportations?.at(-1),
       location: space.location,
       averageScore: Number(space.averageScore),
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
@@ -209,7 +208,6 @@ export class SpaceRepository {
           ...space,
           rentalType: space.rentalType,
           reviewCount: space.reviews.length,
-          publicTransportation: space.publicTransportations?.at(-1),
           location: space.location,
           averageScore: Number(space.averageScore),
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),

@@ -52,7 +52,6 @@ export class ReservationRepository {
       space: {
         ...space,
         reviewCount: space.reviews.length,
-        publicTransportation: space.publicTransportations?.at(-1),
         location: space.location?.['location'],
         averageScore,
       },
@@ -98,7 +97,6 @@ export class ReservationRepository {
       space: {
         ...space,
         reviewCount: space.reviews.length,
-        publicTransportation: space.publicTransportations?.at(-1),
         location: space.location?.['location'],
         averageScore,
       },
@@ -143,7 +141,6 @@ export class ReservationRepository {
       space: {
         ...space,
         reviewCount: space.reviews.length,
-        publicTransportation: space.publicTransportations?.at(-1),
         location: space.location?.['location'],
         averageScore,
       },
@@ -198,7 +195,6 @@ export class ReservationRepository {
         space: {
           ...space,
           reviewCount: space.reviews.length,
-          publicTransportation: space.publicTransportations?.at(-1),
           location: space.location?.['location'],
           averageScore: averageScore,
         },

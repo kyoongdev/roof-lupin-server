@@ -50,7 +50,6 @@ export class QnARepository {
           space: {
             ...qna.space,
             reviewCount: qna.space.reviews.length,
-            publicTransportation: qna.space.publicTransportations?.at(-1),
             location: qna.space.location,
             averageScore: Number(qna.space.averageScore),
             isInterested: false,
@@ -98,7 +97,6 @@ export class QnARepository {
       space: {
         ...qna.space,
         reviewCount: qna.space.reviews.length,
-        publicTransportation: qna.space.publicTransportations?.at(-1),
         location: qna.space.location,
         averageScore: Number(qna.space.averageScore),
         isInterested: false,

@@ -100,7 +100,6 @@ export class FindSpacesQuery extends PagingDTO {
             },
           },
         }),
-
         ...(this.locationName && {
           location: {
             OR: [
@@ -132,12 +131,16 @@ export class FindSpacesQuery extends PagingDTO {
       orderBy,
     };
   }
-  generateSqlWhereClause(excludeSpaces: string[], includeSpaces?: string[]) {
+  //49
+  generateSqlWhereClause(excludeSpaces: string[], includeSpaces?: string[], userId?: string) {
     const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.sql`1=1`;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
           this.locationName
         )}%')`
+      : Prisma.sql``;
+    const reportWhere = userId
+      ? Prisma.sql`AND sp.id NOT IN (SELECT spaceId FROM SpaceReport as sre WHERE sre.userId = ${userId})`
       : Prisma.sql``;
 
     const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.sql``;
@@ -149,7 +152,7 @@ export class FindSpacesQuery extends PagingDTO {
       excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
     const includeIds =
       includeSpaces.length > 0 ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
-    const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${includeIds}`;
+    const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${includeIds} ${reportWhere}`;
     return where;
   }
 }

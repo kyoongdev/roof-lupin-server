@@ -24,6 +24,7 @@ import {
 import { SpaceException } from './exception/space.exception';
 import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
+import { getFindSpacesWithDistanceSQL, getFindSpacesWithPopularitySQL } from './sql';
 
 @Injectable()
 export class SpaceService {
@@ -43,39 +44,69 @@ export class SpaceService {
   }
 
   async findSpacesWithPopularity(paging: PagingDTO, where: Prisma.Sql) {
-    const spaces: PopularSpace[] = await this.database.$queryRaw`
-          SELECT sp.id as id, AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests,COUNT(sr.spaceId) as reviewCount
-          FROM Space sp
-          LEFT JOIN SpaceInterest si ON  sp.id = si.spaceId 
-          LEFT JOIN SpaceReview sr ON sp.id = sr.spaceId
-          INNER JOIN SpaceLocation sl ON sp.id = sl.spaceId
-          INNER JOIN SpaceCategory sc ON sp.id = sc.spaceId 
-          INNER JOIN Category ca ON sc.categoryId = ca.id 
-          ${where}
-          GROUP BY sp.id
-          ORDER BY userInterests, averageScore,reviewCount
-          LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
-      `;
+    const query = getFindSpacesWithPopularitySQL(paging, where);
+    const spaces: PopularSpace[] = await this.database.$queryRaw`${query}`;
+    const data = await Promise.all(
+      spaces.map(async (space) => {
+        const publicTransportations = await this.database.publicTransportation.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        const rentalType = await this.database.rentalType.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        return new SpaceDTO({
+          ...space,
+          location: {
+            id: space.slId,
+            lat: space.lat,
+            lng: space.lng,
+            roadAddress: space.roadAddress,
+            jibunAddress: space.jibunAddress,
+          },
+          publicTransportations,
+          rentalType,
+        });
+      })
+    );
 
-    return spaces;
+    return data;
   }
 
   async findSpacesWithDistance(location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) {
-    const spaces: DistanceSpace[] = await this.database.$queryRaw`
-        SELECT sp.id as id,
-        (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
-        -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat))))
-        AS distance
-        FROM Space sp
-        INNER JOIN SpaceLocation sl ON sp.id = sl.spaceId
-        INNER JOIN SpaceCategory sc ON sp.id = sc.spaceId 
-        INNER JOIN Category ca ON sc.categoryId = ca.id 
-        ${where}
-        ORDER BY distance 
-        LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
-    `;
+    const query = getFindSpacesWithDistanceSQL(location, paging, where);
+    const spaces: DistanceSpace[] = await this.database.$queryRaw`${query}`;
 
-    return spaces;
+    const data = await Promise.all(
+      spaces.map(async (space) => {
+        const publicTransportations = await this.database.publicTransportation.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        const rentalType = await this.database.rentalType.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        return new SpaceDTO({
+          ...space,
+          location: {
+            id: space.slId,
+            lat: space.lat,
+            lng: space.lng,
+            roadAddress: space.roadAddress,
+            jibunAddress: space.jibunAddress,
+          },
+          publicTransportations,
+          rentalType,
+        });
+      })
+    );
+    return data;
   }
 
   async findPagingSpaces(
@@ -88,13 +119,7 @@ export class SpaceService {
   ) {
     const { skip, take } = paging.getSkipTake();
 
-    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(
-      paging,
-      args,
-      location,
-      date,
-      userId
-    );
+    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(args, date, userId);
 
     const whereArgs: Prisma.SpaceWhereInput = {
       ...(location && {
@@ -116,26 +141,24 @@ export class SpaceService {
 
     const spaces: SpaceDTO[] = [];
     if (query.sort === 'POPULARITY') {
-      const popularitySpaces = await this.findSpacesWithPopularity(
-        paging,
-        query.generateSqlWhereClause(excludeSpaces, includeSpaces)
-      );
       spaces.push(
-        ...(await Promise.all(
-          popularitySpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
+        ...(await this.findSpacesWithPopularity(
+          paging,
+          query.generateSqlWhereClause(excludeSpaces, includeSpaces, userId)
         ))
       );
-    } else if (query.sort === 'DISTANCE') {
-      if (!query.lat && !query.lng) {
+    } else if (query.sort === 'DISTANCE' || location) {
+      if (!query.lat && !query.lng && !query.distance) {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
       }
       const distanceSpaces = await this.findSpacesWithDistance(
         {
           lat: query.lat,
           lng: query.lng,
+          distance: query.distance,
         },
         paging,
-        query.generateSqlWhereClause(excludeSpaces, includeSpaces)
+        query.generateSqlWhereClause(excludeSpaces, includeSpaces, userId)
       );
       spaces.push(
         ...(await Promise.all(
@@ -193,32 +216,10 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async generateIncludeExcludeSpaces(
-    paging: PagingDTO,
-    args = {} as Prisma.SpaceFindManyArgs,
-    location?: FindByLocationQuery,
-    date?: FindByDateQuery,
-    userId?: string
-  ) {
+  async generateIncludeExcludeSpaces(args = {} as Prisma.SpaceFindManyArgs, date?: FindByDateQuery, userId?: string) {
     const includeSpaces: string[] = [];
     const excludeSpaces: string[] = [];
-    if (userId) {
-      const reports = await this.database.spaceReport.findMany({
-        where: {
-          userId,
-        },
-        select: {
-          spaceId: true,
-        },
-      });
-      excludeSpaces.push(...reports.map((report) => report.spaceId));
-    }
 
-    if (location) {
-      includeSpaces.push(
-        ...(await this.locationRepository.getLocationsByDistance(paging, location)).map((location) => location.spaceId)
-      );
-    }
     if (date) {
       const results = await this.rentalTypeService.findPossibleRentalTypesBySpaces(
         {
