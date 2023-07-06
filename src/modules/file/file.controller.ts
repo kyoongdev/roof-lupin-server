@@ -3,9 +3,10 @@ import { Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/comm
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
-import { RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
+import { JwtAuthGuard } from '@/utils/guards';
 
 import { UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
@@ -15,6 +16,7 @@ export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Post('/image')
+  @Auth([JwtAuthGuard])
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 1024 * 1024 * 10 } }))
   @RequestApi({
@@ -45,6 +47,7 @@ export class FileController {
   }
 
   @Post('/images')
+  @Auth([JwtAuthGuard])
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', undefined, { limits: { fileSize: 1024 * 1024 * 10 } }))
   @RequestApi({

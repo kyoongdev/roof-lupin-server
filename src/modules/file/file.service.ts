@@ -22,7 +22,7 @@ export class FileService {
 
   async imageResize(file: Buffer) {
     const transformer = await sharp(file)
-      .resize({ width: 720, height: 485, fit: sharp.fit.fill })
+      .resize({ width: 720, height: 485, fit: sharp.fit.cover })
       .jpeg({ mozjpeg: true })
       .toBuffer();
     return transformer;
