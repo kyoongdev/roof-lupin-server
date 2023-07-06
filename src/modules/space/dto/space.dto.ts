@@ -65,7 +65,7 @@ export class SpaceDTO {
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
     this.id = props.id;
     this.title = props.title;
-    this.averageScore = Number(props.averageScore.toFixed(1));
+    this.averageScore = props.averageScore ? Number(props.averageScore.toFixed(1)) : 0;
     this.reviewCount = props.reviewCount;
     this.hostId = props.hostId;
     this.isBest = props.isBest ?? false;
