@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
+import { DistanceSpace, PopularSpace } from '@/interface/space.interface';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { AdditionalServiceDTO } from './dto/additionalService';
@@ -26,6 +27,38 @@ export class SpaceRepository {
       },
     });
     return new SpaceIdsDTO({ ids: spaces.map((space) => space.id) });
+  }
+
+  async findSpacesWithSQL(sql: Prisma.Sql) {
+    const spaces: (PopularSpace | DistanceSpace)[] = await this.database.$queryRaw(sql);
+    console.log('space length', spaces.length);
+    const data = await Promise.all(
+      spaces.map(async (space) => {
+        const publicTransportations = await this.database.publicTransportation.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        const rentalType = await this.database.rentalType.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+        return new SpaceDTO({
+          ...space,
+          location: {
+            id: space.slId,
+            lat: space.lat,
+            lng: space.lng,
+            roadAddress: space.roadAddress,
+            jibunAddress: space.jibunAddress,
+          },
+          publicTransportations,
+          rentalType,
+        });
+      })
+    );
+    return data;
   }
 
   async findSpace(id: string, userId?: string) {
@@ -182,7 +215,13 @@ export class SpaceRepository {
   }
 
   async countSpaces(args = {} as Prisma.SpaceCountArgs) {
-    return this.database.space.count(args);
+    return await this.database.space.count(args);
+  }
+
+  async countSpacesWithSQL(sql: Prisma.Sql) {
+    const count = await this.database.$queryRaw(sql);
+
+    return (count as any).length;
   }
 
   async findSpaces(args = {} as Prisma.SpaceFindManyArgs, userId?: string) {

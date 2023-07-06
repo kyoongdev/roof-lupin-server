@@ -13,7 +13,6 @@ export interface PopularSpace extends Omit<Space, 'averageScore'> {
 
 export interface DistanceSpace extends Omit<Space, 'averageScore'> {
   reviewCount: number;
-  id: string;
   slId: string;
   lat: string;
   lng: string;
@@ -22,4 +21,9 @@ export interface DistanceSpace extends Omit<Space, 'averageScore'> {
   distance: string;
   averageScore: number;
   userInterests: number;
+}
+
+export interface MaxPossibleTime {
+  accTime: number;
+  maxPossibleTime: number;
 }

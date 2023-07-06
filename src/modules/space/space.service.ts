@@ -4,9 +4,8 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
-import { DistanceSpace, PopularSpace } from '@/interface/space.interface';
+import { MaxPossibleTime } from '@/interface/space.interface';
 
-import { LatLngDTO } from '../location/dto';
 import { LocationRepository } from '../location/location.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -24,7 +23,12 @@ import {
 import { SpaceException } from './exception/space.exception';
 import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
-import { getFindSpacesWithDistanceSQL, getFindSpacesWithPopularitySQL } from './sql';
+import {
+  getCountSpacesSQL,
+  getFindSpacesSQL,
+  getFindSpacesWithDistanceSQL,
+  getFindSpacesWithPopularitySQL,
+} from './sql';
 
 @Injectable()
 export class SpaceService {
@@ -43,72 +47,6 @@ export class SpaceService {
     return await this.spaceRepository.findSpace(id, userId);
   }
 
-  async findSpacesWithPopularity(paging: PagingDTO, where: Prisma.Sql) {
-    const query = getFindSpacesWithPopularitySQL(paging, where);
-    const spaces: PopularSpace[] = await this.database.$queryRaw`${query}`;
-    const data = await Promise.all(
-      spaces.map(async (space) => {
-        const publicTransportations = await this.database.publicTransportation.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        const rentalType = await this.database.rentalType.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        return new SpaceDTO({
-          ...space,
-          location: {
-            id: space.slId,
-            lat: space.lat,
-            lng: space.lng,
-            roadAddress: space.roadAddress,
-            jibunAddress: space.jibunAddress,
-          },
-          publicTransportations,
-          rentalType,
-        });
-      })
-    );
-
-    return data;
-  }
-
-  async findSpacesWithDistance(location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) {
-    const query = getFindSpacesWithDistanceSQL(location, paging, where);
-    const spaces: DistanceSpace[] = await this.database.$queryRaw`${query}`;
-
-    const data = await Promise.all(
-      spaces.map(async (space) => {
-        const publicTransportations = await this.database.publicTransportation.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        const rentalType = await this.database.rentalType.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        return new SpaceDTO({
-          ...space,
-          location: {
-            id: space.slId,
-            lat: space.lat,
-            lng: space.lng,
-            roadAddress: space.roadAddress,
-            jibunAddress: space.jibunAddress,
-          },
-          publicTransportations,
-          rentalType,
-        });
-      })
-    );
-    return data;
-  }
-
   async findPagingSpaces(
     paging: PagingDTO,
     args = {} as Prisma.SpaceFindManyArgs,
@@ -117,67 +55,24 @@ export class SpaceService {
     date?: FindByDateQuery,
     userId?: string
   ) {
-    const { skip, take } = paging.getSkipTake();
-
-    const [includeSpaces, excludeSpaces] = await this.generateIncludeExcludeSpaces(args, date, userId);
-
-    const whereArgs: Prisma.SpaceWhereInput = {
-      ...(location && {
-        OR: includeSpaces.map((spaceId) => ({
-          id: spaceId,
-        })),
-      }),
-      ...(excludeSpaces.length > 0 && {
-        NOT: excludeSpaces.map((spaceId) => ({
-          id: spaceId,
-        })),
-      }),
-      ...args.where,
-    };
-
-    const count = await this.spaceRepository.countSpaces({
-      where: whereArgs,
-    });
-
-    const spaces: SpaceDTO[] = [];
-    if (query.sort === 'POPULARITY') {
-      spaces.push(
-        ...(await this.findSpacesWithPopularity(
-          paging,
-          query.generateSqlWhereClause(excludeSpaces, includeSpaces, userId)
-        ))
-      );
-    } else if (query.sort === 'DISTANCE' || location) {
+    if (query.sort === 'DISTANCE' || location) {
       if (!query.lat && !query.lng && !query.distance) {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
       }
-      const distanceSpaces = await this.findSpacesWithDistance(
-        {
-          lat: query.lat,
-          lng: query.lng,
-          distance: query.distance,
-        },
-        paging,
-        query.generateSqlWhereClause(excludeSpaces, includeSpaces, userId)
-      );
-      spaces.push(
-        ...(await Promise.all(
-          distanceSpaces.map(async (space) => await this.spaceRepository.findCommonSpace(space.id, userId))
-        ))
-      );
-    } else {
-      spaces.push(
-        ...(await this.spaceRepository.findSpaces(
-          {
-            where: whereArgs,
-            orderBy: args.orderBy,
-            skip,
-            take,
-          },
-          userId
-        ))
-      );
     }
+    const excludeSpaces = await this.getExcludeSpaces(args, date);
+
+    const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
+
+    let sqlQuery = getFindSpacesSQL(query, paging, baseWhere);
+    if (query.sort === 'POPULARITY') {
+      sqlQuery = getFindSpacesWithPopularitySQL(paging, baseWhere);
+    } else if (query.sort === 'DISTANCE' || location) {
+      sqlQuery = getFindSpacesWithDistanceSQL(location, paging, baseWhere);
+    }
+
+    const count = await this.spaceRepository.countSpacesWithSQL(getCountSpacesSQL(baseWhere));
+    const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
@@ -216,8 +111,7 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async generateIncludeExcludeSpaces(args = {} as Prisma.SpaceFindManyArgs, date?: FindByDateQuery, userId?: string) {
-    const includeSpaces: string[] = [];
+  async getExcludeSpaces(args = {} as Prisma.SpaceFindManyArgs, date?: FindByDateQuery) {
     const excludeSpaces: string[] = [];
 
     if (date) {
@@ -235,26 +129,22 @@ export class SpaceService {
       reservations.reduce<string[]>((acc, reservation) => {
         let isPossible = true;
         if (reservation.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          const possibleTimes: number[] = [];
-          //INFO: 시간대별로 가능한 시간의 크기를 구함
-          (reservation as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, timeCostInfo) => {
-            if (timeCostInfo.isPossible) {
-              acc += 1;
-            } else {
-              possibleTimes.push(acc);
-              acc = 0;
-            }
-            return acc;
-          }, 0);
-          //INFO: 가장 길게 이용할 수 있는 시간
-          const maxPossibleTime = Math.max(...possibleTimes);
+          //INFO: 시간대별로 가능한 시간 중 가장 긴 시간
+          const maxPossibleTime = (reservation as PossibleRentalTypeDTO).timeCostInfos.reduce<MaxPossibleTime>(
+            (acc, timeCostInfo) => {
+              if (timeCostInfo.isPossible) {
+                acc.accTime += 1;
+              } else {
+                acc.maxPossibleTime = acc.accTime;
+                acc.accTime = 0;
+              }
+              return acc;
+            },
+            { maxPossibleTime: 0, accTime: 0 }
+          ).maxPossibleTime;
 
           //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
-          if (maxPossibleTime < date.time) {
-            isPossible = false;
-          } else {
-            isPossible = true;
-          }
+          isPossible = maxPossibleTime >= date.time;
         } else if (reservation.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           const time = reservation.endAt - reservation.startAt;
 
@@ -266,21 +156,23 @@ export class SpaceService {
           }
         }
 
+        const isAlreadyExcluded = excludeSpaces.includes(reservation.spaceId);
+        const isAlreadyIncluded = acc.includes(reservation.spaceId);
         if (isPossible) {
           //INFO: 가능한데, 제외되어있으면 제외 목록에서 제거
-          if (excludeSpaces.includes(reservation.spaceId)) {
+          if (isAlreadyExcluded) {
             excludeSpaces.splice(excludeSpaces.indexOf(reservation.spaceId), 1);
           }
-          if (!acc.includes(reservation.spaceId)) {
+          if (!isAlreadyIncluded) {
             acc.push(reservation.spaceId);
           }
-        } else if (!acc.includes(reservation.spaceId) && !excludeSpaces.includes(reservation.spaceId)) {
+        } else if (!isAlreadyIncluded && !isAlreadyExcluded) {
           excludeSpaces.push(reservation.spaceId);
         }
         return acc;
       }, []);
     }
 
-    return [includeSpaces, excludeSpaces];
+    return excludeSpaces;
   }
 }

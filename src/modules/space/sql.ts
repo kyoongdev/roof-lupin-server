@@ -3,6 +3,8 @@ import { PagingDTO } from 'wemacu-nestjs';
 
 import { LatLngDTO } from '../location/dto';
 
+import { FindSpacesQuery } from './dto/query';
+
 const BASE_SELECT = Prisma.sql`
   sp.id as id, sp.title as title, sp.description as description, sp.buildingType as buildingType, sp.thumbnail as thumbnail, 
   sp.minUser as minUser , sp.maxUser as maxUser , sp.overflowUserCost as overflowUserCost, sp.overflowUserCount as overflowUserCount,
@@ -28,6 +30,7 @@ export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.
   GROUP BY sp.id
   ORDER BY userInterests, averageScore, reviewCount
   LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
+  GROUP BY sp.id
 `;
 
 export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
@@ -41,4 +44,36 @@ export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: Paging
   ${where} AND distance <= ${location.distance}
   ORDER BY distance 
   LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
+  GROUP BY sp.id
+`;
+
+export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, where: Prisma.Sql) => {
+  const orderBy =
+    query.sort === 'PRICE_HIGH'
+      ? Prisma.sql`sp.minCost DESC`
+      : query.sort === 'PRICE_LOW'
+      ? Prisma.sql`sp.minCost ASC`
+      : Prisma.sql`sp.createdAt DESC`;
+
+  return Prisma.sql`
+  SELECT ${BASE_SELECT}
+  FROM Space sp
+  ${BASE_JOIN}
+  ${where}
+  GROUP BY sp.id
+  ORDER BY ${orderBy}
+  LIMIT ${paging.page ? paging.page - 1 : 0},${paging.limit ?? 10}
+`;
+};
+
+export const getCountSpacesSQL = (where: Prisma.Sql) => Prisma.sql`
+SELECT *
+FROM  
+(
+  SELECT sp.id 
+  FROM Space sp
+  ${BASE_JOIN}
+  ${where}
+  GROUP BY sp.id
+) as sub  
 `;

@@ -236,6 +236,7 @@ export const seedDatabase = async (database: PrismaService) => {
       overflowUserCost: 15000,
       buildingType: 1,
       minSize: 80,
+      minCost: 5000,
       rentalType: {
         create: [
           {

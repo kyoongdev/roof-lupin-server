@@ -45,24 +45,7 @@ export class FindSpacesQuery extends PagingDTO {
     let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
       createdAt: 'desc',
     };
-
-    if (this.sort === 'POPULARITY') {
-      orderBy = [
-        {
-          userInterests: {
-            _count: 'desc',
-          },
-        },
-        {
-          averageScore: 'desc',
-        },
-        {
-          reviews: {
-            _count: 'desc',
-          },
-        },
-      ];
-    } else if (this.sort === 'RECENT') {
+    if (this.sort === 'RECENT') {
       orderBy = {
         createdAt: 'desc',
       };
@@ -131,28 +114,28 @@ export class FindSpacesQuery extends PagingDTO {
       orderBy,
     };
   }
-  //49
-  generateSqlWhereClause(excludeSpaces: string[], includeSpaces?: string[], userId?: string) {
-    const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.sql`1=1`;
+
+  generateSqlWhereClause(excludeSpaces: string[], userId?: string) {
+    const allEmpty = !this.userCount && !this.category && !this.categoryIds && !this.locationName && !userId;
+
+    const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.empty;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
           this.locationName
         )}%')`
-      : Prisma.sql``;
+      : Prisma.empty;
     const reportWhere = userId
       ? Prisma.sql`AND sp.id NOT IN (SELECT spaceId FROM SpaceReport as sre WHERE sre.userId = ${userId})`
-      : Prisma.sql``;
-
-    const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.sql``;
+      : Prisma.empty;
+    const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.empty;
     const categoryIdWhere = this.categoryIds
       ? Prisma.sql`AND ca.id IN (${Prisma.join(this.categoryIds.split(','), ',')})`
-      : Prisma.sql``;
-
+      : Prisma.empty;
     const excludeIds =
-      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.sql``;
-    const includeIds =
-      includeSpaces.length > 0 ? Prisma.sql`AND sp.id IN (${Prisma.join(includeSpaces, ',')})` : Prisma.sql``;
-    const where = Prisma.sql`WHERE ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${includeIds} ${reportWhere}`;
+      excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.empty;
+    const where = allEmpty
+      ? Prisma.empty
+      : Prisma.sql`WHERE 1=1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} `;
     return where;
   }
 }
