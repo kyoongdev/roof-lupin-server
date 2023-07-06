@@ -31,8 +31,8 @@ export class FileController {
     await this.fileService.deleteAll();
   }
 
+  // @Auth([JwtAuthGuard])
   @Post('/image')
-  @Auth([JwtAuthGuard])
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 1024 * 1024 * 10 } }))
   @RequestApi({
@@ -62,8 +62,8 @@ export class FileController {
     return this.fileService.uploadFile(file);
   }
 
+  // @Auth([JwtAuthGuard])
   @Post('/images')
-  @Auth([JwtAuthGuard])
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', undefined, { limits: { fileSize: 1024 * 1024 * 10 } }))
   @RequestApi({

@@ -24,7 +24,7 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.holiday.deleteMany({});
   await database.coupon.deleteMany({});
   await seedHosts(database);
-  await seedSpace(database);
+
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
 
@@ -52,7 +52,7 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
   await Promise.all(
-    range(2023, 2031).map(async (i) => {
+    range(2023, 2025).map(async (i) => {
       await Promise.all(
         range(1, 13).map(async (j) => {
           const month = `${j}`.length === 1 ? `0${j}` : `${j}`;
@@ -140,7 +140,7 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
 
-  const spaces: Space[] = [];
+  const spaces: Space[] = await seedSpace(database);
 
   for (let i = 0; i < 5; i++) {
     await database.curation.create({
@@ -155,22 +155,6 @@ export const seedDatabase = async (database: PrismaService) => {
             id: testUser.id,
           },
         },
-      },
-    });
-  }
-  const hostPassword2 = encrypt.hashPassword(salt, 'real1234');
-
-  for (let i = 0; i < 50; i++) {
-    await database.userAlarm.create({
-      data: {
-        user: {
-          connect: {
-            id: testUser.id,
-          },
-        },
-        title: `테스트 알람${i + 1}`,
-        content: `테스트 알람 내용${i + 1}`,
-        isRead: i % 2 === 0,
       },
     });
   }
@@ -213,293 +197,6 @@ export const seedDatabase = async (database: PrismaService) => {
 
   await Promise.all(
     spaces.map(async (spaces, index) => {
-      const rentalTypes = await database.rentalType.findMany({
-        where: {
-          spaceId: spaces.id,
-        },
-      });
-      await Promise.all(
-        rentalTypes.map(async (rentalType) => {
-          if (rentalType.rentalType === 1) {
-            const taxCost = Math.floor(2000 / 1.1);
-
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '8',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '15',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '14',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-                      images: {
-                        create: [
-                          {
-                            image: {
-                              create: {
-                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
-                              },
-                            },
-                          },
-                        ],
-                      },
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '13',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-                      images: {
-                        create: [
-                          {
-                            image: {
-                              create: {
-                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
-                              },
-                            },
-                          },
-                        ],
-                      },
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '12',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-                      images: {
-                        create: [
-                          {
-                            image: {
-                              create: {
-                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
-                              },
-                            },
-                          },
-                        ],
-                      },
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: '2023',
-                month: '6',
-                day: '11',
-                rentalType: {
-                  connect: {
-                    id: rentalType.id,
-                  },
-                },
-                startAt: 17,
-                endAt: 18,
-                originalCost: 2000,
-                vatCost: 2000 - taxCost,
-                totalCost: 2000,
-                userCount: 3,
-                user: {
-                  connect: {
-                    id: testUser.id,
-                  },
-                },
-                spaceReviews: {
-                  create: [
-                    {
-                      content: '테스트 리뷰2',
-                      score: 4,
-                      space: {
-                        connect: {
-                          id: spaces.id,
-                        },
-                      },
-                      images: {
-                        create: [
-                          {
-                            image: {
-                              create: {
-                                url: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
-                              },
-                            },
-                          },
-                        ],
-                      },
-                      user: {
-                        connect: {
-                          id: testUser.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-          }
-        })
-      );
-
       if (index < 5) {
         await database.category.update({
           where: {

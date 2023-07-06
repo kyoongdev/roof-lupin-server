@@ -1,10 +1,9 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Space } from '@prisma/client';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
-export const seedSpace = async (database: PrismaService) => {
-  const hosts = await database.host.findMany();
+export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');
@@ -58,7 +57,7 @@ export const seedSpace = async (database: PrismaService) => {
 
   const party = await database.category.create({
     data: {
-      name: `루프탑`,
+      name: `파티룸`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
       isHome: true,
       isRecommended: false,
@@ -67,148 +66,367 @@ export const seedSpace = async (database: PrismaService) => {
 
   const film = await database.category.create({
     data: {
-      name: `루프탑`,
+      name: `촬영`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
       isHome: true,
       isRecommended: false,
     },
   });
-  const mainCategories = [roofTop, movie, glamping, party, film];
-
-  const partyRoomCategory = await database.category.create({
-    data: {
-      name: '파티룸',
+  const mainCategories = await database.category.findMany({
+    where: {
+      isHome: true,
     },
   });
 
-  const barbequeCategory = await database.category.create({
-    data: {
-      name: '바베큐와 함께 즐겨요.',
-    },
-  });
+  const spaces: any[] = [];
 
-  await database.space.create({
-    data: {
-      title: '디난트 파티룸',
-      description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
-      건대후문 바로 앞 어린이대공원역 도보 3분컷!
-      
-      다양한 컨셉으로 포토존 가득한 파티룸
-      넓은 공간에서 단체 또는 연인 친구들과 즐거운 시간을 보낼 수 있는 프라이빗한 공간을 대여해 보세요
-      
-      친구들과 생일파티
-      결혼 전 브라이덜샤워
-      연인의 프로포즈
-      단체로 단합할수 있는 파티
-      촬영용 공간대여
-      일일 공간대여로 안성맞춤
-      
-      우리들만의 프라이빗 루프탑에서 즐기는 바베큐파티
-      80인치 대형 티비로 영화감상
-      블링블링 파티컨셉에 맞춰 사진촬영
-      큐티한 바비박스에서 바비로 변신!
-      숯불바베큐가 가능하며
-      불은 호스트가 직접피어 드립니다
-      넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
-      thumbnail: 'https://dev-image.cumuco.net/IMG_5913.jpg',
-      minUser: 0,
-      maxUser: 0,
-      overflowUserCount: 6,
-      overflowUserCost: 15000,
-      buildingType: 1,
-      minSize: 80,
-      minCost: 5000,
-      rentalType: {
-        create: [
-          {
-            baseCost: 5000,
-            name: '시간당 요금',
-            rentalType: 1,
-            baseHour: 2,
-            startAt: 14,
-            endAt: 24,
-            day: 1,
-            timeCostInfo: {
-              create: [
-                {
-                  cost: 5000,
-                  time: 14,
-                },
-                {
-                  cost: 5000,
-                  time: 15,
-                },
-                {
-                  cost: 5000,
-                  time: 16,
-                },
-                {
-                  cost: 7000,
-                  time: 17,
-                },
-                {
-                  cost: 7000,
-                  time: 18,
-                },
-                {
-                  cost: 7000,
-                  time: 19,
-                },
-                {
-                  cost: 7000,
-                  time: 20,
-                },
-                {
-                  cost: 7000,
-                  time: 21,
-                },
-                {
-                  cost: 7000,
-                  time: 22,
-                },
-                {
-                  cost: 7000,
-                  time: 23,
-                },
-              ],
+  for (let i = 0; i < 30; i++) {
+    const space = await database.space.create({
+      data: {
+        title: '디난트 파티룸',
+        description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
+        건대후문 바로 앞 어린이대공원역 도보 3분컷!
+        
+        다양한 컨셉으로 포토존 가득한 파티룸
+        넓은 공간에서 단체 또는 연인 친구들과 즐거운 시간을 보낼 수 있는 프라이빗한 공간을 대여해 보세요
+        
+        친구들과 생일파티
+        결혼 전 브라이덜샤워
+        연인의 프로포즈
+        단체로 단합할수 있는 파티
+        촬영용 공간대여
+        일일 공간대여로 안성맞춤
+        
+        우리들만의 프라이빗 루프탑에서 즐기는 바베큐파티
+        80인치 대형 티비로 영화감상
+        블링블링 파티컨셉에 맞춰 사진촬영
+        큐티한 바비박스에서 바비로 변신!
+        숯불바베큐가 가능하며
+        불은 호스트가 직접피어 드립니다
+        넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
+        thumbnail: 'https://dev-image.cumuco.net/IMG_5913.jpg',
+        minUser: 0,
+        maxUser: 0,
+        overflowUserCount: 6,
+        overflowUserCost: 15000,
+        buildingType: 1,
+        minSize: 80,
+        minCost: 5000,
+        rentalType: {
+          create: [
+            {
+              baseCost: 5000,
+              name: '시간당 요금',
+              rentalType: 1,
+              baseHour: 2,
+              startAt: 14,
+              endAt: 24,
+              day: 1,
+              timeCostInfo: {
+                create: [
+                  {
+                    cost: 5000,
+                    time: 14,
+                  },
+                  {
+                    cost: 5000,
+                    time: 15,
+                  },
+                  {
+                    cost: 5000,
+                    time: 16,
+                  },
+                  {
+                    cost: 7000,
+                    time: 17,
+                  },
+                  {
+                    cost: 7000,
+                    time: 18,
+                  },
+                  {
+                    cost: 7000,
+                    time: 19,
+                  },
+                  {
+                    cost: 7000,
+                    time: 20,
+                  },
+                  {
+                    cost: 7000,
+                    time: 21,
+                  },
+                  {
+                    cost: 7000,
+                    time: 22,
+                  },
+                  {
+                    cost: 7000,
+                    time: 23,
+                  },
+                ],
+              },
             },
+            {
+              baseCost: 100000,
+              name: '올데이 패키지',
+              startAt: 11,
+              endAt: 16,
+              day: 1,
+              rentalType: 2,
+              baseHour: 5,
+            },
+            {
+              baseCost: 150000,
+              name: '올나잇 패키지',
+              startAt: 19,
+              endAt: 9,
+              day: 1,
+              rentalType: 2,
+              baseHour: 5,
+            },
+          ],
+        },
+        additionalServices: {
+          create: {
+            name: '바베큐',
+            cost: 10000,
           },
-          {
-            baseCost: 100000,
-            name: '올데이 패키지',
-            startAt: 11,
-            endAt: 16,
-            day: 1,
-            rentalType: 2,
-            baseHour: 5,
+        },
+        host: {
+          connect: {
+            id: realHost.id,
           },
-          {
-            baseCost: 150000,
-            name: '올나잇 패키지',
-            startAt: 19,
-            endAt: 9,
-            day: 1,
-            rentalType: 2,
-            baseHour: 5,
+        },
+        sizes: {
+          create: [
+            {
+              size: 80,
+              floor: '3층',
+            },
+          ],
+        },
+        images: {
+          create: [
+            {
+              image: {
+                create: {
+                  url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://dev-image.cumuco.net/IMG_5917.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://dev-image.cumuco.net/IMG_5918.jpg',
+                },
+              },
+            },
+            {
+              image: {
+                create: {
+                  url: 'https://dev-image.cumuco.net/IMG_5925.jpg',
+                },
+              },
+            },
+          ],
+        },
+        refundPolicies: {
+          create: [
+            {
+              daysBefore: 0,
+              refundRate: 10,
+            },
+            {
+              daysBefore: 1,
+              refundRate: 20,
+            },
+            {
+              daysBefore: 2,
+              refundRate: 30,
+            },
+          ],
+        },
+        cautions: {
+          create: [
+            {
+              content:
+                '이용 후 쓰레기분리수거, 설거지, 음식물쓰레기정리, 사용한 물품 제자리로 정리정돈 후 퇴실 해 주세요 (미처리시 보증금 반환불가)',
+            },
+            {
+              content: '실내 모든 집기등은 편안하게 쓰시고 제자리에 정리 해 주세요',
+            },
+            {
+              content: `☆☆취사금지/ 불사용금지☆☆
+              화재발생 시 모든 책임 및 보상 해 주셔야 합니다`,
+            },
+            {
+              content: `루프탑 이용시 계단이 가파르니 손잡이를 잡고오르락 내리락 해 주세요 본인 부주의로 인한 사고에 대해서 디난트파티룸은 전혀 책임 지지 않습니다
+              ☆☆낙상주의☆☆`,
+            },
+          ],
+        },
+        location: {
+          create: {
+            roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
+            jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
+            lng: '127.07668323717',
+            lat: '37.545277604771',
           },
-        ],
-      },
-      additionalServices: {
-        create: {
-          name: '바베큐',
-          cost: 10000,
+        },
+
+        buildings: {
+          create: [
+            {
+              building: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '주차 0대',
+                },
+              },
+            },
+            {
+              building: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '3층',
+                },
+              },
+            },
+            {
+              building: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '엘리베이터 없음',
+                },
+              },
+            },
+          ],
+        },
+        services: {
+          create: [
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '바베큐',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '반려동물 동반가능',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '전기',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '금연',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '인터넷/WIFI',
+                },
+              },
+            },
+            {
+              service: {
+                create: {
+                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  name: '장비대여',
+                },
+              },
+            },
+          ],
+        },
+        hashtags: {
+          create: [
+            {
+              hashtag: {
+                create: {
+                  name: '건대',
+                },
+              },
+            },
+            {
+              hashtag: {
+                create: {
+                  name: '파티룸',
+                },
+              },
+            },
+          ],
+        },
+        publicTransportations: {
+          create: [
+            {
+              name: '어린이대공원역',
+              timeTaken: 10,
+            },
+          ],
+        },
+        categories: {
+          create: [
+            {
+              category: {
+                connect: {
+                  id: mainCategories[i % 5].id,
+                },
+              },
+            },
+          ],
         },
       },
-      host: {
-        connect: {
-          id: realHost.id,
-        },
-      },
+    });
+    spaces.push(space);
+  }
+  const space1 = await database.space.create({
+    data: {
+      title: `루프탑 노을 공원`,
+      description:
+        '루프탑 노을공원 ( 구 루프탑 공간 휴 )은 멀리 여행을 가서 할수 있는 캠핑을 도심에서 간편하게 즐길수 있는 공간이 있어 숯불 바베큐를 구워먹으며 빔프로젝터를 통해 영화도 볼수 있습니다. 또한 옥상캠핑, 생일파티, 소모임, 이벤트, 촬영 등 다양한 목적으로 이용 가능합니다.',
+      thumbnail: 'https://dev-image.rooflupin.com/1688632155577áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
+      minUser: 1,
+      maxUser: 20,
+      overflowUserCost: 10000,
+      overflowUserCount: 5,
+      buildingType: 1,
+      minSize: 12,
       sizes: {
         create: [
           {
-            size: 80,
-            floor: '3층',
+            size: 12,
+            floor: '1층',
           },
         ],
       },
@@ -217,35 +435,14 @@ export const seedSpace = async (database: PrismaService) => {
           {
             image: {
               create: {
-                url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+                url: 'https://dev-image.rooflupin.com/1688632155578áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg"',
               },
             },
           },
           {
             image: {
               create: {
-                url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
-              },
-            },
-          },
-          {
-            image: {
-              create: {
-                url: 'https://dev-image.cumuco.net/IMG_5917.jpg',
-              },
-            },
-          },
-          {
-            image: {
-              create: {
-                url: 'https://dev-image.cumuco.net/IMG_5918.jpg',
-              },
-            },
-          },
-          {
-            image: {
-              create: {
-                url: 'https://dev-image.cumuco.net/IMG_5925.jpg',
+                url: 'https://dev-image.rooflupin.com/1688632155578áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
               },
             },
           },
@@ -265,33 +462,155 @@ export const seedSpace = async (database: PrismaService) => {
             daysBefore: 2,
             refundRate: 30,
           },
+          {
+            daysBefore: 3,
+            refundRate: 40,
+          },
         ],
       },
       cautions: {
         create: [
           {
+            content: '조용한 주택가라 시끄럽게 못하는 공간인 점 양해 부탁드립니다.',
+          },
+          {
+            content: '저희 공간은 숙박 시설이 아니므로 숙박 물품은 제공하지 않습니다.',
+          },
+          {
             content:
-              '이용 후 쓰레기분리수거, 설거지, 음식물쓰레기정리, 사용한 물품 제자리로 정리정돈 후 퇴실 해 주세요 (미처리시 보증금 반환불가)',
+              '예약 인원 확인 및 안전 상의 이유로 CCTV는 25시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.',
           },
           {
-            content: '실내 모든 집기등은 편안하게 쓰시고 제자리에 정리 해 주세요',
+            content: '건물 내 화장실을 사용합니다.',
           },
           {
-            content: `☆☆취사금지/ 불사용금지☆☆
-            화재발생 시 모든 책임 및 보상 해 주셔야 합니다`,
+            content: '방역지침을 준수합니다.',
           },
           {
-            content: `루프탑 이용시 계단이 가파르니 손잡이를 잡고오르락 내리락 해 주세요 본인 부주의로 인한 사고에 대해서 디난트파티룸은 전혀 책임 지지 않습니다
-            ☆☆낙상주의☆☆`,
+            content:
+              '기존에 준비된 장비 이외에 추가로 숯불이나 화롯불 등의 개인장비 및 화기를 가져와 사용할 수 없습니다.',
+          },
+        ],
+      },
+
+      rentalType: {
+        create: [
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여',
+            rentalType: 1,
+            day: 1,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여2',
+            rentalType: 1,
+            day: 2,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여',
+            rentalType: 2,
+            baseHour: 6,
+            day: 1,
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여2',
+            rentalType: 2,
+            baseHour: 6,
+            day: 2,
           },
         ],
       },
       location: {
         create: {
-          roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
-          jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
-          lng: '127.07668323717',
-          lat: '37.545277604771',
+          roadAddress: '서울특별시 영등포구 영등포로11길 22 4층 옥상',
+          jibunAddress: '서울특별시 영등포구 양평동1가 219-17',
+          lng: '126.8883343',
+          lat: '37.5244953',
         },
       },
       buildings: {
@@ -300,7 +619,7 @@ export const seedSpace = async (database: PrismaService) => {
             building: {
               create: {
                 iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '주차 0대',
+                name: '주차 5대',
               },
             },
           },
@@ -374,19 +693,13 @@ export const seedSpace = async (database: PrismaService) => {
           },
         ],
       },
-      hashtags: {
+
+      categories: {
         create: [
           {
-            hashtag: {
-              create: {
-                name: '건대',
-              },
-            },
-          },
-          {
-            hashtag: {
-              create: {
-                name: '파티룸',
+            category: {
+              connect: {
+                id: mainCategories[0].id,
               },
             },
           },
@@ -395,367 +708,648 @@ export const seedSpace = async (database: PrismaService) => {
       publicTransportations: {
         create: [
           {
-            name: '어린이대공원역',
-            timeTaken: 10,
+            name: '양평역',
+            timeTaken: 5,
           },
         ],
+      },
+      host: {
+        connect: {
+          id: realHost.id,
+        },
+      },
+    },
+  });
+  const space2 = await database.space.create({
+    data: {
+      title: `루프탑709 - 테라스 파티룸`,
+      description: `
+        ** 당일 온라인 예약 불가
+        인천유일의 루프탑 파티룸~
+        소중한사람들과 함께하는 우리만의 프라이빗파티 ~
+
+        20여평의 루프탑테라스, 20여평의 프라이빗파티룸 공간 모두 한팀에게만 단독대여
+
+        *낮타임 낮12시~5시
+
+        *저녁타임 저녁7시~아침 9시
+
+        * 오락실게임 900개 게임보드, DVD플레이어, 미라캐스트, 55인치 대형 UHDTV(사진의 빔프로젝트는 화질상의 이유로 TV로 교체),  오디오시설 구비
+        `,
+      thumbnail: 'https://dev-image.rooflupin.com/1688632809745áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
+      minUser: 1,
+      maxUser: 20,
+      overflowUserCost: 10000,
+      overflowUserCount: 5,
+      buildingType: 1,
+      minSize: 12,
+      sizes: {
+        create: [
+          {
+            size: 12,
+            floor: '1층',
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632809746áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632809747áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
+              },
+            },
+          },
+        ],
+      },
+      refundPolicies: {
+        create: [
+          {
+            daysBefore: 0,
+            refundRate: 10,
+          },
+          {
+            daysBefore: 1,
+            refundRate: 20,
+          },
+          {
+            daysBefore: 2,
+            refundRate: 30,
+          },
+          {
+            daysBefore: 3,
+            refundRate: 40,
+          },
+        ],
+      },
+      cautions: {
+        create: [
+          {
+            content: '조용한 주택가라 시끄럽게 못하는 공간인 점 양해 부탁드립니다.',
+          },
+          {
+            content: '저희 공간은 숙박 시설이 아니므로 숙박 물품은 제공하지 않습니다.',
+          },
+          {
+            content:
+              '예약 인원 확인 및 안전 상의 이유로 CCTV는 25시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.',
+          },
+          {
+            content: '건물 내 화장실을 사용합니다.',
+          },
+          {
+            content: '방역지침을 준수합니다.',
+          },
+          {
+            content:
+              '기존에 준비된 장비 이외에 추가로 숯불이나 화롯불 등의 개인장비 및 화기를 가져와 사용할 수 없습니다.',
+          },
+        ],
+      },
+
+      rentalType: {
+        create: [
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여',
+            rentalType: 1,
+            day: 1,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여2',
+            rentalType: 1,
+            day: 2,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여',
+            rentalType: 2,
+            baseHour: 6,
+            day: 1,
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여2',
+            rentalType: 2,
+            baseHour: 6,
+            day: 2,
+          },
+        ],
+      },
+      location: {
+        create: {
+          roadAddress: '인천광역시 연수구 먼우금로 96 금송빌딩 6층',
+          jibunAddress: '인천광역시 연수구 동춘동 937-6 금송빌딩',
+          lng: '126.6704665',
+          lat: '37.4075654',
+        },
+      },
+      buildings: {
+        create: [
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '주차 5대',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '3층',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '엘리베이터 없음',
+              },
+            },
+          },
+        ],
+      },
+      services: {
+        create: [
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '바베큐',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '반려동물 동반가능',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '전기',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '금연',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '인터넷/WIFI',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '장비대여',
+              },
+            },
+          },
+        ],
+      },
+
+      categories: {
+        create: [
+          {
+            category: {
+              connect: {
+                id: mainCategories[3].id,
+              },
+            },
+          },
+        ],
+      },
+
+      host: {
+        connect: {
+          id: realHost.id,
+        },
+      },
+    },
+  });
+  const space3 = await database.space.create({
+    data: {
+      title: `을지로401 바베큐 루프탑 파티룸`,
+      description: `
+        ** 당일 온라인 예약 불가
+        인천유일의 루프탑 파티룸~
+        소중한사람들과 함께하는 우리만의 프라이빗파티 ~
+
+        20여평의 루프탑테라스, 20여평의 프라이빗파티룸 공간 모두 한팀에게만 단독대여
+
+        *낮타임 낮12시~5시
+
+        *저녁타임 저녁7시~아침 9시
+
+        * 오락실게임 900개 게임보드, DVD플레이어, 미라캐스트, 55인치 대형 UHDTV(사진의 빔프로젝트는 화질상의 이유로 TV로 교체),  오디오시설 구비
+        `,
+      thumbnail: 'https://dev-image.rooflupin.com/1688632936057asdf.jpeg',
+      minUser: 1,
+      maxUser: 20,
+      overflowUserCost: 10000,
+      overflowUserCount: 5,
+      buildingType: 1,
+      minSize: 12,
+      sizes: {
+        create: [
+          {
+            size: 12,
+            floor: '1층',
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632936058basdb.jpeg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632936059bcbcxcb.jpeg',
+              },
+            },
+          },
+        ],
+      },
+      refundPolicies: {
+        create: [
+          {
+            daysBefore: 0,
+            refundRate: 10,
+          },
+          {
+            daysBefore: 1,
+            refundRate: 20,
+          },
+          {
+            daysBefore: 2,
+            refundRate: 30,
+          },
+          {
+            daysBefore: 3,
+            refundRate: 40,
+          },
+        ],
+      },
+      cautions: {
+        create: [
+          {
+            content: '조용한 주택가라 시끄럽게 못하는 공간인 점 양해 부탁드립니다.',
+          },
+          {
+            content: '저희 공간은 숙박 시설이 아니므로 숙박 물품은 제공하지 않습니다.',
+          },
+          {
+            content:
+              '예약 인원 확인 및 안전 상의 이유로 CCTV는 25시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.',
+          },
+          {
+            content: '건물 내 화장실을 사용합니다.',
+          },
+          {
+            content: '방역지침을 준수합니다.',
+          },
+          {
+            content:
+              '기존에 준비된 장비 이외에 추가로 숯불이나 화롯불 등의 개인장비 및 화기를 가져와 사용할 수 없습니다.',
+          },
+        ],
+      },
+
+      rentalType: {
+        create: [
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여',
+            rentalType: 1,
+            day: 1,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여2',
+            rentalType: 1,
+            day: 2,
+            baseHour: 2,
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여',
+            rentalType: 2,
+            baseHour: 6,
+            day: 1,
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여2',
+            rentalType: 2,
+            baseHour: 6,
+            day: 2,
+          },
+        ],
+      },
+      location: {
+        create: {
+          roadAddress: '서울특별시 중구 충무로 46-1',
+          jibunAddress: '서울특별시 중구 초동 17-4',
+          lng: '126.9929866',
+          lat: '37.5651794',
+        },
+      },
+      buildings: {
+        create: [
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '주차 5대',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '3층',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '엘리베이터 없음',
+              },
+            },
+          },
+        ],
+      },
+      services: {
+        create: [
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '바베큐',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '반려동물 동반가능',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '전기',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '금연',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '인터넷/WIFI',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '장비대여',
+              },
+            },
+          },
+        ],
+      },
+      publicTransportations: {
+        create: [{ name: '을지로 3가', timeTaken: 6 }],
       },
       categories: {
         create: [
           {
             category: {
               connect: {
-                id: partyRoomCategory.id,
-              },
-            },
-          },
-          {
-            category: {
-              connect: {
-                id: glamping.id,
+                id: mainCategories[1].id,
               },
             },
           },
         ],
       },
+
+      host: {
+        connect: {
+          id: realHost.id,
+        },
+      },
     },
   });
 
-  return await Promise.all(
-    hosts.map(async (host, i) => {
-      const space = await database.space.create({
-        data: {
-          title: `루프탑 공간${i + 1}`,
-          description:
-            "소갈비를 이용한 한국 요리. 돼지갈비를 이용한 갈비찜도 있지만, 그냥 '갈비찜' 하면 보통은 소갈비를 이용한 찜 요리를 의미한다. 그러나 돼지갈비가 더 싸기 때문에 돼지갈비찜을 만드는 집안도 많은 편. 명절이나 잔칫상에 올라가는 음식이다. 20세기 중반까지는 소득 수준이 낮고 소고기 가격이 높았기 때문에 어느 정도 경제적 여유가 있는 집이 아니면 먹기 어려운 부자 음식이었다. 하지만 지금은 소득 수준이 올라가고 한우보다 저렴한 수입육이 많이 들어오면서 이전보다 가격 부담은 많이 줄었다. 물론 한우 갈비찜은 여전히 고가의 음식이다.갈비'찜'이라고는 하지만 정확히 말하자면 찜이 아니라 조림이나 스튜에 가까운 조리방식을 쓴다. 원래 찐다는 건 물과 직접 닿지 않고 아래에서 올라오는 증기로 익힌다는 뜻이니까.[1] 비슷한 계열의 요리로 장조림[2], 닭으로 만들면 닭찜일 것 같지만, 실제로는 찜닭이 조리법에 더 가까운 음식이다. 중국에서도 갈비찜이 대중적인 반찬거리로 팔고, 필리핀의 돼지 아도보와, 말레이시아. 인도네시아 른당이나, 일본의 니쿠쟈가도 갈비찜과 비슷한 요리이고, 각 나라별로 맛의 차이는 조금씩 있지만 간장을 쓴다는 점은 비슷하기 때문에 이들나라 국민들에게도 한국의 갈비찜은 익숙해서 먹을만한 요리이다.",
-          thumbnail: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
-          minUser: 1,
-          maxUser: 20,
-          overflowUserCost: i * 1000,
-          overflowUserCount: 5,
-          buildingType: 1,
-          minSize: 12,
-          sizes: {
-            create: [
-              {
-                size: 12,
-                floor: '1층',
-              },
-            ],
-          },
-          images: {
-            create: [
-              {
-                image: {
-                  create: {
-                    url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
-                  },
-                },
-              },
-              {
-                image: {
-                  create: {
-                    url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
-                  },
-                },
-              },
-              {
-                image: {
-                  create: {
-                    url: 'https://i.pinimg.com/564x/97/8e/ae/978eae2548d1aa7c6e5a73db98c0fa31.jpg',
-                  },
-                },
-              },
-            ],
-          },
-          refundPolicies: {
-            create: [
-              {
-                daysBefore: 0,
-                refundRate: 10,
-              },
-              {
-                daysBefore: 0,
-                refundRate: 20,
-              },
-            ],
-          },
-          cautions: {
-            create: [
-              {
-                content: '테스트 주의사항1',
-              },
-              {
-                content: '테스트 주의사항2',
-              },
-              {
-                content: '테스트 주의사항3',
-              },
-              {
-                content: '테스트 주의사항4',
-              },
-            ],
-          },
-
-          rentalType: {
-            create: [
-              {
-                baseCost: 1000,
-                startAt: 14,
-                endAt: 22,
-                name: '시간대여',
-                rentalType: 1,
-                day: 1,
-                baseHour: 2,
-                timeCostInfo: {
-                  create: [
-                    {
-                      cost: 1000,
-                      time: 14,
-                    },
-                    {
-                      cost: 1000,
-                      time: 15,
-                    },
-                    {
-                      cost: 1000,
-                      time: 16,
-                    },
-                    {
-                      cost: 2000,
-                      time: 17,
-                    },
-                    {
-                      cost: 2000,
-                      time: 18,
-                    },
-                    {
-                      cost: 2000,
-                      time: 19,
-                    },
-                    {
-                      cost: 2000,
-                      time: 20,
-                    },
-                    {
-                      cost: 2000,
-                      time: 21,
-                    },
-                  ],
-                },
-              },
-              {
-                baseCost: 1000,
-                startAt: 14,
-                endAt: 22,
-                name: '시간대여2',
-                rentalType: 1,
-                day: 2,
-                baseHour: 2,
-                timeCostInfo: {
-                  create: [
-                    {
-                      cost: 1000,
-                      time: 14,
-                    },
-                    {
-                      cost: 1000,
-                      time: 15,
-                    },
-                    {
-                      cost: 1000,
-                      time: 16,
-                    },
-                    {
-                      cost: 2000,
-                      time: 17,
-                    },
-                    {
-                      cost: 2000,
-                      time: 18,
-                    },
-                    {
-                      cost: 2000,
-                      time: 19,
-                    },
-                    {
-                      cost: 2000,
-                      time: 20,
-                    },
-                    {
-                      cost: 2000,
-                      time: 21,
-                    },
-                  ],
-                },
-              },
-              {
-                baseCost: 100000,
-                startAt: 13,
-                endAt: i % 50 === 0 ? 24 : 22,
-                name: '패키지 대여',
-                rentalType: 2,
-                baseHour: 6,
-                day: 1,
-              },
-              {
-                baseCost: 100000,
-                startAt: 13,
-                endAt: i % 50 === 0 ? 24 : 22,
-                name: '패키지 대여2',
-                rentalType: 2,
-                baseHour: 6,
-                day: 2,
-              },
-            ],
-          },
-          location: {
-            create: {
-              roadAddress: '경기도 성남시 분당구 불정로 6 그린팩토리',
-              jibunAddress: '경기도 성남시 분당구 정자동 178-1 그린팩토리',
-              lng: '127.10522081658463',
-              lat: '37.35951219616309',
-            },
-          },
-          buildings: {
-            create: [
-              {
-                building: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '주차 5대',
-                  },
-                },
-              },
-              {
-                building: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '3층',
-                  },
-                },
-              },
-              {
-                building: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '엘리베이터 없음',
-                  },
-                },
-              },
-            ],
-          },
-          services: {
-            create: [
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '바베큐',
-                  },
-                },
-              },
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '반려동물 동반가능',
-                  },
-                },
-              },
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '전기',
-                  },
-                },
-              },
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '금연',
-                  },
-                },
-              },
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '인터넷/WIFI',
-                  },
-                },
-              },
-              {
-                service: {
-                  create: {
-                    iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                    name: '장비대여',
-                  },
-                },
-              },
-            ],
-          },
-          hashtags: {
-            create: [
-              {
-                hashtag: {
-                  create: {
-                    name: '테스트해시태그1',
-                  },
-                },
-              },
-            ],
-          },
-          categories: {
-            create: [
-              {
-                category: {
-                  connect: {
-                    id: barbequeCategory.id,
-                  },
-                },
-              },
-              {
-                category: {
-                  connect: {
-                    id: mainCategories[i % 5].id,
-                  },
-                },
-              },
-            ],
-          },
-          publicTransportations: {
-            create: [
-              {
-                name: '부산역',
-                timeTaken: 25,
-              },
-            ],
-          },
-          host: {
-            connect: {
-              id: host.id,
-            },
-          },
-        },
-      });
-      await database.blockedTime.create({
-        data: {
-          year: '2023',
-          month: '6',
-          day: '20',
-          startAt: 14,
-          endAt: 15,
-          space: {
-            connect: {
-              id: space.id,
-            },
-          },
-        },
-      });
-      return space;
-    })
-  );
+  return [...spaces, space1, space2, space3].sort(() => Math.random() - 0.5) as Space[];
 };
