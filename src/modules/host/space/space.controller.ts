@@ -11,6 +11,7 @@ import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+import { RevalidateApi } from '@/utils/revalidate';
 
 import { FindSpacesQuery } from '../dto/query';
 
@@ -83,6 +84,11 @@ export class HostSpaceController {
     return await this.spaceService.findPagingSpaces(paging, user.id);
   }
 
+  @RevalidateApi([
+    {
+      key: 'spaces',
+    },
+  ])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -101,6 +107,12 @@ export class HostSpaceController {
     return await this.spaceService.createSpace(user.id, body);
   }
 
+  @RevalidateApi([
+    {
+      key: '/spaces/:spaceId/detail',
+      index: 0,
+    },
+  ])
   @Patch(':spaceId')
   @RequestApi({
     summary: {
@@ -123,10 +135,16 @@ export class HostSpaceController {
     },
     204
   )
-  async updateSpace(@ReqUser() user: RequestHost, @Param('spaceId') id: string, @Body() body: UpdateSpaceDTO) {
+  async updateSpace(@Param('spaceId') id: string, @ReqUser() user: RequestHost, @Body() body: UpdateSpaceDTO) {
     await this.spaceService.updateSpace(id, user.id, body);
   }
 
+  @RevalidateApi([
+    {
+      key: '/spaces/:spaceId/detail',
+      index: 0,
+    },
+  ])
   @Patch(':spaceId/rental-type/:rentalTypeId')
   @RequestApi({
     summary: {
@@ -144,14 +162,19 @@ export class HostSpaceController {
     204
   )
   async updateRentalType(
+    @Param('spaceId') spaceId: string,
     @ReqUser() user: RequestHost,
     @Param('rentalTypeId') rentalTypeId: string,
-    @Param('spaceId') spaceId: string,
     @Body() body: UpdateRentalTypeDTO
   ) {
     await this.spaceService.updateRentalType(spaceId, rentalTypeId, user.id, body);
   }
 
+  @RevalidateApi([
+    {
+      key: 'spaces',
+    },
+  ])
   @Delete(':spaceId')
   @RequestApi({
     summary: {
@@ -176,6 +199,11 @@ export class HostSpaceController {
     await this.spaceService.deleteSpace(id, user.id);
   }
 
+  @RevalidateApi([
+    {
+      key: 'spaces',
+    },
+  ])
   @Delete(':spaceId/hard')
   @RequestApi({
     summary: {

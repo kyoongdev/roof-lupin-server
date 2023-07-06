@@ -3,26 +3,30 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 import { AOPDecorator, AOPParams } from '@/interface/aop.interface';
-import type { RevalidateApiKey } from '@/interface/revalidate.interface';
+import type { RevalidateApiKey, RevalidateClientApi } from '@/interface/revalidate.interface';
 
 import { AOP } from '../aop';
 import { createAOPDecorator } from '../aop/utils';
 
 export const REVALIDATE_API = Symbol('REVALIDATE_API');
 
-export const RevalidateApi = (key: RevalidateApiKey) => createAOPDecorator(REVALIDATE_API, key);
+export const RevalidateApi = (data: RevalidateClientApi[]) => createAOPDecorator(REVALIDATE_API, data);
 
 @AOP(REVALIDATE_API)
 export class RevalidateApiDecorator implements AOPDecorator {
   constructor(private readonly configService: ConfigService) {}
 
-  execute({ method, metadata }: AOPParams<any, RevalidateApiKey>) {
+  execute({ method, metadata }: AOPParams<any, RevalidateClientApi[]>) {
     return async (...args: any[]) => {
       const originResult = await method(...args);
-      const path = this.parseTarget(metadata, ...args);
 
       try {
-        await axios.get(`${this.configService.get('CLIENT_URL')}${path}`);
+        await Promise.all(
+          metadata.map(async (data) => {
+            const path = this.parseTarget(data.key, data.index, ...args);
+            await axios.get(`${this.configService.get('CLIENT_URL')}${path}`);
+          })
+        );
 
         return originResult;
       } catch (err) {
@@ -31,11 +35,11 @@ export class RevalidateApiDecorator implements AOPDecorator {
     };
   }
 
-  parseTarget(key: string, ...args: any[]) {
+  parseTarget(key: string, index?: number, ...args: any[]) {
     const metaData = key.startsWith('/') ? key : `/${key}`;
-    const id = args.find((arg) => typeof arg === 'string');
 
-    if (id && metaData.includes(':')) {
+    if (index && metaData.includes(':')) {
+      const id = args[index] as string;
       const path = metaData.split('/').reduce<string>((acc, next, index) => {
         if (next.includes(':')) {
           acc += `/${id}`;

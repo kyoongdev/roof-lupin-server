@@ -7,3 +7,8 @@ export type RevalidateApiKey =
   | `/rental-types/:spaceId/detail`
   | 'spaces'
   | '/main';
+
+export interface RevalidateClientApi {
+  key: RevalidateApiKey;
+  index?: number;
+}

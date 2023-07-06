@@ -7,7 +7,6 @@ import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
-import { RevalidateApi } from '@/utils/revalidate';
 
 import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO } from './dto';
 import { InterestedDTO } from './dto/interested.dto';
@@ -20,7 +19,6 @@ import { SpaceService } from './space.service';
 export class SpaceController {
   constructor(private readonly spaceService: SpaceService) {}
 
-  @RevalidateApi('/spaces/:spaceId/detail')
   @Get(':spaceId/detail')
   @Auth([JwtNullableAuthGuard])
   @RequestApi({
