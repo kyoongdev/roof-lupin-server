@@ -29,8 +29,7 @@ export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.
   ${where}
   GROUP BY sp.id
   ORDER BY userInterests, averageScore, reviewCount
-  LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
-  GROUP BY sp.id
+  LIMIT ${paging.page},${paging.limit ?? 10}
 `;
 
 export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
@@ -43,7 +42,7 @@ export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: Paging
   ${BASE_JOIN}
   ${where} AND distance <= ${location.distance}
   ORDER BY distance 
-  LIMIT ${paging.page ?? 0},${paging.limit ?? 10}
+  LIMIT ${paging.page},${paging.limit ?? 10}
   GROUP BY sp.id
 `;
 
@@ -62,7 +61,7 @@ export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, wher
   ${where}
   GROUP BY sp.id
   ORDER BY ${orderBy}
-  LIMIT ${paging.page ? paging.page - 1 : 0},${paging.limit ?? 10}
+  LIMIT ${paging.page},${paging.limit ?? 10}
 `;
 };
 

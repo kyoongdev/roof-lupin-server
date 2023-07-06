@@ -63,7 +63,7 @@ export class SpaceService {
     const excludeSpaces = await this.getExcludeSpaces(args, date);
 
     const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
-
+    paging.page = paging.page ? paging.page - 1 : 1;
     let sqlQuery = getFindSpacesSQL(query, paging, baseWhere);
     if (query.sort === 'POPULARITY') {
       sqlQuery = getFindSpacesWithPopularitySQL(paging, baseWhere);
@@ -73,7 +73,7 @@ export class SpaceService {
 
     const count = await this.spaceRepository.countSpacesWithSQL(getCountSpacesSQL(baseWhere));
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-
+    console.log(spaces.length);
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
