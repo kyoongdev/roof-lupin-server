@@ -20,7 +20,7 @@ import { SpaceService } from './space.service';
 export class SpaceController {
   constructor(private readonly spaceService: SpaceService) {}
 
-  @RevalidateApi('spaces')
+  @RevalidateApi('/spaces/:spaceId/detail')
   @Get(':spaceId/detail')
   @Auth([JwtNullableAuthGuard])
   @RequestApi({

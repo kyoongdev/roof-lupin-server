@@ -19,15 +19,34 @@ export class RevalidateApiDecorator implements AOPDecorator {
   execute({ method, metadata }: AOPParams<any, RevalidateApiKey>) {
     return async (...args: any[]) => {
       const originResult = await method(...args);
+      const path = this.parseTarget(metadata, ...args);
+
       try {
-        await axios.get(
-          `${this.configService.get('CLIENT_URL')}${metadata.startsWith('/') ? metadata : `/${metadata}`}`
-        );
+        await axios.get(`${this.configService.get('CLIENT_URL')}${path}`);
 
         return originResult;
       } catch (err) {
         return originResult;
       }
     };
+  }
+
+  parseTarget(key: string, ...args: any[]) {
+    const metaData = key.startsWith('/') ? key : `/${key}`;
+    const id = args.find((arg) => typeof arg === 'string');
+
+    if (id && metaData.includes(':')) {
+      const path = metaData.split('/').reduce<string>((acc, next, index) => {
+        if (next.includes(':')) {
+          acc += `/${id}`;
+        } else {
+          acc += index === 0 ? next : `/${next}`;
+        }
+        return acc;
+      }, '');
+      return path;
+    } else {
+      return key;
+    }
   }
 }
