@@ -61,7 +61,7 @@ export class ExhibitionRepository {
         reviewCount: space.reviews.length,
         publicTransportation: space.publicTransportations?.at(-1),
         location: space.location,
-        averageScore: Number(space.averageScore),
+        averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
         isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       })),
       coupons: exhibition.coupons.map(({ coupon }) => ({

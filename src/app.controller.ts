@@ -1,5 +1,6 @@
 import { Controller, Get, Response } from '@nestjs/common';
 
+import axios from 'axios';
 import type { Response as ResponseType } from 'express';
 
 @Controller()
@@ -16,6 +17,11 @@ export class AppController {
 
   @Get('fcm')
   test() {
+    return { asdf: 'asdf' };
+  }
+
+  @Get('/test')
+  async test2() {
     return { asdf: 'asdf' };
   }
 }

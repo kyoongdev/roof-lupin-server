@@ -180,7 +180,7 @@ export class SpaceRepository {
       refundPolicies,
       isInterested: userInterests.some((userInterest) => userInterest.userId === userId),
       qnaCount: space._count.spaceQnAs,
-      averageScore: Number(space.averageScore),
+      averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       bestPhotos: bestPhotos.map((photo) => ({
         id: photo.image.id,
         url: photo.image.url,
@@ -209,7 +209,7 @@ export class SpaceRepository {
       ...space,
       reviewCount: space.reviews.length,
       location: space.location,
-      averageScore: Number(space.averageScore),
+      averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
     });
   }
@@ -248,7 +248,7 @@ export class SpaceRepository {
           rentalType: space.rentalType,
           reviewCount: space.reviews.length,
           location: space.location,
-          averageScore: Number(space.averageScore),
+          averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
         })
     );

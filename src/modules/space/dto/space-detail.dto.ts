@@ -144,7 +144,7 @@ export class SpaceDetailDTO {
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
-    this.averageScore = props.averageScore;
+    this.averageScore = Number(props.averageScore.toFixed(1));
     this.reviewCount = props.reviewCount;
     this.isBest = props.isBest ?? false;
     this.thumbnail = props.thumbnail;

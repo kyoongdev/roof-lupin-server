@@ -255,14 +255,11 @@ export class ReviewRepository {
         },
       },
     });
-    await this.updateReviewAverageScore(review.id, score);
+
     return review.id;
   }
 
   async updateReview(id: string, props: UpdateReviewDTO) {
-    if (props.score) {
-      await this.updateReviewAverageScore(id, props.score);
-    }
     if (props.images) {
       await this.database.image.deleteMany({
         where: {
@@ -299,37 +296,6 @@ export class ReviewRepository {
     await this.database.spaceReview.delete({
       where: {
         id,
-      },
-    });
-  }
-
-  async updateReviewAverageScore(id: string, score: number) {
-    const review = await this.database.spaceReview.findUnique({
-      where: {
-        id,
-      },
-    });
-    const reviewsCount = await this.countReviews({
-      where: {
-        spaceId: review.spaceId,
-      },
-    });
-    const reviewScore = await this.database.spaceReview.aggregate({
-      where: {
-        spaceId: review.spaceId,
-      },
-      _avg: {
-        score: true,
-      },
-    });
-    const newAverageScore = (reviewScore._avg.score * reviewsCount - review.score + score) / reviewsCount;
-
-    await this.database.space.update({
-      where: {
-        id: review.spaceId,
-      },
-      data: {
-        averageScore: new Prisma.Decimal(Number(newAverageScore.toFixed(1))),
       },
     });
   }

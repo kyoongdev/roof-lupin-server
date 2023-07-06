@@ -51,7 +51,7 @@ export class QnARepository {
             ...qna.space,
             reviewCount: qna.space.reviews.length,
             location: qna.space.location,
-            averageScore: Number(qna.space.averageScore),
+            averageScore: qna.space.reviews.reduce((acc, cur) => acc + cur.score, 0) / qna.space.reviews.length,
             isInterested: false,
           },
         })
@@ -98,7 +98,7 @@ export class QnARepository {
         ...qna.space,
         reviewCount: qna.space.reviews.length,
         location: qna.space.location,
-        averageScore: Number(qna.space.averageScore),
+        averageScore: qna.space.reviews.reduce((acc, cur) => acc + cur.score, 0) / qna.space.reviews.length,
         isInterested: false,
       },
     });
