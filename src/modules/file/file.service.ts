@@ -20,21 +20,24 @@ export class FileService {
     return buffer;
   }
 
-  async imageResize(file: Buffer) {
-    const transformer = await sharp(file)
-      .resize({ width: 720, height: 485, fit: sharp.fit.cover })
-      .jpeg({ mozjpeg: true })
-      .toBuffer();
-    return transformer;
+  async deleteAll() {
+    const files = await this.getAllFiles();
+    await Promise.all(files.map((file) => this.deleteFile(file.Key)));
   }
 
-  async heicConvert(file: Express.Multer.File) {
-    const transformer = await convert({
-      buffer: file.buffer,
-      format: 'JPEG',
-      quality: 1,
+  async getAllFiles() {
+    const files = await new AWS.S3({
+      region: this.configService.get('AWS_REGION'),
+      credentials: {
+        accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+        secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
+      },
+    }).listObjects({
+      Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+      Prefix: this.configService.get('NODE_ENV'),
     });
-    return this.toBuffer(transformer);
+
+    return files.Contents.filter((file) => file.Size > 0);
   }
 
   async uploadFile(file: Express.Multer.File) {
@@ -63,7 +66,6 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
@@ -83,5 +85,22 @@ export class FileService {
     } catch (err) {
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
+  }
+
+  private async imageResize(file: Buffer) {
+    const transformer = await sharp(file)
+      .resize({ width: 720, height: 485, fit: sharp.fit.cover })
+      .jpeg({ mozjpeg: true })
+      .toBuffer();
+    return transformer;
+  }
+
+  private async heicConvert(file: Express.Multer.File) {
+    const transformer = await convert({
+      buffer: file.buffer,
+      format: 'JPEG',
+      quality: 1,
+    });
+    return this.toBuffer(transformer);
   }
 }

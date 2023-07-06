@@ -1,12 +1,13 @@
-/* eslint-disable no-undef */
-import { Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Delete, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
+import { EmptyResponseDTO } from '@/common';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
@@ -14,6 +15,21 @@ import { FileService } from './file.service';
 @ApiController('file', '파일')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
+
+  @Delete('/all')
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  @RequestApi({
+    summary: {
+      description: '모든 파일 삭제',
+      summary: '모든 S3 파일 삭제 - 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteAll() {
+    await this.fileService.deleteAll();
+  }
 
   @Post('/image')
   @Auth([JwtAuthGuard])
