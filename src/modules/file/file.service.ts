@@ -2,6 +2,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as AWS from '@aws-sdk/client-s3';
+import convert from 'heic-convert';
+import sharp from 'sharp';
 
 import { ImageDTO, UploadedFileDTO } from './dto';
 
@@ -9,9 +11,41 @@ import { ImageDTO, UploadedFileDTO } from './dto';
 export class FileService {
   constructor(private readonly configService: ConfigService) {}
 
+  toBuffer(arrayBuffer: ArrayBuffer) {
+    const buffer = Buffer.alloc(arrayBuffer.byteLength);
+    const view = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < buffer.length; ++i) {
+      buffer[i] = view[i];
+    }
+    return buffer;
+  }
+
+  async imageResize(file: Buffer) {
+    const transformer = await sharp(file)
+      .resize({ width: 720, height: 485, fit: sharp.fit.fill })
+      .jpeg({ mozjpeg: true })
+      .toBuffer();
+    return transformer;
+  }
+
+  async heicConvert(file: Express.Multer.File) {
+    const transformer = await convert({
+      buffer: file.buffer,
+      format: 'JPEG',
+      quality: 1,
+    });
+    return this.toBuffer(transformer);
+  }
+
   async uploadFile(file: Express.Multer.File) {
     try {
-      const key = `${Date.now() + file.originalname}`;
+      const originalname = file.originalname.split('.').shift();
+
+      const key = `${Date.now() + `${originalname}.jpeg`}`;
+
+      const resizedFile = await this.imageResize(
+        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer
+      );
 
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
@@ -21,7 +55,7 @@ export class FileService {
         },
       }).putObject({
         Key: `${this.configService.get('NODE_ENV')}/${key}`,
-        Body: file.buffer,
+        Body: resizedFile,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
 
@@ -29,6 +63,7 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
