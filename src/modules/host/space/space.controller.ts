@@ -88,6 +88,9 @@ export class HostSpaceController {
     {
       key: 'spaces',
     },
+    {
+      key: 'home',
+    },
   ])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
@@ -111,6 +114,9 @@ export class HostSpaceController {
     {
       key: '/spaces/:spaceId/detail',
       index: 0,
+    },
+    {
+      key: 'home',
     },
   ])
   @Patch(':spaceId')
@@ -174,6 +180,9 @@ export class HostSpaceController {
     {
       key: 'spaces',
     },
+    {
+      key: 'home',
+    },
   ])
   @Delete(':spaceId')
   @RequestApi({
@@ -202,6 +211,9 @@ export class HostSpaceController {
   @RevalidateApi([
     {
       key: 'spaces',
+    },
+    {
+      key: 'home',
     },
   ])
   @Delete(':spaceId/hard')
