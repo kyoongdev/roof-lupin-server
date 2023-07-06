@@ -20,15 +20,15 @@ export class CreateCacheDecorator implements AOPDecorator {
   constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
 
   execute({ method, metadata }: AOPParams<any, CacheOption>) {
-    return async (arg1: string, arg2: number) => {
-      const originResult = method(arg1, arg2);
+    return async (...args: any[]) => {
+      const originResult = await method(...args);
 
       const isCacheExist = await this.cache.get(metadata.key);
 
       if (isCacheExist) {
         return isCacheExist;
       } else {
-        await this.cache.set(metadata.key, originResult, metadata.ttl);
+        originResult && (await this.cache.set(metadata.key, originResult, metadata.ttl));
       }
 
       return originResult;
@@ -41,8 +41,8 @@ export class DeleteCacheDecorator implements AOPDecorator {
   constructor(@Inject(CACHE_MANAGER) private cache: Cache) {}
 
   execute({ method, metadata }: AOPParams<any, string[]>) {
-    return async (arg1: string, arg2: number) => {
-      const originResult = method(arg1, arg2);
+    return async (...args: any[]) => {
+      const originResult = await method(...args);
       metadata.forEach(async (key) => {
         const isCacheExist = await this.cache.get(key);
 

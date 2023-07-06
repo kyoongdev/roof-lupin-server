@@ -38,6 +38,7 @@ export class AOPProvider implements OnModuleInit {
           aopDecorators.forEach((aopInstance) => {
             const metadataKey = this.reflect.get(AOP_KEY, aopInstance.constructor);
             const metadataList: AOPMetaData[] = this.reflect.get(metadataKey, instance[methodName]);
+
             if (!metadataList) {
               return;
             }
@@ -67,10 +68,12 @@ export class AOPProvider implements OnModuleInit {
           return false;
         }
         const aspect = this.reflect.get<string>(AOP_KEY, metatype);
+
         if (!aspect) {
           return false;
         }
-        return typeof instance.wrap === 'function';
+
+        return typeof instance.execute === 'function';
       })
       .map(({ instance }) => instance);
   }

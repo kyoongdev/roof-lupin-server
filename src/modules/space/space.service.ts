@@ -34,9 +34,7 @@ import {
 export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly locationRepository: LocationRepository,
-    private readonly rentalTypeService: RentalTypeService,
-    private readonly database: PrismaService
+    private readonly rentalTypeService: RentalTypeService
   ) {}
 
   async findSpaceIds() {
@@ -73,7 +71,7 @@ export class SpaceService {
 
     const count = await this.spaceRepository.countSpacesWithSQL(getCountSpacesSQL(baseWhere));
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-    console.log(spaces.length);
+
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 

@@ -2,8 +2,6 @@ import { Controller, Get, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
 
-import { FCMEvent } from './event/fcm';
-
 @Controller()
 export class AppController {
   @Get('/health')
