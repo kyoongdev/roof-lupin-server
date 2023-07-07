@@ -18,7 +18,10 @@ import { CreateServiceDTO } from './service';
 import { CreateSizeDTO } from './size';
 import { CreateTransportationDTO } from './transportaion';
 
-export type UpdateSpaceDTOProps = Partial<CreateSpaceDTOProps>;
+export type UpdateSpaceDTOProps = Partial<CreateSpaceDTOProps> & {
+  isPublic?: boolean;
+  isApproved?: boolean;
+};
 
 export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 제목' } })
@@ -47,6 +50,18 @@ export class UpdateSpaceDTO {
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '초과 인원' } })
   overflowUserCount?: number;
+
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '노출 여부' } })
+  isPublic?: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
+  isApproved?: boolean;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '운영 시작 시간' } })
+  startAt?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '운영 종료 시간' } })
+  endAt?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '생성된 이미지 url' } })
   images?: string[];
@@ -104,6 +119,10 @@ export class UpdateSpaceDTO {
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
       this.isImmediateReservation = props.isImmediateReservation;
+      this.isApproved = props.isApproved;
+      this.isPublic = props.isPublic;
+      this.startAt = props.startAt;
+      this.endAt = props.endAt;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
