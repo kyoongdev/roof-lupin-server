@@ -768,6 +768,8 @@ model Exhibition {
   startAt DateTime @db.DateTime
   endAt   DateTime @db.DateTime
 
+  isShow Boolean @default(false)
+
   createdAt DateTime @default(now())
 
   images  ExhibitionImage[]

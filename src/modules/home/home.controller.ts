@@ -14,6 +14,7 @@ import { CategoryService } from '../category/category.service';
 import { CategoryDTO } from '../category/dto';
 import { CurationService } from '../curation/curation.service';
 import { CurationDTO } from '../curation/dto';
+import { ExhibitionDTO } from '../exhibition/dto';
 
 import { HOME_CATEGORY_CACHE, HOME_CURATION_CACHE } from './cache';
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
@@ -27,6 +28,21 @@ export class HomeController {
     private readonly curationService: CurationService,
     private readonly categoryService: CategoryService
   ) {}
+
+  @Get('exhibitions')
+  @RequestApi({
+    summary: {
+      description: '홈 화면 기획전 목록을 가져옵니다.',
+      summary: '홈 화면 기획전 목록을 가져옵니다.',
+    },
+  })
+  @ResponseApi({
+    type: ExhibitionDTO,
+    isArray: true,
+  })
+  async getExhibitions() {
+    return await this.homeService.findExhibitions();
+  }
 
   @Get('contents')
   @Auth([JwtNullableAuthGuard])

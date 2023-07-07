@@ -4,6 +4,7 @@ import { CategoryRepository } from '../category/category.repository';
 import { CategoryService } from '../category/category.service';
 import { CurationRepository } from '../curation/curation.repository';
 import { CurationService } from '../curation/curation.service';
+import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 
@@ -20,6 +21,7 @@ import { HomeService } from './home.service';
     CurationRepository,
     CategoryService,
     CategoryRepository,
+    ExhibitionRepository,
   ],
 })
 export class HomeModule {}

@@ -6,6 +6,7 @@ import { Cache } from 'cache-manager';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
@@ -17,8 +18,16 @@ export class HomeService {
   constructor(
     private readonly database: PrismaService,
     private readonly spaceRepository: SpaceRepository,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
+    private readonly exhibitionRepository: ExhibitionRepository
   ) {}
+
+  async findExhibitions() {
+    return await this.exhibitionRepository.findExhibitions({
+      where: {
+        isShow: true,
+      },
+    });
+  }
 
   async getHomeContents(userId?: string) {
     const categories = await this.database.category.findMany({
