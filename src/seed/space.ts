@@ -115,6 +115,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
         buildingType: 1,
         minSize: 80,
         minCost: 5000,
+        isPublic: true,
+        isApproved: true,
         rentalType: {
           create: [
             {
@@ -511,6 +513,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       minSize: 12,
       startAt: '13',
       endAt: '24',
+      isPublic: true,
+      isApproved: true,
       sizes: {
         create: [
           {
@@ -832,6 +836,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       overflowUserCount: 5,
       buildingType: 1,
       minSize: 12,
+      isPublic: true,
+      isApproved: true,
       sizes: {
         create: [
           {
@@ -1150,6 +1156,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       minSize: 12,
       startAt: '13',
       endAt: '24',
+      isPublic: true,
+      isApproved: true,
       sizes: {
         create: [
           {
