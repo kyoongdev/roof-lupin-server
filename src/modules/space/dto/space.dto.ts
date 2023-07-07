@@ -13,6 +13,8 @@ export interface SpaceDTOProps {
   isBest?: boolean;
   isInterested?: boolean;
   isImmediateReservation: boolean;
+  isPublic: boolean;
+  isApproved: boolean;
   thumbnail: string;
   hostId: string;
   publicTransportations?: TransportationDTOProps[]; //대중 교통
@@ -45,6 +47,12 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '찜 여부' } })
   isInterested: boolean;
 
+  @Property({ apiProperty: { type: 'boolean', description: '노출 여부' } })
+  isPublic: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
+  isApproved: boolean;
+
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '즉각 예약 여부' } })
   isImmediateReservation: boolean;
 
@@ -70,6 +78,9 @@ export class SpaceDTO {
     this.hostId = props.hostId;
     this.isBest = props.isBest ?? false;
     this.isInterested = props.isInterested ?? false;
+    this.isImmediateReservation = props.isImmediateReservation;
+    this.isPublic = props.isPublic;
+    this.isApproved = props.isApproved;
     this.thumbnail = props.thumbnail;
     this.publicTransportations = props.publicTransportations.map((target) => new TransportationDTO(target));
     this.location = props.location ? new LocationDTO(props.location) : null;

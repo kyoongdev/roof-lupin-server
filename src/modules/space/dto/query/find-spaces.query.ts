@@ -135,7 +135,7 @@ export class FindSpacesQuery extends PagingDTO {
       excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.empty;
     const where = allEmpty
       ? Prisma.empty
-      : Prisma.sql`WHERE sp.deletedAt IS NOT NULL AND sp.isPublic = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} `;
+      : Prisma.sql`WHERE sp.deletedAt IS NOT NULL AND sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} `;
     return where;
   }
 }
