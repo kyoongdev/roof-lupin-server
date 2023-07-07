@@ -155,6 +155,20 @@ export class ReviewController {
     });
   }
 
+  @Get(':reviewId/detail')
+  @RequestApi({
+    summary: {
+      description: '리뷰 자세히 불러오기',
+      summary: '리뷰 자세히 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+  })
+  async getReview(@Param('reviewId') reviewId: string) {
+    return await this.reviewService.findReview(reviewId);
+  }
+
   @Post()
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
