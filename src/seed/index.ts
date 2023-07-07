@@ -140,6 +140,12 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
 
+  await database.user.create({
+    data: {
+      nickname: 'testUser2',
+    },
+  });
+
   const spaces: Space[] = await seedSpace(database);
 
   for (let i = 0; i < 5; i++) {

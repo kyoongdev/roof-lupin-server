@@ -10,7 +10,8 @@ const BASE_SELECT = Prisma.sql`
   sp.minUser as minUser , sp.maxUser as maxUser , sp.overflowUserCost as overflowUserCost, sp.overflowUserCount as overflowUserCount,
   sp.minCost as minCost , sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.createdAt as createdAt, 
   sp.updatedAt as updatedAt, sp.deletedAt as deletedAt,
-  sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress
+  sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress,
+  COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount
 `;
 
 const BASE_JOIN = Prisma.sql`
@@ -22,8 +23,7 @@ const BASE_JOIN = Prisma.sql`
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
-  SELECT ${BASE_SELECT},
-  AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount
+  SELECT ${BASE_SELECT}
   FROM Space sp
   ${BASE_JOIN}
   ${where}
@@ -36,8 +36,7 @@ export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: Paging
   SELECT ${BASE_SELECT},
   (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
   -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat))))
-  AS distance,
-  AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount
+  AS distance
   FROM Space sp
   ${BASE_JOIN}
   ${where} AND distance <= ${location.distance}
