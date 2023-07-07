@@ -85,6 +85,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     const space = await database.space.create({
       data: {
         title: '디난트 파티룸',
+        startAt: '13',
+        endAt: '24',
         description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
         건대후문 바로 앞 어린이대공원역 도보 3분컷!
         
@@ -507,6 +509,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       overflowUserCount: 5,
       buildingType: 1,
       minSize: 12,
+      startAt: '13',
+      endAt: '24',
       sizes: {
         create: [
           {
@@ -836,6 +840,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
           },
         ],
       },
+      startAt: '13',
+      endAt: '24',
       images: {
         create: [
           {
@@ -1142,6 +1148,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       overflowUserCount: 5,
       buildingType: 1,
       minSize: 12,
+      startAt: '13',
+      endAt: '24',
       sizes: {
         create: [
           {
