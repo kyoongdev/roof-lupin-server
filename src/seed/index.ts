@@ -148,7 +148,7 @@ export const seedDatabase = async (database: PrismaService) => {
         title: `테스트 큐레이션${i + 1}`,
         subTitle: `테스트 큐레이션 서브 타이틀${i + 1}`,
         content: `테스트 큐레이션 내용${i + 1}`,
-        thumbnail: `https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg`,
+        thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
         isMain: true,
         user: {
           connect: {

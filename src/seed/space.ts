@@ -105,7 +105,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
         숯불바베큐가 가능하며
         불은 호스트가 직접피어 드립니다
         넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
-        thumbnail: 'https://dev-image.cumuco.net/IMG_5913.jpg',
+        thumbnail: 'https://dev-image.rooflupin.com/IMG_5913.jpg',
         minUser: 0,
         maxUser: 0,
         overflowUserCount: 6,
@@ -212,35 +212,35 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             {
               image: {
                 create: {
-                  url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+                  url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
                 },
               },
             },
             {
               image: {
                 create: {
-                  url: 'https://dev-image.cumuco.net/IMG_5916.jpg',
+                  url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
                 },
               },
             },
             {
               image: {
                 create: {
-                  url: 'https://dev-image.cumuco.net/IMG_5917.jpg',
+                  url: 'https://dev-image.rooflupin.com/IMG_5917.jpg',
                 },
               },
             },
             {
               image: {
                 create: {
-                  url: 'https://dev-image.cumuco.net/IMG_5918.jpg',
+                  url: 'https://dev-image.rooflupin.com/IMG_5918.jpg',
                 },
               },
             },
             {
               image: {
                 create: {
-                  url: 'https://dev-image.cumuco.net/IMG_5925.jpg',
+                  url: 'https://dev-image.rooflupin.com/IMG_5925.jpg',
                 },
               },
             },
