@@ -10,7 +10,6 @@ export interface SpaceDTOProps {
   title: string;
   averageScore: number;
   reviewCount: number;
-  isBest?: boolean;
   isInterested?: boolean;
   isImmediateReservation: boolean;
   isPublic: boolean;
@@ -40,9 +39,6 @@ export class SpaceDTO {
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '공간 패키지 최소 가격' } })
   packageCost: number | null;
-
-  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '공간 베스트 여부' } })
-  isBest: boolean;
 
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '찜 여부' } })
   isInterested: boolean;
@@ -76,7 +72,6 @@ export class SpaceDTO {
     this.averageScore = props.averageScore ? Number(props.averageScore.toFixed(1)) : 0;
     this.reviewCount = props.reviewCount ?? 0;
     this.hostId = props.hostId;
-    this.isBest = props.isBest ?? false;
     this.isInterested = props.isInterested ?? false;
     this.isImmediateReservation = props.isImmediateReservation;
     this.isPublic = props.isPublic;
