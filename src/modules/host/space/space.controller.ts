@@ -66,22 +66,19 @@ export class HostSpaceController {
     return await this.spaceService.findPagingSpaces(paging, user.id, query.generateQuery());
   }
 
-  @Get('paging')
+  @Get('all')
   @RequestApi({
     summary: {
       description: '공간 목록 페이징 조회',
       summary: '공간 목록 페이징 조회 - 호스트만 사용가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: SpaceDTO,
-    isPaging: true,
+    isArray: true,
   })
-  async getPagingSpaces(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
-    return await this.spaceService.findPagingSpaces(paging, user.id);
+  async getPagingSpaces(@ReqUser() user: RequestHost) {
+    return await this.spaceService.findSpaces(user.id);
   }
 
   @RevalidateApi([
