@@ -16,6 +16,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       gender: 1,
       name: '박용준',
       phoneNumber: '01040597883',
+
       hostAccount: {
         create: {
           ownerName: '박용준',
@@ -28,7 +29,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  const roofTop = await database.category.create({
+  await database.category.create({
     data: {
       name: `루프탑`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -37,7 +38,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  const movie = await database.category.create({
+  await database.category.create({
     data: {
       name: `영화`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -46,7 +47,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  const glamping = await database.category.create({
+  await database.category.create({
     data: {
       name: `글램핑`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -55,7 +56,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  const party = await database.category.create({
+  await database.category.create({
     data: {
       name: `파티룸`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -64,7 +65,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  const film = await database.category.create({
+  await database.category.create({
     data: {
       name: `촬영`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',

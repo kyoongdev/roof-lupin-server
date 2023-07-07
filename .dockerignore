@@ -1,2 +1,7 @@
 # src/seed.ts
 node_modules
+dist
+aws
+.husky
+env
+test

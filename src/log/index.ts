@@ -16,7 +16,7 @@ const logger = new winston.transports.Console({
     }),
     winston.format.timestamp(),
     winston.format.simple(),
-    utilities.format.nestLike('MayB', { prettyPrint: true, colors: true })
+    utilities.format.nestLike('루프루팡', { prettyPrint: true, colors: true })
   ),
 });
 
