@@ -34,16 +34,16 @@ export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.
 `;
 
 export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
-  SELECT ${BASE_SELECT},
-  (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
-  -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat))))
-  AS distance
+  SELECT ${BASE_SELECT}, (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
+    -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat)))) as distance
+
   FROM Space sp
   ${BASE_JOIN}
-  ${where} AND distance <= ${location.distance}
+  ${where} AND  (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
+  -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat)))) <= ${location.distance / 1000}
+  GROUP BY sp.id
   ORDER BY distance 
   LIMIT ${paging.page},${paging.limit ?? 10}
-  GROUP BY sp.id
 `;
 
 export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, where: Prisma.Sql) => {

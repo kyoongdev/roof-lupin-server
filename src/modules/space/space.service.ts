@@ -61,7 +61,7 @@ export class SpaceService {
     const excludeSpaces = await this.getExcludeSpaces(args, date);
 
     const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
-    console.log(baseWhere);
+    console.log(baseWhere, { location }, query.categoryIds);
     paging.page = paging.page ? paging.page - 1 : 1;
     let sqlQuery = getFindSpacesSQL(query, paging, baseWhere);
     if (query.sort === 'POPULARITY') {
