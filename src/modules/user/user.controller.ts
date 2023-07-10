@@ -1,4 +1,14 @@
-import { Body, ClassSerializerInterceptor, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -10,6 +20,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CommonUserDTO } from './dto/common-user.dto';
+import { FindUsersQuery } from './dto/query';
 import { UserService } from './user.service';
 
 @ApiController('users', '유저')
@@ -23,16 +34,13 @@ export class UserController {
       description: '유저 목록',
       summary: '유저 목록 불러오기 - 로그인 필요, 관리자만 사용 가능',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: CommonUserDTO,
     isPaging: true,
   })
-  async getUsers(@Paging() paging: PagingDTO) {
-    return await this.userService.findPagingUser(paging);
+  async getUsers(@Paging() paging: PagingDTO, @Query() query: FindUsersQuery) {
+    return await this.userService.findPagingUser(paging, query.generateQuery());
   }
 
   @Get(':userId/detail')
