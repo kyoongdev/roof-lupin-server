@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -8,6 +8,8 @@ import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindUserCouponsQuery } from '../dto/query';
 
 import { AdminCouponService } from './coupon.service';
 
@@ -68,16 +70,13 @@ export class AdminCouponController {
       description: '사용자 쿠폰 목록 조회',
       summary: '사용자 쿠폰 목록 조회 - 관리자만 사용 가능',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: UserCouponDTO,
     isPaging: true,
   })
-  async getUserCoupons(@Paging() paging: PagingDTO) {
-    return await this.couponService.findPagingUserCoupons(paging);
+  async getUserCoupons(@Paging() paging: PagingDTO, @Query() query: AdminFindUserCouponsQuery) {
+    return await this.couponService.findPagingUserCoupons(paging, query.generateQuery());
   }
 
   @Post()
