@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { getDateDiff } from '@/common/date';
+import { getDateDiff, getTimeDiff } from '@/common/date';
 
 import { FileService } from '../file/file.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -13,12 +13,14 @@ import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReview
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
 import {
+  REVIEW_ALREADY_EXISTS,
   REVIEW_ERROR_CODE,
   REVIEW_IMAGE_LENGTH_EXCEEDED,
   REVIEW_MUTATION_FORBIDDEN,
   REVIEW_REPORT_ALREADY_EXISTS,
   REVIEW_REPORT_MUTATION_FORBIDDEN,
   REVIEW_SPACE_BAD_REQUEST,
+  REVIEW_UPDATE_DUE_DATE,
   REVIEW_WRITE_DUE_DATE,
   SCORE_BAD_REQUEST,
 } from './exception/errorCode';
@@ -86,6 +88,7 @@ export class ReviewService {
 
   async createReview(props: CreateReviewDTO, userId: string) {
     const reservation = await this.reservationRepository.findReservation(props.reservationId);
+
     const { score, spaceId } = props;
     const reservationDate = new Date(
       Number(reservation.year),
@@ -94,6 +97,10 @@ export class ReviewService {
       9
     );
     const currentDate = new Date();
+
+    if (reservation.isReviewed) {
+      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(REVIEW_ALREADY_EXISTS));
+    }
 
     if (getDateDiff(reservationDate, currentDate) > 14) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
@@ -119,16 +126,11 @@ export class ReviewService {
     const review = await this.findReview(reviewId);
     const reservation = await this.reservationRepository.findReservation(review.reservationId);
 
-    const reservationDate = new Date(
-      Number(reservation.year),
-      Number(reservation.month) - 1,
-      Number(reservation.day),
-      9
-    );
     const currentDate = new Date();
+    const reviewedAt = reservation.createdAt;
 
-    if (getDateDiff(reservationDate, currentDate) > 14) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
+    if (getTimeDiff(currentDate, reviewedAt) > 72) {
+      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_UPDATE_DUE_DATE));
     }
 
     await this.checkIsUserValid(reviewId, userId);
