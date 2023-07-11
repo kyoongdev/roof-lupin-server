@@ -1,4 +1,4 @@
-import { Delete, Get, Param, Post, UseInterceptors } from '@nestjs/common';
+import { Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -7,6 +7,8 @@ import { ReviewDTO, ReviewReportDTO } from '@/modules/review/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindReviewsQuery } from '../dto/query/review/find-reviews.query';
 
 import { AdminReviewService } from './review.service';
 
@@ -40,16 +42,13 @@ export class AdminReviewController {
       description: '공간 리뷰 조회',
       summary: '공간 리뷰를 조회합니다. 관리자만 사용이 가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReviewDTO,
     isPaging: true,
   })
-  async getReviews(@Paging() paging: PagingDTO) {
-    return await this.reviewService.findPagingReviews(paging);
+  async getReviews(@Paging() paging: PagingDTO, @Query() query: AdminFindReviewsQuery) {
+    return await this.reviewService.findPagingReviews(paging, query.generateQuery());
   }
 
   @Get('reports')

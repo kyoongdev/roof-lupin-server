@@ -38,7 +38,7 @@ import { AdminReportController } from './report';
 import { AdminReportService } from './report/report.service';
 import { AdminReservationController } from './reservation/reservation.controller';
 import { AdminReservationService } from './reservation/reservation.service';
-import { AdminReviewController } from './review';
+import { AdminReviewController } from './review/review.controller';
 import { AdminReviewService } from './review/review.service';
 import { AdminSettlementController } from './settlement/settlement.controller';
 import { AdminSettlementService } from './settlement/settlement.service';
