@@ -7,7 +7,7 @@ import { CreateUserDTO, UpdateUserDTO } from '@/modules/user/dto';
 import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
 import { UserException } from '@/modules/user/exception/user.exception';
 
-import { AdminUserDTO } from '../dto/user';
+import { AdminUpdateUserDTO, AdminUserDTO } from '../dto/user';
 
 @Injectable()
 export class AdminUserRepository {
@@ -68,7 +68,7 @@ export class AdminUserRepository {
     return new AdminUserDTO(user);
   }
 
-  async updateUser(id: string, data: UpdateUserDTO) {
+  async updateUser(id: string, data: AdminUpdateUserDTO) {
     await this.findUser(id);
     await this.database.user.update({
       where: {

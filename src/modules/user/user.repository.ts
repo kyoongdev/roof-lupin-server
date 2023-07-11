@@ -101,6 +101,23 @@ export class UserRepository {
     return new CommonUserDTO(socialUser.user);
   }
 
+  async checkUserIsBlocked(id: string) {
+    const user = await this.database.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        isBlocked: true,
+      },
+    });
+
+    if (!user) {
+      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+    }
+
+    return user.isBlocked;
+  }
+
   async checkUserBySocialId(socialId: string) {
     const socialUser = await this.database.userSocial.findUnique({
       where: {
