@@ -34,6 +34,12 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   profileImage?: string;
 
+  @Property({ apiProperty: { type: 'boolean', description: '성인 인증 여부' } })
+  isAdult: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '알림 승인 여부' } })
+  isAlarmAccepted: boolean;
+
   constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
@@ -44,6 +50,8 @@ export class CommonUserDTO extends BaseUserDTO {
     this.birthDay = props.birthDay ?? null;
     this.gender = props.gender;
     this.profileImage = props.profileImage ?? null;
+    this.isAdult = props.isAdult;
+    this.isAlarmAccepted = props.isAlarmAccepted;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
