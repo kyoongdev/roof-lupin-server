@@ -628,16 +628,16 @@ export class PaymentService {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
             }
 
-            const dueDateStart = isExist.usageDateStartAt.getTime();
-            const dueDateEnd = isExist.usageDateEndAt.getTime();
+            const usageDateStart = isExist.usageDateStartAt.getTime();
+            const usageDateEnd = isExist.usageDateEndAt.getTime();
             const currentDate = new Date();
             currentDate.setUTCHours(0, 0, 0, 0);
 
-            if (dueDateStart > currentDate.getTime()) {
+            if (usageDateStart > currentDate.getTime()) {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
             }
 
-            if (dueDateEnd < currentDate.getTime()) {
+            if (usageDateEnd < currentDate.getTime()) {
               if (!isExist.isUsed) {
                 await this.couponRepository.updateUserCoupon(isExist.id, { isUsed: true });
               }
