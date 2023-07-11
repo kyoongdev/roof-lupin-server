@@ -43,33 +43,7 @@ export class AdminUserRepository {
     return new AdminUserDTO(user);
   }
 
-  async findUserByEmail(email: string) {
-    const user = await this.database.user.findFirst({
-      where: {
-        email,
-      },
-    });
-    if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
-    }
-
-    return new AdminUserDTO(user);
-  }
-
-  async findUserByNickname(nickname: string) {
-    const user = await this.database.user.findFirst({
-      where: {
-        nickname,
-      },
-    });
-    if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
-    }
-    return new AdminUserDTO(user);
-  }
-
   async updateUser(id: string, data: AdminUpdateUserDTO) {
-    await this.findUser(id);
     await this.database.user.update({
       where: {
         id,
@@ -93,14 +67,23 @@ export class AdminUserRepository {
   }
 
   async deleteUser(id: string) {
-    await this.findUser(id);
-
     await this.database.user.update({
       where: {
         id,
       },
       data: {
         deletedAt: new Date(),
+      },
+    });
+  }
+
+  async restoreUser(id: string) {
+    await this.database.user.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: null,
       },
     });
   }
