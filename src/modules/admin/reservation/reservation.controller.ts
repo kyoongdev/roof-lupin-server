@@ -1,4 +1,4 @@
-import { Get, Param } from '@nestjs/common';
+import { Get, Param, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -6,6 +6,8 @@ import { ReservationDetailDTO, ReservationDTO } from '@/modules/reservation/dto'
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindReservationsQuery } from '../dto/query';
 
 import { AdminReservationService } from './reservation.service';
 
@@ -20,16 +22,13 @@ export class AdminReservationController {
       description: '예약 목록 조회',
       summary: '예약 목록 조회',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReservationDTO,
     isPaging: true,
   })
-  async getReservations(@Paging() paging: PagingDTO) {
-    return await this.adminReservationService.findPagingReservations(paging);
+  async getReservations(@Paging() paging: PagingDTO, @Query() query: AdminFindReservationsQuery) {
+    return await this.adminReservationService.findPagingReservations(paging, query.generateQuery());
   }
 
   @Get(':reservationId/detail')
