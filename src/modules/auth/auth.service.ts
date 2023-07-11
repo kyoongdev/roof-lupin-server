@@ -60,6 +60,20 @@ export class AuthService {
     return tokens;
   }
 
+  async registerNewUserCoupon(userId: string) {
+    const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
+    const dueDateStartAt = new Date();
+    dueDateStartAt.setUTCHours(0, 0, 0, 0);
+    const current = new Date();
+    current.setUTCHours(0, 0, 0, 0);
+    const dueDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
+    await this.couponRepository.createUserCoupon(coupon.id, {
+      userId,
+      dueDateEndAt,
+      dueDateStartAt,
+    });
+  }
+
   async socialCallback(props: CreateSocialUserDTO, socialId: string, path: SocialType, token: string, res: Response) {
     const isExistUser = await this.userRepository.checkUserBySocialId(socialId);
 
@@ -69,18 +83,8 @@ export class AuthService {
 
     const user = await this.userRepository.findUserBySocialId(socialId);
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
-    const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
-    const dueDateStartAt = new Date();
-    dueDateStartAt.setUTCHours(0, 0, 0, 0);
-    const current = new Date();
-    current.setUTCHours(0, 0, 0, 0);
-    const dueDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
-    await this.couponRepository.createUserCoupon(coupon.id, {
-      userId: user.id,
-      dueDateEndAt,
-      dueDateStartAt,
-    });
 
+    await this.registerNewUserCoupon(user.id);
     const query = queryString.stringify({
       status: 200,
       accessToken: tokens.accessToken,
@@ -107,29 +111,26 @@ export class AuthService {
       res
     );
   }
+  async getKakaoUser(token: string) {
+    const socialUser = await KakaoLogin.getUser(token);
+    console.log({ socialUser });
+    const isExistUser = await this.userRepository.checkUserBySocialId(`${Number(socialUser.id)}`);
+    if (isExistUser) {
+      const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+      return tokens;
+    }
+
+    const newUserId = await this.userRepository.createSocialUser(new CreateSocialUserDTO().setKakaoUser(socialUser));
+    await this.registerNewUserCoupon(newUserId);
+
+    return await this.createTokens({ id: newUserId, role: 'USER' });
+  }
 
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
     const { user } = result;
-    const account = user.kakaoAccount;
-
-    this.socialCallback(
-      new CreateSocialUserDTO({
-        nickname: user.properties.nickname ?? '',
-        socialId: `${user.id}`,
-        socialType: 'kakao',
-        birthDay: account.birthday,
-        birthYear: account.birthyear,
-        email: account.email,
-        gender: account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined,
-        phoneNumber: account.phone_number,
-        profileImage: user.properties.profile_image,
-      }),
-      `${user.id}`,
-      'kakao',
-      result.token,
-      res
-    );
+    console.log(result.token);
+    this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
   }
 
   async naverLoginCallback(code: string, res: Response) {

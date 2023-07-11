@@ -11,6 +11,7 @@ import { CreateHostDTO } from '../host/dto';
 
 import { AuthService } from './auth.service';
 import { AdminAuthDTO, AppleLoginCallbackDTO, HostAuthDTO, TokenDTO } from './dto';
+import { KakaoSocialUserQuery } from './dto/query';
 
 @ApiController('auth', '로그인/회원가입')
 export class AuthController {
@@ -52,6 +53,15 @@ export class AuthController {
   @ResponseApi({})
   async kakaoLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.kakaoLoginCallback(code, res);
+  }
+
+  @Get('social/kakao/user')
+  @RequestApi({})
+  @ResponseApi({
+    type: TokenDTO,
+  })
+  async getKakaoUser(@Query() query: KakaoSocialUserQuery) {
+    return await this.authService.getKakaoUser(query.token);
   }
 
   @Get('social/naver')

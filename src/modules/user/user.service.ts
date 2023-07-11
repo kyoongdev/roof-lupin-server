@@ -20,6 +20,7 @@ export class UserService {
 
   async findPagingUser(paging: PagingDTO, args = {} as Prisma.UserFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
+
     const count = await this.userRepository.countUsers({
       where: args.where,
     });

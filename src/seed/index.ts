@@ -29,6 +29,15 @@ export const seedDatabase = async (database: PrismaService) => {
   const salt = encrypt.createSalt();
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
+  await Promise.all(
+    range(1, 50).map(async (i) => {
+      await database.user.create({
+        data: {
+          nickname: `user${i}`,
+        },
+      });
+    })
+  );
   await database.coupon.create({
     data: {
       name: '회원가입',

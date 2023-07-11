@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { KakaoGetUser, Property } from 'wemacu-nestjs';
 
 import { type SocialType } from '@/interface/user.interface';
 
@@ -58,5 +58,24 @@ export class CreateSocialUserDTO {
       this.socialId = props.socialId;
       this.socialType = socialTypeToNumber(props.socialType);
     }
+  }
+
+  setKakaoUser(socialUser: KakaoGetUser) {
+    const account = socialUser.kakaoAccount;
+
+    this.nickname = socialUser.properties.nickname ?? '';
+    this.socialId = `${socialUser.id}`;
+    this.socialType = socialTypeToNumber('kakao');
+    this.birthDay = account.birthday;
+    this.birthYear = account.birthyear;
+    this.email = account.email;
+    this.gender = account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined;
+    this.phoneNumber = account.phone_number;
+    this.profileImage = socialUser.properties.profile_image;
+    return this;
+  }
+
+  getKakaoUser() {
+    return this;
   }
 }
