@@ -2,7 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { GenderValidation } from '../../../utils/validation/gender.validate';
 
-interface Props {
+export interface UpdateUserDTOProps {
   nickname?: string;
   email?: string;
   phoneNumber?: string;
@@ -11,6 +11,8 @@ interface Props {
   gender?: number;
   profileImage?: string;
   pushToken?: string;
+  isAdult?: boolean;
+  isAlarmAccepted?: boolean;
 }
 
 export class UpdateUserDTO {
@@ -39,7 +41,13 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '푸시 토큰', nullable: true } })
   pushToken?: string;
 
-  constructor(props?: Props) {
+  @Property({ apiProperty: { type: 'string', description: '성인 여부', nullable: true } })
+  isAdult?: boolean;
+
+  @Property({ apiProperty: { type: 'string', description: '알림 수신 여부', nullable: true } })
+  isAlarmAccepted?: boolean;
+
+  constructor(props?: UpdateUserDTOProps) {
     if (props) {
       this.nickname = props.nickname;
       this.email = props.email;
@@ -49,6 +57,8 @@ export class UpdateUserDTO {
       this.gender = props.gender;
       this.profileImage = props.profileImage;
       this.pushToken = props.pushToken;
+      this.isAdult = props.isAdult;
+      this.isAlarmAccepted = props.isAlarmAccepted;
     }
   }
 }
