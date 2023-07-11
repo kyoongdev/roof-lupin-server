@@ -314,7 +314,7 @@ export class RentalTypeService {
           }
         });
       });
-      console.log(timeCostInfos);
+
       rentalType.reservations.forEach((reservation) => {
         range(reservation.startAt, reservation.endAt).forEach((hour) => {
           timeCostInfos[hour].isPossible = false;

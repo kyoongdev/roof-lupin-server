@@ -554,6 +554,7 @@ model User {
   profileImage    String?
   isAdult         Boolean @default(false)
   isAlarmAccepted Boolean @default(false)
+  isBlocked       Boolean @default(false)
   pushToken       String?
 
   createdAt DateTime  @default(now())
