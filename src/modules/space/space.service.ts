@@ -64,20 +64,18 @@ export class SpaceService {
 
     const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
 
-    paging.page = paging.page ? paging.page - 1 : 1;
-    let sqlQuery = getFindSpacesSQL(query, paging, baseWhere);
+    const sqlPaging = paging.getSqlPaging();
+    let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere);
     if (query.sort === 'POPULARITY') {
-      sqlQuery = getFindSpacesWithPopularitySQL(paging, baseWhere);
+      sqlQuery = getFindSpacesWithPopularitySQL(sqlPaging, baseWhere);
     } else if (isDistance) {
-      sqlQuery = getFindSpacesWithDistanceSQL(location, paging, baseWhere);
+      sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
     }
 
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-
-    paging.page = paging.page + 1;
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
