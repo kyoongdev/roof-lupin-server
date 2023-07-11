@@ -141,8 +141,10 @@ export class PaymentService {
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.useUserCoupon(database, couponId);
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count - 1,
+              });
             })
           );
 
@@ -152,6 +154,15 @@ export class PaymentService {
           name: rentalType.name,
         });
       } catch (err) {
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count + 1,
+              });
+            })
+          );
         await this.reservationRepository.deleteReservation(reservation.id);
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
@@ -198,7 +209,9 @@ export class PaymentService {
       });
       await Promise.all(
         coupons.map(async (coupon) => {
-          await this.couponRepository.resetUserCoupon(coupon.id);
+          await this.couponRepository.updateUserCoupon(coupon.id, {
+            count: coupon.count + 1,
+          });
         })
       );
       await this.reservationRepository.deleteReservation(reservation.id);
@@ -238,8 +251,10 @@ export class PaymentService {
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.useUserCoupon(database, couponId);
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count - 1,
+              });
             })
           );
 
@@ -252,7 +267,10 @@ export class PaymentService {
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.resetUserCoupon(couponId);
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count + 1,
+              });
             })
           );
 
@@ -297,7 +315,9 @@ export class PaymentService {
       });
       await Promise.all(
         coupons.map(async (coupon) => {
-          await this.couponRepository.resetUserCoupon(coupon.id);
+          await this.couponRepository.updateUserCoupon(coupon.id, {
+            count: coupon.count + 1,
+          });
         })
       );
       await this.reservationRepository.deleteReservation(reservation.id);
@@ -351,8 +371,10 @@ export class PaymentService {
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.useUserCoupon(database, couponId);
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count - 1,
+              });
             })
           );
 
@@ -363,7 +385,10 @@ export class PaymentService {
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.resetUserCoupon(couponId);
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count + 1,
+              });
             })
           );
 
@@ -408,7 +433,9 @@ export class PaymentService {
       });
       await Promise.all(
         coupons.map(async (coupon) => {
-          await this.couponRepository.resetUserCoupon(coupon.id);
+          await this.couponRepository.updateUserCoupon(coupon.id, {
+            count: coupon.count + 1,
+          });
         })
       );
       await this.reservationRepository.deleteReservation(reservation.id);
@@ -621,9 +648,6 @@ export class PaymentService {
         data.userCouponIds?.map(async (couponId) => {
           const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
           if (isExist) {
-            if (isExist.isUsed) {
-              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_IS_USED));
-            }
             if (isExist.count === 0) {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
             }
@@ -638,9 +662,8 @@ export class PaymentService {
             }
 
             if (usageDateEnd < currentDate.getTime()) {
-              if (!isExist.isUsed) {
-                await this.couponRepository.updateUserCoupon(isExist.id, { isUsed: true });
-              }
+              await this.couponRepository.updateUserCoupon(isExist.id, { count: isExist.count - 1 });
+
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
             }
 

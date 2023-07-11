@@ -29,9 +29,6 @@ export class UserCouponDTO {
   @Property({ apiProperty: { type: 'date', description: '쿠폰 사용 종료일' } })
   usageDateEndAt: Date;
 
-  @Property({ apiProperty: { type: 'boolean', description: '쿠폰 사용 여부' } })
-  isUsed: boolean;
-
   @Property({ apiProperty: { type: 'date', description: '쿠폰 생성일' } })
   createdAt: Date;
 
@@ -49,7 +46,6 @@ export class UserCouponDTO {
     this.count = props.count;
     this.usageDateStartAt = props.usageDateStartAt;
     this.usageDateEndAt = props.usageDateEndAt;
-    this.isUsed = props.isUsed;
     this.reservationId = props.reservationId ?? null;
     this.createdAt = props.createdAt;
     this.user = new CommonUserDTO(props.user);

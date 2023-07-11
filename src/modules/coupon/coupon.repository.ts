@@ -286,26 +286,26 @@ export class CouponRepository {
     return userCoupon.id;
   }
 
-  async useUserCoupon(database: TransactionPrisma, id: string) {
-    await database.userCoupon.update({
-      where: {
-        id,
-      },
-      data: {
-        isUsed: true,
-      },
-    });
-  }
-  async resetUserCoupon(id: string) {
-    await this.database.userCoupon.update({
-      where: {
-        id,
-      },
-      data: {
-        isUsed: false,
-      },
-    });
-  }
+  // async useUserCoupon(database: TransactionPrisma, count: number, id: string) {
+  //   await database.userCoupon.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       isUsed: true,
+  //     },
+  //   });
+  // }
+  // async resetUserCoupon(id: string) {
+  //   await this.database.userCoupon.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       isUsed: false,
+  //     },
+  //   });
+  // }
 
   async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {
     await this.database.userCoupon.update({
