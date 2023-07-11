@@ -36,13 +36,13 @@ export class CouponService {
 
     const now = new Date();
     now.setUTCHours(0, 0, 0, 0);
-    const dueDateStartAt = coupon.defaultDueDateStart || new Date(now);
+    const usageDateStartAt = coupon.defaultDueDateStart || new Date(now);
 
-    const dueDateEndAt = new Date(now.setUTCDate(now.getUTCDate() + coupon.defaultDueDay));
+    const usageDateEndAt = new Date(now.setUTCDate(now.getUTCDate() + coupon.defaultDueDay));
     const userCouponId = await this.couponRepository.createUserCoupon(coupon.id, {
       userId,
-      dueDateStartAt,
-      dueDateEndAt,
+      usageDateStartAt,
+      usageDateEndAt,
     });
     return userCouponId;
   }

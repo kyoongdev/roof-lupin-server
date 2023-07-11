@@ -93,7 +93,11 @@ CREATE TABLE `Space` (
     `overflowUserCount` TINYINT NOT NULL,
     `minCost` MEDIUMINT NOT NULL DEFAULT 0,
     `minSize` SMALLINT NOT NULL DEFAULT 0,
-    `averageScore` DECIMAL(2, 1) NOT NULL DEFAULT 0,
+    `startAt` VARCHAR(2) NOT NULL,
+    `endAt` VARCHAR(2) NOT NULL,
+    `isImmediateReservation` BOOLEAN NOT NULL DEFAULT false,
+    `isPublic` BOOLEAN NOT NULL DEFAULT false,
+    `isApproved` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -168,6 +172,15 @@ CREATE TABLE `TimeCostInfo` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `ReservedAdditionalService` (
+    `reservationId` VARCHAR(191) NOT NULL,
+    `additionalServiceId` VARCHAR(191) NOT NULL,
+    `count` INTEGER NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (`reservationId`, `additionalServiceId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Reservation` (
     `id` VARCHAR(191) NOT NULL,
     `year` CHAR(4) NOT NULL,
@@ -185,6 +198,7 @@ CREATE TABLE `Reservation` (
     `orderId` VARCHAR(191) NULL,
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
+    `isApproved` BOOLEAN NOT NULL DEFAULT true,
     `rentalTypeId` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
@@ -225,6 +239,7 @@ CREATE TABLE `Settlement` (
     `discountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `originalCost` MEDIUMINT NOT NULL,
     `isPayed` BOOLEAN NOT NULL DEFAULT false,
+    `hostId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -592,8 +607,8 @@ CREATE TABLE `Hashtag` (
 CREATE TABLE `UserCoupon` (
     `id` VARCHAR(191) NOT NULL,
     `count` TINYINT NOT NULL DEFAULT 1,
-    `dueDateStartAt` DATETIME NOT NULL,
-    `dueDateEndAt` DATETIME NOT NULL,
+    `usageDateStartAt` DATETIME NOT NULL,
+    `usageDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `isUsed` BOOLEAN NOT NULL DEFAULT false,
     `userId` VARCHAR(191) NOT NULL,
@@ -613,6 +628,7 @@ CREATE TABLE `Coupon` (
     `description` VARCHAR(100) NOT NULL,
     `code` CHAR(10) NOT NULL,
     `isLupinPay` BOOLEAN NOT NULL DEFAULT false,
+    `defaultDueDateStart` DATETIME NULL,
     `defaultDueDay` SMALLINT NOT NULL DEFAULT 0,
     `link` VARCHAR(191) NULL,
 
@@ -653,6 +669,7 @@ CREATE TABLE `Exhibition` (
     `content` MEDIUMTEXT NOT NULL,
     `startAt` DATETIME NOT NULL,
     `endAt` DATETIME NOT NULL,
+    `isShow` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
@@ -686,6 +703,12 @@ ALTER TABLE `RentalType` ADD CONSTRAINT `RentalType_spaceId_fkey` FOREIGN KEY (`
 ALTER TABLE `TimeCostInfo` ADD CONSTRAINT `TimeCostInfo_rentalTypeId_fkey` FOREIGN KEY (`rentalTypeId`) REFERENCES `RentalType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `ReservedAdditionalService` ADD CONSTRAINT `ReservedAdditionalService_reservationId_fkey` FOREIGN KEY (`reservationId`) REFERENCES `Reservation`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ReservedAdditionalService` ADD CONSTRAINT `ReservedAdditionalService_additionalServiceId_fkey` FOREIGN KEY (`additionalServiceId`) REFERENCES `AdditionalService`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_rentalTypeId_fkey` FOREIGN KEY (`rentalTypeId`) REFERENCES `RentalType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -696,6 +719,9 @@ ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_settlementId_fkey` FOREIGN
 
 -- AddForeignKey
 ALTER TABLE `BlockedTime` ADD CONSTRAINT `BlockedTime_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Settlement` ADD CONSTRAINT `Settlement_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `TaxReturn` ADD CONSTRAINT `TaxReturn_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

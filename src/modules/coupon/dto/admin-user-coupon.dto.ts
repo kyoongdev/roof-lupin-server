@@ -8,8 +8,8 @@ import { CouponDTO, CouponDTOProps } from './coupon.dto';
 export interface UserAdminCouponDTOProps {
   id: string;
   count: number;
-  dueDateStartAt: Date;
-  dueDateEndAt: Date;
+  usageDateStartAt: Date;
+  usageDateEndAt: Date;
   isUsed: boolean;
   createdAt: Date;
   user: CommonUserProps;
@@ -24,11 +24,11 @@ export class UserAdminCouponDTO {
   @Property({ apiProperty: { type: 'number', description: '쿠폰 개수' } })
   count: number;
 
-  @Property({ apiProperty: { type: 'date', description: '쿠폰 만료 시작일' } })
-  dueDateStartAt: Date;
+  @Property({ apiProperty: { type: 'date', description: '쿠폰 사용 시작일' } })
+  usageDateStartAt: Date;
 
-  @Property({ apiProperty: { type: 'date', description: '쿠폰 만료 종료일' } })
-  dueDateEndAt: Date;
+  @Property({ apiProperty: { type: 'date', description: '쿠폰 사용 종료일' } })
+  usageDateEndAt: Date;
 
   @Property({ apiProperty: { type: 'boolean', description: '쿠폰 사용 여부' } })
   isUsed: boolean;
@@ -48,8 +48,8 @@ export class UserAdminCouponDTO {
   constructor(props: UserAdminCouponDTOProps) {
     this.id = props.id;
     this.count = props.count;
-    this.dueDateStartAt = props.dueDateStartAt;
-    this.dueDateEndAt = props.dueDateEndAt;
+    this.usageDateStartAt = props.usageDateStartAt;
+    this.usageDateEndAt = props.usageDateEndAt;
     this.isUsed = props.isUsed;
     this.reservationId = props.reservationId ?? null;
     this.createdAt = props.createdAt;

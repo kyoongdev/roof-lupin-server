@@ -62,15 +62,15 @@ export class AuthService {
 
   async registerNewUserCoupon(userId: string) {
     const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
-    const dueDateStartAt = new Date();
-    dueDateStartAt.setUTCHours(0, 0, 0, 0);
+    const usageDateStartAt = new Date();
+    usageDateStartAt.setUTCHours(0, 0, 0, 0);
     const current = new Date();
     current.setUTCHours(0, 0, 0, 0);
-    const dueDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
+    const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
     await this.couponRepository.createUserCoupon(coupon.id, {
       userId,
-      dueDateEndAt,
-      dueDateStartAt,
+      usageDateEndAt,
+      usageDateStartAt,
     });
   }
 

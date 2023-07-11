@@ -628,8 +628,8 @@ export class PaymentService {
               throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
             }
 
-            const dueDateStart = isExist.dueDateStartAt.getTime();
-            const dueDateEnd = isExist.dueDateEndAt.getTime();
+            const dueDateStart = isExist.usageDateStartAt.getTime();
+            const dueDateEnd = isExist.usageDateEndAt.getTime();
             const currentDate = new Date();
             currentDate.setUTCHours(0, 0, 0, 0);
 

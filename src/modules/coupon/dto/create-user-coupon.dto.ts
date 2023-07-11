@@ -3,8 +3,8 @@ import { Property } from 'wemacu-nestjs';
 export interface CreateUserCouponDTOProps {
   count?: number;
   userId: string;
-  dueDateStartAt: Date;
-  dueDateEndAt: Date;
+  usageDateStartAt: Date;
+  usageDateEndAt: Date;
 }
 
 export class CreateUserCouponDTO {
@@ -14,17 +14,18 @@ export class CreateUserCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 id' } })
   userId: string;
 
-  @Property({ apiProperty: { type: 'string', description: '쿠폰 유효기간 시작' } })
-  dueDateStartAt: Date;
+  @Property({ apiProperty: { type: 'string', description: '쿠폰 사용 시작기간' } })
+  usageDateStartAt: Date;
 
-  @Property({ apiProperty: { type: 'string', description: '쿠폰 유효기간 종료' } })
-  dueDateEndAt: Date;
+  @Property({ apiProperty: { type: 'string', description: '쿠폰 사용 종료기간' } })
+  usageDateEndAt: Date;
 
   constructor(props?: CreateUserCouponDTOProps) {
     if (props) {
       this.count = props.count;
       this.userId = props.userId;
-      this.dueDateStartAt = props.dueDateStartAt;
+      this.usageDateStartAt = props.usageDateStartAt;
+      this.usageDateEndAt = props.usageDateEndAt;
     }
   }
 }
