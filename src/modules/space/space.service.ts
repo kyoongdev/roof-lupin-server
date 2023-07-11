@@ -24,6 +24,7 @@ import { SpaceException } from './exception/space.exception';
 import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
 import {
+  getCountDistanceSpacesSQL,
   getCountSpacesSQL,
   getFindSpacesSQL,
   getFindSpacesWithDistanceSQL,
@@ -53,7 +54,8 @@ export class SpaceService {
     date?: FindByDateQuery,
     userId?: string
   ) {
-    if (query.sort === 'DISTANCE' || location) {
+    const isDistance = query.sort === 'DISTANCE' || location;
+    if (isDistance) {
       if (!query.lat && !query.lng && !query.distance) {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
       }
@@ -61,17 +63,21 @@ export class SpaceService {
     const excludeSpaces = await this.getExcludeSpaces(args, date);
 
     const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
-    console.log(baseWhere, { location }, query.categoryIds);
+
     paging.page = paging.page ? paging.page - 1 : 1;
     let sqlQuery = getFindSpacesSQL(query, paging, baseWhere);
     if (query.sort === 'POPULARITY') {
       sqlQuery = getFindSpacesWithPopularitySQL(paging, baseWhere);
-    } else if (query.sort === 'DISTANCE' || location) {
+    } else if (isDistance) {
       sqlQuery = getFindSpacesWithDistanceSQL(location, paging, baseWhere);
     }
 
-    const count = await this.spaceRepository.countSpacesWithSQL(getCountSpacesSQL(baseWhere));
+    const count = await this.spaceRepository.countSpacesWithSQL(
+      isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
+    );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
+
+    paging.page = paging.page + 1;
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

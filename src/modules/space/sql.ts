@@ -65,14 +65,27 @@ export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, wher
 `;
 };
 
+export const getCountDistanceSpacesSQL = (location: LatLngDTO, where: Prisma.Sql) => Prisma.sql`
+  SELECT *
+  FROM
+  (
+    SELECT sp.id
+    FROM Space sp
+    ${BASE_JOIN}
+    ${where} AND  (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
+    -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat)))) <= ${location.distance / 1000}
+    GROUP BY sp.id
+  ) as sub
+`;
+
 export const getCountSpacesSQL = (where: Prisma.Sql) => Prisma.sql`
 SELECT *
 FROM  
 (
-  SELECT sp.id 
+  SELECT sp.id ,
   FROM Space sp
   ${BASE_JOIN}
-  ${where}
+  ${where} 
   GROUP BY sp.id
 ) as sub  
 `;
