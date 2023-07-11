@@ -27,35 +27,6 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-  @RequestApi({
-    summary: {
-      description: '유저 목록',
-      summary: '유저 목록 불러오기 - 로그인 필요, 관리자만 사용 가능',
-    },
-  })
-  @ResponseApi({
-    type: CommonUserDTO,
-    isPaging: true,
-  })
-  async getUsers(@Paging() paging: PagingDTO, @Query() query: FindUsersQuery) {
-    return await this.userService.findPagingUser(paging, query.generateQuery());
-  }
-
-  @Get(':userId/detail')
-  @RequestApi({
-    summary: {
-      description: '유저 상세 정보',
-      summary: '유저 상세 정보 불러오기',
-    },
-  })
-  @ResponseApi({
-    type: CommonUserDTO,
-  })
-  async getUser(@Param('userId') userId: string) {
-    return await this.userService.findUser(userId);
-  }
   @Get('/me/push-token')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
@@ -86,42 +57,6 @@ export class UserController {
     return await this.userService.findUser(user.id);
   }
 
-  @Post('')
-  @UseInterceptors(ResponseWithIdInterceptor)
-  @RequestApi({
-    summary: {
-      description: '유저 생성',
-      summary: '유저 생성하기 - 로그인 필요, 관리자만 사용 가능',
-    },
-  })
-  @ResponseApi(
-    {
-      type: ResponseWithId,
-    },
-    201
-  )
-  async createUser(@Body() body: CreateUserDTO) {
-    return await this.userService.createUser(body);
-  }
-
-  @Patch(':userId')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-  @RequestApi({
-    summary: {
-      description: '유저 수정',
-      summary: '유저 수정하기 - 로그인 필요, 관리자만 사용 가능',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async updateUser(@Param('userId') userId: string, @Body() body: UpdateUserDTO) {
-    await this.userService.updateUser(userId, body);
-  }
-
   @Patch('')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
@@ -138,42 +73,6 @@ export class UserController {
   )
   async updateMe(@ReqUser() user: RequestUser, @Body() body: UpdateUserDTO) {
     await this.userService.updateUser(user.id, body);
-  }
-
-  @Delete(':userId')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-  @RequestApi({
-    summary: {
-      description: '유저 삭제',
-      summary: '유저 삭제하기 - 로그인 필요, 관리자만 사용 가능',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async deleteUser(@Param('userId') userId: string) {
-    await this.userService.deleteUser(userId);
-  }
-
-  @Delete(':userId/hard')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-  @RequestApi({
-    summary: {
-      description: '유저 삭제 [hard delete]',
-      summary: '유저 삭제하기 (사용 시 유저가 DB에서 사라집니다.) - 로그인 필요, 관리자만 사용 가능',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async hardDeleteUser(@Param('userId') userId: string) {
-    await this.userService.hardDeleteUser(userId);
   }
 
   @Delete('')

@@ -12,22 +12,6 @@ import { UserException } from './exception/user.exception';
 export class UserRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async findUsers(args = {} as Prisma.UserFindManyArgs) {
-    const users = await this.database.user.findMany({
-      ...args,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
-    });
-
-    return users.map((user) => new CommonUserDTO(user));
-  }
-
-  async countUsers(args = {} as Prisma.UserCountArgs) {
-    return await this.database.user.count(args);
-  }
-
   async findUser(id: string) {
     const user = await this.database.user.findUnique({
       where: {
@@ -145,13 +129,6 @@ export class UserRepository {
     return user;
   }
 
-  async createUser(data: CreateUserDTO) {
-    const user = await this.database.user.create({
-      data,
-    });
-
-    return user;
-  }
   async createSocialUser(props: CreateSocialUserDTO) {
     const { socialId, socialType, ...rest } = props;
     const isExist = await this.checkUserBySocialId(socialId);
@@ -181,19 +158,6 @@ export class UserRepository {
         id,
       },
       data,
-    });
-  }
-
-  async hardDeleteUser(id: string) {
-    const user = await this.findUser(id);
-
-    if (user.deletedAt) {
-      throw new UserException(USER_ERROR_CODE.FORBIDDEN(HARD_DELETE_FAILED));
-    }
-    await this.database.user.delete({
-      where: {
-        id,
-      },
     });
   }
 

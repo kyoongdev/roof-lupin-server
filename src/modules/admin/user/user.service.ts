@@ -25,7 +25,11 @@ export class AdminUserService {
     const count = await this.userRepository.countUsers({
       where: args.where,
     });
-    const users = await this.userRepository.findUsers(args);
+    const users = await this.userRepository.findUsers({
+      where: args.where,
+      skip,
+      take,
+    });
 
     return new PaginationDTO<AdminUserDTO>(users, { count, paging });
   }
