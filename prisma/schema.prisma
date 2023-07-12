@@ -154,6 +154,7 @@ model Space {
   additionalServices    AdditionalService[]
   exhibitions           ExhibitionSpace[]
   curations             CurationSpace[]
+  contentCategories     ContentCategorySpace[]
 }
 
 model AdditionalService {
@@ -696,13 +697,28 @@ model Service {
 model Category {
   id                   String           @id @default(uuid())
   name                 String           @db.VarChar(80)
-  highlight            String?          @db.VarChar(80)
   isHome               Boolean          @default(false)
   isRecommended        Boolean          @default(false)
-  isContent            Boolean          @default(false)
   iconPath             String?
   spaceUsageCategories SpaceCategory[]
   couponCategories     CouponCategory[]
+}
+
+model ContentCategory {
+  id        String                 @id @default(uuid())
+  name      String                 @db.VarChar(80)
+  highlight String?                @db.VarChar(80)
+  spaces    ContentCategorySpace[]
+}
+
+model ContentCategorySpace {
+  orderNo           Int             @default(0)
+  contentCategoryId String
+  contentCategory   ContentCategory @relation(fields: [contentCategoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId           String
+  space             Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([contentCategoryId, spaceId])
 }
 
 model CouponCategory {

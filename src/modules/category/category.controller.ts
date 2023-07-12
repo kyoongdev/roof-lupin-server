@@ -75,9 +75,6 @@ export class CategoryController {
       description: '카테고리 생성',
       summary: '카테고리 생성 - 관리자만 사용가능합니다.',
     },
-    body: {
-      type: CreateCategoryDTO,
-    },
   })
   @ResponseApi(
     {
@@ -96,15 +93,6 @@ export class CategoryController {
     summary: {
       description: '카테고리 수정',
       summary: '카테고리 수정 - 관리자만 사용가능합니다.',
-    },
-    params: {
-      name: 'categoryId',
-      required: true,
-      type: 'string',
-      description: '카테고리 ID',
-    },
-    body: {
-      type: UpdateCategoryDTO,
     },
   })
   @ResponseApi(

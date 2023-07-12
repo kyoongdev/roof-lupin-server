@@ -174,51 +174,46 @@ export const seedDatabase = async (database: PrismaService) => {
     });
   }
 
-  const category1 = await database.category.create({
+  const category1 = await database.contentCategory.create({
     data: {
       highlight: '8월 인기',
       name: '기획전',
-      isContent: true,
     },
   });
-  const category2 = await database.category.create({
+  const category2 = await database.contentCategory.create({
     data: {
       highlight: '루프탑 바',
       name: '인기 10위',
-      isContent: true,
     },
   });
-  const category3 = await database.category.create({
+  const category3 = await database.contentCategory.create({
     data: {
       highlight: '여름 휴가',
       name: '옥상 바베큐',
-      isContent: true,
     },
   });
-  const category4 = await database.category.create({
+  const category4 = await database.contentCategory.create({
     data: {
       highlight: '루프루팡 픽!',
       name: '최고의 옥상',
-      isContent: true,
     },
   });
-  const category5 = await database.category.create({
+  const category5 = await database.contentCategory.create({
     data: {
       highlight: '옥상에서 즐기는',
       name: '영화 감상',
-      isContent: true,
     },
   });
 
   await Promise.all(
     spaces.map(async (spaces, index) => {
       if (index < 5) {
-        await database.category.update({
+        await database.contentCategory.update({
           where: {
             id: category1.id,
           },
           data: {
-            spaceUsageCategories: {
+            spaces: {
               create: [
                 {
                   space: {
@@ -232,12 +227,12 @@ export const seedDatabase = async (database: PrismaService) => {
           },
         });
       } else if (index < 10) {
-        await database.category.update({
+        await database.contentCategory.update({
           where: {
             id: category2.id,
           },
           data: {
-            spaceUsageCategories: {
+            spaces: {
               create: [
                 {
                   space: {
@@ -251,12 +246,12 @@ export const seedDatabase = async (database: PrismaService) => {
           },
         });
       } else if (index < 15) {
-        await database.category.update({
+        await database.contentCategory.update({
           where: {
             id: category3.id,
           },
           data: {
-            spaceUsageCategories: {
+            spaces: {
               create: [
                 {
                   space: {
@@ -270,12 +265,12 @@ export const seedDatabase = async (database: PrismaService) => {
           },
         });
       } else if (index < 20) {
-        await database.category.update({
+        await database.contentCategory.update({
           where: {
             id: category4.id,
           },
           data: {
-            spaceUsageCategories: {
+            spaces: {
               create: [
                 {
                   space: {
@@ -289,12 +284,12 @@ export const seedDatabase = async (database: PrismaService) => {
           },
         });
       } else if (index < 25) {
-        await database.category.update({
+        await database.contentCategory.update({
           where: {
             id: category5.id,
           },
           data: {
-            spaceUsageCategories: {
+            spaces: {
               create: [
                 {
                   space: {
