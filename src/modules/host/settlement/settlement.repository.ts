@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import { ReservationDTOProps } from '@/modules/reservation/dto';
+import type { CommonReservationRentalType } from '@/interface/reservation.interface';
+import { type ReservationDTOProps } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 
@@ -22,9 +23,13 @@ export class SettlementRepository {
         day,
         reservations: {
           some: {
-            rentalType: {
-              space: {
-                hostId,
+            rentalTypes: {
+              some: {
+                rentalType: {
+                  space: {
+                    hostId,
+                  },
+                },
               },
             },
           },
@@ -45,15 +50,19 @@ export class SettlementRepository {
           include: {
             user: true,
             spaceReviews: true,
-            rentalType: {
+            rentalTypes: {
               include: {
-                timeCostInfo: true,
-                space: {
+                rentalType: {
                   include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    rentalType: true,
+                    timeCostInfo: true,
+                    space: {
+                      include: {
+                        reviews: true,
+                        location: true,
+                        publicTransportations: true,
+                        rentalType: true,
+                      },
+                    },
                   },
                 },
               },
@@ -71,14 +80,13 @@ export class SettlementRepository {
     const { reservations, ...rest } = settlement;
 
     const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalType, ...rest } = reservation;
-      const { space, ...restRentalType } = rentalType;
-
+      const { rentalTypes, ...rest } = reservation;
+      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
       return {
         ...rest,
         user: rest.user,
-        rentalType: restRentalType,
+        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
         space: {
           ...space,
           reviewCount: space.reviews.length,
@@ -89,7 +97,6 @@ export class SettlementRepository {
         isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
       };
     });
-
     return new SettlementDetailDTO({
       ...rest,
       reservations: reservationDTOs,
@@ -109,15 +116,19 @@ export class SettlementRepository {
           include: {
             user: true,
             spaceReviews: true,
-            rentalType: {
+            rentalTypes: {
               include: {
-                timeCostInfo: true,
-                space: {
+                rentalType: {
                   include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    rentalType: true,
+                    timeCostInfo: true,
+                    space: {
+                      include: {
+                        reviews: true,
+                        location: true,
+                        publicTransportations: true,
+                        rentalType: true,
+                      },
+                    },
                   },
                 },
               },
@@ -131,18 +142,16 @@ export class SettlementRepository {
     if (!settlement) {
       throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
     }
-
     const { reservations, ...rest } = settlement;
 
     const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalType, ...rest } = reservation;
-      const { space, ...restRentalType } = rentalType;
-
+      const { rentalTypes, ...rest } = reservation;
+      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
       return {
         ...rest,
         user: rest.user,
-        rentalType: restRentalType,
+        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
         space: {
           ...space,
           reviewCount: space.reviews.length,
@@ -173,15 +182,19 @@ export class SettlementRepository {
           include: {
             user: true,
             spaceReviews: true,
-            rentalType: {
+            rentalTypes: {
               include: {
-                timeCostInfo: true,
-                space: {
+                rentalType: {
                   include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    rentalType: true,
+                    timeCostInfo: true,
+                    space: {
+                      include: {
+                        reviews: true,
+                        location: true,
+                        publicTransportations: true,
+                        rentalType: true,
+                      },
+                    },
                   },
                 },
               },
@@ -198,14 +211,13 @@ export class SettlementRepository {
     const { reservations, ...rest } = settlement;
 
     const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalType, ...rest } = reservation;
-      const { space, ...restRentalType } = rentalType;
-
+      const { rentalTypes, ...rest } = reservation;
+      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
       return {
         ...rest,
         user: rest.user,
-        rentalType: restRentalType,
+        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
         space: {
           ...space,
           reviewCount: space.reviews.length,

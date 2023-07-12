@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
+import type { CommonReservationRentalType } from '@/interface/reservation.interface';
 
 import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
-import { CommonReservation } from './type';
 
 @Injectable()
 export class ReservationRepository {
@@ -20,15 +20,20 @@ export class ReservationRepository {
       },
       include: {
         user: true,
-        rentalType: {
+        rentalTypes: {
           include: {
-            timeCostInfo: true,
-            space: {
+            rentalType: {
               include: {
-                reviews: true,
-                location: true,
-                publicTransportations: true,
-                rentalType: true,
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    userInterests: true,
+                    rentalType: true,
+                  },
+                },
               },
             },
           },
@@ -41,20 +46,20 @@ export class ReservationRepository {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    const { rentalType, ...rest } = reservation;
-    const { space, ...restRentalType } = rentalType;
+    const { rentalTypes, ...rest } = reservation;
+    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
     const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
     return new ReservationDetailDTO({
       ...rest,
-      rentalType: restRentalType,
-      isReviewed: rest.spaceReviews.length > 0,
+      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
       space: {
         ...space,
         reviewCount: space.reviews.length,
         location: space.location?.['location'],
         averageScore,
       },
+      isReviewed: rest.spaceReviews.length > 0,
     });
   }
 
@@ -65,15 +70,20 @@ export class ReservationRepository {
       },
       include: {
         user: true,
-        rentalType: {
+        rentalTypes: {
           include: {
-            timeCostInfo: true,
-            space: {
+            rentalType: {
               include: {
-                reviews: true,
-                location: true,
-                publicTransportations: true,
-                rentalType: true,
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    userInterests: true,
+                    rentalType: true,
+                  },
+                },
               },
             },
           },
@@ -86,20 +96,20 @@ export class ReservationRepository {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    const { rentalType, ...rest } = reservation;
-    const { space, ...restRentalType } = rentalType;
+    const { rentalTypes, ...rest } = reservation;
+    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
     const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
     return new ReservationDetailDTO({
       ...rest,
-      rentalType: restRentalType,
-      isReviewed: rest.spaceReviews.length > 0,
+      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
       space: {
         ...space,
         reviewCount: space.reviews.length,
         location: space.location?.['location'],
         averageScore,
       },
+      isReviewed: rest.spaceReviews.length > 0,
     });
   }
 
@@ -110,15 +120,20 @@ export class ReservationRepository {
       },
       include: {
         user: true,
-        rentalType: {
+        rentalTypes: {
           include: {
-            timeCostInfo: true,
-            space: {
+            rentalType: {
               include: {
-                reviews: true,
-                location: true,
-                publicTransportations: true,
-                rentalType: true,
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    userInterests: true,
+                    rentalType: true,
+                  },
+                },
               },
             },
           },
@@ -131,13 +146,13 @@ export class ReservationRepository {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    const { rentalType, ...rest } = reservation;
-    const { space, ...restRentalType } = rentalType;
+    const { rentalTypes, ...rest } = reservation;
+    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
     const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
     return new ReservationDetailDTO({
       ...rest,
-      rentalType: restRentalType,
+      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
       space: {
         ...space,
         reviewCount: space.reviews.length,
@@ -159,21 +174,29 @@ export class ReservationRepository {
       },
       include: {
         user: true,
-        rentalType: {
+        rentalTypes: {
           include: {
-            timeCostInfo: true,
-            space: {
+            rentalType: {
               include: {
-                reviews: true,
-                location: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
+                timeCostInfo: true,
+                space: {
+                  include: {
+                    reviews: true,
+                    location: true,
+                    publicTransportations: true,
+                    userInterests: true,
+                    rentalType: true,
+                  },
+                },
               },
             },
           },
         },
-        spaceReviews: true,
+        spaceReviews: {
+          include: {
+            space: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -183,15 +206,14 @@ export class ReservationRepository {
     });
 
     return reservations.map((reservation) => {
-      const { rentalType, ...rest } = reservation;
-      const { space, ...restRentalType } = rentalType as CommonReservation;
-
+      const { rentalTypes, ...rest } = reservation;
+      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
       const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
       return new ReservationDTO({
         ...rest,
         user: rest.user,
-        rentalType: restRentalType,
+        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
         space: {
           ...space,
           reviewCount: space.reviews.length,
@@ -205,7 +227,7 @@ export class ReservationRepository {
 
   //TODO: 결제 시스템까지 도입
   async createReservation(userId: string, data: CreatePaymentDTO) {
-    const { rentalTypeId, spaceId, userCouponIds, additionalServices, ...rest } = data;
+    const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
     const reservation = await this.database.reservation.create({
@@ -215,10 +237,16 @@ export class ReservationRepository {
             id: userId,
           },
         },
-        rentalType: {
-          connect: {
-            id: rentalTypeId,
-          },
+        rentalTypes: {
+          create: rentalTypes.map((rentalType) => ({
+            endAt: rentalType.endAt,
+            startAt: rentalType.startAt,
+            rentalType: {
+              connect: {
+                id: rentalType.rentalTypeId,
+              },
+            },
+          })),
         },
         ...(userCouponIds && {
           userCoupon: {
@@ -245,7 +273,7 @@ export class ReservationRepository {
   }
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
-    const { rentalTypeId, spaceId, userCouponIds, additionalServices, ...rest } = data;
+    const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
     const reservation = await database.reservation.create({
@@ -255,10 +283,16 @@ export class ReservationRepository {
             id: userId,
           },
         },
-        rentalType: {
-          connect: {
-            id: rentalTypeId,
-          },
+        rentalTypes: {
+          create: rentalTypes.map((rentalType) => ({
+            endAt: rentalType.endAt,
+            startAt: rentalType.startAt,
+            rentalType: {
+              connect: {
+                id: rentalType.rentalTypeId,
+              },
+            },
+          })),
         },
         ...(userCouponIds && {
           userCoupon: {

@@ -244,14 +244,17 @@ export class RentalTypeService {
             });
           });
           next.reservations.forEach((reservation) => {
-            if (targetDay === reservation.day)
-              range(reservation.startAt, reservation.endAt).forEach((hour) => {
-                timeCostInfos.forEach((info) => {
-                  if (info.time === hour) {
-                    info.isPossible = false;
-                  }
+            if (targetDay === reservation.day) {
+              reservation.rentalTypes.forEach((rentalType) => {
+                range(rentalType.startAt, rentalType.endAt).forEach((hour) => {
+                  timeCostInfos.forEach((info) => {
+                    if (info.time === hour) {
+                      info.isPossible = false;
+                    }
+                  });
                 });
               });
+            }
           });
           blockedTimes.forEach((blockedTime) => {
             if (targetDay === blockedTime.day)
@@ -316,8 +319,10 @@ export class RentalTypeService {
       });
 
       rentalType.reservations.forEach((reservation) => {
-        range(reservation.startAt, reservation.endAt).forEach((hour) => {
-          timeCostInfos[hour].isPossible = false;
+        reservation.rentalTypes.forEach((rentalType) => {
+          range(rentalType.startAt, rentalType.endAt).forEach((hour) => {
+            timeCostInfos[hour].isPossible = false;
+          });
         });
       });
       blockedTimes.forEach((blockedTime) => {

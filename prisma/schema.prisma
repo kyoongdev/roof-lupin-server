@@ -197,7 +197,6 @@ model RentalType {
 
   timeCostInfo TimeCostInfo[]
   reservations ReservationRentalType[]
-  Reservation  Reservation[]
 }
 
 //INFO: 시간별 예약 추가 정보
@@ -266,9 +265,7 @@ model Reservation {
   spaceReviews       SpaceReview[]
   userCoupon         UserCoupon[]
   additionalServices ReservedAdditionalService[]
-  rentalTyeps        ReservationRentalType[]
-  RentalType         RentalType?                 @relation(fields: [rentalTypeId], references: [id])
-  rentalTypeId       String?
+  rentalTypes        ReservationRentalType[]
 }
 
 model BlockedTime {

@@ -25,9 +25,13 @@ export class SettlementService {
       where: {
         reservations: {
           some: {
-            rentalType: {
-              space: {
-                hostId,
+            rentalTypes: {
+              some: {
+                rentalType: {
+                  space: {
+                    hostId,
+                  },
+                },
               },
             },
           },

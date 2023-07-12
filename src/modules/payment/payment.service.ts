@@ -124,7 +124,7 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(data.spaceId);
-      const { rentalType } = await this.validatePayment(data, space);
+      const rentalTypes = await this.validatePayment(data, space);
       const reservation = await this.getReservation(database, userId, data, space);
       try {
         const orderId = this.createOrderId();
@@ -151,7 +151,7 @@ export class PaymentService {
         return new PortOnePreparePaymentDTO({
           amount: reservation.totalCost,
           merchant_uid: orderId,
-          name: rentalType.name,
+          name: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
         });
       } catch (err) {
         if (data.userCouponIds)
@@ -230,13 +230,13 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(data.spaceId);
-      const { rentalType } = await this.validatePayment(data, space);
+      const rentalTypes = await this.validatePayment(data, space);
       const reservation = await this.getReservation(database, userId, data, space);
       try {
         const orderId = this.createOrderId();
 
         const result = await this.kakaoPay.preparePayment({
-          item_name: rentalType.name,
+          item_name: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
           quantity: 1,
           tax_free_amount: 0,
           total_amount: reservation.totalCost,
@@ -351,14 +351,14 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(data.spaceId);
-      const { rentalType } = await this.validatePayment(data, space);
+      const rentalTypes = await this.validatePayment(data, space);
       const reservation = await this.getReservation(database, userId, data, space);
       try {
         const orderId = this.createOrderId();
 
         const result = await this.tossPay.createPayment({
           amount: reservation.totalCost,
-          orderName: rentalType.name,
+          orderName: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
           method: '카드',
           orderId,
         });
@@ -551,16 +551,18 @@ export class PaymentService {
   async sendMessage(reservation: ReservationDetailDTO) {
     const pushToken = await this.userRepository.findUserPushToken(reservation.user.id);
     if (pushToken.pushToken)
-      this.fcmEvent.createReservationUsageAlarm({
-        year: reservation.year,
-        month: reservation.month,
-        day: reservation.day,
-        jobId: reservation.id,
-        nickname: reservation.user.nickname,
-        pushToken: pushToken.pushToken,
-        spaceName: reservation.space.title,
-        time: reservation.startAt,
-        userId: reservation.user.id,
+      reservation.rentalTypes.forEach((rentalType) => {
+        this.fcmEvent.createReservationUsageAlarm({
+          year: reservation.year,
+          month: reservation.month,
+          day: reservation.day,
+          jobId: reservation.id,
+          nickname: reservation.user.nickname,
+          pushToken: pushToken.pushToken,
+          spaceName: reservation.space.title,
+          time: rentalType.startAt,
+          userId: reservation.user.id,
+        });
       });
   }
 
@@ -570,68 +572,74 @@ export class PaymentService {
   }
 
   async validatePayment(data: CreatePaymentDTO, space: SpaceDetailDTO) {
-    const rentalType = await this.rentalTypeRepository.findRentalType(data.rentalTypeId);
+    return await Promise.all(
+      data.rentalTypes.map(async (item) => {
+        const rentalType = await this.rentalTypeRepository.findRentalType(item.rentalTypeId);
 
-    if (rentalType.spaceId !== data.spaceId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_SPACE_ID_BAD_REQUEST));
-    }
-
-    const possibleRentalType = await this.rentalTypeService.findPossibleRentalTypesById(data.rentalTypeId, {
-      year: data.year,
-      month: data.month,
-      day: data.day,
-    });
-
-    //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
-    if (data.startAt < possibleRentalType.startAt || possibleRentalType.endAt < data.endAt) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
-    }
-
-    if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
-      //INFO: 시간 대여 타입에 시간 정보가 없을 때
-      if (!possibleRentalType['timeCostInfos']) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR));
-      }
-
-      //INFO: 대여하려는 시간이 예약 불가할 때
-      (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
-        if (data.startAt <= time.time && time.time <= data.endAt && !time.isPossible) {
-          throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+        if (rentalType.spaceId !== data.spaceId) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_SPACE_ID_BAD_REQUEST));
         }
-      });
 
-      const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
-        if (data.startAt <= next.time && next.time < data.endAt) {
-          acc += next.cost;
+        const possibleRentalType = await this.rentalTypeService.findPossibleRentalTypesById(item.rentalTypeId, {
+          year: data.year,
+          month: data.month,
+          day: data.day,
+        });
+
+        //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
+        if (item.startAt < possibleRentalType.startAt || possibleRentalType.endAt < item.endAt) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
         }
-        return acc;
-      }, 0);
 
-      const realCost = await this.getRealCost(cost, data, space);
-      //INFO: 가격 정보가 올바르지 않을 때
-      if (realCost !== data.totalCost || cost !== data.originalCost) {
-        throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
-      }
-    } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-      //INFO: 대여하려는 시간이 잘못 입력됐을 때
-      if (data.startAt !== possibleRentalType.startAt || data.endAt !== possibleRentalType.endAt) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
-      }
-      //INFO: 대여하려는 시간이 예약 불가할 때
-      if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
-      }
-      const realCost = await this.getRealCost(rentalType.baseCost, data, space);
-      //INFO: 가격 정보가 올바르지 않을 때
-      if (rentalType.baseCost !== data.originalCost || realCost !== data.totalCost) {
-        throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
-      }
-    } else
-      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR));
-    return {
-      rentalType,
-      possibleRentalType,
-    };
+        if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
+          //INFO: 시간 대여 타입에 시간 정보가 없을 때
+          if (!possibleRentalType['timeCostInfos']) {
+            throw new PaymentException(
+              PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
+            );
+          }
+
+          //INFO: 대여하려는 시간이 예약 불가할 때
+          (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
+            if (item.startAt <= time.time && time.time <= item.endAt && !time.isPossible) {
+              throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+            }
+          });
+
+          const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
+            if (item.startAt <= next.time && next.time < item.endAt) {
+              acc += next.cost;
+            }
+            return acc;
+          }, 0);
+
+          const realCost = await this.getRealCost(cost, data, space);
+          //INFO: 가격 정보가 올바르지 않을 때
+          if (realCost !== data.totalCost || cost !== data.originalCost) {
+            throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
+          }
+        } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+          //INFO: 대여하려는 시간이 잘못 입력됐을 때
+          if (item.startAt !== possibleRentalType.startAt || item.endAt !== possibleRentalType.endAt) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
+          }
+          //INFO: 대여하려는 시간이 예약 불가할 때
+          if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+          }
+          const realCost = await this.getRealCost(rentalType.baseCost, data, space);
+          //INFO: 가격 정보가 올바르지 않을 때
+          if (rentalType.baseCost !== data.originalCost || realCost !== data.totalCost) {
+            throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
+          }
+        } else
+          throw new PaymentException(
+            PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
+          );
+
+        return rentalType;
+      })
+    );
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO, space: SpaceDetailDTO) {

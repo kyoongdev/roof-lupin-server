@@ -5,8 +5,7 @@ export interface BaseReservationDTOProps {
   year: string;
   month: string;
   day: string;
-  startAt: number;
-  endAt: number;
+
   totalCost: number;
   vatCost: number;
   discountCost: number;
@@ -28,12 +27,6 @@ export class BaseReservationDTO {
 
   @Property({ apiProperty: { type: 'string', description: '예약 일' } })
   day: string;
-
-  @Property({ apiProperty: { type: 'number', description: '예약 시작 시간' } })
-  startAt: number;
-
-  @Property({ apiProperty: { type: 'number', description: '예약 종료 시간' } })
-  endAt: number;
 
   @Property({ apiProperty: { type: 'number', description: '결제 금액 (originalCost - discountCost)' } })
   totalCost: number;
@@ -58,8 +51,6 @@ export class BaseReservationDTO {
     this.year = props.year;
     this.month = props.month;
     this.day = props.day;
-    this.startAt = props.startAt;
-    this.endAt = props.endAt;
     this.totalCost = props.totalCost;
     this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;

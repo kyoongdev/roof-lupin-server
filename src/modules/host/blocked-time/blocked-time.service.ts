@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { ReservationDTO } from '@/modules/reservation/dto';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
@@ -64,16 +65,16 @@ export class BlockedTimeService {
         year: data.year,
         month: data.month,
         day: data.day,
-        rentalType: {
-          spaceId: data.spaceId,
+        rentalTypes: {
+          some: {
+            rentalType: {
+              spaceId: data.spaceId,
+            },
+          },
         },
       },
     });
-    reservations.forEach((reservation) => {
-      if (data.startAt <= reservation.endAt && reservation.startAt <= data.endAt) {
-        throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.CONFLICT(BLOCKED_TIME_RESERVATION_EXISTS));
-      }
-    });
+    this.validateBlockTime(data.startAt, data.endAt, reservations);
     return await this.blockedTimeRepository.createBlockedTime(data);
   }
 
@@ -89,16 +90,17 @@ export class BlockedTimeService {
         year: data.year,
         month: data.month,
         day: data.day,
-        rentalType: {
-          spaceId: blockedTime.spaceId,
+        rentalTypes: {
+          some: {
+            rentalType: {
+              spaceId: blockedTime.spaceId,
+            },
+          },
         },
       },
     });
-    reservations.forEach((reservation) => {
-      if (data.startAt <= reservation.endAt && reservation.startAt <= data.endAt) {
-        throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.CONFLICT(BLOCKED_TIME_RESERVATION_EXISTS));
-      }
-    });
+    this.validateBlockTime(data.startAt, data.endAt, reservations);
+
     return await this.blockedTimeRepository.updateBlockedTime(id, data);
   }
 
@@ -111,5 +113,15 @@ export class BlockedTimeService {
     }
 
     await this.blockedTimeRepository.deleteBlockedTime(id);
+  }
+
+  validateBlockTime(startAt: number, endAt: number, reservations: ReservationDTO[]) {
+    reservations.forEach(({ rentalTypes }) => {
+      rentalTypes.forEach((rentalType) => {
+        if (startAt <= rentalType.endAt && rentalType.startAt <= endAt) {
+          throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.CONFLICT(BLOCKED_TIME_RESERVATION_EXISTS));
+        }
+      });
+    });
   }
 }

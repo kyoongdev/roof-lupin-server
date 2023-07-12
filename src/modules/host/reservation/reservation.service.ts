@@ -32,9 +32,13 @@ export class HostReservationService {
     });
     const reservations = await this.reservationRepository.findReservations({
       where: {
-        rentalType: {
-          space: {
-            hostId,
+        rentalTypes: {
+          some: {
+            rentalType: {
+              space: {
+                hostId,
+              },
+            },
           },
         },
         ...args.where,

@@ -34,10 +34,14 @@ export class AdminFindSettlementsQuery extends PagingDTO {
         ...(query.spaceTitle && {
           reservations: {
             some: {
-              rentalType: {
-                space: {
-                  title: {
-                    contains: query.spaceTitle,
+              rentalTypes: {
+                some: {
+                  rentalType: {
+                    space: {
+                      title: {
+                        contains: query.spaceTitle,
+                      },
+                    },
                   },
                 },
               },

@@ -1,26 +1,35 @@
 import { Property } from 'wemacu-nestjs';
 
+import { RentalTypeDTO, type RentalTypeDTOProps } from '@/modules/space/dto/rentalType';
+
+import { TimeValidation } from './validation';
+
 export interface ReservationRentalTypeDTOProps {
   rentalTypeId: string;
   startAt: number;
   endAt: number;
+  rentalType: RentalTypeDTOProps;
 }
 
 export class ReservationRentalTypeDTO {
   @Property({ apiProperty: { type: 'string', description: '대여 id' } })
   rentalTypeId: string;
 
+  @TimeValidation()
   @Property({ apiProperty: { type: 'number', description: '대여 시작 시간' } })
   startAt: number;
 
+  @TimeValidation()
   @Property({ apiProperty: { type: 'number', description: '대여 종료 시간' } })
   endAt: number;
 
-  constructor(props?: ReservationRentalTypeDTOProps) {
-    if (props) {
-      this.rentalTypeId = props.rentalTypeId;
-      this.startAt = props.startAt;
-      this.endAt = props.endAt;
-    }
+  @Property({ apiProperty: { type: RentalTypeDTO, description: '대여 타입' } })
+  rentalType: RentalTypeDTO;
+
+  constructor(props: ReservationRentalTypeDTOProps) {
+    this.rentalTypeId = props.rentalTypeId;
+    this.startAt = props.startAt;
+    this.endAt = props.endAt;
+    this.rentalType = new RentalTypeDTO(props.rentalType);
   }
 }
