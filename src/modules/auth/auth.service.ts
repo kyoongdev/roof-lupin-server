@@ -20,6 +20,8 @@ import { COUPON_CODE } from '../coupon/constants';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { CreateHostDTO } from '../host/dto';
 import { CreateSocialUserDTO } from '../user/dto';
+import { USER_BLOCKED, USER_ERROR_CODE } from '../user/exception/errorCode';
+import { UserException } from '../user/exception/user.exception';
 
 import { AdminAuthDTO, HostAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
@@ -82,6 +84,12 @@ export class AuthService {
     }
 
     const user = await this.userRepository.findUserBySocialId(socialId);
+
+    const currentDate = new Date();
+    if (user.isBlocked && user.unBlockAt.getTime() > currentDate.getTime()) {
+      throw new UserException(USER_ERROR_CODE.FORBIDDEN(USER_BLOCKED));
+    }
+
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
 
     await this.registerNewUserCoupon(user.id);

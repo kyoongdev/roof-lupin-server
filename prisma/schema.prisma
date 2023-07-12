@@ -192,10 +192,12 @@ model RentalType {
   startAt    Int    @default(0) @db.TinyInt // 시작시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
   endAt      Int    @default(24) @db.TinyInt // 종료시간 (시간의 경우 정해 놓은 시간 혹은 24시간 / 패키지는 정해놓은 시간)
 
-  spaceId      String
-  space        Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  reservations Reservation[]
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   timeCostInfo TimeCostInfo[]
+  reservations ReservationRentalType[]
+  Reservation  Reservation[]
 }
 
 //INFO: 시간별 예약 추가 정보
@@ -219,15 +221,24 @@ model ReservedAdditionalService {
   @@id([reservationId, additionalServiceId])
 }
 
+model ReservationRentalType {
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rentalTypeId  String
+  rentalType    RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  startAt       Int
+  endAt         Int
+
+  @@id([reservationId, rentalTypeId])
+}
+
 //INFO: 예약 정보
 model Reservation {
   id String @id @unique @default(uuid())
 
-  year    String @db.Char(4)
-  month   String @db.VarChar(2)
-  day     String @db.VarChar(2)
-  startAt Int    @db.TinyInt
-  endAt   Int    @db.TinyInt
+  year  String @db.Char(4)
+  month String @db.VarChar(2)
+  day   String @db.VarChar(2)
 
   totalCost           Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
   vatCost             Int @db.MediumInt //INFO: VAT 금액
@@ -243,8 +254,6 @@ model Reservation {
   payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
   isApproved    Boolean @default(true) //INFO: 결제 승인 여부
 
-  rentalTypeId String
-  rentalType   RentalType  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   settlementId String?
@@ -257,6 +266,9 @@ model Reservation {
   spaceReviews       SpaceReview[]
   userCoupon         UserCoupon[]
   additionalServices ReservedAdditionalService[]
+  rentalTyeps        ReservationRentalType[]
+  RentalType         RentalType?                 @relation(fields: [rentalTypeId], references: [id])
+  rentalTypeId       String?
 }
 
 model BlockedTime {

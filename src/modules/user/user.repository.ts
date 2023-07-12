@@ -82,7 +82,7 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND(SOCIAL_USER_NOT_FOUND));
     }
 
-    return new CommonUserDTO(socialUser.user);
+    return socialUser.user;
   }
 
   async checkUserIsBlocked(id: string) {
@@ -92,6 +92,7 @@ export class UserRepository {
       },
       select: {
         isBlocked: true,
+        unBlockAt: true,
       },
     });
 
@@ -99,7 +100,7 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
-    return user.isBlocked;
+    return user;
   }
 
   async checkUserBySocialId(socialId: string) {
