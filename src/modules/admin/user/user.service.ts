@@ -7,7 +7,7 @@ import { UpdateUserDTO } from '@/modules/user/dto';
 import { USER_ALREADY_BLOCKED, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
 import { UserException } from '@/modules/user/exception/user.exception';
 
-import { AdminUserDTO } from '../dto/user';
+import { AdminUserDTO, BlockUserDTO } from '../dto/user';
 
 import { AdminUserRepository } from './user.repository';
 
@@ -39,16 +39,14 @@ export class AdminUserService {
     await this.userRepository.updateUser(id, props);
   }
 
-  async blockUser(id: string) {
+  async blockUser(id: string, data: BlockUserDTO) {
     const user = await this.findUser(id);
 
     if (user.isBlocked) {
       throw new UserException(USER_ERROR_CODE.CONFLICT(USER_ALREADY_BLOCKED));
     }
 
-    await this.userRepository.updateUser(id, {
-      isBlocked: true,
-    });
+    await this.userRepository.updateUser(id, data);
   }
 
   async unBlockUser(id: string) {
@@ -60,6 +58,7 @@ export class AdminUserService {
 
     await this.userRepository.updateUser(id, {
       isBlocked: false,
+      unBlockAt: null,
     });
   }
 

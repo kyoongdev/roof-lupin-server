@@ -8,7 +8,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { AdminUpdateUserDTO, AdminUserDTO } from '../dto/user';
+import { AdminUpdateUserDTO, AdminUserDTO, BlockUserDTO } from '../dto/user';
 
 import { AdminUserService } from './user.service';
 
@@ -72,8 +72,8 @@ export class AdminUserController {
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async blockUser(@Param('userId') id: string) {
-    return await this.userService.blockUser(id);
+  async blockUser(@Param('userId') id: string, @Body() body: BlockUserDTO) {
+    return await this.userService.blockUser(id, body);
   }
 
   @Post(':userId/un-block')

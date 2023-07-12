@@ -48,7 +48,10 @@ export class AdminUserRepository {
       where: {
         id,
       },
-      data,
+      data: {
+        ...data,
+        blockedAt: data.isBlocked ? new Date() : null,
+      },
     });
   }
 

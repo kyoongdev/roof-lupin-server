@@ -547,19 +547,21 @@ model User {
 
   nickname        String
   email           String?
-  phoneNumber     String? @db.Char(11)
-  birthYear       String? @db.Char(4)
-  birthDay        String? @db.Char(4)
-  gender          Int?    @db.TinyInt
+  phoneNumber     String?   @db.Char(11)
+  birthYear       String?   @db.Char(4)
+  birthDay        String?   @db.Char(4)
+  gender          Int?      @db.TinyInt
   profileImage    String?
-  isAdult         Boolean @default(false)
-  isAlarmAccepted Boolean @default(false)
-  isBlocked       Boolean @default(false)
+  isAdult         Boolean   @default(false)
+  isAlarmAccepted Boolean   @default(false)
+  isBlocked       Boolean   @default(false)
+  unBlockAt       DateTime?
   pushToken       String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  blockedAt DateTime?
 
   spaceReviews   SpaceReview[]
   spaceReports   SpaceReport[]
