@@ -57,11 +57,25 @@ model Curation {
   thumbnail String
   isMain    Boolean @default(false)
 
+  homeOrderNo Int @default(0) @db.TinyInt
+  orderNo     Int @default(0) @db.TinyInt
+
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  spaces    CurationSpace[]
+}
+
+model CurationSpace {
+  curationId String
+  curation   Curation @relation(fields: [curationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId    String
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderNo    Int      @default(0) @db.TinyInt
+
+  @@id([curationId, spaceId])
 }
 
 model Image {
@@ -139,6 +153,7 @@ model Space {
   blockedTimes          BlockedTime[]
   additionalServices    AdditionalService[]
   exhibitions           ExhibitionSpace[]
+  curations             CurationSpace[]
 }
 
 model AdditionalService {

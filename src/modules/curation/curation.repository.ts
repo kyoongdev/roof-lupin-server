@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
+import { CommonCurationSpace } from '@/interface/curation.interface';
 
 import { CreateCurationDTO, CurationDetailDTO, CurationDTO, UpdateCurationDTO } from './dto';
 import { CurationException } from './exception/curation.exception';
@@ -17,22 +18,77 @@ export class CurationRepository {
       where: { id },
       include: {
         user: true,
+        spaces: {
+          include: {
+            space: {
+              include: {
+                location: true,
+                reviews: true,
+                publicTransportations: true,
+                userInterests: true,
+                rentalType: true,
+              },
+            },
+          },
+        },
       },
     });
 
     if (!curation) {
       throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
     }
-    return new CurationDetailDTO(curation);
+    return new CurationDetailDTO({
+      ...curation,
+      spaces: curation.spaces.map(({ space, orderNo }) => {
+        return {
+          space: {
+            ...space,
+            reviewCount: space.reviews.length,
+            location: space.location,
+            averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+          },
+          orderNo,
+        };
+      }),
+    });
   }
 
   async findCurations(args = {} as Prisma.CurationFindManyArgs) {
     const curations = await this.database.curation.findMany({
       where: args.where,
+      include: {
+        spaces: {
+          include: {
+            space: {
+              include: {
+                location: true,
+                reviews: true,
+                publicTransportations: true,
+                userInterests: true,
+                rentalType: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { createdAt: 'desc', ...args.orderBy },
       ...args,
     });
-    return curations.map((curation) => new CurationDTO(curation));
+    return curations.map(
+      (curation) =>
+        new CurationDTO({
+          ...curation,
+          spaces: (curation.spaces as CommonCurationSpace[]).map(({ space, orderNo }) => ({
+            orderNo,
+            space: {
+              ...space,
+              reviewCount: space.reviews.length,
+              location: space.location,
+              averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+            },
+          })),
+        })
+    );
   }
 
   async countCurations(args = {} as Prisma.CurationCountArgs) {
@@ -40,6 +96,7 @@ export class CurationRepository {
   }
 
   async createCuration(userId: string, data: CreateCurationDTO) {
+    const { spaces, ...rest } = data;
     const curation = await this.database.curation.create({
       data: {
         user: {
@@ -47,7 +104,19 @@ export class CurationRepository {
             id: userId,
           },
         },
-        ...data,
+        ...(spaces && {
+          spaces: {
+            create: spaces.map((space) => ({
+              space: {
+                connect: {
+                  id: space.spaceId,
+                },
+              },
+              orderNo: space.orderNo,
+            })),
+          },
+        }),
+        ...rest,
       },
     });
 
@@ -55,9 +124,25 @@ export class CurationRepository {
   }
 
   async updateCuration(id: string, data: UpdateCurationDTO) {
+    const { spaces, ...rest } = data;
     await this.database.curation.update({
       where: { id },
-      data,
+      data: {
+        ...rest,
+        ...(spaces && {
+          spaces: {
+            deleteMany: {},
+            create: spaces.map((space) => ({
+              space: {
+                connect: {
+                  id: space.spaceId,
+                },
+              },
+              orderNo: space.orderNo,
+            })),
+          },
+        }),
+      },
     });
   }
 

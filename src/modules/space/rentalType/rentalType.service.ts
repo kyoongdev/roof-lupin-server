@@ -100,7 +100,6 @@ export class RentalTypeService {
         },
       }
     );
-    console.log(rentalTypes);
 
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
