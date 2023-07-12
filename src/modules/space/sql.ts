@@ -82,7 +82,7 @@ export const getCountSpacesSQL = (where: Prisma.Sql) => Prisma.sql`
 SELECT *
 FROM  
 (
-  SELECT sp.id ,
+  SELECT sp.id 
   FROM Space sp
   ${BASE_JOIN}
   ${where} 
