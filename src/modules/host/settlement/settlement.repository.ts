@@ -3,8 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import type { CommonReservationRentalType } from '@/interface/reservation.interface';
-import { ReservationDTO, type ReservationDTOProps } from '@/modules/reservation/dto';
+import { ReservationDTO } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 

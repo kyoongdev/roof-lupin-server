@@ -100,6 +100,7 @@ export class RentalTypeService {
         },
       }
     );
+    console.log(rentalTypes);
 
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
@@ -219,6 +220,7 @@ export class RentalTypeService {
     blockedTimes: BlockedTimeDTO[],
     targetDay?: string
   ) {
+    console.log(rentalTypes);
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
@@ -262,7 +264,7 @@ export class RentalTypeService {
                 timeCostInfos[time].isPossible = false;
               }
           });
-
+          console.log({ timeCostInfos });
           acc.time.push({
             ...next,
             timeCostInfos,
@@ -292,6 +294,7 @@ export class RentalTypeService {
       },
       { time: [], package: [] }
     );
+    console.log(targetDay, possibleRentalTypes);
     return new PossibleRentalTypesDTO(possibleRentalTypes);
   }
 

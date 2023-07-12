@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 
+import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationRentalType, CommonReservationWithRentalType } from '@/interface/reservation.interface';
+import { ReservationDTO } from '@/modules/reservation/dto';
 
 import {
   CreateRentalTypeDTO,
@@ -80,28 +82,7 @@ export class RentalTypeRepository {
           },
           include: {
             reservation: {
-              include: {
-                user: true,
-                rentalTypes: {
-                  include: {
-                    rentalType: {
-                      include: {
-                        timeCostInfo: true,
-                        space: {
-                          include: {
-                            reviews: true,
-                            location: true,
-                            publicTransportations: true,
-                            userInterests: true,
-                            rentalType: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                spaceReviews: true,
-              },
+              include: reservationInclude,
             },
           },
         },
@@ -117,22 +98,9 @@ export class RentalTypeRepository {
           name: rentalType.name,
           rentalType: rentalType.rentalType,
           timeCostInfo: rentalType.timeCostInfo,
-          reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
-            const { rentalTypes, ...rest } = reservation;
-            const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-            const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-            return {
-              ...rest,
-              rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-              space: {
-                ...space,
-                reviewCount: space.reviews.length,
-                location: space.location?.['location'],
-                averageScore,
-              },
-              isReviewed: rest.spaceReviews.length > 0,
-            };
-          }),
+          reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) =>
+            ReservationDTO.generateReservationDTO(reservation)
+          ),
           baseHour: rentalType.baseHour,
           endAt: rentalType.endAt,
           startAt: rentalType.startAt,

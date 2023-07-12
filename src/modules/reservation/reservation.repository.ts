@@ -26,7 +26,7 @@ export class ReservationRepository {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async findReservationByOrderId(orderId: string) {
@@ -40,7 +40,8 @@ export class ReservationRepository {
     if (!reservation) {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
-    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
+
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async findReservationByOrderResultId(orderResultId: string) {
@@ -55,7 +56,7 @@ export class ReservationRepository {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async countReservations(args = {} as Prisma.ReservationCountArgs) {
@@ -63,7 +64,7 @@ export class ReservationRepository {
   }
 
   async findReservations(args = {} as Prisma.ReservationFindManyArgs) {
-    const reservations = await this.database.reservation.findMany({
+    const reservations = (await this.database.reservation.findMany({
       where: {
         ...args.where,
       },
@@ -73,9 +74,9 @@ export class ReservationRepository {
         ...args.orderBy,
       },
       ...args,
-    });
+    })) as CommonReservation[];
 
-    return reservations.map(ReservationDTO.generateReservationDTO);
+    return reservations.map((reservation) => new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)));
   }
 
   //TODO: 결제 시스템까지 도입
