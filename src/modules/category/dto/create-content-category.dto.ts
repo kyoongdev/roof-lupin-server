@@ -12,7 +12,7 @@ export class CreateContentCategoryDTO {
   @Property({ apiProperty: { type: 'string', description: '이름' } })
   name: string;
 
-  @Property({ apiProperty: { type: 'string', description: '하이라이트 텍스트' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '하이라이트 텍스트' } })
   highlight?: string;
 
   @Property({ apiProperty: { type: CreateContentCategorySpaceDTO, isArray: true, description: '공간' } })

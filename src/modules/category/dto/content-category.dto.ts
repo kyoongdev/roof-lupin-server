@@ -16,7 +16,7 @@ export class ContentCategoryDTO {
   @Property({ apiProperty: { type: 'string', description: '카테고리 이름' } })
   name: string;
 
-  @Property({ apiProperty: { type: 'string', description: '카테고리 하이라이트 텍스트' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '카테고리 하이라이트 텍스트' } })
   highlight?: string;
 
   @Property({ apiProperty: { type: ContentCategorySpaceDTO, isArray: true, description: '카테고리 공간' } })
