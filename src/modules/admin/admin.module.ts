@@ -25,6 +25,8 @@ import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
 import { AdminAlarmController } from './alarm/alarm.controller';
 import { AdminAlarmService } from './alarm/alarm.service';
+import { AdminCategoryController } from './category/category.controller';
+import { AdminCategoryService } from './category/category.service';
 import { AdminCouponController } from './coupon/coupon.controller';
 import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
@@ -83,6 +85,8 @@ import { AdminUserService } from './user/user.service';
     FileService,
     AdminUserService,
     AdminUserRepository,
+    AdminCategoryService,
+    CategoryRepository,
   ],
   controllers: [
     AdminController,
@@ -97,6 +101,7 @@ import { AdminUserService } from './user/user.service';
     AdminCouponController,
     AdminExhibitionController,
     AdminUserController,
+    AdminCategoryController,
   ],
 })
 export class AdminModule {}
