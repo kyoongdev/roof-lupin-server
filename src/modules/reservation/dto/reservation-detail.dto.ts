@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { CommonReservation } from '@/interface/reservation.interface';
+
 import { ReservationDTO, type ReservationDTOProps } from './reservation.dto';
 
 export interface ReservationDetailDTOProps extends ReservationDTOProps {
@@ -38,5 +40,23 @@ export class ReservationDetailDTO extends ReservationDTO {
     this.payedAt = props.payedAt;
     this.refundCost = props.refundCost;
     this.isApproved = props.isApproved;
+  }
+
+  static generateReservationDetailDTO(reservation: CommonReservation): ReservationDetailDTOProps {
+    const { rentalTypes, ...rest } = reservation;
+    const { space } = rentalTypes[0].rentalType;
+    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+
+    return {
+      ...rest,
+      rentalTypes: rentalTypes.map((rentalType) => rentalType),
+      space: {
+        ...space,
+        reviewCount: space.reviews.length,
+        location: space.location?.['location'],
+        averageScore,
+      },
+      isReviewed: rest.spaceReviews.length > 0,
+    };
   }
 }

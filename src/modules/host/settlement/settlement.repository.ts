@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationRentalType } from '@/interface/reservation.interface';
-import { type ReservationDTOProps } from '@/modules/reservation/dto';
+import { ReservationDTO, type ReservationDTOProps } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 
@@ -78,28 +78,9 @@ export class SettlementRepository {
     }
 
     const { reservations, ...rest } = settlement;
-
-    const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalTypes, ...rest } = reservation;
-      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-      return {
-        ...rest,
-        user: rest.user,
-        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-        space: {
-          ...space,
-          reviewCount: space.reviews.length,
-          publicTransportation: space.publicTransportations?.at(-1),
-          location: space.location?.['location'],
-          averageScore: averageScore,
-        },
-        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
-      };
-    });
     return new SettlementDetailDTO({
       ...rest,
-      reservations: reservationDTOs,
+      reservations: reservations.map(ReservationDTO.generateReservationDTO),
     });
   }
 
@@ -144,28 +125,9 @@ export class SettlementRepository {
     }
     const { reservations, ...rest } = settlement;
 
-    const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalTypes, ...rest } = reservation;
-      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-      return {
-        ...rest,
-        user: rest.user,
-        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-        space: {
-          ...space,
-          reviewCount: space.reviews.length,
-          publicTransportation: space.publicTransportations?.at(-1),
-          location: space.location?.['location'],
-          averageScore: averageScore,
-        },
-        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
-      };
-    });
-
     return new SettlementDetailDTO({
       ...rest,
-      reservations: reservationDTOs,
+      reservations: reservations.map(ReservationDTO.generateReservationDTO),
     });
   }
 
@@ -210,28 +172,9 @@ export class SettlementRepository {
 
     const { reservations, ...rest } = settlement;
 
-    const reservationDTOs = reservations.map<ReservationDTOProps>((reservation) => {
-      const { rentalTypes, ...rest } = reservation;
-      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-      return {
-        ...rest,
-        user: rest.user,
-        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-        space: {
-          ...space,
-          reviewCount: space.reviews.length,
-          publicTransportation: space.publicTransportations?.at(-1),
-          location: space.location?.['location'],
-          averageScore: averageScore,
-        },
-        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
-      };
-    });
-
     return new SettlementDetailDTO({
       ...rest,
-      reservations: reservationDTOs,
+      reservations: reservations.map(ReservationDTO.generateReservationDTO),
     });
   }
 

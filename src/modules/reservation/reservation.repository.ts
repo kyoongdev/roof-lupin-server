@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 
+import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import type { CommonReservationRentalType } from '@/interface/reservation.interface';
+import type { CommonReservation } from '@/interface/reservation.interface';
 
 import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
@@ -14,153 +15,47 @@ export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findReservation(id: string) {
-    const reservation = await this.database.reservation.findUnique({
+    const reservation = (await this.database.reservation.findUnique({
       where: {
         id,
       },
-      include: {
-        user: true,
-        rentalTypes: {
-          include: {
-            rentalType: {
-              include: {
-                timeCostInfo: true,
-                space: {
-                  include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    userInterests: true,
-                    rentalType: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        spaceReviews: true,
-      },
-    });
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
 
     if (!reservation) {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    const { rentalTypes, ...rest } = reservation;
-    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-
-    return new ReservationDetailDTO({
-      ...rest,
-      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-      space: {
-        ...space,
-        reviewCount: space.reviews.length,
-        location: space.location?.['location'],
-        averageScore,
-      },
-      isReviewed: rest.spaceReviews.length > 0,
-    });
+    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
   }
 
   async findReservationByOrderId(orderId: string) {
-    const reservation = await this.database.reservation.findUnique({
+    const reservation = (await this.database.reservation.findUnique({
       where: {
         orderId,
       },
-      include: {
-        user: true,
-        rentalTypes: {
-          include: {
-            rentalType: {
-              include: {
-                timeCostInfo: true,
-                space: {
-                  include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    userInterests: true,
-                    rentalType: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        spaceReviews: true,
-      },
-    });
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
 
     if (!reservation) {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
-
-    const { rentalTypes, ...rest } = reservation;
-    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-
-    return new ReservationDetailDTO({
-      ...rest,
-      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-      space: {
-        ...space,
-        reviewCount: space.reviews.length,
-        location: space.location?.['location'],
-        averageScore,
-      },
-      isReviewed: rest.spaceReviews.length > 0,
-    });
+    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
   }
 
   async findReservationByOrderResultId(orderResultId: string) {
-    const reservation = await this.database.reservation.findUnique({
+    const reservation = (await this.database.reservation.findUnique({
       where: {
         orderResultId,
       },
-      include: {
-        user: true,
-        rentalTypes: {
-          include: {
-            rentalType: {
-              include: {
-                timeCostInfo: true,
-                space: {
-                  include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    userInterests: true,
-                    rentalType: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        spaceReviews: true,
-      },
-    });
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
 
     if (!reservation) {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
     }
 
-    const { rentalTypes, ...rest } = reservation;
-    const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-
-    return new ReservationDetailDTO({
-      ...rest,
-      rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-      space: {
-        ...space,
-        reviewCount: space.reviews.length,
-        location: space.location?.['location'],
-        averageScore,
-      },
-      isReviewed: rest.spaceReviews.length > 0,
-    });
+    return ReservationDetailDTO.generateReservationDetailDTO(reservation);
   }
 
   async countReservations(args = {} as Prisma.ReservationCountArgs) {
@@ -172,32 +67,7 @@ export class ReservationRepository {
       where: {
         ...args.where,
       },
-      include: {
-        user: true,
-        rentalTypes: {
-          include: {
-            rentalType: {
-              include: {
-                timeCostInfo: true,
-                space: {
-                  include: {
-                    reviews: true,
-                    location: true,
-                    publicTransportations: true,
-                    userInterests: true,
-                    rentalType: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        spaceReviews: {
-          include: {
-            space: true,
-          },
-        },
-      },
+      include: reservationInclude,
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,
@@ -205,24 +75,7 @@ export class ReservationRepository {
       ...args,
     });
 
-    return reservations.map((reservation) => {
-      const { rentalTypes, ...rest } = reservation;
-      const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-      const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-
-      return new ReservationDTO({
-        ...rest,
-        user: rest.user,
-        rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
-        space: {
-          ...space,
-          reviewCount: space.reviews.length,
-          location: space.location?.['location'],
-          averageScore: averageScore,
-        },
-        isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
-      });
-    });
+    return reservations.map(ReservationDTO.generateReservationDTO);
   }
 
   //TODO: 결제 시스템까지 도입
