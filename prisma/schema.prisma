@@ -60,8 +60,8 @@ model Curation {
   homeOrderNo Int @default(0) @db.TinyInt
   orderNo     Int @default(0) @db.TinyInt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt

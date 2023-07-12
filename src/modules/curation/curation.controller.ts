@@ -54,7 +54,7 @@ export class CurationController {
   }
 
   @Post()
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Auth([JwtAuthGuard])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -71,12 +71,12 @@ export class CurationController {
     },
     201
   )
-  async createCuration(@ReqUser() user: RequestUser, @Body() body: CreateCurationDTO) {
-    return await this.curationService.createCuration(user.id, body);
+  async createCuration(@Body() body: CreateCurationDTO) {
+    return await this.curationService.createCuration(body);
   }
 
   @Patch(':curationId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Auth([JwtAuthGuard])
   @RequestApi({
     summary: {
       description: '큐레이션 수정',
@@ -98,12 +98,12 @@ export class CurationController {
     },
     204
   )
-  async updateCuration(@Param('curationId') id: string, @ReqUser() user: RequestUser, @Body() body: UpdateCurationDTO) {
-    return await this.curationService.updateCuration(id, user.id, body);
+  async updateCuration(@Param('curationId') id: string, @Body() body: UpdateCurationDTO) {
+    return await this.curationService.updateCuration(id, body);
   }
 
   @Delete(':curationId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Auth([JwtAuthGuard])
   @RequestApi({
     summary: {
       description: '큐레이션 삭제',
@@ -122,7 +122,7 @@ export class CurationController {
     },
     204
   )
-  async deleteCuration(@Param('curationId') id: string, @ReqUser() user: RequestUser) {
-    return await this.curationService.deleteCuration(id, user.id);
+  async deleteCuration(@Param('curationId') id: string) {
+    return await this.curationService.deleteCuration(id);
   }
 }

@@ -33,24 +33,24 @@ export class CurationService {
 
     return new PaginationDTO<CurationDTO>(curations, { count, paging });
   }
-  async createCuration(userId: string, data: CreateCurationDTO) {
-    return await this.curationRepository.createCuration(userId, data);
+  async createCuration(data: CreateCurationDTO, userId?: string) {
+    return await this.curationRepository.createCuration(data, userId);
   }
 
-  async updateCuration(id: string, userId: string, data: UpdateCurationDTO) {
+  async updateCuration(id: string, data: UpdateCurationDTO, userId?: string) {
     const curation = await this.findCuration(id);
 
-    if (curation.user.id !== userId) {
+    if (userId && curation.user.id !== userId) {
       throw new CurationException(CURATION_ERROR_CODE.FORBIDDEN(CURATION_MUTATE_FORBIDDEN));
     }
 
     await this.curationRepository.updateCuration(id, data);
   }
 
-  async deleteCuration(id: string, userId: string) {
+  async deleteCuration(id: string, userId?: string) {
     const curation = await this.findCuration(id);
 
-    if (curation.user.id !== userId) {
+    if (userId && curation.user.id !== userId) {
       throw new CurationException(CURATION_ERROR_CODE.FORBIDDEN(CURATION_MUTATE_FORBIDDEN));
     }
 

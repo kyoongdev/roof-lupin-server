@@ -95,15 +95,17 @@ export class CurationRepository {
     return await this.database.curation.count(args);
   }
 
-  async createCuration(userId: string, data: CreateCurationDTO) {
+  async createCuration(data: CreateCurationDTO, userId?: string) {
     const { spaces, ...rest } = data;
     const curation = await this.database.curation.create({
       data: {
-        user: {
-          connect: {
-            id: userId,
+        ...(userId && {
+          user: {
+            connect: {
+              id: userId,
+            },
           },
-        },
+        }),
         ...(spaces && {
           spaces: {
             create: spaces.map((space) => ({
