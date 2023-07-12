@@ -1,8 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { SpaceDTO } from '@/modules/space/dto';
-
-import { ContentCategorySpaceDTO, ContentCategorySpaceDTOProps } from './content-category-space';
+import { ContentCategorySpaceDTO, ContentCategorySpaceDTOProps } from './content-category-space.dto';
 
 export interface ContentCategoryDTOProps {
   id: string;
