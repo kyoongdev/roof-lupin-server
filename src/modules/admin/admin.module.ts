@@ -44,6 +44,9 @@ import { AdminSettlementController } from './settlement/settlement.controller';
 import { AdminSettlementService } from './settlement/settlement.service';
 import { AdminSpaceController } from './space/space.controller';
 import { AdminSpaceService } from './space/space.service';
+import { AdminUserController } from './user/user.controller';
+import { AdminUserRepository } from './user/user.repository';
+import { AdminUserService } from './user/user.service';
 
 @Module({
   providers: [
@@ -78,6 +81,8 @@ import { AdminSpaceService } from './space/space.service';
     AdminExhibitionService,
     EncryptProvider,
     FileService,
+    AdminUserService,
+    AdminUserRepository,
   ],
   controllers: [
     AdminController,
@@ -91,6 +96,7 @@ import { AdminSpaceService } from './space/space.service';
     AdminSettlementController,
     AdminCouponController,
     AdminExhibitionController,
+    AdminUserController,
   ],
 })
 export class AdminModule {}

@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -60,5 +60,81 @@ export class AdminUserController {
   )
   async updateUser(@Param('userId') id: string, @Body() body: AdminUpdateUserDTO) {
     return await this.userService.updateUser(id, body);
+  }
+
+  @Post(':userId/block')
+  @RequestApi({
+    summary: {
+      description: '유저 차단시키기',
+      summary: '유저 차단시키기',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async blockUser(@Param('userId') id: string) {
+    return await this.userService.blockUser(id);
+  }
+
+  @Post(':userId/un-block')
+  @RequestApi({
+    summary: {
+      description: '유저 차단 해제',
+      summary: '유저 차단 해제',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async unBlockUser(@Param('userId') id: string) {
+    return await this.userService.unBlockUser(id);
+  }
+
+  @Post(':userId/restore')
+  @RequestApi({
+    summary: {
+      description: '유저 복구',
+      summary: '유저 복구',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async restoreUser(@Param('userId') id: string) {
+    return await this.userService.restoreUser(id);
+  }
+
+  @Delete(':userId')
+  @RequestApi({
+    summary: {
+      description: '유저 삭제',
+      summary: '유저 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteUser(@Param('userId') id: string) {
+    return await this.userService.deleteUser(id);
+  }
+
+  @Delete(':userId/hard')
+  @RequestApi({
+    summary: {
+      description: '유저 영구 삭제',
+      summary: '유저 영구 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async hardDeleteUser(@Param('userId') id: string) {
+    return await this.userService.hardDeleteUser(id);
   }
 }
