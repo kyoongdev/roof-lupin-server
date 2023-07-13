@@ -13,6 +13,7 @@ import { HostRepository } from '../host/host.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
+import { RankingRepository } from '../ranking/ranking.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
@@ -36,6 +37,8 @@ import { AdminHostController } from './host/host.controller';
 import { AdminHostService } from './host/host.service';
 import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
+import { AdminRankingController } from './ranking/ranking.controller';
+import { AdminRankingService } from './ranking/ranking.service';
 import { AdminReportController } from './report';
 import { AdminReportService } from './report/report.service';
 import { AdminReservationController } from './reservation/reservation.controller';
@@ -87,6 +90,8 @@ import { AdminUserService } from './user/user.service';
     AdminUserRepository,
     AdminCategoryService,
     CategoryRepository,
+    AdminRankingService,
+    RankingRepository,
   ],
   controllers: [
     AdminController,
@@ -102,6 +107,7 @@ import { AdminUserService } from './user/user.service';
     AdminExhibitionController,
     AdminUserController,
     AdminCategoryController,
+    AdminRankingController,
   ],
 })
 export class AdminModule {}
