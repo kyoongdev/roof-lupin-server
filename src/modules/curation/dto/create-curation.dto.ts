@@ -7,7 +7,6 @@ export interface CreateCurationDTOProps {
   subTitle: string;
   content: string;
   thumbnail: string;
-  orderNo?: number;
   spaces?: CreateCurationSpaceDTOProps[];
 }
 
@@ -33,7 +32,6 @@ export class CreateCurationDTO {
       this.subTitle = props.subTitle;
       this.content = props.content;
       this.thumbnail = props.thumbnail;
-      this.orderNo = props.orderNo;
       this.spaces = props.spaces?.map((space) => new CreateCurationSpaceDTO(space));
     }
   }
