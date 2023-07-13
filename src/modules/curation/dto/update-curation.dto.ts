@@ -7,6 +7,7 @@ export interface UpdateCurationDTOProps {
   subTitle?: string;
   content?: string;
   thumbnail?: string;
+
   spaces?: UpdateCurationSpaceDTOProps[];
 }
 
@@ -32,6 +33,7 @@ export class UpdateCurationDTO {
       this.subTitle = props.subTitle;
       this.content = props.content;
       this.thumbnail = props.thumbnail;
+
       this.spaces = props.spaces?.map((space) => new UpdateCurationSpaceDTO(space));
     }
   }

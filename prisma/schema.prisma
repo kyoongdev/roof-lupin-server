@@ -57,8 +57,7 @@ model Curation {
   thumbnail String
   isMain    Boolean @default(false)
 
-  homeOrderNo Int?
-  orderNo     Int?
+  orderNo Int?
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

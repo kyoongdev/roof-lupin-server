@@ -5,6 +5,8 @@ import type { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 import { CommonCurationSpace } from '@/interface/curation.interface';
 
+import { SpaceDTO } from '../space/dto';
+
 import { CreateCurationDTO, CurationDetailDTO, CurationDTO, UpdateCurationDTO } from './dto';
 import { CurationException } from './exception/curation.exception';
 import { CURATION_ERROR_CODE, CURATION_NOT_FOUND } from './exception/errorCode';
@@ -44,12 +46,7 @@ export class CurationRepository {
       ...curation,
       spaces: curation.spaces.map(({ space, orderNo }) => {
         return {
-          space: {
-            ...space,
-            reviewCount: space.reviews.length,
-            location: space.location,
-            averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-          },
+          space: SpaceDTO.generateSpaceDTO(space),
           orderNo,
         };
       }),
@@ -77,7 +74,7 @@ export class CurationRepository {
           },
         },
       },
-      orderBy: { createdAt: 'desc', ...args.orderBy },
+      orderBy: { orderNo: 'asc', ...args.orderBy },
       ...args,
     });
     return curations.map(
@@ -86,12 +83,7 @@ export class CurationRepository {
           ...curation,
           spaces: (curation.spaces as CommonCurationSpace[]).map(({ space, orderNo }) => ({
             orderNo,
-            space: {
-              ...space,
-              reviewCount: space.reviews.length,
-              location: space.location,
-              averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-            },
+            space: SpaceDTO.generateSpaceDTO(space),
           })),
         })
     );
