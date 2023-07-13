@@ -44,17 +44,13 @@ export class CurationRepository {
     }
     return new CurationDetailDTO({
       ...curation,
-      spaces: curation.spaces.map(({ space, orderNo }) => {
-        return {
-          space: SpaceDTO.generateSpaceDTO(space),
-          orderNo,
-        };
-      }),
+      spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
     });
   }
 
   async findCurations(args = {} as Prisma.CurationFindManyArgs) {
     const curations = await this.database.curation.findMany({
+      ...args,
       where: args.where,
       include: {
         spaces: {
@@ -75,16 +71,12 @@ export class CurationRepository {
         },
       },
       orderBy: { orderNo: 'asc', ...args.orderBy },
-      ...args,
     });
     return curations.map(
       (curation) =>
         new CurationDTO({
           ...curation,
-          spaces: (curation.spaces as CommonCurationSpace[]).map(({ space, orderNo }) => ({
-            orderNo,
-            space: SpaceDTO.generateSpaceDTO(space),
-          })),
+          spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
         })
     );
   }

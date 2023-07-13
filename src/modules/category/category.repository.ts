@@ -106,12 +106,7 @@ export class CategoryRepository {
       (contentCategory) =>
         new ContentCategoryDTO({
           ...contentCategory,
-          spaces: contentCategory.spaces.map(({ space, orderNo }) => {
-            return {
-              orderNo,
-              space: SpaceDTO.generateSpaceDTO(space),
-            };
-          }),
+          spaces: contentCategory.spaces.map(({ space }) => SpaceDTO.generateSpaceDTO(space)),
         })
     );
   }

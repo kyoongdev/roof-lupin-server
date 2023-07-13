@@ -8,7 +8,7 @@ import { CategoryRepository } from '../category/category.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
+import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from './dto';
 import { HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from './exception/errorCode';
 import { HomeException } from './exception/home.exception';
 
@@ -30,7 +30,7 @@ export class HomeService {
   }
 
   async getHomeContents(userId?: string) {
-    const contents = await this.categoryRepository.findContentCategories({});
+    const contents = await this.categoryRepository.findContentCategories({}, userId);
     return contents;
   }
 

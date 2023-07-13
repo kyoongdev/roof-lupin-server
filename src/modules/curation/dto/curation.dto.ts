@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { CurationSpaceDTO, CurationSpaceDTOProps } from './curation-space.dto';
+import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 
 export interface CurationDTOProps {
   id: string;
@@ -10,7 +10,7 @@ export interface CurationDTOProps {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
-  spaces: CurationSpaceDTOProps[];
+  spaces: SpaceDTOProps[];
 }
 
 export class CurationDTO {
@@ -32,8 +32,8 @@ export class CurationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '큐레이션 수정일' } })
   updatedAt: Date;
 
-  @Property({ apiProperty: { type: CurationSpaceDTO, isArray: true, description: '큐레이션 공간' } })
-  spaces: CurationSpaceDTO[];
+  @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '큐레이션 공간' } })
+  spaces: SpaceDTO[];
 
   constructor(props: CurationDTOProps) {
     this.id = props.id;
@@ -43,6 +43,6 @@ export class CurationDTO {
     this.createdAt = props.createdAt;
 
     this.updatedAt = props.updatedAt;
-    this.spaces = props.spaces.map((space) => new CurationSpaceDTO(space));
+    this.spaces = props.spaces.map((space) => new SpaceDTO(space));
   }
 }
