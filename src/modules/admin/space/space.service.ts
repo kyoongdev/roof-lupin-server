@@ -6,6 +6,8 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 import { SpaceDTO } from '@/modules/space/dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
+import { UpdateSpaceOrderDTO } from '../dto/space';
+
 @Injectable()
 export class AdminSpaceService {
   constructor(private readonly spaceRepository: SpaceRepository) {}
@@ -27,5 +29,10 @@ export class AdminSpaceService {
       take,
     });
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
+
+  async updateSpaceOrder(id: string, data: UpdateSpaceOrderDTO) {
+    await this.findSpace(id);
+    await this.spaceRepository.updateSpaceOrder(id, data.orderNo);
   }
 }
