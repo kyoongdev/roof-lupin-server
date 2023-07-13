@@ -4,6 +4,8 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { SpaceDTO } from '../space/dto';
+
 import { CreateExhibitionDTO, ExhibitionDetailDTO, ExhibitionDTO, UpdateExhibitionDTO } from './dto';
 import { EXHIBITION_ERROR_CODE, EXHIBITION_NOT_FOUND } from './exception/errorCode';
 import { ExhibitionException } from './exception/exhibition.exception';
@@ -48,6 +50,9 @@ export class ExhibitionRepository {
               },
             },
           },
+          orderBy: {
+            orderNo: 'asc',
+          },
         },
       },
     });
@@ -56,14 +61,7 @@ export class ExhibitionRepository {
 
     return new ExhibitionDetailDTO({
       ...exhibition,
-      spaces: exhibition.spaces.map(({ space }) => ({
-        ...space,
-        reviewCount: space.reviews.length,
-        publicTransportation: space.publicTransportations?.at(-1),
-        location: space.location,
-        averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-        isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
-      })),
+      spaces: exhibition.spaces.map(({ space }) => SpaceDTO.generateSpaceDTO(space, userId)),
       coupons: exhibition.coupons.map(({ coupon }) => ({
         ...coupon,
         categories: coupon.couponCategories.map(({ category }) => category),
@@ -77,7 +75,13 @@ export class ExhibitionRepository {
   }
 
   async findExhibitions(args: Prisma.ExhibitionFindManyArgs) {
-    const exhibitions = await this.database.exhibition.findMany(args);
+    const exhibitions = await this.database.exhibition.findMany({
+      ...args,
+      where: args.where,
+      orderBy: {
+        orderNo: 'asc',
+      },
+    });
 
     return exhibitions.map((exhibition) => new ExhibitionDTO(exhibition));
   }
