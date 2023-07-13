@@ -3,20 +3,19 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
-// generator dbml {
-//   provider              = "prisma-dbml-generator"
-//   includeRelationFields = false
-//   projectDatabaseType   = "mysql"
-//   projectName           = "roof"
-// }
-
-// generator docs {
-//   provider = "node node_modules/prisma-docs-generator"
-// }
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model HomeContents {
+  id String @id @default(uuid())
+
+  orderNo Int @db.TinyInt
+
+  contentsCategories ContentCategory[]
+  exhibitions        Exhibition[]
+  rankings           Ranking[]
 }
 
 model Holiday {
@@ -98,6 +97,25 @@ model Slogan {
   isDefault Boolean @default(false)
 }
 
+model Ranking {
+  id   String @id @default(uuid())
+  name String
+
+  spaces         RankingSpaces[]
+  homeContents   HomeContents?   @relation(fields: [homeContentsId], references: [id])
+  homeContentsId String?
+}
+
+model RankingSpaces {
+  spaceId   String
+  space     Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rankingId String
+  ranking   Ranking @relation(fields: [rankingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderNo   Int
+
+  @@id([spaceId, rankingId])
+}
+
 model Space {
   id          String @id @default(uuid())
   //NOTE: 공간 이름
@@ -132,21 +150,19 @@ model Space {
   hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
 
-  reviews        SpaceReview[]
-  reports        SpaceReport[]
-  userInterests  SpaceInterest[]
-  images         SpaceImage[]
-  refundPolicies RefundPolicy[]
-  cautions       SpaceCaution[]
-
-  rentalType RentalType[]
-  location   SpaceLocation?
-  buildings  SpaceBuilding[]
-  services   SpaceService[]
-  categories SpaceCategory[]
-  hashtags   SpaceHashtag[]
-  spaceQnAs  SpaceQnA[]
-
+  reviews               SpaceReview[]
+  reports               SpaceReport[]
+  userInterests         SpaceInterest[]
+  images                SpaceImage[]
+  refundPolicies        RefundPolicy[]
+  cautions              SpaceCaution[]
+  rentalType            RentalType[]
+  location              SpaceLocation?
+  buildings             SpaceBuilding[]
+  services              SpaceService[]
+  categories            SpaceCategory[]
+  hashtags              SpaceHashtag[]
+  spaceQnAs             SpaceQnA[]
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
   recentSpaces          RecentSpace[]
@@ -155,6 +171,7 @@ model Space {
   exhibitions           ExhibitionSpace[]
   curations             CurationSpace[]
   contentCategories     ContentCategorySpace[]
+  rankings              RankingSpaces[]
 }
 
 model AdditionalService {
@@ -705,10 +722,12 @@ model Category {
 }
 
 model ContentCategory {
-  id        String                 @id @default(uuid())
-  name      String                 @db.VarChar(80)
-  highlight String?                @db.VarChar(80)
-  spaces    ContentCategorySpace[]
+  id             String                 @id @default(uuid())
+  name           String                 @db.VarChar(80)
+  highlight      String?                @db.VarChar(80)
+  spaces         ContentCategorySpace[]
+  homeContents   HomeContents?          @relation(fields: [homeContentsId], references: [id])
+  homeContentsId String?
 }
 
 model ContentCategorySpace {
@@ -821,7 +840,9 @@ model Exhibition {
 
   createdAt DateTime @default(now())
 
-  images  ExhibitionImage[]
-  spaces  ExhibitionSpace[]
-  coupons ExhibitionCoupon[]
+  images         ExhibitionImage[]
+  spaces         ExhibitionSpace[]
+  coupons        ExhibitionCoupon[]
+  homeContents   HomeContents?      @relation(fields: [homeContentsId], references: [id])
+  homeContentsId String?
 }
