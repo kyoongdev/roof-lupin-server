@@ -29,21 +29,6 @@ export class HomeController {
     private readonly categoryService: CategoryService
   ) {}
 
-  @Get('exhibitions')
-  @RequestApi({
-    summary: {
-      description: '홈 화면 기획전 목록을 가져옵니다.',
-      summary: '홈 화면 기획전 목록을 가져옵니다.',
-    },
-  })
-  @ResponseApi({
-    type: ExhibitionDTO,
-    isArray: true,
-  })
-  async getExhibitions() {
-    return await this.homeService.findExhibitions();
-  }
-
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
   @RequestApi({

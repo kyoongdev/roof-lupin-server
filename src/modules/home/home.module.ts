@@ -21,7 +21,6 @@ import { HomeService } from './home.service';
     CurationRepository,
     CategoryService,
     CategoryRepository,
-    ExhibitionRepository,
   ],
 })
 export class HomeModule {}

@@ -72,6 +72,11 @@ export class CategoryRepository {
     if (!category) {
       throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_NOT_FOUND));
     }
+
+    return new ContentCategoryDTO({
+      ...category,
+      spaces: category.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+    });
   }
 
   async countContentCategories(args = {} as Prisma.ContentCategoryCountArgs) {
