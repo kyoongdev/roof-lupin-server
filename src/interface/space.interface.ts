@@ -1,10 +1,11 @@
-import { PublicTransportation, RentalType, Space, SpaceLocation, SpaceReview } from '@prisma/client';
+import { PublicTransportation, RentalType, Space, SpaceInterest, SpaceLocation, SpaceReview } from '@prisma/client';
 
 export interface CommonSpace extends Space {
   reviews: SpaceReview[];
   location: SpaceLocation;
   publicTransportations: PublicTransportation[];
   rentalType: RentalType[];
+  userInterests: SpaceInterest[];
 }
 
 export interface PopularSpace extends Omit<Space, 'averageScore'> {

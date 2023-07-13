@@ -4,10 +4,18 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
+import { SpaceDTO } from '../space/dto';
+
+import {
+  CategoryDTO,
+  CreateCategoryDTO,
+  CreateContentCategoryDTO,
+  UpdateCategoryDTO,
+  UpdateContentCategoryDTO,
+} from './dto';
 import { ContentCategoryDTO } from './dto/content-category.dto';
 import { CategoryException } from './exception/category.exception';
-import { CATEGORY_ERROR_CODE, CATEGORY_NOT_FOUND } from './exception/errorCode';
+import { CATEGORY_ERROR_CODE, CATEGORY_NOT_FOUND, CONTENT_CATEGORY_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
 export class CategoryRepository {
@@ -36,6 +44,36 @@ export class CategoryRepository {
     return categories.map((category) => new CategoryDTO(category));
   }
 
+  async findContentCategory(id: string) {
+    const category = await this.database.contentCategory.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        spaces: {
+          include: {
+            space: {
+              include: {
+                location: true,
+                reviews: true,
+                publicTransportations: true,
+                userInterests: true,
+                rentalType: true,
+              },
+            },
+          },
+          orderBy: {
+            orderNo: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_NOT_FOUND));
+    }
+  }
+
   async countContentCategories(args = {} as Prisma.ContentCategoryCountArgs) {
     return await this.database.contentCategory.count(args);
   }
@@ -57,6 +95,9 @@ export class CategoryRepository {
               },
             },
           },
+          orderBy: {
+            orderNo: 'asc',
+          },
         },
       },
     });
@@ -68,13 +109,7 @@ export class CategoryRepository {
           spaces: contentCategory.spaces.map(({ space, orderNo }) => {
             return {
               orderNo,
-              space: {
-                ...space,
-                reviewCount: space.reviews.length,
-                location: space.location,
-                averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-                isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
-              },
+              space: SpaceDTO.generateSpaceDTO(space),
             };
           }),
         })
@@ -89,6 +124,27 @@ export class CategoryRepository {
     return category.id;
   }
 
+  async createContentCategory(data: CreateContentCategoryDTO) {
+    const { spaces, ...rest } = data;
+    const category = await this.database.contentCategory.create({
+      data: {
+        ...rest,
+        spaces: {
+          create: spaces.map((space) => ({
+            space: {
+              connect: {
+                id: space.spaceId,
+              },
+            },
+            orderNo: space.orderNo,
+          })),
+        },
+      },
+    });
+
+    return category.id;
+  }
+
   async updateCategory(id: string, data: UpdateCategoryDTO) {
     await this.database.category.update({
       where: {
@@ -98,8 +154,42 @@ export class CategoryRepository {
     });
   }
 
+  async updateContentCategory(id: string, data: UpdateContentCategoryDTO) {
+    const { spaces, ...rest } = data;
+
+    await this.database.contentCategory.update({
+      where: {
+        id,
+      },
+      data: {
+        ...rest,
+        ...(spaces && {
+          spaces: {
+            deleteMany: {},
+            create: spaces.map((space) => ({
+              space: {
+                connect: {
+                  id: space.spaceId,
+                },
+              },
+              orderNo: space.orderNo,
+            })),
+          },
+        }),
+      },
+    });
+  }
+
   async deleteCategory(id: string) {
     await this.database.category.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async deleteContentCategory(id: string) {
+    await this.database.contentCategory.delete({
       where: {
         id,
       },

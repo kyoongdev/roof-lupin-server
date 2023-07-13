@@ -30,6 +30,9 @@ export class CurationRepository {
               },
             },
           },
+          orderBy: {
+            orderNo: 'asc',
+          },
         },
       },
     });
@@ -68,6 +71,9 @@ export class CurationRepository {
                 rentalType: true,
               },
             },
+          },
+          orderBy: {
+            orderNo: 'asc',
           },
         },
       },

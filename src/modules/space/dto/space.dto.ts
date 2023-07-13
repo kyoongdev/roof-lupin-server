@@ -1,6 +1,7 @@
 import { RentalType } from '@prisma/client';
 import { Property } from 'wemacu-nestjs';
 
+import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
 import { TransportationDTO, type TransportationDTOProps } from './transportaion';
@@ -92,5 +93,15 @@ export class SpaceDTO {
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
     this.packageCost =
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
+  }
+
+  static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {
+    return {
+      ...space,
+      reviewCount: space.reviews.length,
+      location: space.location,
+      averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+      isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+    };
   }
 }
