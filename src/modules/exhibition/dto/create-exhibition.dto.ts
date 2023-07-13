@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { CreateExhibitionSpaceDTO, CreateExhibitionSpaceDTOProps } from './create-exhibition-space.dto';
+
 export interface CreateExhibitionDTOProps {
   title: string;
   thumbnail: string;
@@ -9,7 +11,7 @@ export interface CreateExhibitionDTOProps {
   endAt: Date;
   isShow?: boolean;
   images: string[];
-  spaceIds: string[];
+  spaces: CreateExhibitionSpaceDTOProps[];
   couponIds: string[];
 }
 
@@ -38,8 +40,8 @@ export class CreateExhibitionDTO {
   @Property({ apiProperty: { type: 'string', description: '기획전 이미지 url들' } })
   images: string[];
 
-  @Property({ apiProperty: { type: 'string', description: '기획전 연관 공간 id들' } })
-  spaceIds: string[];
+  @Property({ apiProperty: { type: CreateExhibitionSpaceDTO, isArray: true, description: '기획전 연관 공간 id들' } })
+  spaces: CreateExhibitionSpaceDTO[];
 
   @Property({ apiProperty: { type: 'string', description: '기획전 쿠폰 id들' } })
   couponIds: string[];
@@ -54,7 +56,7 @@ export class CreateExhibitionDTO {
       this.endAt = props.endAt;
       this.isShow = props.isShow;
       this.images = props.images;
-      this.spaceIds = props.spaceIds;
+      this.spaces = props.spaces.map((space) => new CreateExhibitionSpaceDTO(space));
       this.couponIds = props.couponIds;
     }
   }

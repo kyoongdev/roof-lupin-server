@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { UpdateExhibitionSpaceDTO, UpdateExhibitionSpaceDTOProps } from './update-exhibition-space.dto';
+
 export interface UpdateExhibitionDTOProps {
   title?: string;
   thumbnail?: string;
@@ -9,7 +11,7 @@ export interface UpdateExhibitionDTOProps {
   endAt?: Date;
   isShow?: boolean;
   images?: string[];
-  spaceIds?: string[];
+  spaces?: UpdateExhibitionSpaceDTOProps[];
   couponIds?: string[];
 }
 
@@ -38,8 +40,15 @@ export class UpdateExhibitionDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 이미지 url들' } })
   images?: string[];
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 연관 공간 id들' } })
-  spaceIds?: string[];
+  @Property({
+    apiProperty: {
+      type: UpdateExhibitionSpaceDTO,
+      isArray: true,
+      nullable: true,
+      description: '기획전 연관 공간 id들',
+    },
+  })
+  spaces?: UpdateExhibitionSpaceDTO[];
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 쿠폰 id들' } })
   couponIds?: string[];
@@ -54,7 +63,7 @@ export class UpdateExhibitionDTO {
       this.isShow = props.isShow;
       this.endAt = props.endAt;
       this.images = props.images;
-      this.spaceIds = props.spaceIds;
+      this.spaces = props.spaces.map((space) => new UpdateExhibitionSpaceDTO(space));
       this.couponIds = props.couponIds;
     }
   }

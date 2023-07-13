@@ -87,17 +87,18 @@ export class ExhibitionRepository {
   }
 
   async createExhibition(data: CreateExhibitionDTO) {
-    const { spaceIds, couponIds, images, ...rest } = data;
+    const { spaces, couponIds, images, ...rest } = data;
     const exhibition = await this.database.exhibition.create({
       data: {
         ...rest,
         spaces: {
-          create: spaceIds.map((spaceId) => ({
+          create: spaces.map((space) => ({
             space: {
               connect: {
-                id: spaceId,
+                id: space.spaceId,
               },
             },
+            orderNo: space.orderNo,
           })),
         },
         coupons: {
@@ -125,46 +126,30 @@ export class ExhibitionRepository {
   }
 
   async updateExhibition(id: string, data: UpdateExhibitionDTO) {
-    const { spaceIds, images, couponIds, ...rest } = data;
-    const updateArgs: Prisma.ExhibitionUpdateArgs = {
+    const { spaces, images, couponIds, ...rest } = data;
+
+    await this.database.exhibition.update({
       where: {
         id,
       },
       data: {
         ...rest,
-      },
-    };
-    await this.database.$transaction(async (prisma) => {
-      if (spaceIds) {
-        await prisma.exhibitionSpace.deleteMany({
-          where: {
-            exhibitionId: id,
-          },
-        });
-        updateArgs.data = {
-          ...updateArgs.data,
+        ...(spaces && {
           spaces: {
-            create: spaceIds.map((spaceId) => ({
+            deleteMany: {},
+            create: spaces.map((space) => ({
               space: {
                 connect: {
-                  id: spaceId,
+                  id: space.spaceId,
                 },
               },
+              orderNo: space.orderNo,
             })),
           },
-        };
-      }
-
-      if (couponIds) {
-        await prisma.exhibitionCoupon.deleteMany({
-          where: {
-            exhibitionId: id,
-          },
-        });
-
-        updateArgs.data = {
-          ...updateArgs.data,
+        }),
+        ...(couponIds && {
           coupons: {
+            deleteMany: {},
             create: couponIds.map((couponId) => ({
               coupon: {
                 connect: {
@@ -173,23 +158,10 @@ export class ExhibitionRepository {
               },
             })),
           },
-        };
-      }
-
-      if (images) {
-        await prisma.image.deleteMany({
-          where: {
-            exhibitionImages: {
-              some: {
-                exhibitionId: id,
-              },
-            },
-          },
-        });
-
-        updateArgs.data = {
-          ...updateArgs.data,
+        }),
+        ...(images && {
           images: {
+            deleteMany: {},
             create: images.map((image) => ({
               image: {
                 create: {
@@ -198,11 +170,9 @@ export class ExhibitionRepository {
               },
             })),
           },
-        };
-      }
+        }),
+      },
     });
-
-    await this.database.exhibition.update(updateArgs);
   }
 
   async deleteExhibition(id: string) {
