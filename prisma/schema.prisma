@@ -788,6 +788,8 @@ model ExhibitionSpace {
   spaceId      String
   space        Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  orderNo Int? @db.TinyInt
+
   @@id([exhibitionId, spaceId])
 }
 
@@ -808,6 +810,8 @@ model Exhibition {
   description String @db.VarChar(120)
 
   content String @db.MediumText
+
+  orderNo Int? @db.TinyInt
 
   startAt DateTime @db.DateTime
   endAt   DateTime @db.DateTime
