@@ -6,7 +6,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 import { CurationRepository } from '@/modules/curation/curation.repository';
 import { CurationDTO } from '@/modules/curation/dto';
 
-import { AdminUpdateCurationDTO } from '../dto/curation';
+import { AdminCreateCurationDTO, AdminUpdateCurationDTO } from '../dto/curation';
 
 @Injectable()
 export class AdminCurationService {
@@ -29,6 +29,10 @@ export class AdminCurationService {
     });
 
     return new PaginationDTO<CurationDTO>(curations, { count, paging });
+  }
+
+  async createCuration(data: AdminCreateCurationDTO) {
+    return await this.curationRepository.createCuration(data);
   }
 
   async updateCuration(id: string, data: AdminUpdateCurationDTO) {
