@@ -33,6 +33,8 @@ import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
 import { AdminExhibitionController } from './exhibition/exhibition.controller';
 import { AdminExhibitionService } from './exhibition/exhibition.service';
+import { AdminHomeController } from './home/home.controller';
+import { AdminHomeService } from './home/home.service';
 import { AdminHostController } from './host/host.controller';
 import { AdminHostService } from './host/host.service';
 import { AdminQnAController } from './qna';
@@ -92,6 +94,7 @@ import { AdminUserService } from './user/user.service';
     CategoryRepository,
     AdminRankingService,
     RankingRepository,
+    AdminHomeService,
   ],
   controllers: [
     AdminController,
@@ -108,6 +111,7 @@ import { AdminUserService } from './user/user.service';
     AdminUserController,
     AdminCategoryController,
     AdminRankingController,
+    AdminHomeController,
   ],
 })
 export class AdminModule {}

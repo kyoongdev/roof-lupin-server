@@ -1,26 +1,31 @@
 import { Property } from 'wemacu-nestjs';
 
 export interface UpdateHomeContentsDTOProps {
-  name?: string;
-  highlight?: string;
-  spaceIds?: string[];
+  orderNo: number;
+  contentCategoryId?: string;
+  exhibitionId?: string;
+  rankingId?: string;
 }
 
 export class UpdateHomeContentsDTO {
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '홈 컨텐츠 이름' } })
-  name?: string;
+  @Property({ apiProperty: { type: 'number', description: '홈 노출 순서' } })
+  orderNo: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '홈 컨텐츠 하이라이트' } })
-  highlight: string | null;
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '컨텐츠 카테고리 id' } })
+  contentCategoryId?: string;
 
-  @Property({ apiProperty: { type: 'string', isArray: true, nullable: true, description: '홈 컨텐츠 공간 id' } })
-  spaceIds?: string[];
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 id' } })
+  exhibitionId?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '랭킹 id' } })
+  rankingId?: string;
 
   constructor(props?: UpdateHomeContentsDTOProps) {
     if (props) {
-      this.name = props.name;
-      this.highlight = props.highlight;
-      this.spaceIds = props.spaceIds;
+      this.orderNo = props.orderNo;
+      this.contentCategoryId = props.contentCategoryId;
+      this.exhibitionId = props.exhibitionId;
+      this.rankingId = props.rankingId;
     }
   }
 }

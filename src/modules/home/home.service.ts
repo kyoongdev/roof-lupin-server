@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
-
 import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateHomeContentsDTO, HomeContentsDTO, UpdateHomeContentsDTO } from './dto';
+import { HomeContentsDTO } from './dto';
 import { HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from './exception/errorCode';
 import { HomeException } from './exception/home.exception';
 
@@ -91,72 +89,5 @@ export class HomeService {
     }
 
     return category;
-  }
-
-  async createHomeContents(data: CreateHomeContentsDTO) {
-    await Promise.all(
-      data.spaceIds.map(async (id) => {
-        await this.spaceRepository.findSpace(id);
-      })
-    );
-    const homeContents = await this.database.category.create({
-      data: {
-        name: data.name,
-
-        spaceUsageCategories: {
-          create: data.spaceIds.map((id) => ({
-            space: {
-              connect: {
-                id,
-              },
-            },
-          })),
-        },
-      },
-    });
-    return homeContents.id;
-  }
-
-  async updateHomeContents(id: string, data: UpdateHomeContentsDTO) {
-    await this.findHomeContents(id);
-    const updateArgs: Prisma.CategoryUpdateArgs = {
-      where: {
-        id,
-      },
-      data: {
-        name: data.name,
-      },
-    };
-
-    if (data.spaceIds) {
-      await Promise.all(
-        data.spaceIds.map(async (id) => {
-          await this.spaceRepository.findSpace(id);
-        })
-      );
-      updateArgs.data = {
-        ...updateArgs.data,
-        spaceUsageCategories: {
-          deleteMany: {},
-          create: data.spaceIds.map((id) => ({
-            space: {
-              connect: {
-                id,
-              },
-            },
-          })),
-        },
-      };
-    }
-    await this.database.category.update(updateArgs);
-  }
-
-  async deleteHomeContents(id: string) {
-    await this.findHomeContents(id);
-    await this.database.category.delete({
-      where: {
-        id,
-      },
-    });
   }
 }
