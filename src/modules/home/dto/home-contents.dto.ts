@@ -22,7 +22,7 @@ export class HomeContentsDTO {
   type: string;
 
   @Property({ apiProperty: { type: ContentCategoryDTO, nullable: true, description: '컨텐츠' } })
-  contentCategories?: ContentCategoryDTO;
+  contentCategory?: ContentCategoryDTO;
 
   @Property({ apiProperty: { type: ExhibitionDTO, nullable: true, description: '기획전' } })
   exhibition?: ExhibitionDTO;
@@ -33,11 +33,8 @@ export class HomeContentsDTO {
   constructor(props: HomeContentsDTOProps) {
     this.id = props.id;
     this.type = this.getContentType(props);
-
-    this.contentCategories = props.contentsCategory ? new ContentCategoryDTO(props.contentsCategory) : undefined;
-
+    this.contentCategory = props.contentsCategory ? new ContentCategoryDTO(props.contentsCategory) : undefined;
     this.exhibition = props.exhibition ? new ExhibitionDTO(props.exhibition) : undefined;
-
     this.ranking = props.ranking ? new RankingDTO(props.ranking) : undefined;
   }
 
