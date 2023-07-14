@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { UpdateContentCategorySpaceDTO, UpdateContentCategorySpaceDTOProps } from './Update-content-category-space.dto';
+import { UpdateContentCategorySpaceDTO, UpdateContentCategorySpaceDTOProps } from './update-content-category-space.dto';
 
 export interface UpdateContentCategoryDTOProps {
   name?: string;
