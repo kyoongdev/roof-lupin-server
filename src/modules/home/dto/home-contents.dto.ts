@@ -7,9 +7,9 @@ import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 
 export interface HomeContentsDTOProps {
   id: string;
-  contentsCategories: ContentCategoryDTOProps[];
-  exhibitions: ExhibitionDTOProps[];
-  rankings: RankingDTOProps[];
+  contentsCategory: ContentCategoryDTOProps;
+  exhibition: ExhibitionDTOProps;
+  ranking: RankingDTOProps;
 }
 
 export class HomeContentsDTO {
@@ -21,28 +21,30 @@ export class HomeContentsDTO {
   })
   type: string;
 
-  @Property({ apiProperty: { type: ContentCategoryDTO, isArray: true, description: '컨텐츠' } })
-  contentCategories: ContentCategoryDTO[];
+  @Property({ apiProperty: { type: ContentCategoryDTO, nullable: true, description: '컨텐츠' } })
+  contentCategories?: ContentCategoryDTO;
 
-  @Property({ apiProperty: { type: ExhibitionDTO, isArray: true, description: '기획전' } })
-  exhibitions: ExhibitionDTO[];
+  @Property({ apiProperty: { type: ExhibitionDTO, nullable: true, description: '기획전' } })
+  exhibition?: ExhibitionDTO;
 
-  @Property({ apiProperty: { type: RankingDTO, isArray: true, description: '랭킹' } })
-  rankings: RankingDTO[];
+  @Property({ apiProperty: { type: RankingDTO, nullable: true, description: '랭킹' } })
+  ranking?: RankingDTO;
 
   constructor(props: HomeContentsDTOProps) {
     this.id = props.id;
     this.type = this.getContentType(props);
-    console.log(this.getContentType(props));
-    this.contentCategories = props.contentsCategories.map((content) => new ContentCategoryDTO(content));
-    this.exhibitions = props.exhibitions.map((exhibition) => new ExhibitionDTO(exhibition));
-    this.rankings = props.rankings.map((ranking) => new RankingDTO(ranking));
+
+    this.contentCategories = props.contentsCategory ? new ContentCategoryDTO(props.contentsCategory) : undefined;
+
+    this.exhibition = props.exhibition ? new ExhibitionDTO(props.exhibition) : undefined;
+
+    this.ranking = props.ranking ? new RankingDTO(props.ranking) : undefined;
   }
 
   getContentType(props: HomeContentsDTOProps) {
-    if (props.contentsCategories.length > 0) {
+    if (props.contentsCategory) {
       return 'CONTENTS';
-    } else if (props.exhibitions.length > 0) {
+    } else if (props.exhibition) {
       return 'EXHIBITION';
     } else return 'RANKING';
   }

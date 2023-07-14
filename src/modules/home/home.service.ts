@@ -16,7 +16,7 @@ export class HomeService {
   async getHomeContents(userId?: string) {
     const contents = await this.database.homeContents.findMany({
       include: {
-        contentsCategories: {
+        contentsCategory: {
           include: {
             spaces: {
               include: {
@@ -36,8 +36,27 @@ export class HomeService {
             },
           },
         },
-        exhibitions: true,
-        rankings: {
+        exhibition: {
+          include: {
+            spaces: {
+              include: {
+                space: {
+                  include: {
+                    location: true,
+                    reviews: true,
+                    publicTransportations: true,
+                    userInterests: true,
+                    rentalType: true,
+                  },
+                },
+              },
+              orderBy: {
+                orderNo: 'asc',
+              },
+            },
+          },
+        },
+        ranking: {
           include: {
             spaces: {
               include: {
@@ -62,18 +81,26 @@ export class HomeService {
         orderNo: 'asc',
       },
     });
+
     return contents.map(
       (content) =>
         new HomeContentsDTO({
           ...content,
-          contentsCategories: content.contentsCategories.map((content) => ({
-            ...content,
-            spaces: content.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space, userId)),
-          })),
-          rankings: content.rankings.map((ranking) => ({
-            ...ranking,
-            spaces: ranking.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space, userId)),
-          })),
+          ...(content.contentsCategory && {
+            contentsCategory: {
+              ...content.contentsCategory,
+              spaces: content.contentsCategory.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space, userId)),
+            },
+          }),
+          ...(content.ranking && {
+            ranking: {
+              ...content.ranking,
+              spaces: content.ranking.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space, userId)),
+            },
+          }),
+          ...(content.exhibition && {
+            exhibition: content.exhibition,
+          }),
         })
     );
   }

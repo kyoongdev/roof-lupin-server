@@ -121,7 +121,7 @@ export class AuthService {
   }
   async getKakaoUser(token: string) {
     const socialUser = await KakaoLogin.getUser(token);
-    console.log({ socialUser });
+
     const isExistUser = await this.userRepository.checkUserBySocialId(`${Number(socialUser.id)}`);
     if (isExistUser) {
       const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
@@ -137,7 +137,7 @@ export class AuthService {
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
     const { user } = result;
-    console.log(result.token);
+
     this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
   }
 

@@ -24,6 +24,8 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.category.deleteMany({});
   await database.holiday.deleteMany({});
   await database.coupon.deleteMany({});
+  await database.homeContents.deleteMany({});
+
   await seedHosts(database);
 
   const encrypt = new EncryptProvider();

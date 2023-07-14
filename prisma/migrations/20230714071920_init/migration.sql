@@ -1,4 +1,12 @@
 -- CreateTable
+CREATE TABLE `HomeContents` (
+    `id` VARCHAR(191) NOT NULL,
+    `orderNo` TINYINT NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Holiday` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(120) NOT NULL,
@@ -47,11 +55,21 @@ CREATE TABLE `Curation` (
     `content` MEDIUMTEXT NOT NULL,
     `thumbnail` VARCHAR(191) NOT NULL,
     `isMain` BOOLEAN NOT NULL DEFAULT false,
-    `userId` VARCHAR(191) NOT NULL,
+    `orderNo` INTEGER NULL,
+    `userId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `CurationSpace` (
+    `curationId` VARCHAR(191) NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+    `orderNo` INTEGER NULL,
+
+    PRIMARY KEY (`curationId`, `spaceId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -81,6 +99,25 @@ CREATE TABLE `Slogan` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Ranking` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `homeContentsId` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `Ranking_homeContentsId_key`(`homeContentsId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `RankingSpaces` (
+    `spaceId` VARCHAR(191) NOT NULL,
+    `rankingId` VARCHAR(191) NOT NULL,
+    `orderNo` INTEGER NOT NULL,
+
+    PRIMARY KEY (`spaceId`, `rankingId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Space` (
     `id` VARCHAR(191) NOT NULL,
     `title` VARCHAR(120) NOT NULL,
@@ -98,6 +135,7 @@ CREATE TABLE `Space` (
     `isImmediateReservation` BOOLEAN NOT NULL DEFAULT false,
     `isPublic` BOOLEAN NOT NULL DEFAULT false,
     `isApproved` BOOLEAN NOT NULL DEFAULT false,
+    `orderNo` TINYINT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -181,13 +219,21 @@ CREATE TABLE `ReservedAdditionalService` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `ReservationRentalType` (
+    `reservationId` VARCHAR(191) NOT NULL,
+    `rentalTypeId` VARCHAR(191) NOT NULL,
+    `startAt` INTEGER NOT NULL,
+    `endAt` INTEGER NOT NULL,
+
+    PRIMARY KEY (`reservationId`, `rentalTypeId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Reservation` (
     `id` VARCHAR(191) NOT NULL,
     `year` CHAR(4) NOT NULL,
     `month` VARCHAR(2) NOT NULL,
     `day` VARCHAR(2) NOT NULL,
-    `startAt` TINYINT NOT NULL,
-    `endAt` TINYINT NOT NULL,
     `totalCost` MEDIUMINT NOT NULL,
     `vatCost` MEDIUMINT NOT NULL,
     `discountCost` MEDIUMINT NOT NULL DEFAULT 0,
@@ -199,7 +245,6 @@ CREATE TABLE `Reservation` (
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
     `isApproved` BOOLEAN NOT NULL DEFAULT true,
-    `rentalTypeId` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
     `payedAt` DATETIME(3) NULL,
@@ -469,10 +514,13 @@ CREATE TABLE `User` (
     `profileImage` VARCHAR(191) NULL,
     `isAdult` BOOLEAN NOT NULL DEFAULT false,
     `isAlarmAccepted` BOOLEAN NOT NULL DEFAULT false,
+    `isBlocked` BOOLEAN NOT NULL DEFAULT false,
+    `unBlockAt` DATETIME(3) NULL,
     `pushToken` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
+    `blockedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -578,13 +626,31 @@ CREATE TABLE `Service` (
 CREATE TABLE `Category` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(80) NOT NULL,
-    `highlight` VARCHAR(80) NULL,
     `isHome` BOOLEAN NOT NULL DEFAULT false,
     `isRecommended` BOOLEAN NOT NULL DEFAULT false,
-    `isContent` BOOLEAN NOT NULL DEFAULT false,
     `iconPath` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ContentCategory` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(80) NOT NULL,
+    `highlight` VARCHAR(80) NULL,
+    `homeContentsId` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `ContentCategory_homeContentsId_key`(`homeContentsId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ContentCategorySpace` (
+    `orderNo` INTEGER NULL,
+    `contentCategoryId` VARCHAR(191) NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`contentCategoryId`, `spaceId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -610,7 +676,6 @@ CREATE TABLE `UserCoupon` (
     `usageDateStartAt` DATETIME NOT NULL,
     `usageDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `isUsed` BOOLEAN NOT NULL DEFAULT false,
     `userId` VARCHAR(191) NOT NULL,
     `couponId` VARCHAR(191) NOT NULL,
     `reservationId` VARCHAR(191) NULL,
@@ -648,6 +713,7 @@ CREATE TABLE `ExhibitionImage` (
 CREATE TABLE `ExhibitionSpace` (
     `exhibitionId` VARCHAR(191) NOT NULL,
     `spaceId` VARCHAR(191) NOT NULL,
+    `orderNo` TINYINT NULL,
 
     PRIMARY KEY (`exhibitionId`, `spaceId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -667,16 +733,34 @@ CREATE TABLE `Exhibition` (
     `thumbnail` VARCHAR(191) NOT NULL,
     `description` VARCHAR(120) NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
+    `orderNo` TINYINT NULL,
     `startAt` DATETIME NOT NULL,
     `endAt` DATETIME NOT NULL,
     `isShow` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `homeContentsId` VARCHAR(191) NULL,
 
+    UNIQUE INDEX `Exhibition_homeContentsId_key`(`homeContentsId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
 ALTER TABLE `Curation` ADD CONSTRAINT `Curation_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CurationSpace` ADD CONSTRAINT `CurationSpace_curationId_fkey` FOREIGN KEY (`curationId`) REFERENCES `Curation`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CurationSpace` ADD CONSTRAINT `CurationSpace_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Ranking` ADD CONSTRAINT `Ranking_homeContentsId_fkey` FOREIGN KEY (`homeContentsId`) REFERENCES `HomeContents`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `RankingSpaces` ADD CONSTRAINT `RankingSpaces_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `RankingSpaces` ADD CONSTRAINT `RankingSpaces_rankingId_fkey` FOREIGN KEY (`rankingId`) REFERENCES `Ranking`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Space` ADD CONSTRAINT `Space_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -709,7 +793,10 @@ ALTER TABLE `ReservedAdditionalService` ADD CONSTRAINT `ReservedAdditionalServic
 ALTER TABLE `ReservedAdditionalService` ADD CONSTRAINT `ReservedAdditionalService_additionalServiceId_fkey` FOREIGN KEY (`additionalServiceId`) REFERENCES `AdditionalService`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_rentalTypeId_fkey` FOREIGN KEY (`rentalTypeId`) REFERENCES `RentalType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `ReservationRentalType` ADD CONSTRAINT `ReservationRentalType_reservationId_fkey` FOREIGN KEY (`reservationId`) REFERENCES `Reservation`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ReservationRentalType` ADD CONSTRAINT `ReservationRentalType_rentalTypeId_fkey` FOREIGN KEY (`rentalTypeId`) REFERENCES `RentalType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -835,6 +922,15 @@ ALTER TABLE `UserLocation` ADD CONSTRAINT `UserLocation_locationId_fkey` FOREIGN
 ALTER TABLE `SpaceLocation` ADD CONSTRAINT `SpaceLocation_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `ContentCategory` ADD CONSTRAINT `ContentCategory_homeContentsId_fkey` FOREIGN KEY (`homeContentsId`) REFERENCES `HomeContents`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ContentCategorySpace` ADD CONSTRAINT `ContentCategorySpace_contentCategoryId_fkey` FOREIGN KEY (`contentCategoryId`) REFERENCES `ContentCategory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ContentCategorySpace` ADD CONSTRAINT `ContentCategorySpace_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `CouponCategory` ADD CONSTRAINT `CouponCategory_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `Coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -866,3 +962,6 @@ ALTER TABLE `ExhibitionCoupon` ADD CONSTRAINT `ExhibitionCoupon_exhibitionId_fke
 
 -- AddForeignKey
 ALTER TABLE `ExhibitionCoupon` ADD CONSTRAINT `ExhibitionCoupon_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `Coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Exhibition` ADD CONSTRAINT `Exhibition_homeContentsId_fkey` FOREIGN KEY (`homeContentsId`) REFERENCES `HomeContents`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

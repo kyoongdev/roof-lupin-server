@@ -73,6 +73,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
                       id: spaces.id,
                     },
                   },
+                  orderNo: index,
                 },
               ],
             },
@@ -111,6 +112,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
                       id: spaces.id,
                     },
                   },
+                  orderNo: index,
                 },
               ],
             },
@@ -130,6 +132,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
                       id: spaces.id,
                     },
                   },
+                  orderNo: index,
                 },
               ],
             },
@@ -168,6 +171,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
                       id: spaces.id,
                     },
                   },
+                  orderNo: index,
                 },
               ],
             },
@@ -187,6 +191,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
                       id: spaces.id,
                     },
                   },
+                  orderNo: index,
                 },
               ],
             },
@@ -199,15 +204,10 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
   await database.homeContents.create({
     data: {
       orderNo: 1,
-      contentsCategories: {
-        connect: [
-          {
-            id: category1.id,
-          },
-          {
-            id: category2.id,
-          },
-        ],
+      contentsCategory: {
+        connect: {
+          id: category1.id,
+        },
       },
     },
   });
@@ -215,7 +215,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
   await database.homeContents.create({
     data: {
       orderNo: 2,
-      rankings: {
+      ranking: {
         connect: {
           id: ranking.id,
         },
@@ -226,12 +226,10 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
   const thirdHome = await database.homeContents.create({
     data: {
       orderNo: 3,
-      contentsCategories: {
-        connect: [
-          {
-            id: category3.id,
-          },
-        ],
+      contentsCategory: {
+        connect: {
+          id: category3.id,
+        },
       },
     },
   });
@@ -239,7 +237,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
   const firthHome = await database.homeContents.create({
     data: {
       orderNo: 4,
-      exhibitions: {
+      exhibition: {
         connect: {
           id: exhibition.id,
         },
@@ -250,15 +248,10 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
   const fifthHome = await database.homeContents.create({
     data: {
       orderNo: 5,
-      contentsCategories: {
-        connect: [
-          {
-            id: category4.id,
-          },
-          {
-            id: category5.id,
-          },
-        ],
+      contentsCategory: {
+        connect: {
+          id: category4.id,
+        },
       },
     },
   });

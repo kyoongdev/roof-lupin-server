@@ -36,7 +36,7 @@ export class AdminHomeService {
   async findHomeContents() {
     const contents = await this.database.homeContents.findMany({
       include: {
-        contentsCategories: {
+        contentsCategory: {
           include: {
             spaces: {
               include: {
@@ -56,8 +56,8 @@ export class AdminHomeService {
             },
           },
         },
-        exhibitions: true,
-        rankings: {
+        exhibition: true,
+        ranking: {
           include: {
             spaces: {
               include: {
@@ -86,14 +86,21 @@ export class AdminHomeService {
       (content) =>
         new AdminHomeContentDTO({
           ...content,
-          contentsCategories: content.contentsCategories.map((content) => ({
-            ...content,
-            spaces: content.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
-          })),
-          rankings: content.rankings.map((ranking) => ({
-            ...ranking,
-            spaces: ranking.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
-          })),
+          ...(content.contentsCategory && {
+            contentsCategory: {
+              ...content.contentsCategory,
+              spaces: content.contentsCategory.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+            },
+          }),
+          ...(content.ranking && {
+            ranking: {
+              ...content.ranking,
+              spaces: content.ranking.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+            },
+          }),
+          ...(content.exhibition && {
+            exhibition: content.exhibition,
+          }),
         })
     );
   }
@@ -105,21 +112,21 @@ export class AdminHomeService {
       data: {
         orderNo: data.orderNo,
         ...(data.contentCategoryId && {
-          contentsCategories: {
+          contentsCategory: {
             connect: {
               id: data.contentCategoryId,
             },
           },
         }),
         ...(data.exhibitionId && {
-          exhibitions: {
+          exhibition: {
             connect: {
               id: data.exhibitionId,
             },
           },
         }),
         ...(data.rankingId && {
-          rankings: {
+          ranking: {
             connect: {
               id: data.rankingId,
             },
@@ -141,21 +148,21 @@ export class AdminHomeService {
       data: {
         orderNo: data.orderNo,
         ...(data.contentCategoryId && {
-          contentsCategories: {
+          contentsCategory: {
             connect: {
               id: data.contentCategoryId,
             },
           },
         }),
         ...(data.exhibitionId && {
-          exhibitions: {
+          exhibition: {
             connect: {
               id: data.exhibitionId,
             },
           },
         }),
         ...(data.rankingId && {
-          rankings: {
+          ranking: {
             connect: {
               id: data.rankingId,
             },

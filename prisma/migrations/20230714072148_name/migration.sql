@@ -12,9 +12,6 @@
 ALTER TABLE `Coupon` MODIFY `defaultDueDateStart` DATETIME NULL;
 
 -- AlterTable
-ALTER TABLE `Curation` MODIFY `userId` VARCHAR(191) NULL;
-
--- AlterTable
 ALTER TABLE `Exhibition` MODIFY `startAt` DATETIME NOT NULL,
     MODIFY `endAt` DATETIME NOT NULL;
 
