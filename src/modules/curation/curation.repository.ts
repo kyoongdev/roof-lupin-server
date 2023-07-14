@@ -70,7 +70,7 @@ export class CurationRepository {
           },
         },
       },
-      orderBy: { orderNo: 'asc', ...args.orderBy },
+      orderBy: { orderNo: 'asc' },
     });
     return curations.map(
       (curation) =>
