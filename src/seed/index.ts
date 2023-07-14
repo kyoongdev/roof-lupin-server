@@ -9,6 +9,7 @@ import { OpenAPI } from '../interface/holiday.interface';
 import { COUPON_CODE } from '../modules/coupon/constants';
 import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
 
+import { seedHome } from './home';
 import { seedHosts } from './host';
 import { seedSpace } from './space';
 
@@ -156,7 +157,7 @@ export const seedDatabase = async (database: PrismaService) => {
   });
 
   const spaces: Space[] = await seedSpace(database);
-
+  await seedHome(database, spaces);
   for (let i = 0; i < 5; i++) {
     await database.curation.create({
       data: {

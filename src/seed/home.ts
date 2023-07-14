@@ -78,6 +78,25 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
             },
           },
         });
+        await database.exhibition.update({
+          where: {
+            id: exhibition.id,
+          },
+          data: {
+            spaces: {
+              create: [
+                {
+                  orderNo: index,
+                  space: {
+                    connect: {
+                      id: spaces.id,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        });
       } else if (index < 10) {
         await database.contentCategory.update({
           where: {
@@ -106,6 +125,25 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
             spaces: {
               create: [
                 {
+                  space: {
+                    connect: {
+                      id: spaces.id,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        });
+        await database.ranking.update({
+          where: {
+            id: ranking.id,
+          },
+          data: {
+            spaces: {
+              create: [
+                {
+                  orderNo: index,
                   space: {
                     connect: {
                       id: spaces.id,
@@ -158,7 +196,7 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
     })
   );
 
-  const firstHome = await database.homeContents.create({
+  await database.homeContents.create({
     data: {
       orderNo: 1,
       contentsCategories: {
@@ -174,27 +212,54 @@ export const seedHome = async (database: PrismaService, spaces: Space[]) => {
     },
   });
 
-  const secondHome = await database.homeContents.create({
+  await database.homeContents.create({
     data: {
       orderNo: 2,
+      rankings: {
+        connect: {
+          id: ranking.id,
+        },
+      },
     },
   });
 
   const thirdHome = await database.homeContents.create({
     data: {
       orderNo: 3,
+      contentsCategories: {
+        connect: [
+          {
+            id: category3.id,
+          },
+        ],
+      },
     },
   });
 
   const firthHome = await database.homeContents.create({
     data: {
       orderNo: 4,
+      exhibitions: {
+        connect: {
+          id: exhibition.id,
+        },
+      },
     },
   });
 
   const fifthHome = await database.homeContents.create({
     data: {
       orderNo: 5,
+      contentsCategories: {
+        connect: [
+          {
+            id: category4.id,
+          },
+          {
+            id: category5.id,
+          },
+        ],
+      },
     },
   });
 };

@@ -33,6 +33,7 @@ export class HomeContentsDTO {
   constructor(props: HomeContentsDTOProps) {
     this.id = props.id;
     this.type = this.getContentType(props);
+    console.log(this.getContentType(props));
     this.contentCategories = props.contentsCategories.map((content) => new ContentCategoryDTO(content));
     this.exhibitions = props.exhibitions.map((exhibition) => new ExhibitionDTO(exhibition));
     this.rankings = props.rankings.map((ranking) => new RankingDTO(ranking));
@@ -43,6 +44,6 @@ export class HomeContentsDTO {
       return 'CONTENTS';
     } else if (props.exhibitions.length > 0) {
       return 'EXHIBITION';
-    } else 'RANKING';
+    } else return 'RANKING';
   }
 }
