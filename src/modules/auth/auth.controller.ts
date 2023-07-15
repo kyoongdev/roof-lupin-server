@@ -83,6 +83,7 @@ export class AuthController {
   async naverLoginCallback(@Query('code') code: string, @Response() res: ResponseType) {
     await this.authService.naverLoginCallback(code, res);
   }
+
   @Get('social/apple')
   @RequestApi({
     summary: {

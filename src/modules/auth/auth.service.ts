@@ -69,6 +69,7 @@ export class AuthService {
     const current = new Date();
     current.setUTCHours(0, 0, 0, 0);
     const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
+
     await this.couponRepository.createUserCoupon(coupon.id, {
       userId,
       usageDateEndAt,
@@ -80,7 +81,8 @@ export class AuthService {
     const isExistUser = await this.userRepository.checkUserBySocialId(socialId);
 
     if (!isExistUser) {
-      await this.userRepository.createSocialUser(props);
+      const userId = await this.userRepository.createSocialUser(props);
+      await this.registerNewUserCoupon(userId);
     }
 
     const user = await this.userRepository.findUserBySocialId(socialId);
@@ -92,7 +94,6 @@ export class AuthService {
 
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
 
-    await this.registerNewUserCoupon(user.id);
     const query = queryString.stringify({
       status: 200,
       accessToken: tokens.accessToken,
@@ -136,7 +137,7 @@ export class AuthService {
 
   async kakaoLoginCallback(code: string, res: Response) {
     const result = await this.kakaoService.getRestCallback(code);
-    console.log({ result });
+
     const { user } = result;
 
     this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
