@@ -1,19 +1,30 @@
-import { Body, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
-import { ApiController, ReqUser } from '@/utils';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdateReservationDTO } from './dto';
+import { PaymentService } from '../payment/payment.service';
+
+import {
+  CreatePaymentDTO,
+  CreateReservationDTO,
+  ReservationDetailDTO,
+  ReservationDTO,
+  UpdateReservationDTO,
+} from './dto';
 import { ReservationService } from './reservation.service';
 
 @ApiController('reservations', '예약하기')
 export class ReservationController {
-  constructor(private readonly reservationService: ReservationService) {}
+  constructor(
+    private readonly reservationService: ReservationService,
+    private readonly paymentService: PaymentService
+  ) {}
 
   @Get('me/paging')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
@@ -52,6 +63,22 @@ export class ReservationController {
   })
   async getMyReservation(@Param('reservationId') id: string, @ReqUser() user: RequestUser) {
     return await this.reservationService.findMyReservation(id, user.id);
+  }
+
+  @Post('prepare')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '예약 신청하기',
+      summary: '예약 신청하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async createReservation(@ReqUser() user: RequestUser, @Body() body: CreateReservationDTO) {
+    return await this.paymentService.requestPayment(user.id, body);
   }
 
   @Delete(':reservationId')

@@ -197,7 +197,7 @@ export class RentalTypeService {
         const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, `${day}`);
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
-          result.time.every((item) => item.timeCostInfos.every((timeCostInfo) => !timeCostInfo.isPossible));
+          result.time.timeCostInfos.every((item) => !item.isPossible);
 
         const data: PossibleRentalTypeByMonthDTOProps = {
           day: `${day}`,
@@ -261,10 +261,10 @@ export class RentalTypeService {
               }
           });
 
-          acc.time.push({
+          acc.time = {
             ...next,
             timeCostInfos,
-          });
+          };
         } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           let isPossible = true;
           if (targetDay) {
@@ -288,7 +288,7 @@ export class RentalTypeService {
 
         return acc;
       },
-      { time: [], package: [] }
+      { time: null, package: [] }
     );
 
     return new PossibleRentalTypesDTO(possibleRentalTypes);

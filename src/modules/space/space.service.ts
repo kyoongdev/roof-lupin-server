@@ -138,7 +138,7 @@ export class SpaceService {
         args
       );
 
-      const reservations = [...results.package, ...results.time];
+      const reservations = [...results.package, results.time];
       //INFO: acc는 가능한 시간의 집합 => 가능한 것이 우선순위가 높음
       reservations.reduce<string[]>((acc, reservation) => {
         let isPossible = true;

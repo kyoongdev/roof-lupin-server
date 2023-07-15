@@ -7,7 +7,7 @@ import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCod
 import { SpaceException } from '../space/exception/space.exception';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 
-import { CreatePaymentDTO, ReservationDTO, UpdateReservationDTO } from './dto';
+import { CreatePaymentDTO, CreateReservationDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import {
   RESERVATION_ERROR_CODE,
   RESERVATION_USER_DELETE_FORBIDDEN,

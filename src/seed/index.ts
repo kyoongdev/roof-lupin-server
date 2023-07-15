@@ -1,14 +1,13 @@
-import { Category, Prisma, Space } from '@prisma/client';
-import axios from 'axios';
+import { Space } from '@prisma/client';
 import { range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
 
 import { EncryptProvider } from '../common/encrypt';
-import { OpenAPI } from '../interface/holiday.interface';
 import { COUPON_CODE } from '../modules/coupon/constants';
 import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
 
+import { seedHoliday } from './holiday';
 import { seedHome } from './home';
 import { seedHosts } from './host';
 import { seedSpace } from './space';
@@ -27,10 +26,13 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.homeContents.deleteMany({});
 
   await seedHosts(database);
+  const holiday = await database.holiday.findFirst();
+  if (!holiday) {
+    await seedHoliday(database);
+  }
 
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
-  console.log('hi');
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
   await Promise.all(
@@ -64,65 +66,6 @@ export const seedDatabase = async (database: PrismaService) => {
       defaultDueDay: 7,
     },
   });
-  // await Promise.all(
-  //   range(2023, 2025).map(async (i) => {
-  //     await Promise.all(
-  //       range(1, 13).map(async (j) => {
-  //         const month = `${j}`.length === 1 ? `0${j}` : `${j}`;
-
-  //         const response = await axios.get<OpenAPI>(
-  //           `http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear=${i}&solMonth=${month}&ServiceKey=${process.env.OPEN_API_KEY}`
-  //         );
-
-  //         const items = response.data.response?.body.items.item;
-
-  //         if (items) {
-  //           if (Array.isArray(items)) {
-  //             await Promise.all(
-  //               items.map(async (item) => {
-  //                 const day = `${Number(`${item.locdate}`.slice(6))}`;
-  //                 const isExist = await database.holiday.findFirst({
-  //                   where: {
-  //                     year: `${i}`,
-  //                     month: `${j}`,
-  //                     day,
-  //                   },
-  //                 });
-  //                 if (!isExist)
-  //                   await database.holiday.create({
-  //                     data: {
-  //                       year: `${i}`,
-  //                       month: `${j}`,
-  //                       day,
-  //                       name: item.dateName,
-  //                     },
-  //                   });
-  //               })
-  //             );
-  //           } else {
-  //             const day = `${Number(`${items.locdate}`.slice(6))}`;
-  //             const isExist = await database.holiday.findFirst({
-  //               where: {
-  //                 year: `${i}`,
-  //                 month: `${j}`,
-  //                 day,
-  //               },
-  //             });
-  //             if (!isExist)
-  //               await database.holiday.create({
-  //                 data: {
-  //                   year: `${i}`,
-  //                   month: `${j}`,
-  //                   day,
-  //                   name: items.dateName,
-  //                 },
-  //               });
-  //           }
-  //         }
-  //       })
-  //     );
-  //   })
-  // );
 
   await database.mainImage.create({
     data: {

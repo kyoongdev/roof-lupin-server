@@ -36,5 +36,20 @@ import { PaymentService } from './payment.service';
     SettlementRepository,
   ],
   controllers: [PaymentController],
+  exports: [
+    TossPayProvider,
+    KakaoPayProvider,
+    PortOneProvider,
+    PaymentService,
+    RentalTypeRepository,
+    CouponRepository,
+    BlockedTimeRepository,
+    RentalTypeService,
+    SpaceRepository,
+    HolidayService,
+    UserRepository,
+    FCMEvent,
+    SettlementRepository,
+  ],
 })
 export class PaymentModule {}
