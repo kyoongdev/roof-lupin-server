@@ -286,8 +286,8 @@ model Reservation {
   payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
   isApproved    Boolean @default(true) //INFO: 결제 승인 여부
 
-  userName        String @unique
-  userPhoneNumber String @unique @db.VarChar(11)
+  userName        String
+  userPhoneNumber String @db.VarChar(11)
 
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
