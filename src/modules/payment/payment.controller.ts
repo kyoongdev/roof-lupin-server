@@ -47,22 +47,6 @@ export class PaymentController {
     });
   }
 
-  @Post('/request/payment')
-  @UseInterceptors(ResponseWithIdInterceptor)
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '결제 요청하기 ',
-      description: '결제 요청하기',
-    },
-  })
-  @ResponseApi({
-    type: ResponseWithIdDTO,
-  })
-  async requestPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
-    return await this.paymentService.requestPayment(user.id, data);
-  }
-
   @Post('/port-one/prepare')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({

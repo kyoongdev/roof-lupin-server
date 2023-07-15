@@ -11,7 +11,7 @@ import { FCMEvent } from '@/event/fcm';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
-import { CreatePaymentDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
+import { CreatePaymentDTO, CreateReservationDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -86,7 +86,7 @@ export class PaymentService {
     return result;
   }
 
-  async requestPayment(userId: string, data: CreatePaymentDTO) {
+  async requestPayment(userId: string, data: CreateReservationDTO) {
     const space = await this.spaceRepository.findSpace(data.spaceId);
     await this.validatePayment(data, space);
 
@@ -94,8 +94,8 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
     }
 
-    const reservation = await this.reservationRepository.createReservation(userId, data, false);
-    return reservation.id;
+    const reservation = await this.reservationRepository.prepareReservation(userId, data);
+    return reservation;
   }
 
   async getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO, space: SpaceDetailDTO) {
@@ -572,7 +572,7 @@ export class PaymentService {
     return `${new Date().getTime()}_${code.toUpperCase()}`;
   }
 
-  async validatePayment(data: CreatePaymentDTO, space: SpaceDetailDTO) {
+  async validatePayment(data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
     return await Promise.all(
       data.rentalTypes.map(async (item) => {
         const rentalType = await this.rentalTypeRepository.findRentalType(item.rentalTypeId);
@@ -643,18 +643,18 @@ export class PaymentService {
     );
   }
 
-  async getRealCost(cost: number, data: CreatePaymentDTO, space: SpaceDetailDTO) {
+  async getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
     let discountCost = 0;
     let additionalCost = 0;
 
-    if (data.userCouponIds) {
+    if (data['userCouponIds']) {
       const userCoupons = await this.couponRepository.findUserCoupons({
         where: {
-          OR: data.userCouponIds.map((id) => ({ id })),
+          OR: (data as CreatePaymentDTO).userCouponIds.map((id) => ({ id })),
         },
       });
       await Promise.all(
-        data.userCouponIds?.map(async (couponId) => {
+        (data as CreatePaymentDTO).userCouponIds?.map(async (couponId) => {
           const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
           if (isExist) {
             if (isExist.count === 0) {
@@ -686,12 +686,12 @@ export class PaymentService {
       );
     }
 
-    if (data.discountCost !== discountCost) {
+    if (data['discountCost'] && data['discountCost'] !== discountCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
     }
 
-    if (data.additionalServices) {
-      data.additionalServices.forEach((service) => {
+    if (data['additionalServices']) {
+      (data as CreatePaymentDTO).additionalServices.forEach((service) => {
         const isExist = space.additionalServices.find((additionalService) => additionalService.id === service.id);
         if (isExist) {
           additionalCost += isExist.cost * service.count;

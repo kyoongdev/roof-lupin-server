@@ -52,11 +52,6 @@ export class ReservationController {
       description: '내 예약 상세 조회',
       summary: '내 예약 상세 조회 - 유저만 사용가능합니다.',
     },
-    params: {
-      name: 'reservationId',
-      type: 'string',
-      description: '예약 아이디',
-    },
   })
   @ResponseApi({
     type: ReservationDetailDTO,
@@ -77,7 +72,7 @@ export class ReservationController {
   @ResponseApi({
     type: ResponseWithIdDTO,
   })
-  async createReservation(@ReqUser() user: RequestUser, @Body() body: CreateReservationDTO) {
+  async createPayment(@ReqUser() user: RequestUser, @Body() body: CreateReservationDTO) {
     return await this.paymentService.requestPayment(user.id, body);
   }
 

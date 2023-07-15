@@ -6,7 +6,14 @@ import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservation } from '@/interface/reservation.interface';
 
-import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
+import {
+  CreatePaymentDTO,
+  CreateReservationDTO,
+  ReservationDetailDTO,
+  ReservationDTO,
+  UpdatePaymentDTO,
+  UpdateReservationDTO,
+} from './dto';
 import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 
@@ -79,8 +86,39 @@ export class ReservationRepository {
     return reservations.map((reservation) => new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)));
   }
 
+  async prepareReservation(userId: string, data: CreateReservationDTO) {
+    const { rentalTypes, spaceId, ...rest } = data;
+    const taxCost = Math.floor(rest.totalCost / 1.1);
+    const reservation = await this.database.reservation.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        rentalTypes: {
+          create: rentalTypes.map((rentalType) => ({
+            endAt: rentalType.endAt,
+            startAt: rentalType.startAt,
+            rentalType: {
+              connect: {
+                id: rentalType.rentalTypeId,
+              },
+            },
+          })),
+        },
+
+        vatCost: rest.totalCost - taxCost,
+        isApproved: false,
+
+        ...rest,
+      },
+    });
+    return reservation.id;
+  }
+
   //TODO: 결제 시스템까지 도입
-  async createReservation(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
+  async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
     const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
@@ -124,7 +162,7 @@ export class ReservationRepository {
         ...rest,
       },
     });
-    return reservation;
+    return reservation.id;
   }
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
