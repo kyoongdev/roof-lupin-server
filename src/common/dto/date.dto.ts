@@ -15,4 +15,12 @@ export class DateDTO {
 
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true } })
   deletedAt: Date;
+
+  constructor(props?: DateProps) {
+    if (props) {
+      this.createdAt = props.createdAt;
+      this.updatedAt = props.updatedAt;
+      this.deletedAt = props.deletedAt;
+    }
+  }
 }

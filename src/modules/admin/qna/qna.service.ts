@@ -40,4 +40,9 @@ export class AdminQnAService {
     await this.qnaRepository.findQnAAnswer(qnaAnswerId);
     await this.qnaRepository.deleteQnAAnswer(qnaAnswerId);
   }
+
+  async hardDeleteQnAAnswer(qnaAnswerId: string) {
+    await this.qnaRepository.findQnAAnswer(qnaAnswerId);
+    await this.qnaRepository.hardDeleteQnAAnswer(qnaAnswerId);
+  }
 }

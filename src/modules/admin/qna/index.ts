@@ -95,4 +95,21 @@ export class AdminQnAController {
   async deleteQnAAnswer(@Param('qnaAnswerId') qnaAnswerId: string) {
     await this.adminQnAService.deleteQnAAnswer(qnaAnswerId);
   }
+
+  @Delete('/answer/:qnaAnswerId/hard')
+  @RequestApi({
+    summary: {
+      description: 'Q&A 답변 hard delete',
+      summary: 'Q&A 답변 hard delete',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async hardDeleteQnAAnswer(@Param('qnaAnswerId') qnaAnswerId: string) {
+    await this.adminQnAService.hardDeleteQnAAnswer(qnaAnswerId);
+  }
 }
