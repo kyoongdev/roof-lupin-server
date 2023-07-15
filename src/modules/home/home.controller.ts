@@ -29,7 +29,7 @@ export class HomeController {
 
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
-  // @UseInterceptors(RecentSearchApi())
+  @RecentSearchApi()
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',

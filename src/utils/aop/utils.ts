@@ -1,4 +1,4 @@
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, UseInterceptors } from '@nestjs/common';
 
 import type {
   AOPMetaData,
@@ -45,4 +45,13 @@ export const createAOPDecorator: CreateAOPDecorator = (metaDataKey, metadata): M
       aopSymbol: AOPSymbol,
     }),
     applyAOPFunction
+  );
+
+export const createAOPInterceptor: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>
+  applyDecorators(
+    applyMetaData<symbol | string, BaseAOPMetaData>(metaDataKey, {
+      metadata,
+      aopSymbol: AOPSymbol,
+    }),
+    UseInterceptors(applyAOPFunction)
   );
