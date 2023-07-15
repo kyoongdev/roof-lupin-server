@@ -245,6 +245,8 @@ CREATE TABLE `Reservation` (
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
     `isApproved` BOOLEAN NOT NULL DEFAULT true,
+    `userName` VARCHAR(191) NOT NULL,
+    `userPhoneNumber` VARCHAR(11) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
     `payedAt` DATETIME(3) NULL,
@@ -255,6 +257,8 @@ CREATE TABLE `Reservation` (
     UNIQUE INDEX `Reservation_id_key`(`id`),
     UNIQUE INDEX `Reservation_orderId_key`(`orderId`),
     UNIQUE INDEX `Reservation_orderResultId_key`(`orderResultId`),
+    UNIQUE INDEX `Reservation_userName_key`(`userName`),
+    UNIQUE INDEX `Reservation_userPhoneNumber_key`(`userPhoneNumber`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

@@ -4,6 +4,7 @@ import {
   AdditionalServiceReservationDTO,
   AdditionalServiceReservationDTOProps,
 } from '@/modules/space/dto/additionalService';
+import { PhoneNumberValidation } from '@/utils/validation';
 
 import {
   CreateReservationRentalTypeDTO,
@@ -14,6 +15,8 @@ export interface CreatePaymentDTOProps {
   year: string;
   month: string;
   day: string;
+  userName: string;
+  userPhoneNumber: string;
   totalCost: number;
   userCount: number;
   discountCost: number;
@@ -34,6 +37,13 @@ export class CreatePaymentDTO {
 
   @Property({ apiProperty: { type: 'string', description: '예약 일' } })
   day: string;
+
+  @Property({ apiProperty: { type: 'string', description: '대표 이용자 이름' } })
+  userName: string;
+
+  @PhoneNumberValidation()
+  @Property({ apiProperty: { type: 'string', description: '대표 이용자 전화번호' } })
+  userPhoneNumber: string;
 
   @Property({ apiProperty: { type: 'number', description: '이용 인원' } })
   userCount: number;
@@ -73,6 +83,8 @@ export class CreatePaymentDTO {
       this.year = props.year;
       this.month = props.month;
       this.day = props.day;
+      this.userName = props.userName;
+      this.userPhoneNumber = props.userPhoneNumber;
       this.totalCost = props.totalCost;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateReservationRentalTypeDTO(rentalType));
       this.spaceId = props.spaceId;

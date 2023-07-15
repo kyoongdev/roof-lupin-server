@@ -431,7 +431,8 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               year: '2023',
               month: '9',
               day: '4',
-
+              userName: '용준',
+              userPhoneNumber: '01012341234',
               originalCost: 10000,
               totalCost: 10000,
               discountCost: 0,

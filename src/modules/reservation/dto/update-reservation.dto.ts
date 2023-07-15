@@ -1,5 +1,7 @@
 import { Property } from 'wemacu-nestjs';
 
+import { PhoneNumberValidation } from '@/utils/validation';
+
 import { CreatePaymentDTO, CreatePaymentDTOProps } from './create-payment';
 import { TimeValidation } from './validation';
 
@@ -7,6 +9,8 @@ export interface UpdateReservationDTOProps {
   year?: string;
   month?: string;
   day?: string;
+  userName?: string;
+  userPhoneNumber?: string;
   startAt?: number;
   endAt?: number;
   totalCost?: number;
@@ -24,6 +28,13 @@ export class UpdateReservationDTO {
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 일' } })
   day?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '대표 이용자 이름' } })
+  userName?: string;
+
+  @PhoneNumberValidation()
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '대표 이용자 전화번호' } })
+  userPhoneNumber?: string;
 
   @TimeValidation()
   @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 시작 시간 (0 ~ 24)' } })
@@ -50,6 +61,8 @@ export class UpdateReservationDTO {
       this.year = props.year;
       this.month = props.month;
       this.day = props.day;
+      this.userName = props.userName;
+      this.userPhoneNumber = props.userPhoneNumber;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
       this.totalCost = props.totalCost;
