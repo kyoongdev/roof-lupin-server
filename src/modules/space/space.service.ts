@@ -3,10 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
 import { MaxPossibleTime } from '@/interface/space.interface';
 
-import { LocationRepository } from '../location/location.repository';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -45,7 +43,11 @@ export class SpaceService {
   }
 
   async findSpace(id: string, userId?: string) {
-    return await this.spaceRepository.findSpace(id, userId);
+    const space = await this.spaceRepository.findSpace(id, userId);
+    if (userId) {
+      await this.searchRepository.createRecentSpace(userId, id);
+    }
+    return space;
   }
 
   async findPagingSpaces(
@@ -62,6 +64,12 @@ export class SpaceService {
       if (!query.lat && !query.lng && !query.distance) {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
       }
+    }
+
+    if (query.keyword && userId) {
+      await this.searchRepository.createSearchRecord(userId, {
+        content: query.keyword,
+      });
     }
 
     const excludeSpaces = await this.getExcludeSpaces(args, date);

@@ -77,18 +77,11 @@ export class FindSpacesQuery extends PagingDTO {
                   contains: this.keyword,
                 },
               },
-              categories: {
-                some: {
-                  category: {
-                    name: {
-                      contains: this.keyword,
-                    },
-                  },
-                },
-              },
               publicTransportations: {
                 some: {
-                  name: {},
+                  name: {
+                    contains: this.keyword,
+                  },
                 },
               },
             },
@@ -168,7 +161,6 @@ export class FindSpacesQuery extends PagingDTO {
     AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
     OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
     OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
-    OR ca.name LIKE '%${Prisma.raw(this.keyword)}%'
     OR pt.name LIKE '%${Prisma.raw(this.keyword)}%')
     `
       : Prisma.empty;
