@@ -1,12 +1,21 @@
-export interface UserAuthorizationRequestBody {
+export interface FinanceGetCode {
+  response_type: 'code';
+  client_id: string;
+  redirect_uri: string;
+  scope: string;
+  state: string;
+  auth_type: 0 | 1 | 2;
+}
+
+export interface FinanceUserAuthorizationReqBody {
   code: string;
   client_id: string;
   client_secret: string;
   redirect_uri: string;
-  grant_type: 'authorization_code';
+  grant_type: string;
 }
 
-export interface UserAuthorizationResponseBody {
+export interface FinanceUserAuthorizationResBody {
   access_token: string;
   token_type: string;
   refresh_token: string;
@@ -15,7 +24,7 @@ export interface UserAuthorizationResponseBody {
   user_seq_no: string;
 }
 
-export interface AccountAuthorizationRequestBody {
+export interface FinanceAccountAuthorizationReqBody {
   /** 은행거래고유번호 */
   bank_tran_id: string;
   /** 개설기관 표준코드 */
@@ -31,7 +40,8 @@ export interface AccountAuthorizationRequestBody {
   /** 요청일시 */
   tran_dtime: string;
 }
-export interface AccountAuthorizationResponseBody {
+
+export interface FinanceAccountAuthorizationResBody {
   /** 거래 고유번호 */
   api_tran_id: string;
   /** 거래일시 */

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
-import { KakaoPayProvider } from '@/common/payment';
+import { FinanceProvider, KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
@@ -38,7 +38,6 @@ import {
   PAYMENT_COUPON_COUNT_ZERO,
   PAYMENT_COUPON_DUE_DATE_BEFORE,
   PAYMENT_COUPON_DUE_DATE_EXPIRED,
-  PAYMENT_COUPON_IS_USED,
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
@@ -71,8 +70,13 @@ export class PaymentService {
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
     private readonly userRepository: UserRepository,
-    private readonly settlementRepository: SettlementRepository
+    private readonly settlementRepository: SettlementRepository,
+    private readonly financeProvider: FinanceProvider
   ) {}
+
+  async validateAccount() {
+    return await this.financeProvider.getToken();
+  }
 
   async testKakaoPayment() {
     const result = await this.kakaoPay.preparePayment({

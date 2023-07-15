@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { KakaoPayProvider } from '@/common/payment';
+import { FinanceProvider, KakaoPayProvider } from '@/common/payment';
 import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { FCMEvent } from '@/event/fcm';
@@ -34,6 +34,7 @@ import { PaymentService } from './payment.service';
     UserRepository,
     FCMEvent,
     SettlementRepository,
+    FinanceProvider,
   ],
   controllers: [PaymentController],
   exports: [

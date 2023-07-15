@@ -1,4 +1,4 @@
-import { Body, Get, Post, Response, UseInterceptors } from '@nestjs/common';
+import { Body, Get, Post, Query, Response, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -26,6 +26,35 @@ import { PaymentService } from './payment.service';
 @ApiController('payments', '결제')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
+
+  @Get('/accounts/validate')
+  @RequestApi({
+    summary: {
+      summary: '계좌 유효성 검사하기 ',
+      description: '계좌 유효성 검사하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async validateAccount() {
+    return await this.paymentService.validateAccount();
+  }
+
+  @Get('/accounts')
+  @RequestApi({
+    summary: {
+      summary: '계좌 유효성 검사하기 ',
+      description: '계좌 유효성 검사하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async validateAccountCallback(@Query() query: any) {
+    console.log({ query });
+    return { asdf: 'asdfsa' };
+  }
 
   @Get('/bank-code')
   @RequestApi({
