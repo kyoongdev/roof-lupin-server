@@ -1,8 +1,8 @@
 import { ClassProvider } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
+import { RevalidateApiDecorator } from '../aop/revalidate';
 import { CreateCacheDecorator, DeleteCacheDecorator } from '../cache';
-import { RevalidateApiDecorator } from '../revalidate';
 
 export * from './data.interceptor';
 export * from './response-with-id.interceptor';

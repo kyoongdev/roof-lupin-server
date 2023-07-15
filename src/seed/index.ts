@@ -173,6 +173,18 @@ export const seedDatabase = async (database: PrismaService) => {
             id: testUser.id,
           },
         },
+        spaces: {
+          create: [
+            {
+              space: {
+                connect: {
+                  id: spaces[i].id,
+                },
+              },
+              orderNo: i,
+            },
+          ],
+        },
       },
     });
   }

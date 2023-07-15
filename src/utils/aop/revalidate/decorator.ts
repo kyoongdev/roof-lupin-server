@@ -5,8 +5,8 @@ import axios from 'axios';
 import { AOPDecorator, AOPParams } from '@/interface/aop.interface';
 import type { RevalidateApiKey, RevalidateClientApi } from '@/interface/revalidate.interface';
 
-import { AOP } from '../aop';
-import { createAOPDecorator } from '../aop/utils';
+import { AOP } from '../aop.decorator';
+import { createAOPDecorator } from '../utils';
 
 export const REVALIDATE_API = Symbol('REVALIDATE_API');
 

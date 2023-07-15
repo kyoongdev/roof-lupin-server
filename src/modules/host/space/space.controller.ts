@@ -9,9 +9,9 @@ import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { RentalTypeDTO, UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
-import { RevalidateApi } from '@/utils/revalidate';
 
 import { FindSpacesQuery } from '../dto/query';
 
