@@ -4,6 +4,7 @@ import { HolidayService } from '../holiday/holiday.service';
 import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
 import { LocationRepository } from '../location/location.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
+import { SearchRepository } from '../search/search.repository';
 
 import { RentalTypeController } from './rentalType/rentalType.controller';
 import { RentalTypeRepository } from './rentalType/rentalType.repository';
@@ -22,6 +23,7 @@ import { SpaceService } from './space.service';
     RentalTypeRepository,
     BlockedTimeRepository,
     HolidayService,
+    SearchRepository,
   ],
   controllers: [SpaceController, RentalTypeController],
 })

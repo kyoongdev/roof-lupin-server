@@ -14,79 +14,22 @@ import {
   SEARCH_RECORD_NOT_FOUND,
 } from './exception/errorCode';
 import { SearchException } from './exception/search.exception';
+import { SearchRepository } from './search.repository';
 
 @Injectable()
 export class SearchService {
-  constructor(private readonly database: PrismaService, private readonly spaceRepository: SpaceRepository) {}
+  constructor(private readonly searchRepository: SearchRepository, private readonly spaceRepository: SpaceRepository) {}
 
   async findSearchRecord(id: string) {
-    const searchRecord = await this.database.searchRecord.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!searchRecord) {
-      throw new SearchException(SEARCH_ERROR_CODE.NOT_FOUND(SEARCH_RECORD_NOT_FOUND));
-    }
-    return new SearchRecordDTO(searchRecord);
+    return await this.searchRepository.findSearchRecord(id);
   }
 
   async findSearchRecords(args = {} as Prisma.SearchRecordFindManyArgs) {
-    const searchRecords = await this.database.searchRecord.findMany({
-      ...args,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    return searchRecords.map((searchRecord) => new SearchRecordDTO(searchRecord));
-  }
-
-  async findSearchRecommend(id: string) {
-    const searchRecommend = await this.database.searchRecommend.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!searchRecommend) {
-      throw new SearchException(SEARCH_ERROR_CODE.NOT_FOUND(SEARCH_RECOMMEND_NOT_FOUND));
-    }
-    return new SearchRecommendDTO(searchRecommend);
+    return await this.searchRepository.findSearchRecords(args);
   }
 
   async findSearchRecommends(args = {} as Prisma.SearchRecommendFindManyArgs) {
-    const searchRecommends = await this.database.searchRecommend.findMany({
-      ...args,
-    });
-
-    return searchRecommends.map((searchRecommend) => new SearchRecommendDTO(searchRecommend));
-  }
-
-  async createSearchRecord(userId: string, data: CreateSearchRecordDTO) {
-    const isExist = await this.database.searchRecord.findFirst({
-      where: {
-        userId,
-        content: data.content,
-      },
-    });
-
-    if (!isExist) {
-      const searchRecord = await this.database.searchRecord.create({
-        data: {
-          ...data,
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-        },
-      });
-      return searchRecord.id;
-    }
-
-    return isExist.id;
+    return await this.searchRepository.findSearchRecommends(args);
   }
 
   async deleteSearchRecord(id: string, userId: string) {
@@ -96,37 +39,11 @@ export class SearchService {
       throw new SearchException(SEARCH_ERROR_CODE.FORBIDDEN(SEARCH_RECORD_FORBIDDEN));
     }
 
-    await this.database.searchRecord.delete({
-      where: {
-        id,
-      },
-    });
+    await this.searchRepository.deleteSearchRecord(id, userId);
   }
 
   async deleteAllSearchRecords(userId: string) {
-    await this.database.searchRecord.deleteMany({
-      where: {
-        userId,
-      },
-    });
-  }
-
-  async createSearchRecommend(data: CreateSearchRecommendDTO) {
-    const searchRecommend = await this.database.searchRecommend.create({
-      data,
-    });
-
-    return searchRecommend.id;
-  }
-
-  async deleteSearchRecommend(id: string) {
-    await this.findSearchRecommend(id);
-
-    await this.database.searchRecommend.delete({
-      where: {
-        id,
-      },
-    });
+    await this.searchRepository.deleteAllSearchRecords(userId);
   }
 
   async findMyRecentSpace(userId: string) {
@@ -143,51 +60,9 @@ export class SearchService {
   }
 
   async countMyRecentSpaces(userId: string) {
-    const count = await this.database.recentSpace.count({
+    return await this.searchRepository.countRecentSpaces({
       where: {
         userId,
-      },
-    });
-    return count;
-  }
-
-  async createRecentSpace(userId: string, spaceId: string) {
-    await this.spaceRepository.findSpace(spaceId);
-
-    const count = await this.countMyRecentSpaces(userId);
-
-    if (count === 10) {
-      const target = await this.database.recentSpace.findFirst({
-        where: {
-          userId,
-        },
-        orderBy: {
-          viewedAt: 'asc',
-        },
-      });
-      await this.database.recentSpace.delete({
-        where: {
-          userId_spaceId: {
-            spaceId: target.spaceId,
-            userId: target.userId,
-          },
-        },
-      });
-    }
-
-    await this.database.recentSpace.create({
-      data: {
-        space: {
-          connect: {
-            id: spaceId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-        viewedAt: new Date(),
       },
     });
   }

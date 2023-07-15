@@ -13,11 +13,13 @@ const BASE_SELECT = Prisma.sql`
   sp.startAt as startAt, sp.endAt as endAt,
   sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress,
   COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount
+
 `;
 
 const BASE_JOIN = Prisma.sql`
   LEFT JOIN SpaceInterest si ON  sp.id = si.spaceId 
   LEFT JOIN SpaceReview sr ON sp.id = sr.spaceId
+  LEFT JOIN PublicTransportation pt ON sp.id = pt.spaceId
   INNER JOIN SpaceLocation sl ON sp.id = sl.spaceId
   INNER JOIN SpaceCategory sc ON sp.id = sc.spaceId
   INNER JOIN Category ca ON sc.categoryId = ca.id 

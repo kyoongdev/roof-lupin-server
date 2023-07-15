@@ -4,6 +4,9 @@ import { PagingDTO, Property } from 'wemacu-nestjs';
 import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
 
 export class FindSpacesQuery extends PagingDTO {
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '검색어' } })
+  keyword?: string;
+
   @Property({ apiProperty: { type: 'number', nullable: true, description: '인원수 필터' } })
   userCount?: number;
 
@@ -60,6 +63,37 @@ export class FindSpacesQuery extends PagingDTO {
     }
     return {
       where: {
+        ...(this.keyword && {
+          OR: [
+            {
+              title: {
+                contains: this.keyword,
+              },
+              location: {
+                jibunAddress: {
+                  contains: this.keyword,
+                },
+                roadAddress: {
+                  contains: this.keyword,
+                },
+              },
+              categories: {
+                some: {
+                  category: {
+                    name: {
+                      contains: this.keyword,
+                    },
+                  },
+                },
+              },
+              publicTransportations: {
+                some: {
+                  name: {},
+                },
+              },
+            },
+          ],
+        }),
         ...(this.userCount && {
           minUser: {
             lte: this.userCount,
@@ -129,10 +163,19 @@ export class FindSpacesQuery extends PagingDTO {
     const categoryIdWhere = this.categoryIds
       ? Prisma.sql`AND ca.id IN (${Prisma.join(this.categoryIds.split(','), ',')})`
       : Prisma.empty;
+    const keywordWhere = this.keyword
+      ? Prisma.sql`
+    AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
+    OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
+    OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
+    OR ca.name LIKE '%${Prisma.raw(this.keyword)}%'
+    OR pt.name LIKE '%${Prisma.raw(this.keyword)}%')
+    `
+      : Prisma.empty;
 
     const excludeIds =
       excludeSpaces.length > 0 ? Prisma.sql`AND sp.id NOT IN (${Prisma.join(excludeSpaces, ',')})` : Prisma.empty;
-    const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} `;
+    const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
     return where;
   }
 }

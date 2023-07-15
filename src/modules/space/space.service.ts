@@ -7,6 +7,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { MaxPossibleTime } from '@/interface/space.interface';
 
 import { LocationRepository } from '../location/location.repository';
+import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
@@ -35,7 +36,8 @@ import {
 export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeService: RentalTypeService
+    private readonly rentalTypeService: RentalTypeService,
+    private readonly searchRepository: SearchRepository
   ) {}
 
   async findSpaceIds() {
@@ -55,13 +57,14 @@ export class SpaceService {
     userId?: string
   ) {
     const isDistance = query.sort === 'DISTANCE' || location;
+
     if (isDistance) {
       if (!query.lat && !query.lng && !query.distance) {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
       }
     }
-    const excludeSpaces = await this.getExcludeSpaces(args, date);
 
+    const excludeSpaces = await this.getExcludeSpaces(args, date);
     const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
 
     const sqlPaging = paging.getSqlPaging();

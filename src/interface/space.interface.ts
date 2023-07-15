@@ -17,6 +17,8 @@ export interface PopularSpace extends Omit<Space, 'averageScore'> {
   lng: string;
   roadAddress: string;
   jibunAddress: string;
+  ptName: string;
+  ptTimeTaken: number;
 }
 
 export interface DistanceSpace extends Omit<Space, 'averageScore'> {
@@ -29,6 +31,8 @@ export interface DistanceSpace extends Omit<Space, 'averageScore'> {
   distance: string;
   averageScore: number;
   userInterests: number;
+  ptName: string;
+  ptTimeTaken: number;
 }
 
 export interface MaxPossibleTime {
