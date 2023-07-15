@@ -1,6 +1,5 @@
 import { Controller, Get, Response } from '@nestjs/common';
 
-import axios from 'axios';
 import type { Response as ResponseType } from 'express';
 
 @Controller()

@@ -1,3 +1,5 @@
+import { NestInterceptor } from '@nestjs/common';
+
 export type CreateAOPDecorator = (metadataKey: symbol | string, metadata?: unknown) => MethodDecorator;
 export type ApplyMetaData = <K extends string | symbol = string, V = any>(
   metaDataKey: K,
@@ -27,5 +29,9 @@ export type AOPParams<T extends Function = Function, M = unknown> = {
  * Aspect 선언시 구현이 필요합니다.
  */
 export interface AOPDecorator<T extends Function = Function, M = unknown> {
+  execute(params: AOPParams<T, M>): T;
+}
+
+export interface AOPInterceptorDecorator<T extends Function = Function, M = unknown> extends NestInterceptor {
   execute(params: AOPParams<T, M>): T;
 }

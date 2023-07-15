@@ -5,6 +5,7 @@ import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
+import { RecentSearchApi } from '@/utils/aop/search/decorator';
 import { CreateCache } from '@/utils/cache';
 import { JwtNullableAuthGuard } from '@/utils/guards';
 
@@ -28,6 +29,7 @@ export class HomeController {
 
   @Get('contents')
   @Auth([JwtNullableAuthGuard])
+  // @UseInterceptors(RecentSearchApi())
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠를 가져옵니다.',
