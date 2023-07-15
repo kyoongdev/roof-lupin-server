@@ -80,7 +80,7 @@ export class ReservationRepository {
   }
 
   //TODO: 결제 시스템까지 도입
-  async createReservation(userId: string, data: CreatePaymentDTO) {
+  async createReservation(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
     const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
 
@@ -120,6 +120,7 @@ export class ReservationRepository {
           },
         }),
         vatCost: rest.totalCost - taxCost,
+        isApproved: typeof isApproved === 'boolean' ? isApproved : true,
         ...rest,
       },
     });
