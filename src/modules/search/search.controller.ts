@@ -173,25 +173,4 @@ export class SearchController {
   async getRecentSearchSpaces(@ReqUser() user: RequestUser) {
     return await this.searchService.findMyRecentSpace(user.id);
   }
-
-  @Post('recent/spaces/:spaceId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      description: '최근 검색한 공간 추가',
-      summary: '최근 검색한 공간 추가 - 유저만 사용 가능합니다.',
-    },
-    params: {
-      name: 'spaceId',
-      description: '공간 아이디',
-      required: true,
-      type: 'string',
-    },
-  })
-  @ResponseApi({
-    type: EmptyResponseDTO,
-  })
-  async createRecentSearchSpace(@ReqUser() user: RequestUser, @Param('spaceId') spaceId: string) {
-    return await this.searchService.createRecentSpace(user.id, spaceId);
-  }
 }

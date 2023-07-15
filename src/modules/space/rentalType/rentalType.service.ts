@@ -81,9 +81,7 @@ export class RentalTypeService {
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = isHoliday
-      ? DAY_ENUM.HOLIDAY
-      : getDay(Number(query.year), Number(query.month) - 1, Number(query.day));
+    const targetDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(query.day));
 
     const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
       {
