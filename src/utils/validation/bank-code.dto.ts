@@ -8,8 +8,8 @@ import { BANK_CODE } from '@/common/constants';
 
 import { BaseValidator } from './base-validator';
 
-export const BANK_CODES = Object.keys(BANK_CODE);
-export const BANK_NAMES = Object.values(BANK_CODE);
+export const BANK_CODES = Object.values(BANK_CODE);
+export const BANK_NAMES = Object.keys(BANK_CODE);
 
 @ValidatorConstraint()
 export class BankCodeConstraint implements ValidatorConstraintInterface {
@@ -36,22 +36,9 @@ export const bankNameToCode = (name: string) => {
 };
 
 export const BankCodeRequestTransForm = () => Transform(({ value }) => bankCodeToName(value));
-export const BankCodeResponseTransForm = () => Transform(({ value }) => bankNameToCode(value));
-export const BankCodeResDecorator = (nullable = false) =>
-  applyDecorators(
-    BankCodeResponseTransForm(),
-    ApiProperty({
-      description: '은행 이름',
-      type: 'string',
-      enum: BANK_NAMES,
-      nullable,
-      example: BANK_NAMES.join(' | '),
-    })
-  );
 
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
-    BankCodeRequestTransForm(),
     BankCodeValidation(),
     ApiProperty({
       description: '은행 코드',

@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { BankCodeResDecorator } from '@/utils/validation';
+import { BankCodeReqDecorator } from '@/utils/validation';
 
 export interface UpdateHostAccountProps {
   ownerName?: string;
@@ -14,7 +14,7 @@ export class UpdateHostAccountDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '사업주 이름' } })
   ownerName?: string;
 
-  @BankCodeResDecorator(true)
+  @BankCodeReqDecorator(true)
   bankCode?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '사업자등록번호' } })

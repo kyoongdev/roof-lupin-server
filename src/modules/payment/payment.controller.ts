@@ -70,8 +70,8 @@ export class PaymentController {
   async getBankCode() {
     return Object.entries(BANK_CODE).map(([key, value]) => {
       return new BankCodeDTO({
-        code: key,
-        name: value,
+        code: value,
+        name: key,
       });
     });
   }
