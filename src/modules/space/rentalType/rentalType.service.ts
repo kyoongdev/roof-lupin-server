@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { range } from 'lodash';
+import { flatMap, flatten, range } from 'lodash';
 
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
@@ -108,7 +108,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes);
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
@@ -158,7 +158,7 @@ export class RentalTypeService {
         day: query.day,
       },
     });
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes);
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
   }
 
   async getPossibleRentalTypesBySpaceIdWithMonth(
@@ -218,6 +218,17 @@ export class RentalTypeService {
     blockedTimes: BlockedTimeDTO[],
     targetDay?: string
   ) {
+    const timeReservations = flatten(
+      rentalTypes
+        .filter((rentalType) => rentalType.rentalType === RENTAL_TYPE_ENUM.TIME)
+        .map((rentalType) => rentalType.reservations)
+    ).filter(Boolean);
+    const packageReservations = flatten(
+      rentalTypes
+        .filter((rentalType) => rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE)
+        .map((rentalType) => rentalType.reservations)
+    ).filter(Boolean);
+
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
         if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
@@ -234,6 +245,7 @@ export class RentalTypeService {
             })),
           ];
 
+          //INFO: true로 초기화
           next.timeCostInfos.forEach((timeInfo) => {
             timeCostInfos.forEach((info) => {
               if (info.time === timeInfo.time) {
@@ -242,19 +254,31 @@ export class RentalTypeService {
               }
             });
           });
-          next.reservations.forEach((reservation) => {
+
+          //INFO: 이미 예약된 시간 정보
+          [...timeReservations, ...packageReservations].forEach((reservation) => {
             if (targetDay === reservation.day) {
-              reservation.rentalTypes.forEach((rentalType) => {
-                range(rentalType.startAt, rentalType.endAt).forEach((hour) => {
-                  timeCostInfos.forEach((info) => {
-                    if (info.time === hour) {
-                      info.isPossible = false;
-                    }
-                  });
+              reservation.rentalTypes.forEach((reservedRentalType) => {
+                const startAt =
+                  reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
+                const endAt =
+                  reservedRentalType.startAt >= reservedRentalType.endAt
+                    ? reservedRentalType.endAt + 24
+                    : reservedRentalType.endAt;
+                range(startAt, endAt).forEach((hour) => {
+                  const index = timeCostInfos.findIndex((timeCostInfo) =>
+                    hour >= 24 ? timeCostInfo.time === hour - 24 : timeCostInfo.time === hour
+                  );
+
+                  if (index !== -1) {
+                    timeCostInfos[index].isPossible = false;
+                  }
                 });
               });
             }
           });
+
+          //INFO: 막아둔 날짜는 block
           blockedTimes.forEach((blockedTime) => {
             if (targetDay === blockedTime.day)
               for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
@@ -268,13 +292,29 @@ export class RentalTypeService {
           };
         } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           let isPossible = true;
-          if (targetDay) {
-            next.reservations.forEach((reservation) => {
-              if (targetDay === reservation.day) isPossible = false;
-            });
-          } else {
-            isPossible = next.reservations.length === 0;
-          }
+          [...timeReservations, ...packageReservations].forEach((reservation) => {
+            if (targetDay === reservation.day) {
+              reservation.rentalTypes.forEach((reservedRentalType) => {
+                if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+                  isPossible = !(
+                    next.startAt === reservedRentalType.startAt && next.endAt === reservedRentalType.endAt
+                  );
+                } else {
+                  const startAt =
+                    reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
+                  const endAt =
+                    reservedRentalType.startAt >= reservedRentalType.endAt
+                      ? reservedRentalType.endAt + 24
+                      : reservedRentalType.endAt;
+                  const nextStartAt = next.startAt;
+                  const nextEndAt = next.startAt >= next.endAt ? next.endAt + 24 : next.endAt;
+                  range(startAt, endAt + 1).forEach((hour) => {
+                    if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
+                  });
+                }
+              });
+            }
+          });
 
           blockedTimes.forEach((blockedTime) => {
             if (targetDay === blockedTime.day && blockedTime.startAt <= next.endAt && blockedTime.endAt >= next.startAt)

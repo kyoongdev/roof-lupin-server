@@ -119,9 +119,9 @@ export class RentalTypeRepository {
           name: rentalType.name,
           rentalType: rentalType.rentalType,
           timeCostInfo: rentalType.timeCostInfo,
-          reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) =>
-            ReservationDTO.generateReservationDTO(reservation)
-          ),
+          reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
+            return ReservationDTO.generateReservationDTO(reservation);
+          }),
           baseHour: rentalType.baseHour,
           endAt: rentalType.endAt,
           startAt: rentalType.startAt,

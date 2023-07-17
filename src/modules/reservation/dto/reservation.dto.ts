@@ -39,7 +39,7 @@ export class ReservationDTO extends BaseReservationDTO {
     const { rentalTypes, ...rest } = reservation;
     const { space } = rentalTypes[0].rentalType;
     const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
-
+    console.log(reservation.year, reservation.month, reservation.day);
     return {
       ...rest,
       user: rest.user,
