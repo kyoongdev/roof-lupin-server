@@ -98,4 +98,8 @@ export class CreatePaymentDTO {
       this.reservationId = props.reservationId;
     }
   }
+
+  // validateProperties(target: CreatePaymentDTO) {
+
+  // }
 }

@@ -225,7 +225,7 @@ export class AuthService {
       ignoreExpiration: true,
     }) as TokenPayload | null | undefined;
     const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken) as TokenPayload | null | undefined;
-    await this.sleep(10000);
+
     if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
     if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
 
