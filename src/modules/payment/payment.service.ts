@@ -702,7 +702,7 @@ export class PaymentService {
 
     await Promise.all(
       (data as CreatePaymentDTO).rentalTypes.map(async (rentalType) => {
-        if (rentalType.additionalServices.length > 0) {
+        if (rentalType.additionalServices && rentalType.additionalServices.length > 0) {
           const additionalServices = await this.rentalTypeRepository.findRentalTypeAdditionalServices(
             rentalType.rentalTypeId
           );

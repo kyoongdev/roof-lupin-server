@@ -91,7 +91,7 @@ export class ReservationRepository {
   async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
-    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices));
+    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await this.database.reservation.create({
       data: {
@@ -139,7 +139,7 @@ export class ReservationRepository {
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
-    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices));
+    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await database.reservation.create({
       data: {
@@ -188,7 +188,10 @@ export class ReservationRepository {
       where: {
         id,
       },
-      data,
+      data: {
+        ...data,
+        approvedAt: data.isApproved ? new Date() : null,
+      },
     });
   }
 

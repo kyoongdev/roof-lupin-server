@@ -282,10 +282,11 @@ model Reservation {
 
   userCount Int
 
-  orderId       String? @unique //INFO: 주문 번호
-  orderResultId String? @unique //INFO: 주문 결과 번호 
-  payMethod     Int?    @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
-  isApproved    Boolean @default(true) //INFO: 결제 승인 여부
+  orderId       String?   @unique //INFO: 주문 번호
+  orderResultId String?   @unique //INFO: 주문 결과 번호 
+  payMethod     Int?      @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
+  isApproved    Boolean   @default(true) //INFO: 결제 승인 여부
+  approvedAt    DateTime?
 
   userName        String?
   userPhoneNumber String? @db.VarChar(11)

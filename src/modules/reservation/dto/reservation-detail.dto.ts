@@ -11,6 +11,7 @@ export interface ReservationDetailDTOProps extends ReservationDTOProps {
   payedAt?: Date;
   refundCost?: number;
   isApproved: boolean;
+  approvedAt?: Date;
 }
 
 export class ReservationDetailDTO extends ReservationDTO {
@@ -32,6 +33,9 @@ export class ReservationDetailDTO extends ReservationDTO {
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '승인일' } })
+  approvedAt?: Date;
+
   constructor(props: ReservationDetailDTOProps) {
     super(props);
     this.orderId = props.orderId;
@@ -40,6 +44,7 @@ export class ReservationDetailDTO extends ReservationDTO {
     this.payedAt = props.payedAt;
     this.refundCost = props.refundCost;
     this.isApproved = props.isApproved;
+    this.approvedAt = props.approvedAt;
   }
 
   static generateReservationDetailDTO(reservation: CommonReservation): ReservationDetailDTOProps {

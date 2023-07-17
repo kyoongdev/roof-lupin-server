@@ -16,6 +16,7 @@ export const reservationInclude: Prisma.ReservationInclude = {
               rentalType: true,
             },
           },
+          additionalServices: true,
         },
       },
     },

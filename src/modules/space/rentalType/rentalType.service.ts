@@ -175,6 +175,7 @@ export class RentalTypeService {
     await Promise.all(
       range(1, fullDays + 1).map(async (day) => {
         const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, `${day}`);
+
         const parsedRentalType = rentalTypes
           .map((rentalType) => {
             if (rentalType.day === DAY_ENUM.HOLIDAY && isHoliday) {
