@@ -2,6 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { DayResDecorator } from '@/utils/validation/day.validation';
 
+import { AdditionalServiceDTO, AdditionalServiceDTOProps } from '../additionalService';
 import { RENTAL_TYPE_KEYS, RentalTypeResTransForm } from '../validation/rental-type.validation';
 
 export interface PossiblePackageDTOProps {
@@ -15,6 +16,7 @@ export interface PossiblePackageDTOProps {
   day: number;
   spaceId: string;
   isPossible: boolean;
+  additionalServices: AdditionalServiceDTOProps[];
 }
 
 export class PossiblePackageDTO {
@@ -49,6 +51,9 @@ export class PossiblePackageDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 id' } })
   spaceId: string;
 
+  @Property({ apiProperty: { type: AdditionalServiceDTO, isArray: true, description: '추가 서비스 목록' } })
+  additionalServices: AdditionalServiceDTO[];
+
   constructor(props: PossiblePackageDTOProps) {
     this.id = props.id;
     this.name = props.name;
@@ -60,5 +65,8 @@ export class PossiblePackageDTO {
     this.endAt = props.endAt;
     this.spaceId = props.spaceId;
     this.isPossible = props.isPossible;
+    this.additionalServices = props.additionalServices.map(
+      (additionalService) => new AdditionalServiceDTO(additionalService)
+    );
   }
 }

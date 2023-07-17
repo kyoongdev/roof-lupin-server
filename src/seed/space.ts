@@ -127,6 +127,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               startAt: 14,
               endAt: 24,
               day: 1,
+              additionalServices: {
+                create: {
+                  name: '바베큐',
+                  cost: 10000,
+                },
+              },
               timeCostInfo: {
                 create: [
                   {
@@ -180,6 +186,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               day: 1,
               rentalType: 2,
               baseHour: 5,
+              additionalServices: {
+                create: {
+                  name: '바베큐',
+                  cost: 10000,
+                },
+              },
             },
             {
               baseCost: 150000,
@@ -189,15 +201,16 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               day: 1,
               rentalType: 2,
               baseHour: 5,
+              additionalServices: {
+                create: {
+                  name: '바베큐',
+                  cost: 10000,
+                },
+              },
             },
           ],
         },
-        additionalServices: {
-          create: {
-            name: '바베큐',
-            cost: 10000,
-          },
-        },
+
         host: {
           connect: {
             id: realHost.id,
@@ -603,6 +616,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 1,
             day: 1,
             baseHour: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
             timeCostInfo: {
               create: [
                 {
@@ -648,6 +667,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 1,
             day: 2,
             baseHour: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
             timeCostInfo: {
               create: [
                 {
@@ -693,6 +718,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 1,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
           {
             baseCost: 100000,
@@ -702,6 +733,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
         ],
       },
@@ -928,6 +965,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 1,
             day: 1,
             baseHour: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
             timeCostInfo: {
               create: [
                 {
@@ -965,51 +1008,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               ],
             },
           },
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여2',
-            rentalType: 1,
-            day: 2,
-            baseHour: 2,
-            timeCostInfo: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
+
           {
             baseCost: 100000,
             startAt: 13,
@@ -1018,6 +1017,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 1,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
           {
             baseCost: 100000,
@@ -1027,6 +1032,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
         ],
       },
@@ -1246,6 +1257,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 1,
             day: 1,
             baseHour: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
             timeCostInfo: {
               create: [
                 {
@@ -1283,51 +1300,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
               ],
             },
           },
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여2',
-            rentalType: 1,
-            day: 2,
-            baseHour: 2,
-            timeCostInfo: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
+
           {
             baseCost: 100000,
             startAt: 13,
@@ -1336,6 +1309,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 1,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
           {
             baseCost: 100000,
@@ -1345,6 +1324,12 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             rentalType: 2,
             baseHour: 6,
             day: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
           },
         ],
       },

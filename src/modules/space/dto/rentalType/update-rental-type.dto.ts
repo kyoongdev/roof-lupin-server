@@ -2,6 +2,12 @@ import { Property } from 'wemacu-nestjs';
 
 import { DayReqDecorator } from '@/utils/validation/day.validation';
 
+import {
+  AdditionalServiceDTO,
+  AdditionalServiceDTOProps,
+  UpdateAdditionalServiceDTO,
+  UpdateAdditionalServiceDTOProps,
+} from '../additionalService';
 import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
 import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
@@ -14,6 +20,7 @@ export interface UpdateRentalTypeDTOProps {
   endAt?: number;
   day?: number;
   timeCostInfos?: UpdateTimeCostInfoDTOProps[];
+  additionalServices?: UpdateAdditionalServiceDTOProps[];
 }
 
 export class UpdateRentalTypeDTO {
@@ -41,6 +48,11 @@ export class UpdateRentalTypeDTO {
   @Property({ apiProperty: { type: UpdateTimeCostInfoDTO, isArray: true, nullable: true, description: '시간별 가격' } })
   timeCostInfos?: UpdateTimeCostInfoDTO[];
 
+  @Property({
+    apiProperty: { type: UpdateAdditionalServiceDTO, nullable: true, isArray: true, description: '추가 서비스 목록' },
+  })
+  additionalServices: UpdateAdditionalServiceDTO[];
+
   constructor(props?: UpdateRentalTypeDTOProps) {
     if (props) {
       this.name = props.name;
@@ -53,6 +65,10 @@ export class UpdateRentalTypeDTO {
       this.timeCostInfos = props.timeCostInfos
         ?.map((timeCostInfo) => new UpdateTimeCostInfoDTO(timeCostInfo))
         .sort((a, b) => a.time - b.time);
+
+      this.additionalServices = props.additionalServices.map(
+        (additionalService) => new UpdateAdditionalServiceDTO(additionalService)
+      );
     }
   }
 }

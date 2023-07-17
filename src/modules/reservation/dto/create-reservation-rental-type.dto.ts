@@ -1,11 +1,17 @@
 import { Property } from 'wemacu-nestjs';
 
+import {
+  AdditionalServiceReservationDTO,
+  AdditionalServiceReservationDTOProps,
+} from '@/modules/space/dto/additionalService';
+
 import { TimeValidation } from './validation';
 
 export interface CreateReservationRentalTypeDTOProps {
   rentalTypeId: string;
   startAt: number;
   endAt: number;
+  additionalServices?: AdditionalServiceReservationDTOProps[];
 }
 
 export class CreateReservationRentalTypeDTO {
@@ -20,11 +26,19 @@ export class CreateReservationRentalTypeDTO {
   @Property({ apiProperty: { type: 'number', description: '대여 종료 시간' } })
   endAt: number;
 
+  @Property({
+    apiProperty: { type: AdditionalServiceReservationDTO, isArray: true, nullable: true, description: '추가 서비스들' },
+  })
+  additionalServices?: AdditionalServiceReservationDTO[];
+
   constructor(props?: CreateReservationRentalTypeDTOProps) {
     if (props) {
       this.rentalTypeId = props.rentalTypeId;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
+      this.additionalServices = props.additionalServices?.map(
+        (service) => new AdditionalServiceReservationDTO(service)
+      );
     }
   }
 }

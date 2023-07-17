@@ -1,10 +1,8 @@
 import type {
-  PublicTransportation,
+  AdditionalService,
   RentalType,
   Reservation,
   ReservationRentalType,
-  Space,
-  SpaceLocation,
   SpaceReview,
   TimeCostInfo,
   User,
@@ -20,6 +18,7 @@ export interface CommonReservation extends Reservation {
 
 export interface CommonRentalType extends RentalType {
   timeCostInfo: TimeCostInfo[];
+  additionalServices: AdditionalService[];
   space: CommonSpace;
 }
 

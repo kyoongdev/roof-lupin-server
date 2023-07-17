@@ -700,14 +700,23 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
     }
 
-    if (data['additionalServices']) {
-      (data as CreatePaymentDTO).additionalServices.forEach((service) => {
-        const isExist = space.additionalServices.find((additionalService) => additionalService.id === service.id);
-        if (isExist) {
-          additionalCost += isExist.cost * service.count;
+    await Promise.all(
+      (data as CreatePaymentDTO).rentalTypes.map(async (rentalType) => {
+        if (rentalType.additionalServices.length > 0) {
+          const additionalServices = await this.rentalTypeRepository.findRentalTypeAdditionalServices(
+            rentalType.rentalTypeId
+          );
+
+          rentalType.additionalServices.forEach((service) => {
+            if (additionalServices.map((service) => service.id).includes(service.id)) {
+              additionalCost +=
+                additionalServices.find((additionalService) => additionalService.id === service.id).cost *
+                service.count;
+            }
+          });
         }
-      });
-    }
+      })
+    );
     if (space.overflowUserCount < data.userCount) {
       const userCount = data.userCount - space.overflowUserCount;
       additionalCost += space.overflowUserCost * userCount;

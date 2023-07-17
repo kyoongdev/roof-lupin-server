@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
+import { flatMap } from 'lodash';
 
 import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
@@ -86,41 +87,11 @@ export class ReservationRepository {
     return reservations.map((reservation) => new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)));
   }
 
-  // async prepareReservation(userId: string, data: CreateReservationDTO) {
-  //   const { rentalTypes, spaceId, ...rest } = data;
-  //   const taxCost = Math.floor(rest.totalCost / 1.1);
-  //   const reservation = await this.database.reservation.create({
-  //     data: {
-  //       user: {
-  //         connect: {
-  //           id: userId,
-  //         },
-  //       },
-  //       rentalTypes: {
-  //         create: rentalTypes.map((rentalType) => ({
-  //           endAt: rentalType.endAt,
-  //           startAt: rentalType.startAt,
-  //           rentalType: {
-  //             connect: {
-  //               id: rentalType.rentalTypeId,
-  //             },
-  //           },
-  //         })),
-  //       },
-
-  //       vatCost: rest.totalCost - taxCost,
-  //       isApproved: false,
-
-  //       ...rest,
-  //     },
-  //   });
-  //   return reservation.id;
-  // }
-
   //TODO: 결제 시스템까지 도입
   async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
-    const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
+    const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
+    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices));
 
     const reservation = await this.database.reservation.create({
       data: {
@@ -145,7 +116,7 @@ export class ReservationRepository {
             connect: userCouponIds.map((id) => ({ id })),
           },
         }),
-        ...(additionalServices && {
+        ...(additionalServices.length > 0 && {
           additionalServices: {
             create: additionalServices.map((service) => ({
               additionalService: {
@@ -166,8 +137,9 @@ export class ReservationRepository {
   }
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
-    const { rentalTypes, spaceId, userCouponIds, additionalServices, ...rest } = data;
+    const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
     const taxCost = Math.floor(rest.totalCost / 1.1);
+    const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices));
 
     const reservation = await database.reservation.create({
       data: {
@@ -192,7 +164,7 @@ export class ReservationRepository {
             connect: userCouponIds.map((id) => ({ id })),
           },
         }),
-        ...(additionalServices && {
+        ...(additionalServices.length > 0 && {
           additionalServices: {
             create: additionalServices.map((service) => ({
               additionalService: {

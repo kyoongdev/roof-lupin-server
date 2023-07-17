@@ -132,6 +132,7 @@ CREATE TABLE `Space` (
     `minSize` SMALLINT NOT NULL DEFAULT 0,
     `startAt` VARCHAR(2) NOT NULL,
     `endAt` VARCHAR(2) NOT NULL,
+    `deposit` MEDIUMINT NULL,
     `isImmediateReservation` BOOLEAN NOT NULL DEFAULT false,
     `isPublic` BOOLEAN NOT NULL DEFAULT false,
     `isApproved` BOOLEAN NOT NULL DEFAULT false,
@@ -149,7 +150,7 @@ CREATE TABLE `AdditionalService` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(50) NOT NULL,
     `cost` MEDIUMINT NOT NULL,
-    `spaceId` VARCHAR(191) NOT NULL,
+    `rentalTypeId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -245,8 +246,8 @@ CREATE TABLE `Reservation` (
     `orderResultId` VARCHAR(191) NULL,
     `payMethod` TINYINT NULL,
     `isApproved` BOOLEAN NOT NULL DEFAULT true,
-    `userName` VARCHAR(191) NOT NULL,
-    `userPhoneNumber` VARCHAR(11) NOT NULL,
+    `userName` VARCHAR(191) NULL,
+    `userPhoneNumber` VARCHAR(11) NULL,
     `userId` VARCHAR(191) NOT NULL,
     `settlementId` VARCHAR(191) NULL,
     `payedAt` DATETIME(3) NULL,
@@ -257,8 +258,6 @@ CREATE TABLE `Reservation` (
     UNIQUE INDEX `Reservation_id_key`(`id`),
     UNIQUE INDEX `Reservation_orderId_key`(`orderId`),
     UNIQUE INDEX `Reservation_orderResultId_key`(`orderResultId`),
-    UNIQUE INDEX `Reservation_userName_key`(`userName`),
-    UNIQUE INDEX `Reservation_userPhoneNumber_key`(`userPhoneNumber`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -339,6 +338,7 @@ CREATE TABLE `SpaceQnAAnswer` (
     `content` MEDIUMTEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
     `spaceQnAId` VARCHAR(191) NOT NULL,
     `hostId` VARCHAR(191) NOT NULL,
 
@@ -480,7 +480,7 @@ CREATE TABLE `Host` (
 CREATE TABLE `HostAccount` (
     `id` VARCHAR(191) NOT NULL,
     `ownerName` VARCHAR(20) NOT NULL,
-    `bankName` VARCHAR(5) NOT NULL,
+    `bankCode` CHAR(3) NOT NULL,
     `businessRegistrationNumber` CHAR(10) NOT NULL,
     `account` VARCHAR(40) NOT NULL,
     `accountOwner` VARCHAR(20) NOT NULL,
@@ -770,7 +770,7 @@ ALTER TABLE `RankingSpaces` ADD CONSTRAINT `RankingSpaces_rankingId_fkey` FOREIG
 ALTER TABLE `Space` ADD CONSTRAINT `Space_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `AdditionalService` ADD CONSTRAINT `AdditionalService_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `AdditionalService` ADD CONSTRAINT `AdditionalService_rentalTypeId_fkey` FOREIGN KEY (`rentalTypeId`) REFERENCES `RentalType`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `RecentSpace` ADD CONSTRAINT `RecentSpace_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

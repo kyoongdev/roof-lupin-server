@@ -168,7 +168,6 @@ model Space {
   sizes                 SpaceSize[]
   recentSpaces          RecentSpace[]
   blockedTimes          BlockedTime[]
-  additionalServices    AdditionalService[]
   exhibitions           ExhibitionSpace[]
   curations             CurationSpace[]
   contentCategories     ContentCategorySpace[]
@@ -181,9 +180,9 @@ model AdditionalService {
   name String @db.VarChar(50)
   cost Int    @db.MediumInt
 
-  spaceId      String
-  space        Space                       @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reservations ReservedAdditionalService[]
+  RentalType   RentalType                  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rentalTypeId String
 }
 
 model RecentSpace {
@@ -229,8 +228,9 @@ model RentalType {
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  timeCostInfo TimeCostInfo[]
-  reservations ReservationRentalType[]
+  timeCostInfo       TimeCostInfo[]
+  reservations       ReservationRentalType[]
+  additionalServices AdditionalService[]
 }
 
 //INFO: 시간별 예약 추가 정보

@@ -7,6 +7,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationRentalType, CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
+import { AdditionalServiceDTO } from '../dto/additionalService';
 import {
   CreateRentalTypeDTO,
   RentalTypeDTO,
@@ -21,6 +22,23 @@ import { SpaceException } from '../exception/space.exception';
 export class RentalTypeRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async findRentalTypeAdditionalServices(id: string) {
+    const rentalType = await this.database.rentalType.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        additionalServices: true,
+      },
+    });
+
+    if (!rentalType) {
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+    }
+
+    return rentalType.additionalServices.map((service) => new AdditionalServiceDTO(service));
+  }
+
   async findRentalType(id: string) {
     const rentalType = await this.database.rentalType.findUnique({
       where: {
@@ -32,6 +50,7 @@ export class RentalTypeRepository {
             time: 'asc',
           },
         },
+        additionalServices: true,
       },
     });
 
@@ -44,6 +63,7 @@ export class RentalTypeRepository {
 
   async findRentalTypes(args = {} as Prisma.RentalTypeFindManyArgs) {
     const rentalTypes = await this.database.rentalType.findMany({
+      ...args,
       where: {
         ...args.where,
       },
@@ -53,8 +73,8 @@ export class RentalTypeRepository {
             time: 'asc',
           },
         },
+        additionalServices: true,
       },
-      ...args,
     });
 
     return rentalTypes.map((rentalType) => new RentalTypeDTO(rentalType));
@@ -65,6 +85,7 @@ export class RentalTypeRepository {
     reservationArgs = {} as Prisma.ReservationFindManyArgs
   ) {
     const rentalTypes = await this.database.rentalType.findMany({
+      ...args,
       where: {
         ...args.where,
       },
@@ -74,6 +95,7 @@ export class RentalTypeRepository {
             time: 'asc',
           },
         },
+        additionalServices: true,
         reservations: {
           where: {
             reservation: {
@@ -87,7 +109,6 @@ export class RentalTypeRepository {
           },
         },
       },
-      ...args,
     });
 
     return rentalTypes.map(
@@ -106,6 +127,7 @@ export class RentalTypeRepository {
           startAt: rentalType.startAt,
           spaceId: rentalType.spaceId,
           day: rentalType.day,
+          additionalServices: rentalType.additionalServices,
         })
     );
   }
@@ -116,6 +138,7 @@ export class RentalTypeRepository {
         id,
       },
       include: {
+        additionalServices: true,
         timeCostInfo: {
           orderBy: {
             time: 'asc',
@@ -173,7 +196,7 @@ export class RentalTypeRepository {
         const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
         return {
           ...rest,
-          rentalTypes: (rentalTypes as CommonReservationRentalType[]).map((rentalType) => rentalType),
+          rentalTypes: rentalTypes.map((rentalType) => rentalType),
           space: {
             ...space,
             reviewCount: space.reviews.length,
@@ -188,6 +211,7 @@ export class RentalTypeRepository {
       endAt: rentalType.endAt,
       startAt: rentalType.startAt,
       spaceId: rentalType.spaceId,
+      additionalServices: rentalType.additionalServices,
     });
   }
 
@@ -202,6 +226,7 @@ export class RentalTypeRepository {
             time: 'asc',
           },
         },
+        additionalServices: true,
       },
     });
 
@@ -211,7 +236,7 @@ export class RentalTypeRepository {
   async createRentalTypes(prisma: TransactionPrisma, spaceId: string, data: CreateRentalTypeDTO[]) {
     await Promise.all(
       data.map(async (rentalType) => {
-        const { timeCostInfos, ...rest } = rentalType;
+        const { timeCostInfos, additionalServices, ...rest } = rentalType;
         const createArgs: Prisma.RentalTypeCreateArgs = {
           data: {
             ...rest,
@@ -219,6 +244,9 @@ export class RentalTypeRepository {
               connect: {
                 id: spaceId,
               },
+            },
+            additionalServices: {
+              create: additionalServices.map((service) => service),
             },
           },
         };
@@ -236,7 +264,7 @@ export class RentalTypeRepository {
   }
 
   async updateRentalType(rentalTypeId: string, data: UpdateRentalTypeDTO) {
-    const { timeCostInfos, ...rest } = data;
+    const { timeCostInfos, additionalServices, ...rest } = data;
 
     const updateArgs: Prisma.RentalTypeUpdateArgs = {
       where: {
@@ -246,6 +274,19 @@ export class RentalTypeRepository {
         ...rest,
       },
     };
+
+    if (additionalServices) {
+      updateArgs.data = {
+        ...updateArgs.data,
+        additionalServices: {
+          deleteMany: {
+            rentalTypeId,
+          },
+          create: additionalServices.map((service) => service),
+        },
+      };
+    }
+
     if (timeCostInfos) {
       updateArgs.data = {
         ...updateArgs.data,

@@ -6,7 +6,6 @@ import { CreateLocationDTO } from '@/modules/location/dto';
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
-import { CreateAdditionalServiceDTO } from './additionalService';
 import { CreateSpaceCategoryDTO } from './category';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
@@ -102,11 +101,6 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateSizeDTO, nullable: true, isArray: true, description: '면적' } })
   sizes?: CreateSizeDTO[];
 
-  @Property({
-    apiProperty: { type: CreateAdditionalServiceDTO, isArray: true, nullable: true, description: '추가 서비스' },
-  })
-  additionalServices?: CreateAdditionalServiceDTO[];
-
   constructor(props?: UpdateSpaceDTOProps) {
     if (props) {
       this.title = props.title;
@@ -137,9 +131,6 @@ export class UpdateSpaceDTO {
         (transportation) => new CreateTransportationDTO(transportation)
       );
       this.sizes = props.sizes.map((size) => new CreateSizeDTO(size));
-      this.additionalServices = props.additionalServices.map(
-        (additionalService) => new CreateAdditionalServiceDTO(additionalService)
-      );
     }
   }
 

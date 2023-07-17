@@ -7,7 +7,6 @@ import { LocationDTO, LocationDTOProps } from '@/modules/location/dto';
 import { BestPhotoDTO, BestPhotoDTOProps } from '@/modules/review/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
-import { AdditionalServiceDTO, AdditionalServiceDTOProps } from './additionalService';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
 import { BuildingDTO, type BuildingDTOProps } from './facility';
@@ -48,7 +47,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   sizes: SizeDTOProps[];
   bestPhotos: BestPhotoDTOProps[];
   reviews: ReviewDTOProps[];
-  additionalServices: AdditionalServiceDTOProps[];
 }
 
 export class SpaceDetailDTO {
@@ -142,9 +140,6 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: BestPhotoDTO, isArray: true, description: '베스트 포토' } })
   bestPhotos: BestPhotoDTO[];
 
-  @Property({ apiProperty: { type: AdditionalServiceDTO, isArray: true, description: '추가 서비스 목록' } })
-  additionalServices: AdditionalServiceDTO[];
-
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -178,8 +173,5 @@ export class SpaceDetailDTO {
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
     this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
-    this.additionalServices = props.additionalServices.map(
-      (additionalService) => new AdditionalServiceDTO(additionalService)
-    );
   }
 }

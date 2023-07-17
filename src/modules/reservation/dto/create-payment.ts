@@ -24,7 +24,7 @@ export interface CreatePaymentDTOProps {
   rentalTypes: CreateReservationRentalTypeDTOProps[];
   spaceId: string;
   userCouponIds?: string[];
-  additionalServices?: AdditionalServiceReservationDTOProps[];
+
   reservationId?: string;
 }
 
@@ -69,11 +69,6 @@ export class CreatePaymentDTO {
   userCouponIds?: string[];
 
   @Property({
-    apiProperty: { type: AdditionalServiceReservationDTO, isArray: true, nullable: true, description: '추가 서비스들' },
-  })
-  additionalServices?: AdditionalServiceReservationDTO[];
-
-  @Property({
     apiProperty: { type: 'string', nullable: true, description: '승인결제 예약 id' },
   })
   reservationId?: string;
@@ -92,13 +87,12 @@ export class CreatePaymentDTO {
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.userCouponIds = props.userCouponIds;
-      this.additionalServices = props.additionalServices?.map(
-        (service) => new AdditionalServiceReservationDTO(service)
-      );
+
       this.reservationId = props.reservationId;
     }
   }
 
+  //TODO: 예약 승인 신청하고 다시 요청할 때 validate
   // validateProperties(target: CreatePaymentDTO) {
 
   // }
