@@ -42,6 +42,7 @@ import {
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
+  PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
   PAYMENT_INTERNAL_SERVER_ERROR,
   PAYMENT_MERCHANT_UID_BAD_REQUEST,
   PAYMENT_NOT_APPROVED,
@@ -94,11 +95,12 @@ export class PaymentService {
     const space = await this.spaceRepository.findSpace(data.spaceId);
     await this.validatePayment(data, space);
 
-    if (!space.isImmediateReservation) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
+    if (space.isImmediateReservation) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_REQUIRED));
     }
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
+
     return reservation;
   }
 
@@ -112,6 +114,7 @@ export class PaymentService {
 
       return reservation;
     } else {
+      console.log(space.isImmediateReservation);
       if (!space.isImmediateReservation) {
         throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
       }
@@ -670,14 +673,17 @@ export class PaymentService {
             const currentDate = new Date();
             currentDate.setUTCHours(0, 0, 0, 0);
 
-            if (usageDateStart > currentDate.getTime()) {
-              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
-            }
+            //INFO: 즉시 예약일 때만 쿠폰 검증
+            if (!data.reservationId) {
+              if (usageDateStart > currentDate.getTime()) {
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
+              }
 
-            if (usageDateEnd < currentDate.getTime()) {
-              await this.couponRepository.updateUserCoupon(isExist.id, { count: isExist.count - 1 });
+              if (usageDateEnd < currentDate.getTime()) {
+                await this.couponRepository.updateUserCoupon(isExist.id, { count: isExist.count - 1 });
 
-              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+              }
             }
 
             if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {

@@ -4,6 +4,8 @@ import type { Response as ResponseType } from 'express';
 
 @Controller()
 export class AppController {
+  private kakaoBizUrl = 'https://stg-web.bizmsg.kakaoenterprise.com';
+
   @Get('/health')
   healthCheck(@Response() response: ResponseType) {
     response.status(200).json({ status: 'HEALTHY' });

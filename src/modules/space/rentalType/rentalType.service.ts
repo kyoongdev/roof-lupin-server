@@ -197,7 +197,7 @@ export class RentalTypeService {
         const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, `${day}`);
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
-          result.time.timeCostInfos.every((item) => !item.isPossible);
+          (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
         const data: PossibleRentalTypeByMonthDTOProps = {
           day: `${day}`,

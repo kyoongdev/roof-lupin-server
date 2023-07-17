@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
@@ -23,7 +24,7 @@ export class ReservationService {
     private readonly rentalTypeRepository: RentalTypeRepository
   ) {}
 
-  async findMyPagingReservations(paging: PagingDTO, userId: string) {
+  async findMyPagingReservations(paging: PagingDTO, userId: string, args = {} as Prisma.ReservationFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reservationRepository.countReservations({
       where: {
@@ -35,6 +36,7 @@ export class ReservationService {
       where: {
         userId,
         deletedAt: null,
+        ...args.where,
       },
       skip,
       take,

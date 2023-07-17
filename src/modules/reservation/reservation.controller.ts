@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -17,6 +17,7 @@ import {
   ReservationDTO,
   UpdateReservationDTO,
 } from './dto';
+import { FindReservationQuery } from './dto/query';
 import { ReservationService } from './reservation.service';
 
 @ApiController('reservations', '예약하기')
@@ -33,16 +34,17 @@ export class ReservationController {
       description: '내 예약 조회',
       summary: '내 예약 조회 - 유저만 사용가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReservationDTO,
     isPaging: true,
   })
-  async getMyReservations(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
-    return await this.reservationService.findMyPagingReservations(paging, user.id);
+  async getMyReservations(
+    @Paging() paging: PagingDTO,
+    @ReqUser() user: RequestUser,
+    @Query() query: FindReservationQuery
+  ) {
+    return await this.reservationService.findMyPagingReservations(paging, user.id, query.generateQuery());
   }
 
   @Get(':reservationId/me')
