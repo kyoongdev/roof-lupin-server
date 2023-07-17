@@ -28,6 +28,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   description: string;
   minSize: number;
   buildingType: number;
+  deposit?: number;
   minUser: number;
   maxUser: number;
   overflowUserCost: number;
@@ -62,6 +63,9 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'number', description: '공간 리뷰 개수' } })
   reviewCount: number;
+
+  @Property({ apiProperty: { type: 'number', description: '보증금' } })
+  deposit: number;
 
   @Property({ apiProperty: { type: 'boolean', description: '공간 베스트 여부' } })
   isBest?: boolean;
@@ -154,6 +158,7 @@ export class SpaceDetailDTO {
     this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;
+    this.deposit = props.deposit;
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
     this.qnaCount = props.qnaCount;

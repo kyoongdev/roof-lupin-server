@@ -39,6 +39,9 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '썸네일' } })
   thumbnail?: string;
 
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })
+  deposit?: number;
+
   @Property({ apiProperty: { type: 'number', nullable: true, description: '최소 인원' } })
   minUser?: number;
 
@@ -113,6 +116,7 @@ export class UpdateSpaceDTO {
       this.thumbnail = props.thumbnail;
       this.minUser = props.minUser;
       this.maxUser = props.maxUser;
+      this.deposit = props.deposit;
       this.overflowUserCost = props.overflowUserCost;
       this.overflowUserCount = props.overflowUserCount;
       this.images = props.images;

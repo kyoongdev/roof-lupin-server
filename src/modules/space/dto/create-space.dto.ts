@@ -30,6 +30,7 @@ export interface CreateSpaceDTOProps {
   isImmediateReservation?: boolean;
   startAt: string;
   endAt: string;
+  deposit?: number;
   images: string[];
   refundPolicies: CreateRefundPolicyDTOProps[];
   cautions: CreateCautionDTOProps[];
@@ -59,6 +60,9 @@ export class CreateSpaceDTO {
 
   @Property({ apiProperty: { type: 'string', description: '썸네일' } })
   thumbnail: string;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })
+  deposit?: number;
 
   @Property({ apiProperty: { type: 'number', description: '최소 인원' } })
   minUser: number;
@@ -129,6 +133,7 @@ export class CreateSpaceDTO {
       this.overflowUserCost = props.overflowUserCost;
       this.overflowUserCount = props.overflowUserCount;
       this.images = props.images;
+      this.deposit = props.deposit;
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
       this.isImmediateReservation = props.isImmediateReservation;

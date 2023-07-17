@@ -137,6 +137,7 @@ model Space {
   minSize           Int    @default(0) @db.SmallInt
   startAt           String @db.VarChar(2)
   endAt             String @db.VarChar(2)
+  deposit           Int?   @db.MediumInt
 
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)
