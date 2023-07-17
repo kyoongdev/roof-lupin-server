@@ -98,7 +98,7 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
     }
 
-    const reservation = await this.reservationRepository.prepareReservation(userId, data);
+    const reservation = await this.reservationRepository.createPayment(userId, data, false);
     return reservation;
   }
 

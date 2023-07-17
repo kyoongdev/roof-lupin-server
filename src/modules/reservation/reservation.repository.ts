@@ -86,36 +86,36 @@ export class ReservationRepository {
     return reservations.map((reservation) => new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)));
   }
 
-  async prepareReservation(userId: string, data: CreateReservationDTO) {
-    const { rentalTypes, spaceId, ...rest } = data;
-    const taxCost = Math.floor(rest.totalCost / 1.1);
-    const reservation = await this.database.reservation.create({
-      data: {
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-        rentalTypes: {
-          create: rentalTypes.map((rentalType) => ({
-            endAt: rentalType.endAt,
-            startAt: rentalType.startAt,
-            rentalType: {
-              connect: {
-                id: rentalType.rentalTypeId,
-              },
-            },
-          })),
-        },
+  // async prepareReservation(userId: string, data: CreateReservationDTO) {
+  //   const { rentalTypes, spaceId, ...rest } = data;
+  //   const taxCost = Math.floor(rest.totalCost / 1.1);
+  //   const reservation = await this.database.reservation.create({
+  //     data: {
+  //       user: {
+  //         connect: {
+  //           id: userId,
+  //         },
+  //       },
+  //       rentalTypes: {
+  //         create: rentalTypes.map((rentalType) => ({
+  //           endAt: rentalType.endAt,
+  //           startAt: rentalType.startAt,
+  //           rentalType: {
+  //             connect: {
+  //               id: rentalType.rentalTypeId,
+  //             },
+  //           },
+  //         })),
+  //       },
 
-        vatCost: rest.totalCost - taxCost,
-        isApproved: false,
+  //       vatCost: rest.totalCost - taxCost,
+  //       isApproved: false,
 
-        ...rest,
-      },
-    });
-    return reservation.id;
-  }
+  //       ...rest,
+  //     },
+  //   });
+  //   return reservation.id;
+  // }
 
   //TODO: 결제 시스템까지 도입
   async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
