@@ -80,7 +80,7 @@ export class SpaceController {
   @RequestApi({
     summary: {
       description: '공간 목록 조회하기',
-      summary: '공간 목록 조회하기',
+      summary: '공간 목록 조회하기 - 검색, 카테고리 등',
     },
   })
   @ResponseApi({
