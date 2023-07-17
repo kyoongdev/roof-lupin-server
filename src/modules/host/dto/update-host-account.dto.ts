@@ -4,7 +4,7 @@ import { BankCodeResDecorator } from '@/utils/validation';
 
 export interface UpdateHostAccountProps {
   ownerName?: string;
-  bankName?: string;
+  bankCode?: string;
   businessRegistrationNumber?: string;
   account?: string;
   accountOwner?: string;
@@ -15,7 +15,7 @@ export class UpdateHostAccountDTO {
   ownerName?: string;
 
   @BankCodeResDecorator(true)
-  bankName?: string;
+  bankCode?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '사업자등록번호' } })
   businessRegistrationNumber?: string;
@@ -29,7 +29,7 @@ export class UpdateHostAccountDTO {
   constructor(props?: UpdateHostAccountProps) {
     if (props) {
       this.ownerName = props.ownerName;
-      this.bankName = props.bankName;
+      this.bankCode = props.bankCode;
       this.businessRegistrationNumber = props.businessRegistrationNumber;
       this.account = props.account;
       this.accountOwner = props.accountOwner;

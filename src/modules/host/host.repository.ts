@@ -184,6 +184,7 @@ export class HostRepository {
     const hostAccount = await this.database.hostAccount.create({
       data: {
         ...data,
+
         host: {
           connect: {
             id: hostId,

@@ -5,7 +5,7 @@ import { BankCodeReqDecorator } from '@/utils/validation';
 export interface HostAccountDTOProps {
   id: string;
   ownerName: string;
-  bankName: string;
+  bankCode: string;
   businessRegistrationNumber: string;
   account: string;
   accountOwner: string;
@@ -19,7 +19,7 @@ export class HostAccountDTO {
   ownerName: string;
 
   @BankCodeReqDecorator()
-  bankName: string;
+  bankCode: string;
 
   @Property({ apiProperty: { type: 'string', description: '사업자등록번호' } })
   businessRegistrationNumber: string;
@@ -33,7 +33,7 @@ export class HostAccountDTO {
   constructor(props: HostAccountDTOProps) {
     this.id = props.id;
     this.ownerName = props.ownerName;
-    this.bankName = props.bankName;
+    this.bankCode = props.bankCode;
     this.businessRegistrationNumber = props.businessRegistrationNumber;
     this.account = props.account;
     this.accountOwner = props.accountOwner;
