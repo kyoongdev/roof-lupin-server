@@ -6,3 +6,5 @@ export * from './prepare-port-one-payment.dto';
 export * from './complete-port-one-payment.dto';
 export * from './bank-code.dto';
 export * from './refund-payment.dto';
+export * from './naver-pay-reserve-parameter.dto';
+export * from './naver-product-item.dto';

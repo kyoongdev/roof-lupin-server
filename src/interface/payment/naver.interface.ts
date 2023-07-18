@@ -3,7 +3,7 @@ export interface ProductItem {
   categoryType: 'PRODUCT';
   /** 결제 상품 유형*/
   categoryId: 'GENERAL';
-  /** 결제 상품 유형 */
+  /** 상품 식별 키 */
   uid: string;
   /** 상품명 */
   name: string;
@@ -14,13 +14,13 @@ export interface ProductItem {
   /** 종료일 */
   endDate?: string;
   /** 식별키 */
-  sellerId?: String;
+  sellerId?: string;
   /** 상품개수 */
   count: number;
 }
 
 export interface PayReserveParameters {
-  /** 가맹정 결제번호 또는 주문번호 */
+  /** 가맹점 결제번호 또는 주문번호 */
   merchantPayKey: string;
   /** 가맹점 사용자 키 */
   merchantUserKey: string;
