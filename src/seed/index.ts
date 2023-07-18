@@ -103,6 +103,7 @@ export const seedDatabase = async (database: PrismaService) => {
   });
 
   const spaces: Space[] = await seedSpace(database);
+
   await seedHome(database, spaces);
   for (let i = 0; i < 5; i++) {
     await database.curation.create({

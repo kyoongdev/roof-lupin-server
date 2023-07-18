@@ -1,4 +1,6 @@
 #!/bin/bash
+
+
 sql_slave_user='CREATE USER "mydb_slave_user"@"%" IDENTIFIED BY "mydb_slave_pwd"; GRANT REPLICATION SLAVE ON *.* TO "mydb_slave_user"@"%"; FLUSH PRIVILEGES;'
 docker exec database_master sh -c "mysql -u root -pRoofS3cret -e '$sql_slave_user'"
 MS_STATUS=`docker exec database_master sh -c 'mysql -u root -pRoofS3cret -e "SHOW MASTER STATUS"'`

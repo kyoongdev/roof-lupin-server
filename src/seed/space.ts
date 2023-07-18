@@ -28,7 +28,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       },
     },
   });
-  //fa19549f-c4d3-49bb-8a3c-24ea6d5fcb7d
+
   await database.category.create({
     data: {
       name: `루프탑`,
@@ -80,7 +80,6 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
   });
 
   const spaces: any[] = [];
-
   for (let i = 0; i < 25; i++) {
     const space = await database.space.create({
       data: {
@@ -446,8 +445,10 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
         },
       },
     });
+
     spaces.push(space);
   }
+
   const users = await database.user.findMany();
   await Promise.all(
     spaces.map(async (space) => {
@@ -494,7 +495,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             },
           });
 
-          const review = await database.spaceReview.create({
+          await database.spaceReview.create({
             data: {
               content: '좋아요!!',
               score: 3,

@@ -1,6 +1,7 @@
 version: '3.5'
 services:
   database_master:
+    platform: linux/amd64
     image: mysql:8.0.30
     container_name: 'database_master'
     restart: unless-stopped
@@ -17,6 +18,7 @@ services:
     networks:
       - mynetwork
   database_slave:
+    platform: linux/amd64
     image: mysql:8.0.30
     container_name: 'database_slave'
     restart: unless-stopped
