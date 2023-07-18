@@ -26,15 +26,16 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "config:local": "cp ./env/.env.local .env && cp ./env/docker/Dockerfile.local Dockerfile",
+    "config:local": "cp ./env/.env.local .env ",
     "config:dev": "cp ./env/.env.dev .env && cp ./env/docker/Dockerfile.dev Dockerfile",
-    "config:docker": "cp ./env/.env.docker .env && cp ./env/docker/Dockerfile.local Dockerfile",
+    "config:docker": "cp ./env/.env.docker .env ",
     "config:stage": "cp ./env/.env.stage .env ",
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "migrate:local": "yarn config:local && yarn prisma migrate dev",
     "docker-compose:local": "yarn config:docker &&  docker-compose up --build -d",
     "seed": "ts-node src/seed.ts",
     "docs": "yarn prisma-docs-generator serve -p 8001",
+    "docker:local": "yarn config:local && bash ./docker/db/start-docker.sh",
     "docker:dev": "yarn config:docker && docker buildx build --platform linux/amd64,linux/arm64 -t roof . "
   },
   "dependencies": {
