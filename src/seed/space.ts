@@ -137,6 +137,26 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
                 create: [
                   {
                     cost: 5000,
+                    time: 9,
+                  },
+                  {
+                    cost: 5000,
+                    time: 10,
+                  },
+                  {
+                    cost: 5000,
+                    time: 11,
+                  },
+                  {
+                    cost: 5000,
+                    time: 12,
+                  },
+                  {
+                    cost: 5000,
+                    time: 13,
+                  },
+                  {
+                    cost: 5000,
                     time: 14,
                   },
                   {
