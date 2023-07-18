@@ -1,9 +1,7 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'wemacu-nestjs';
 
-import {
-  AdditionalServiceReservationDTO,
-  AdditionalServiceReservationDTOProps,
-} from '@/modules/space/dto/additionalService';
 import { PhoneNumberValidation } from '@/utils/validation';
 
 import {
@@ -24,7 +22,6 @@ export interface CreatePaymentDTOProps {
   rentalTypes: CreateReservationRentalTypeDTOProps[];
   spaceId: string;
   userCouponIds?: string[];
-
   reservationId?: string;
 }
 
@@ -45,7 +42,7 @@ export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'string', description: '대표 이용자 전화번호' } })
   userPhoneNumber: string;
 
-  @Property({ apiProperty: { type: 'number', description: '이용 인원' } })
+  @Property({ apiProperty: { type: 'number', minimum: 1, description: '이용 인원' } })
   userCount: number;
 
   @Property({ apiProperty: { type: 'number', description: '예약 비용' } })
@@ -93,7 +90,16 @@ export class CreatePaymentDTO {
   }
 
   //TODO: 예약 승인 신청하고 다시 요청할 때 validate
-  // validateProperties(target: CreatePaymentDTO) {
-
-  // }
+  validateProperties(target: Partial<CreatePaymentDTO>) {
+    if (
+      this.year !== target.year ||
+      this.month !== target.month ||
+      this.day !== target.day ||
+      this.userName !== target.userName ||
+      this.userPhoneNumber !== target.userPhoneNumber ||
+      this.spaceId !== target.spaceId
+    ) {
+      throw new BadRequestException('예약 정보가 일치하지 않습니다.');
+    }
+  }
 }

@@ -108,13 +108,14 @@ export class PaymentService {
     if (data.reservationId) {
       const reservation = await this.reservationRepository.findReservation(data.reservationId);
 
+      data.validateProperties(reservation);
+
       if (space.isImmediateReservation && !reservation.isApproved) {
         throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_NOT_APPROVED));
       }
 
       return reservation;
     } else {
-      console.log(space.isImmediateReservation);
       if (!space.isImmediateReservation) {
         throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
       }
