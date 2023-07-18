@@ -1,1 +1,1 @@
-export * from './bank-code';
+export * from './code';
