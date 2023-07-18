@@ -2,11 +2,19 @@ import { INestApplication, Injectable, Logger, OnModuleInit } from '@nestjs/comm
 import { ConfigService } from '@nestjs/config';
 
 import { Prisma, PrismaClient } from '@prisma/client';
+import { minimatch } from 'minimatch';
 
 export type TransactionPrisma = Omit<PrismaService, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>;
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+  private slaveDatabase = new PrismaClient({
+    datasources: {
+      db: {
+        url: this.configService.get('SLAVE_DATABASE_URL'),
+      },
+    },
+  });
   private readonly logger = new Logger();
 
   constructor(private readonly configService: ConfigService) {
@@ -18,12 +26,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         { emit: 'stdout', level: 'error' },
       ],
     });
-
+    this.routeDatabase();
     this.softDeleteInterceptors();
   }
 
   async onModuleInit() {
     await this.$connect();
+    await this.slaveDatabase.$connect();
     this.$on<any>('query', (event: Prisma.QueryEvent) => {
       this.logger.log('Query: ' + event.query);
       this.logger.log('Duration: ' + event.duration + 'ms');
@@ -33,6 +42,34 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   async enableShutdownHooks(app: INestApplication) {
     this.$on('beforeExit', async () => {
       await app.close();
+    });
+  }
+
+  async routeDatabase() {
+    this.$use(async (params, next) => {
+      if (minimatch(params.action, '+(find*|count|aggregate)')) {
+        const res = await this.slaveDatabase[params.model][params.action](params.args);
+
+        return res;
+      } else if (minimatch(params.action, '+(query*)')) {
+        const res: any[] = await this.slaveDatabase.$queryRaw(params.args[0]);
+
+        return res.map((responseItem) => {
+          const result: Record<string, any> = {};
+          for (const [key, value] of Object.entries(responseItem)) {
+            result[key] = {
+              prisma__type: typeof value,
+              prisma__value: value,
+            };
+          }
+
+          return result;
+        });
+      } else {
+        const res = await next(params);
+
+        return res;
+      }
     });
   }
 
