@@ -3,10 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import { DistanceSpace, PopularSpace } from '@/interface/space.interface';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
-import { AdditionalServiceDTO } from './dto/additionalService';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';

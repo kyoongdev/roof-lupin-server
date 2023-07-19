@@ -177,8 +177,11 @@ model Space {
 model AdditionalService {
   id String @id @default(uuid())
 
-  name String @db.VarChar(50)
-  cost Int    @db.MediumInt
+  name        String  @db.VarChar(50)
+  cost        Int     @db.MediumInt
+  description String? @db.VarChar(100)
+  tooltip     String? @db.VarChar(200)
+  maxCount    Int?    @db.TinyInt
 
   reservations ReservedAdditionalService[]
   RentalType   RentalType                  @relation(fields: [rentalTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)

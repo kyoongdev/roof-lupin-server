@@ -2,14 +2,9 @@ import { Property } from 'wemacu-nestjs';
 
 import { DayReqDecorator } from '@/utils/validation/day.validation';
 
-import {
-  AdditionalServiceDTO,
-  AdditionalServiceDTOProps,
-  CreateAdditionalServiceDTO,
-  CreateAdditionalServiceDTOProps,
-} from '../additionalService';
+import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from '../additionalService';
 import { CreateTimeCostInfoDTO, CreateTimeCostInfoDTOProps } from '../timeCostInfo';
-import { RENTAL_TYPE_KEYS, RentalTypeReqDecorator } from '../validation/rental-type.validation';
+import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
 export interface CreateRentalTypeDTOProps {
   name: string;
