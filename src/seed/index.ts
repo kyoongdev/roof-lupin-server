@@ -1,4 +1,4 @@
-import { Space } from '@prisma/client';
+import { Space, User } from '@prisma/client';
 import { range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -26,22 +26,22 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.homeContents.deleteMany({});
 
   await seedHosts(database);
-  const holiday = await database.holiday.findFirst();
-  if (!holiday) {
-    await seedHoliday(database);
-  }
+  await seedHoliday(database);
 
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
+  const users: User[] = [];
   await Promise.all(
     range(1, 50).map(async (i) => {
-      await database.user.create({
-        data: {
-          nickname: `user${i}`,
-        },
-      });
+      users.push(
+        await database.user.create({
+          data: {
+            nickname: `user${i}`,
+          },
+        })
+      );
     })
   );
   await database.coupon.create({
@@ -102,7 +102,7 @@ export const seedDatabase = async (database: PrismaService) => {
     },
   });
 
-  const spaces: Space[] = await seedSpace(database);
+  const spaces: Space[] = await seedSpace(users, database);
 
   await seedHome(database, spaces);
   for (let i = 0; i < 5; i++) {

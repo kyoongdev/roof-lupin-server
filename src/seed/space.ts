@@ -1,9 +1,9 @@
-import { Prisma, Space } from '@prisma/client';
+import { Prisma, Space, User } from '@prisma/client';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
-export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
+export const seedSpace = async (users: User[], database: PrismaService): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');
@@ -78,6 +78,9 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
   const spaces: any[] = [];
   for (let i = 0; i < 25; i++) {
     const space = await database.space.create({
+      include: {
+        rentalType: true,
+      },
       data: {
         title: '디난트 파티룸',
         startAt: '13',
@@ -480,94 +483,89 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     spaces.push(space);
   }
 
-  const users = await database.user.findMany();
   await Promise.all(
     spaces.map(async (space) => {
-      const rentalType = await database.rentalType.findFirst({
-        where: {
-          spaceId: space.id,
-          name: '시간당 요금',
-        },
-      });
-      await Promise.all(
-        users.map(async (user, index) => {
-          const reservation = await database.reservation.create({
-            data: {
-              year: '2023',
-              month: '9',
-              day: '4',
-              userName: '용준',
-              userPhoneNumber: '01012341234',
-              originalCost: 10000,
-              totalCost: 10000,
-              discountCost: 0,
-              userCount: 3,
-              vatCost: 1000,
-              isApproved: true,
+      const rentalType = space.rentalType.find((type: any) => type.name === '시간당 요금');
+      if (rentalType)
+        await Promise.all(
+          users.map(async (user, index) => {
+            const reservation = await database.reservation.create({
+              data: {
+                year: '2023',
+                month: '9',
+                day: '4',
+                userName: '용준',
+                userPhoneNumber: '01012341234',
+                originalCost: 10000,
+                totalCost: 10000,
+                discountCost: 0,
+                userCount: 3,
+                vatCost: 1000,
+                isApproved: true,
 
-              user: {
-                connect: {
-                  id: user.id,
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
                 },
-              },
-              rentalTypes: {
-                create: [
-                  {
-                    startAt: 14,
-                    endAt: 16,
-                    rentalType: {
-                      connect: {
-                        id: rentalType.id,
+                rentalTypes: {
+                  create: [
+                    {
+                      startAt: 14,
+                      endAt: 16,
+                      rentalType: {
+                        connect: {
+                          id: rentalType.id,
+                        },
                       },
                     },
-                  },
-                ],
+                  ],
+                },
               },
-            },
-          });
+            });
 
-          await database.spaceReview.create({
-            data: {
-              content: '좋아요!!',
-              score: 3,
-              isBest: index === 0,
-              images: {
-                create: [
-                  {
-                    image: {
-                      create: {
-                        url: 'https://dev-image.rooflupin.com/1688717253781IMG_5925.jpeg',
+            await database.spaceReview.create({
+              data: {
+                content: '좋아요!!',
+                score: 3,
+                isBest: index === 0,
+                images: {
+                  create: [
+                    {
+                      image: {
+                        create: {
+                          url: 'https://dev-image.rooflupin.com/1688717253781IMG_5925.jpeg',
+                        },
                       },
                     },
-                  },
-                  {
-                    image: {
-                      create: {
-                        url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
+                    {
+                      image: {
+                        create: {
+                          url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
+                        },
                       },
                     },
+                  ],
+                },
+                space: {
+                  connect: {
+                    id: space.id,
                   },
-                ],
-              },
-              space: {
-                connect: {
-                  id: space.id,
+                },
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                reservation: {
+                  connect: {
+                    id: reservation.id,
+                  },
                 },
               },
-              user: {
-                connect: {
-                  id: user.id,
-                },
-              },
-              reservation: {
-                connect: {
-                  id: reservation.id,
-                },
-              },
-            },
-          });
-        })
-      );
+            });
+          })
+        );
     })
   );
 
