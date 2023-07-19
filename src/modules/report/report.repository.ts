@@ -9,12 +9,13 @@ import { SpaceDTO } from '../space/dto';
 import {
   CreateReportAnswerDTO,
   CreateReportDTO,
+  ReportAnswerDTO,
   ReportDetailDTO,
   ReportDTO,
   UpdateReportAnswerDTO,
   UpdateReportDTO,
 } from './dto';
-import { REPORT_ERROR_CODE } from './exception/errorCode';
+import { REPORT_ANSWER_NOT_FOUND, REPORT_ERROR_CODE } from './exception/errorCode';
 import { ReportException } from './exception/report.exception';
 
 @Injectable()
@@ -141,6 +142,21 @@ export class ReportRepository {
         id,
       },
     });
+  }
+
+  async findReportAnswer(id: string) {
+    const reportAnswer = await this.database.spaceReportAnswer.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        admin: true,
+      },
+    });
+    if (!reportAnswer) {
+      throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND(REPORT_ANSWER_NOT_FOUND));
+    }
+    return new ReportAnswerDTO(reportAnswer);
   }
 
   async createReportAnswer(adminId: string, reportId: string, data: CreateReportAnswerDTO) {
