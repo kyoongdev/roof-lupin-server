@@ -33,6 +33,7 @@ import {
   RefundPaymentDTO,
 } from './dto';
 import {
+  PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT,
   PAYMENT_ALREADY_REFUNDED,
   PAYMENT_CONFLICT,
   PAYMENT_COUPON_COUNT_ZERO,
@@ -709,10 +710,15 @@ export class PaymentService {
           );
 
           rentalType.additionalServices.forEach((service) => {
-            if (additionalServices.map((service) => service.id).includes(service.id)) {
-              additionalCost +=
-                additionalServices.find((additionalService) => additionalService.id === service.id).cost *
-                service.count;
+            const baseAdditionalCost = additionalServices.find(
+              (additionalService) => additionalService.id === service.id
+            );
+            if (baseAdditionalCost) {
+              if (baseAdditionalCost.maxCount && baseAdditionalCost.maxCount < service.count) {
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT));
+              }
+
+              additionalCost += baseAdditionalCost.cost * service.count;
             }
           });
         }
