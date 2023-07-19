@@ -3,7 +3,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { DateDTO } from '@/common';
 
-type Props = Partial<Admin>;
+export type AdminDTOProps = Partial<Admin>;
 
 export class AdminDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: 'id' } })
@@ -18,7 +18,7 @@ export class AdminDTO extends DateDTO {
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isAccepted: boolean;
 
-  constructor(props: Props) {
+  constructor(props: AdminDTOProps) {
     super();
     this.id = props.id;
     this.name = props.name;
