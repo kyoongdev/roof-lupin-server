@@ -2,7 +2,7 @@ import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { EmptyResponseDTO } from '@/common';
+import { EmptyResponseDTO, IdsDTO } from '@/common';
 import { FindUsersQuery } from '@/modules/user/dto/query';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -104,7 +104,28 @@ export class AdminUserController {
     return await this.userService.restoreUser(id);
   }
 
-  @Delete(':userId')
+  @Delete('hard/many')
+  @RequestApi({
+    summary: {
+      description: '유저 다수 영구 삭제',
+      summary: '유저 다수 영구 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteUsers(@Query() query: IdsDTO) {
+    await Promise.all(
+      query.ids.map(async (id) => {
+        await this.userService.hardDeleteUser(id);
+      })
+    );
+  }
+
+  @Delete(':userId/soft')
   @RequestApi({
     summary: {
       description: '유저 삭제',
