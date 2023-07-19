@@ -162,7 +162,7 @@ model Space {
   buildings             SpaceBuilding[]
   services              SpaceService[]
   categories            SpaceCategory[]
-  hashtags              SpaceHashtag[]
+  hashTags              SpaceHashTag[]
   spaceQnAs             SpaceQnA[]
   publicTransportations PublicTransportation[]
   sizes                 SpaceSize[]
@@ -531,13 +531,13 @@ model SpaceCategory {
   @@id([spaceId, categoryId])
 }
 
-model SpaceHashtag {
+model SpaceHashTag {
   spaceId   String
   space     Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  hashtagId String
-  hashtag   Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hashTagId String
+  hashTag   HashTag @relation(fields: [hashTagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([spaceId, hashtagId])
+  @@id([spaceId, hashTagId])
 }
 
 //INFO: 공간주인
@@ -759,10 +759,10 @@ model CouponCategory {
 }
 
 //INFO: 해시태그
-model Hashtag {
+model HashTag {
   id            String         @id @default(uuid())
   name          String
-  spaceHashtags SpaceHashtag[]
+  spaceHashTags SpaceHashTag[]
 }
 
 //INFO: 유저 쿠폰

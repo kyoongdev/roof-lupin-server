@@ -1,14 +1,14 @@
 import { Property } from 'wemacu-nestjs';
 
-interface UpdateHashtagDTOProps {
+interface UpdateHashTagDTOProps {
   name: string;
 }
 
-export class UpdateHashtagDTO {
+export class UpdateHashTagDTO {
   @Property({ apiProperty: { type: 'string', description: '해시태그 이름' } })
   name: string;
 
-  constructor(props?: UpdateHashtagDTOProps) {
+  constructor(props?: UpdateHashTagDTOProps) {
     if (props) {
       this.name = props.name;
     }

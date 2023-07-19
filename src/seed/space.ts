@@ -194,6 +194,42 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
                     cost: 7000,
                     time: 23,
                   },
+                  {
+                    cost: 7000,
+                    time: 0,
+                  },
+                  {
+                    cost: 7000,
+                    time: 1,
+                  },
+                  {
+                    cost: 7000,
+                    time: 2,
+                  },
+                  {
+                    cost: 7000,
+                    time: 3,
+                  },
+                  {
+                    cost: 7000,
+                    time: 4,
+                  },
+                  {
+                    cost: 7000,
+                    time: 5,
+                  },
+                  {
+                    cost: 7000,
+                    time: 6,
+                  },
+                  {
+                    cost: 7000,
+                    time: 7,
+                  },
+                  {
+                    cost: 7000,
+                    time: 8,
+                  },
                 ],
               },
             },
@@ -325,7 +361,6 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             lat: '37.545277604771',
           },
         },
-
         buildings: {
           create: [
             {
@@ -406,17 +441,17 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
             },
           ],
         },
-        hashtags: {
+        hashTags: {
           create: [
             {
-              hashtag: {
+              hashTag: {
                 create: {
                   name: '건대',
                 },
               },
             },
             {
-              hashtag: {
+              hashTag: {
                 create: {
                   name: '파티룸',
                 },

@@ -9,7 +9,7 @@ import { SpaceException } from '../exception/space.exception';
 import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './category';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
-import { CreateHashtagDTO, type CreateHashtagDTOProps } from './hashtag';
+import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
 import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from './rentalType';
 import { CreateServiceDTO, type CreateServiceDTOProps } from './service';
@@ -38,7 +38,7 @@ export interface CreateSpaceDTOProps {
   buildings: CreateBuildingDTOProps[];
   services: CreateServiceDTOProps[];
   categories: CreateSpaceCategoryDTOProps[];
-  hashtags: CreateHashtagDTOProps[];
+  hashTags: CreateHashTagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
 }
@@ -107,8 +107,8 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateSpaceCategoryDTO, isArray: true, description: '카테고리' } })
   categories: CreateSpaceCategoryDTO[];
 
-  @Property({ apiProperty: { type: CreateHashtagDTO, isArray: true, description: '해시태그' } })
-  hashtags: CreateHashtagDTO[];
+  @Property({ apiProperty: { type: CreateHashTagDTO, isArray: true, description: '해시태그' } })
+  hashTags: CreateHashTagDTO[];
 
   @Property({ apiProperty: { type: CreateTransportationDTO, description: '대중교통' } })
   publicTransportations: CreateTransportationDTO[];
@@ -139,7 +139,7 @@ export class CreateSpaceDTO {
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
       this.services = props.services.map((service) => new CreateServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
-      this.hashtags = props.hashtags.map((hashtag) => new CreateHashtagDTO(hashtag));
+      this.hashTags = props.hashTags.map((hashTag) => new CreateHashTagDTO(hashTag));
       this.publicTransportations = props.publicTransportations.map(
         (transportation) => new CreateTransportationDTO(transportation)
       );

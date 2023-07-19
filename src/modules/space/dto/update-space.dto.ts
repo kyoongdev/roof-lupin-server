@@ -10,7 +10,7 @@ import { CreateSpaceCategoryDTO } from './category';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
 import { CreateBuildingDTO } from './facility';
-import { CreateHashtagDTO } from './hashtag';
+import { UpdateHashTagDTO } from './hashtag';
 import { CreateRefundPolicyDTO } from './refund';
 import { CreateRentalTypeDTO } from './rentalType';
 import { CreateServiceDTO } from './service';
@@ -92,8 +92,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateSpaceCategoryDTO, nullable: true, isArray: true, description: '카테고리' } })
   categories?: CreateSpaceCategoryDTO[];
 
-  @Property({ apiProperty: { type: CreateHashtagDTO, nullable: true, isArray: true, description: '해시태그' } })
-  hashtags?: CreateHashtagDTO[];
+  @Property({ apiProperty: { type: UpdateHashTagDTO, nullable: true, isArray: true, description: '해시태그' } })
+  hashTags?: UpdateHashTagDTO[];
 
   @Property({ apiProperty: { type: CreateTransportationDTO, nullable: true, isArray: true, description: '대중교통' } })
   publicTransportations?: CreateTransportationDTO[];
@@ -126,7 +126,7 @@ export class UpdateSpaceDTO {
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
       this.services = props.services.map((service) => new CreateServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
-      this.hashtags = props.hashtags.map((hashtag) => new CreateHashtagDTO(hashtag));
+      this.hashTags = props.hashTags.map((hashtag) => new UpdateHashTagDTO(hashtag));
       this.publicTransportations = props.publicTransportations.map(
         (transportation) => new CreateTransportationDTO(transportation)
       );

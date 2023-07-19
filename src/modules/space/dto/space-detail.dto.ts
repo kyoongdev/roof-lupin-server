@@ -10,7 +10,6 @@ import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
 import { BuildingDTO, type BuildingDTOProps } from './facility';
-import { HashtagDTO, HashtagDTOProps } from './hashtag';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
 import { SizeDTO, SizeDTOProps } from './size';

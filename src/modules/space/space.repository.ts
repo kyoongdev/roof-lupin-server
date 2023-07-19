@@ -7,7 +7,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
-import { CreateHashtagDTO, HashtagDTO } from './dto/hashtag';
+import { CreateHashTagDTO, HashTagDTO } from './dto/hashTag';
 import { RefundPolicyDTO } from './dto/refund';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
@@ -268,7 +268,7 @@ export class SpaceRepository {
       buildings: buildingProps,
       services: servicesProps,
       categories: categoryProps,
-      hashtags: hashtagProps,
+      hashTags: hashTagProps,
       publicTransportations,
       sizes,
       ...rest
@@ -283,7 +283,7 @@ export class SpaceRepository {
       const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
       const services = await this.findOrCreateServices(prisma, servicesProps);
       const categories = await this.findOrCreateCategories(prisma, categoryProps);
-      const hashtags = await this.findOrCreateHashtags(prisma, hashtagProps);
+      const hashTags = await this.findOrCreateHashTags(prisma, hashTagProps);
 
       const space = await prisma.space.create({
         data: {
@@ -326,9 +326,9 @@ export class SpaceRepository {
               categoryId: category.id,
             })),
           },
-          hashtags: {
-            create: hashtags.map((hashtag) => ({
-              hashtagId: hashtag.id,
+          hashTags: {
+            create: hashTags.map((hashTag) => ({
+              hashTagId: hashTag.id,
             })),
           },
           publicTransportations: {
@@ -362,7 +362,7 @@ export class SpaceRepository {
       buildings: buildingProps,
       services: servicesProps,
       categories: categoryProps,
-      hashtags: hashtagProps,
+      hashTags: hashTagProps,
       publicTransportations,
       sizes,
       ...rest
@@ -517,20 +517,20 @@ export class SpaceRepository {
         };
       }
 
-      if (hashtagProps) {
-        await prisma.spaceHashtag.deleteMany({
+      if (hashTagProps) {
+        await prisma.spaceHashTag.deleteMany({
           where: {
             spaceId,
           },
         });
 
-        const hashtags = await this.findOrCreateHashtags(prisma, hashtagProps);
+        const hashTags = await this.findOrCreateHashTags(prisma, hashTagProps);
 
         updateArgs.data = {
           ...updateArgs.data,
-          hashtags: {
-            create: hashtags.map((hashtag) => ({
-              hashtagId: hashtag.id,
+          hashTags: {
+            create: hashTags.map((hashTag) => ({
+              hashTagId: hashTag.id,
             })),
           },
         };
@@ -657,21 +657,21 @@ export class SpaceRepository {
     );
   }
 
-  async findOrCreateHashtags(prisma: TransactionPrisma, data: CreateHashtagDTO[]) {
+  async findOrCreateHashTags(prisma: TransactionPrisma, data: CreateHashTagDTO[]) {
     return await Promise.all(
-      data.map(async (hashtag) => {
-        const isExist = await prisma.hashtag.findFirst({
+      data.map(async (hashTag) => {
+        const isExist = await prisma.hashTag.findFirst({
           where: {
-            name: hashtag.name,
+            name: hashTag.name,
           },
         });
         if (isExist) {
-          return new HashtagDTO(isExist);
+          return new HashTagDTO(isExist);
         }
-        const newHashtag = await prisma.hashtag.create({
-          data: hashtag,
+        const newHashTag = await prisma.hashTag.create({
+          data: hashTag,
         });
-        return new HashtagDTO(newHashtag);
+        return new HashTagDTO(newHashTag);
       })
     );
   }
