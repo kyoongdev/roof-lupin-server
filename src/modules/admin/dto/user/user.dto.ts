@@ -6,7 +6,7 @@ import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 export interface AdminUserDTOProps extends CommonUserProps {
   isBlocked: boolean;
   loginedAt?: Date;
-  socialType: SocialType;
+  socialType?: SocialType;
 }
 export class AdminUserDTO extends CommonUserDTO {
   @Property({ apiProperty: { type: 'boolean', description: '차단 여부' } })

@@ -29,7 +29,7 @@ export class AdminUserRepository {
       (user) =>
         new AdminUserDTO({
           ...user,
-          socialType: numberToSocialType(user.socials[0].socialType),
+          socialType: user.socials.length > 0 ? numberToSocialType(user.socials[0].socialType) : null,
         })
     );
   }
@@ -54,7 +54,7 @@ export class AdminUserRepository {
 
     return new AdminUserDTO({
       ...user,
-      socialType: numberToSocialType(user.socials[0].socialType),
+      socialType: user.socials.length > 0 ? numberToSocialType(user.socials[0].socialType) : null,
     });
   }
 
