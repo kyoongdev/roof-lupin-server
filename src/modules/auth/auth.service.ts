@@ -86,6 +86,7 @@ export class AuthService {
     }
 
     const user = await this.userRepository.findUserBySocialId(socialId);
+    await this.userRepository.login(user.id);
 
     const currentDate = new Date();
     if (user.isBlocked && user.unBlockAt.getTime() > currentDate.getTime()) {
@@ -110,6 +111,7 @@ export class AuthService {
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.name ?? '',
+        name: user.name ?? undefined,
         socialId: `${user.id}`,
         socialType: 'apple',
         email: user.email ?? undefined,
@@ -150,6 +152,7 @@ export class AuthService {
     this.socialCallback(
       new CreateSocialUserDTO({
         nickname: user.name,
+        name: user.name,
         socialId: `${user.id}`,
         socialType: 'naver',
         birthDay: user.birthday,
