@@ -162,6 +162,17 @@ export class UserRepository {
     });
   }
 
+  async login(id: string) {
+    await this.database.user.update({
+      where: {
+        id,
+      },
+      data: {
+        loginedAt: new Date(),
+      },
+    });
+  }
+
   async deleteUser(id: string) {
     await this.findUser(id);
 
