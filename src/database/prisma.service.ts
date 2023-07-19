@@ -26,13 +26,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         { emit: 'stdout', level: 'error' },
       ],
     });
-    this.routeDatabase();
+    this.configService.get('NODE_ENV') !== 'stage' && this.routeDatabase();
     this.softDeleteInterceptors();
   }
 
   async onModuleInit() {
     await this.$connect();
-    await this.slaveDatabase.$connect();
+    this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
     this.$on<any>('query', (event: Prisma.QueryEvent) => {
       this.logger.log('Query: ' + event.query);
       this.logger.log('Duration: ' + event.duration + 'ms');
