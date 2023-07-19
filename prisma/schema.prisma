@@ -613,6 +613,7 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
   blockedAt DateTime?
+  loginedAt DateTime?
 
   spaceReviews   SpaceReview[]
   spaceReports   SpaceReport[]
