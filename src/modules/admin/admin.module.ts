@@ -41,7 +41,7 @@ import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
 import { AdminRankingController } from './ranking/ranking.controller';
 import { AdminRankingService } from './ranking/ranking.service';
-import { AdminReportController } from './report';
+import { AdminReportController } from './report/report.controller';
 import { AdminReportService } from './report/report.service';
 import { AdminReservationController } from './reservation/reservation.controller';
 import { AdminReservationService } from './reservation/reservation.service';

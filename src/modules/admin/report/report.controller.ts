@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch } from '@nestjs/common';
+import { Body, Get, Param, Patch, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -8,6 +8,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { AdminFindReportsQuery } from '../dto/query/report';
 import { AdminUpdateReportDTO } from '../dto/report';
 
 import { AdminReportService } from './report.service';
@@ -42,16 +43,13 @@ export class AdminReportController {
       description: '[관리자]신고 조회',
       summary: '신고 조회',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReportDTO,
     isPaging: true,
   })
-  async getReports(@Paging() paging: PagingDTO) {
-    return await this.adminReportService.findPagingReports(paging);
+  async getReports(@Paging() paging: PagingDTO, @Query() query: AdminFindReportsQuery) {
+    return await this.adminReportService.findPagingReports(paging, query.generateQuery());
   }
 
   @Patch(':reportId')
