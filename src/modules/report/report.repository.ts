@@ -4,7 +4,9 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
+import { SpaceDTO } from '../space/dto';
+
+import { CreateReportDTO, ReportDetailDTO, ReportDTO, UpdateReportDTO } from './dto';
 import { REPORT_ERROR_CODE } from './exception/errorCode';
 import { ReportException } from './exception/report.exception';
 
@@ -41,15 +43,31 @@ export class ReportRepository {
         id,
       },
       include: {
-        space: true,
+        space: {
+          include: {
+            location: true,
+            reviews: true,
+            publicTransportations: true,
+            userInterests: true,
+            rentalType: true,
+          },
+        },
         user: true,
+        answer: {
+          include: {
+            admin: true,
+          },
+        },
       },
     });
     if (!report) {
       throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND());
     }
 
-    return new ReportDTO(report);
+    return new ReportDetailDTO({
+      ...report,
+      space: SpaceDTO.generateSpaceDTO(report.space),
+    });
   }
 
   async checkUserReportBySpaceId(spaceId: string, userId: string) {
