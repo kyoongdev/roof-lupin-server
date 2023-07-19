@@ -1,10 +1,11 @@
-import { Body, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { EmptyResponseDTO } from '@/common';
-import { ReportDTO } from '@/modules/report/dto';
-import { ApiController } from '@/utils';
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
+import { RequestHost } from '@/interface/role.interface';
+import { CreateReportAnswerDTO, ReportDTO } from '@/modules/report/dto';
+import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -55,7 +56,7 @@ export class AdminReportController {
   @Patch(':reportId')
   @RequestApi({
     summary: {
-      description: '[관리자]신고 처리',
+      description: '신고 처리',
       summary: '신고 처리',
     },
     params: {
@@ -75,5 +76,27 @@ export class AdminReportController {
   )
   async updateReportStatus(@Param('reportId') reportId: string, @Body() body: AdminUpdateReportDTO) {
     await this.adminReportService.updateReportStatus(reportId, body);
+  }
+
+  @Post(':reportId/answers')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '신고 답변 등록',
+      summary: '신고 답변 등록',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createReportAnswer(
+    @ReqUser() user: RequestHost,
+    @Param('reportId') reportId: string,
+    @Body() body: CreateReportAnswerDTO
+  ) {
+    return await this.adminReportService.createReportAnswer(user.id, reportId, body);
   }
 }
