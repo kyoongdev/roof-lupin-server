@@ -1,10 +1,10 @@
-import { Body, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { RequestHost } from '@/interface/role.interface';
-import { CreateReportAnswerDTO, ReportDTO } from '@/modules/report/dto';
+import { RequestAdmin, RequestHost } from '@/interface/role.interface';
+import { CreateReportAnswerDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -93,10 +93,48 @@ export class AdminReportController {
     201
   )
   async createReportAnswer(
-    @ReqUser() user: RequestHost,
+    @ReqUser() user: RequestAdmin,
     @Param('reportId') reportId: string,
     @Body() body: CreateReportAnswerDTO
   ) {
     return await this.adminReportService.createReportAnswer(user.id, reportId, body);
+  }
+
+  @Patch('answers/:reportAnswerId')
+  @RequestApi({
+    summary: {
+      description: '신고 답변 수정',
+      summary: '신고 답변 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateReportAnswer(
+    @Param('reportAnswerId') id: string,
+    @ReqUser() user: RequestAdmin,
+    @Body() body: UpdateReportAnswerDTO
+  ) {
+    await this.adminReportService.updateReportAnswer(id, user.id, body);
+  }
+
+  @Delete('answers/:reportAnswerId')
+  @RequestApi({
+    summary: {
+      description: '신고 답변 삭제',
+      summary: '신고 답변 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteReportAnswer(@Param('reportAnswerId') id: string, @ReqUser() user: RequestAdmin) {
+    await this.adminReportService.deleteReportAnswer(id, user.id);
   }
 }
