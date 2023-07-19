@@ -42,7 +42,6 @@ export interface SpaceDetailDTOProps extends DateProps {
   buildings: BuildingDTOProps[];
   services: ServiceDTOProps[];
   categories: SpaceCategoryDTOProps[];
-  hashtags: HashtagDTOProps[];
   publicTransportations: TransportationDTOProps[];
   sizes: SizeDTOProps[];
   bestPhotos: BestPhotoDTOProps[];
@@ -128,9 +127,6 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: SpaceCategoryDTO, isArray: true, description: '공간 카테고리 목록' } })
   categories: SpaceCategoryDTO[];
 
-  @Property({ apiProperty: { type: HashtagDTO, isArray: true, description: '해시태그 목록' } })
-  hashtags: HashtagDTO[];
-
   @Property({ apiProperty: { type: TransportationDTO, isArray: true, description: '대중교통 목록' } })
   publicTransportations: TransportationDTO[];
 
@@ -166,7 +162,6 @@ export class SpaceDetailDTO {
     this.buildings = props.buildings.map((building) => new BuildingDTO(building));
     this.services = props.services.map((service) => new ServiceDTO(service));
     this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));
-    this.hashtags = props.hashtags.map((hashtag) => new HashtagDTO(hashtag));
     this.publicTransportations = props.publicTransportations.map(
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );

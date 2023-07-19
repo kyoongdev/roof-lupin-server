@@ -109,11 +109,6 @@ export class SpaceRepository {
             building: true,
           },
         },
-        hashtags: {
-          include: {
-            hashtag: true,
-          },
-        },
         host: true,
         images: {
           include: {
@@ -145,7 +140,6 @@ export class SpaceRepository {
       cautions,
       categories,
       buildings,
-      hashtags,
       host,
       images,
       publicTransportations,
@@ -171,7 +165,6 @@ export class SpaceRepository {
       cautions: cautions.map((caution) => caution),
       categories: categories.map(({ category }) => category),
       buildings: buildings.map(({ building }) => building),
-      hashtags: hashtags.map(({ hashtag }) => hashtag),
       host,
       images: images.map(({ image }) => image),
       publicTransportations: publicTransportations.map((publicTransportation) => publicTransportation),

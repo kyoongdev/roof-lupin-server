@@ -23,6 +23,8 @@ const BASE_JOIN = Prisma.sql`
   INNER JOIN SpaceLocation sl ON sp.id = sl.spaceId
   INNER JOIN SpaceCategory sc ON sp.id = sc.spaceId
   INNER JOIN Category ca ON sc.categoryId = ca.id 
+  INNER JOIN SpaceHashTag sh ON sp.id = sh.spaceId
+  INNER JOIN HashTag ht ON sh.hashTagId = ht.id
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
