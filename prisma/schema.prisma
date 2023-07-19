@@ -372,8 +372,23 @@ model SpaceReport {
   userId  String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  answer    SpaceReportAnswer?
+}
+
+//INFO: 공간 신고 답변
+model SpaceReportAnswer {
+  id String @id @default(uuid())
+
+  content String @db.MediumText
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  adminId       String
+  admin         Admin       @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceReportId String      @unique
+  spaceReport   SpaceReport @relation(fields: [spaceReportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 공간 QnA
@@ -588,9 +603,10 @@ model Admin {
   salt       String
   isAccepted Boolean @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  deletedAt     DateTime?
+  reportAnswers SpaceReportAnswer[]
 }
 
 model User {
