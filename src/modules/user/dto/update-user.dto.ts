@@ -41,10 +41,10 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '푸시 토큰', nullable: true } })
   pushToken?: string;
 
-  @Property({ apiProperty: { type: 'string', description: '성인 여부', nullable: true } })
+  @Property({ apiProperty: { type: 'boolean', description: '성인 여부', nullable: true } })
   isAdult?: boolean;
 
-  @Property({ apiProperty: { type: 'string', description: '알림 수신 여부', nullable: true } })
+  @Property({ apiProperty: { type: 'boolean', description: '알림 수신 여부', nullable: true } })
   isAlarmAccepted?: boolean;
 
   constructor(props?: UpdateUserDTOProps) {

@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-import { CreateUserDTO, UpdateUserDTO } from '@/modules/user/dto';
-import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
+import { HARD_DELETE_FAILED, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
 import { UserException } from '@/modules/user/exception/user.exception';
+import { numberToSocialType } from '@/modules/user/utils';
 
 import { AdminUpdateUserDTO, AdminUserDTO } from '../dto/user';
 
@@ -16,13 +16,22 @@ export class AdminUserRepository {
   async findUsers(args = {} as Prisma.UserFindManyArgs) {
     const users = await this.database.user.findMany({
       ...args,
+      include: {
+        socials: true,
+      },
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,
       },
     });
 
-    return users.map((user) => new AdminUserDTO(user));
+    return users.map(
+      (user) =>
+        new AdminUserDTO({
+          ...user,
+          socialType: numberToSocialType(user.socials[0].socialType),
+        })
+    );
   }
 
   async countUsers(args = {} as Prisma.UserCountArgs) {
@@ -34,13 +43,19 @@ export class AdminUserRepository {
       where: {
         id,
       },
+      include: {
+        socials: true,
+      },
     });
 
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
-    return new AdminUserDTO(user);
+    return new AdminUserDTO({
+      ...user,
+      socialType: numberToSocialType(user.socials[0].socialType),
+    });
   }
 
   async updateUser(id: string, data: AdminUpdateUserDTO) {
