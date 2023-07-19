@@ -6,7 +6,14 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 
-import { CreateReportDTO, ReportDetailDTO, ReportDTO, UpdateReportDTO } from './dto';
+import {
+  CreateReportAnswerDTO,
+  CreateReportDTO,
+  ReportDetailDTO,
+  ReportDTO,
+  UpdateReportAnswerDTO,
+  UpdateReportDTO,
+} from './dto';
 import { REPORT_ERROR_CODE } from './exception/errorCode';
 import { ReportException } from './exception/report.exception';
 
@@ -130,6 +137,42 @@ export class ReportRepository {
 
   async deleteReport(id: string) {
     await this.database.spaceReport.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async createReportAnswer(adminId: string, reportId: string, data: CreateReportAnswerDTO) {
+    const report = await this.database.spaceReportAnswer.create({
+      data: {
+        ...data,
+        admin: {
+          connect: {
+            id: adminId,
+          },
+        },
+        spaceReport: {
+          connect: {
+            id: reportId,
+          },
+        },
+      },
+    });
+    return report.id;
+  }
+
+  async updateReportAnswer(id: string, data: UpdateReportAnswerDTO) {
+    await this.database.spaceReportAnswer.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteReportAnswer(id: string) {
+    await this.database.spaceReportAnswer.delete({
       where: {
         id,
       },
