@@ -29,7 +29,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  await database.category.create({
+  const category1 = await database.category.create({
     data: {
       name: `루프탑`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -38,7 +38,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  await database.category.create({
+  const category2 = await database.category.create({
     data: {
       name: `영화`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -47,7 +47,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  await database.category.create({
+  const category3 = await database.category.create({
     data: {
       name: `글램핑`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -56,7 +56,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  await database.category.create({
+  const category4 = await database.category.create({
     data: {
       name: `파티룸`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -65,7 +65,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
     },
   });
 
-  await database.category.create({
+  const category5 = await database.category.create({
     data: {
       name: `촬영`,
       iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
@@ -73,11 +73,7 @@ export const seedSpace = async (database: PrismaService): Promise<Space[]> => {
       isRecommended: false,
     },
   });
-  const mainCategories = await database.category.findMany({
-    where: {
-      isHome: true,
-    },
-  });
+  const mainCategories = [category1, category2, category3, category4, category5];
 
   const spaces: any[] = [];
   for (let i = 0; i < 25; i++) {
