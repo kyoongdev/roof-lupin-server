@@ -8,13 +8,15 @@ export type TransactionPrisma = Omit<PrismaService, '$connect' | '$disconnect' |
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  private slaveDatabase = new PrismaClient({
-    datasources: {
-      db: {
-        url: this.configService.get('SLAVE_DATABASE_URL'),
+  private slaveDatabase =
+    this.configService.get('NODE_ENV') !== 'stage' &&
+    new PrismaClient({
+      datasources: {
+        db: {
+          url: this.configService.get('SLAVE_DATABASE_URL'),
+        },
       },
-    },
-  });
+    });
   private readonly logger = new Logger();
 
   constructor(private readonly configService: ConfigService) {
