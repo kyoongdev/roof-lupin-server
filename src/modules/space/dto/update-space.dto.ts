@@ -10,7 +10,7 @@ import { CreateSpaceCategoryDTO } from './category';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
 import { CreateBuildingDTO } from './facility';
-import { UpdateHashTagDTO } from './hashtag';
+import { UpdateHashTagDTO } from './hashTag';
 import { CreateRefundPolicyDTO } from './refund';
 import { CreateRentalTypeDTO } from './rentalType';
 import { CreateServiceDTO } from './service';
