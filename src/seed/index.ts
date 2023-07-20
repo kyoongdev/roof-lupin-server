@@ -39,6 +39,9 @@ export const seedDatabase = async (database: PrismaService) => {
         await database.user.create({
           data: {
             nickname: `user${i}`,
+            name: `테스트유저${i}`,
+            gender: i % 2 === 0 ? 1 : 2,
+            email: `testUser${i}@gmail.com`,
           },
         })
       );
@@ -99,6 +102,8 @@ export const seedDatabase = async (database: PrismaService) => {
   await database.user.create({
     data: {
       nickname: 'testUser2',
+      name: '테스트유저',
+      gender: 1,
     },
   });
 
