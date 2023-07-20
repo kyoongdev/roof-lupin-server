@@ -25,7 +25,7 @@
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "migrate:local": "yarn config:local && yarn prisma migrate dev",
     "docs": "yarn prisma-docs-generator serve -p 8001",
-    "docker:local": "bash ./docker/db/setup_db.sh && yarn prisma db push --accept-data-loss && node dist/main.js",
+    "docker:local": "bash ./docker/db/setup_db.sh && yarn prisma db push --accept-data-loss && yarn local",
     "docker:db": "yarn config:local && bash ./docker/db/start-docker.sh",
     "docker:dev": "yarn config:dev && bash ./docker/db/start-docker.sh"
   },
