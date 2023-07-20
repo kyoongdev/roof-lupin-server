@@ -38,11 +38,18 @@ export class ReportRepository {
       include: {
         space: true,
         user: true,
+        answer: true,
       },
       skip: args.skip,
       take: args.take,
     });
-    return reports.map((report) => new ReportDTO(report));
+    return reports.map(
+      (report) =>
+        new ReportDTO({
+          ...report,
+          isAnswered: !!report.answer,
+        })
+    );
   }
 
   async findReport(id: string) {
@@ -74,6 +81,7 @@ export class ReportRepository {
 
     return new ReportDetailDTO({
       ...report,
+      isAnswered: !!report.answer,
       space: SpaceDTO.generateSpaceDTO(report.space),
     });
   }
@@ -87,13 +95,17 @@ export class ReportRepository {
       include: {
         space: true,
         user: true,
+        answer: true,
       },
     });
     if (!report) {
       return null;
     }
 
-    return new ReportDTO(report);
+    return new ReportDTO({
+      ...report,
+      isAnswered: !!report.answer,
+    });
   }
 
   async createReport(userId: string, data: CreateReportDTO) {

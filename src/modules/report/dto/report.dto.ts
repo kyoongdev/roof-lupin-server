@@ -9,6 +9,7 @@ export interface ReportDTOProps extends DateProps {
   title: string;
   content: string;
   user: CommonUserProps;
+  isAnswered: boolean;
 }
 
 export class ReportDTO extends DateDTO {
@@ -24,13 +25,16 @@ export class ReportDTO extends DateDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '신고자' } })
   user: CommonUserDTO;
 
+  @Property({ apiProperty: { type: 'boolean', description: '답변 여부' } })
+  isAnswered: boolean;
+
   constructor(props: ReportDTOProps) {
     super();
     this.id = props.id;
     this.title = props.title;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
-
+    this.isAnswered = props.isAnswered;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
   }

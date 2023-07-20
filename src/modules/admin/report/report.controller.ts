@@ -4,7 +4,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs'
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestAdmin, RequestHost } from '@/interface/role.interface';
-import { CreateReportAnswerDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
+import { CreateReportAnswerDTO, ReportDetailDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -32,7 +32,7 @@ export class AdminReportController {
     },
   })
   @ResponseApi({
-    type: ReportDTO,
+    type: ReportDetailDTO,
   })
   async getReport(@Param('reportId') reportId: string) {
     return await this.adminReportService.findReport(reportId);
