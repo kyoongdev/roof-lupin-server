@@ -564,6 +564,23 @@ export const seedSpace = async (users: User[], database: PrismaService): Promise
                 },
               },
             });
+            await database.spaceReport.create({
+              data: {
+                title: '신고합니다',
+                content: '신고합니다',
+                reportType: 1,
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                space: {
+                  connect: {
+                    id: space.id,
+                  },
+                },
+              },
+            });
           })
         );
     })

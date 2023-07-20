@@ -28,6 +28,7 @@ export class AdminReportService {
       skip,
       take,
     });
+
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
 

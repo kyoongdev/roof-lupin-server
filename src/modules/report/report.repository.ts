@@ -28,9 +28,7 @@ export class ReportRepository {
 
   async findReports(args = {} as Prisma.SpaceReportFindManyArgs) {
     const reports = await this.database.spaceReport.findMany({
-      where: {
-        ...args.where,
-      },
+      where: {},
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,
@@ -43,6 +41,8 @@ export class ReportRepository {
       skip: args.skip,
       take: args.take,
     });
+    const test = await this.database.spaceReport.findMany({});
+    console.log(args.where, { reports, test });
     return reports.map(
       (report) =>
         new ReportDTO({

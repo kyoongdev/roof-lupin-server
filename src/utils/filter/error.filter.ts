@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errRes?.message && Array.isArray(errRes.message) && errRes.message.length > 0
         ? errRes.message.join('\n')
         : exception.message || 'Internal Server Error';
-    console.log(message);
+
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),

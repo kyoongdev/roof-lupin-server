@@ -52,7 +52,6 @@ export class PaymentController {
     type: ResponseWithIdDTO,
   })
   async validateAccountCallback(@Query() query: any) {
-    console.log({ query });
     return { asdf: 'asdfsa' };
   }
 
