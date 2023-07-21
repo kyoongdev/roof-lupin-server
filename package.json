@@ -28,7 +28,7 @@
     "docker:local": "bash ./docker/db/setup_db.sh && yarn prisma db push --accept-data-loss && yarn seed && yarn local",
     "docker:db": "yarn config:local && bash ./docker/db/start-docker.sh",
     "docker:dev": "yarn config:dev && bash ./docker/db/start-docker.sh",
-    "seed": "ts-node ./src/seed-db.ts"
+    "seed": "ts-node -r tsconfig-paths/register ./src/seed-db.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.354.0",

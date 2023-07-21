@@ -3,21 +3,12 @@ import { range } from 'lodash';
 
 import { EncryptProvider } from '../common/encrypt';
 import { COUPON_CODE } from '../modules/coupon/constants';
+import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
 
 import { seedHoliday } from './holiday';
 import { seedHome } from './home';
 import { seedHosts } from './host';
 import { seedSpace } from './space';
-
-export enum DISCOUNT_TYPE_ENUM {
-  PERCENTAGE = 1,
-  VALUE = 2,
-}
-
-export const DISCOUNT_TYPE = {
-  PERCENTAGE: 'PERCENTAGE',
-  VALUE: 'VALUE',
-} as const;
 
 export const seedDatabase = async (database: PrismaClient) => {
   await database.space.deleteMany({});
