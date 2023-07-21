@@ -12,7 +12,7 @@ node -v
 npm install -g yarn 
 
 yarn -v
-
+yarn install
 npm install -g pm2
 
 cp /home/ec2-user/build/env/.env.dev /home/ec2-user/build/.env
