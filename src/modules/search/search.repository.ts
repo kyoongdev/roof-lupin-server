@@ -125,6 +125,12 @@ export class SearchRepository {
   }
 
   async createRecentSpace(userId: string, spaceId: string) {
+    const isExist = await this.database.recentSpace.findFirst({
+      where: {
+        userId,
+        spaceId,
+      },
+    });
     const count = await this.countRecentSpaces({
       where: {
         userId,
@@ -149,21 +155,34 @@ export class SearchRepository {
         },
       });
     }
-
-    await this.database.recentSpace.create({
-      data: {
-        space: {
-          connect: {
-            id: spaceId,
+    if (isExist) {
+      await this.database.recentSpace.update({
+        where: {
+          userId_spaceId: {
+            spaceId,
+            userId,
           },
         },
-        user: {
-          connect: {
-            id: userId,
-          },
+        data: {
+          viewedAt: new Date(),
         },
-        viewedAt: new Date(),
-      },
-    });
+      });
+    } else {
+      await this.database.recentSpace.create({
+        data: {
+          space: {
+            connect: {
+              id: spaceId,
+            },
+          },
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          viewedAt: new Date(),
+        },
+      });
+    }
   }
 }
