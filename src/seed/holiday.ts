@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-import { PrismaService } from '@/database/prisma.service';
 export const seedHoliday = async (database: PrismaClient) => {
   await database.$executeRaw`
   INSERT INTO Holiday (id,name, year, month, day) VALUES (${nanoid(11)},'광복절','2023','8','15')

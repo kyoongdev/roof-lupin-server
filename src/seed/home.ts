@@ -1,7 +1,5 @@
 import { PrismaClient, Space } from '@prisma/client';
 
-import { PrismaService } from '@/database/prisma.service';
-
 export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
   const category1 = await database.contentCategory.create({
     data: {
