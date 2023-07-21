@@ -33,12 +33,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async onModuleInit() {
-    await this.$connect();
-    this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
-    this.$on<any>('query', (event: Prisma.QueryEvent) => {
-      this.logger.log('Query: ' + event.query);
-      this.logger.log('Duration: ' + event.duration + 'ms');
-    });
+    try {
+      await this.$connect();
+      this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
+      this.$on<any>('query', (event: Prisma.QueryEvent) => {
+        this.logger.log('Query: ' + event.query);
+        this.logger.log('Duration: ' + event.duration + 'ms');
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async enableShutdownHooks(app: INestApplication) {
