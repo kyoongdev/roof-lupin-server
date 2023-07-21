@@ -1,4 +1,4 @@
-import { Space, User } from '@prisma/client';
+import { PrismaClient, Space, User } from '@prisma/client';
 import { range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -12,7 +12,7 @@ import { seedHome } from './home';
 import { seedHosts } from './host';
 import { seedSpace } from './space';
 
-export const seedDatabase = async (database: PrismaService) => {
+export const seedDatabase = async (database: PrismaClient) => {
   await database.space.deleteMany({});
   await database.host.deleteMany({});
   await database.user.deleteMany({});

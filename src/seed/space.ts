@@ -1,9 +1,8 @@
-import { Prisma, Space, User } from '@prisma/client';
+import { PrismaClient, Space, User } from '@prisma/client';
 
 import { EncryptProvider } from '@/common/encrypt';
-import { PrismaService } from '@/database/prisma.service';
 
-export const seedSpace = async (users: User[], database: PrismaService): Promise<Space[]> => {
+export const seedSpace = async (users: User[], database: PrismaClient): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');

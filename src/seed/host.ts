@@ -1,9 +1,9 @@
+import { PrismaClient } from '@prisma/client';
 import { range } from 'lodash';
 
 import { EncryptProvider } from '@/common/encrypt';
-import { PrismaService } from '@/database/prisma.service';
 
-export const seedHosts = async (database: PrismaService) => {
+export const seedHosts = async (database: PrismaClient) => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');

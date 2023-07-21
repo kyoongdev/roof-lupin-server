@@ -25,9 +25,10 @@
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "migrate:local": "yarn config:local && yarn prisma migrate dev",
     "docs": "yarn prisma-docs-generator serve -p 8001",
-    "docker:local": "bash ./docker/db/setup_db.sh && yarn prisma db push --accept-data-loss && yarn local",
+    "docker:local": "bash ./docker/db/setup_db.sh && yarn prisma db push --accept-data-loss && yarn seed && yarn local",
     "docker:db": "yarn config:local && bash ./docker/db/start-docker.sh",
-    "docker:dev": "yarn config:dev && bash ./docker/db/start-docker.sh"
+    "docker:dev": "yarn config:dev && bash ./docker/db/start-docker.sh",
+    "seed": "node ./src/seed-db"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.354.0",
