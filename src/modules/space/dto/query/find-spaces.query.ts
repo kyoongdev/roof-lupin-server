@@ -37,8 +37,11 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 가능 일' } })
   day?: string;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 시간' } })
-  time?: number;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 시작 시간' } })
+  startAt?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 종료 시간' } })
+  endAt?: number;
 
   @SpaceSortValidation()
   @Property({ apiProperty: { type: 'string', nullable: true, enum: SPACE_SORT_OPTION_VALUES } })

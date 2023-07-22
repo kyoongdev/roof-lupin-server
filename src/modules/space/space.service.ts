@@ -5,6 +5,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { MaxPossibleTime } from '@/interface/space.interface';
 
+import { ReservationRepository } from '../reservation/reservation.repository';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -35,7 +36,8 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly rentalTypeService: RentalTypeService,
-    private readonly searchRepository: SearchRepository
+    private readonly searchRepository: SearchRepository,
+    private readonly reservationRepository: ReservationRepository
   ) {}
 
   async findSpaceIds() {
@@ -129,62 +131,23 @@ export class SpaceService {
     const excludeSpaces: string[] = [];
 
     if (date) {
-      const results = await this.rentalTypeService.findPossibleRentalTypesBySpaces(
-        {
+      const reservations = await this.reservationRepository.findReservations({
+        where: {
           year: date.year,
           month: date.month,
           day: date.day,
+          ...(date.startAt &&
+            date.endAt && {
+              startAt: {
+                gte: date.startAt,
+              },
+              endAt: {
+                lte: date.endAt,
+              },
+            }),
         },
-        args
-      );
-
-      const reservations = [...results.package, results.time];
-      //INFO: acc는 가능한 시간의 집합 => 가능한 것이 우선순위가 높음
-      reservations.reduce<string[]>((acc, reservation) => {
-        let isPossible = true;
-        if (reservation.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          //INFO: 시간대별로 가능한 시간 중 가장 긴 시간
-          const maxPossibleTime = (reservation as PossibleRentalTypeDTO).timeCostInfos.reduce<MaxPossibleTime>(
-            (acc, timeCostInfo) => {
-              if (timeCostInfo.isPossible) {
-                acc.accTime += 1;
-              } else {
-                acc.maxPossibleTime = acc.accTime;
-                acc.accTime = 0;
-              }
-              return acc;
-            },
-            { maxPossibleTime: 0, accTime: 0 }
-          ).maxPossibleTime;
-
-          //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
-          isPossible = maxPossibleTime >= date.time;
-        } else if (reservation.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-          const time = reservation.endAt - reservation.startAt;
-
-          //INFO: 예약 가능 시간이 원하는 시간보다 작으면 제외
-          if (!(reservation as PossiblePackageDTO).isPossible || time < date.time) {
-            isPossible = false;
-          } else {
-            isPossible = true;
-          }
-        }
-
-        const isAlreadyExcluded = excludeSpaces.includes(reservation.spaceId);
-        const isAlreadyIncluded = acc.includes(reservation.spaceId);
-        if (isPossible) {
-          //INFO: 가능한데, 제외되어있으면 제외 목록에서 제거
-          if (isAlreadyExcluded) {
-            excludeSpaces.splice(excludeSpaces.indexOf(reservation.spaceId), 1);
-          }
-          if (!isAlreadyIncluded) {
-            acc.push(reservation.spaceId);
-          }
-        } else if (!isAlreadyIncluded && !isAlreadyExcluded) {
-          excludeSpaces.push(reservation.spaceId);
-        }
-        return acc;
-      }, []);
+      });
+      excludeSpaces.push(...reservations.map((reservation) => reservation.space.id));
     }
 
     return excludeSpaces;

@@ -24,6 +24,7 @@ import { SpaceService } from './space.service';
     BlockedTimeRepository,
     HolidayService,
     SearchRepository,
+    ReservationRepository,
   ],
   controllers: [SpaceController, RentalTypeController],
 })

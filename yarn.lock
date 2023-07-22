@@ -9785,10 +9785,10 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
-wemacu-nestjs@^1.7.4:
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/wemacu-nestjs/-/wemacu-nestjs-1.7.4.tgz#1477534f648250d34a9ff09e42681c100ca69971"
-  integrity sha512-g8VXuc1QNkxZhZHODFqEvUrKnS4qSyuImPfP3G7ShE4WHyqxgMfppC40if1yBSjqjq5wDqAO2FSl7bwypH8ubA==
+wemacu-nestjs@^1.7.5:
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/wemacu-nestjs/-/wemacu-nestjs-1.7.5.tgz#540a77355251b7cfced868f0ebe5a90e07fa6c27"
+  integrity sha512-9vX5FZMYg24lfqvSWKjvol9MM6U+otu7bVuUEUwyx4FKsvmoO9SoGHHP+oWs/8GKzlXcz0V1fWISUL2WQrziYw==
   dependencies:
     "@nestjs/common" "^9.0.0"
     "@nestjs/config" "^2.2.0"

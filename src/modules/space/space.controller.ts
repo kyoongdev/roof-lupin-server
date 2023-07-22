@@ -98,12 +98,12 @@ export class SpaceController {
 
     const date: FindByDateQuery | undefined = query.year &&
       query.month &&
-      query.day &&
-      query.time && {
-        year: query.year,
-        month: query.month,
+      query.day && {
         day: query.day,
-        time: query.time,
+        month: query.month,
+        year: query.year,
+        startAt: query.startAt,
+        endAt: query.endAt,
       };
 
     return await this.spaceService.findPagingSpaces(
