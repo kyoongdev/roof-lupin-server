@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { range } from 'lodash';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -131,30 +132,14 @@ export class SpaceService {
   }
 
   async getExcludeSpaces(date?: FindByDateQuery) {
-    const reservations = await this.database.reservation.findMany({
-      where: {
-        year: date.year,
-        month: date.month,
-        day: date.day,
-      },
-      include: {
-        rentalTypes: {
-          include: {
-            rentalType: true,
-          },
-        },
-      },
-    });
-
-    // reservations.forEach((reservation) => {});
     const timeQuery =
       date.startAt && date.endAt
-        ? Prisma.sql`
-        AND (
-          ReservationRentalType.startAt >= ${date.startAt} AND ReservationRentalType.endAt <= ${date.endAt}
-        )
-      `
-        : Prisma.empty;
+        ? Prisma.sql`AND (ReservationRentalType.startAt >= ${date.startAt} AND ReservationRentalType.endAt <= ${date.endAt})`
+        : Prisma.sql`AND (
+       ${range(0, 24).reduce<string>((acc, cur) => {
+         return acc + `ReservationRentalType.startAt = ${cur}` + (cur === 23 ? '' : ' AND ');
+       }, '')}
+          ) `;
 
     const dateQuery = date
       ? Prisma.sql`AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
