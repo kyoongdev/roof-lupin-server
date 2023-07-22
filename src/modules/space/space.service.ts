@@ -133,7 +133,9 @@ export class SpaceService {
   async getExcludeSpaces(date?: FindByDateQuery) {
     const timeQuery =
       date.startAt && date.endAt
-        ? Prisma.sql`AND (ReservationRentalType.startAt >= ${date.startAt} AND ReservationRentalType.endAt <= ${date.endAt})`
+        ? Prisma.sql`AND (IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${
+            date.startAt
+          } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
         : Prisma.sql`AND (      
             ${Prisma.join(
               range(9, 33).map((value, cur) => {

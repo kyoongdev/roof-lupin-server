@@ -510,7 +510,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 rentalTypes: {
                   create: [
                     {
-                      startAt: 9,
+                      startAt: 12,
                       endAt: 8,
                       rentalType: {
                         connect: {
