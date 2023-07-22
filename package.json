@@ -25,7 +25,8 @@
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",
     "migrate:local": "yarn config:local && yarn prisma migrate dev",
     "docs": "yarn prisma-docs-generator serve -p 8001",
-    "seed": "ts-node -r tsconfig-paths/register ./src/seed-db.ts"
+    "seed": "ts-node -r tsconfig-paths/register ./src/seed-db.ts",
+    "docker:local": "bash ./docker/db/start-docker.sh && yarn prisma db push --accept-data-loss "
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.354.0",

@@ -88,12 +88,11 @@ export class SpaceService {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
     }
 
-    console.log({ sqlQuery });
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-    console.log({ spaces });
+
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
@@ -135,24 +134,27 @@ export class SpaceService {
     const timeQuery =
       date.startAt && date.endAt
         ? Prisma.sql`AND (ReservationRentalType.startAt >= ${date.startAt} AND ReservationRentalType.endAt <= ${date.endAt})`
-        : Prisma.sql`AND (
-       ${range(0, 24).reduce<string>((acc, cur) => {
-         return acc + `ReservationRentalType.startAt = ${cur}` + (cur === 23 ? '' : ' AND ');
-       }, '')}
+        : Prisma.sql`AND (      
+            ${Prisma.join(
+              range(9, 33).map((value, cur) => {
+                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${value}  )`;
+              }),
+              ` AND `
+            )}
           ) `;
 
     const dateQuery = date
-      ? Prisma.sql`AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
+      ? Prisma.sql` Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
       : Prisma.empty;
 
     const query = Prisma.sql`
-        SELECT isp.id
-        FROM Reservation
-        INNER JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
-        INNER JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
-        INNER JOIN Space isp ON RentalType.spaceId = isp.id
-        WHERE 1 = 1 ${dateQuery}
-        GROUP BY isp.id
+    SELECT isp.id
+    FROM Reservation
+    LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
+    LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
+    LEFT JOIN Space isp ON RentalType.spaceId = isp.id
+    WHERE  ${dateQuery}
+    GROUP BY isp.id
       `;
 
     return query;
