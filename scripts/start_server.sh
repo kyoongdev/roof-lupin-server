@@ -19,5 +19,6 @@ pm2 kill
 
 yarn config:dev
 yarn build
+yarn prisma db push
 
 pm2 start ecosystem.json
