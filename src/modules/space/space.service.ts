@@ -87,12 +87,11 @@ export class SpaceService {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
     }
 
-    console.log({ sqlQuery });
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-    console.log({ spaces });
+
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
