@@ -76,7 +76,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = this.getExcludeSpaces(date);
+    const excludeQuery = await this.getExcludeSpaces(date);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -130,7 +130,23 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  getExcludeSpaces(date?: FindByDateQuery) {
+  async getExcludeSpaces(date?: FindByDateQuery) {
+    const reservations = await this.database.reservation.findMany({
+      where: {
+        year: date.year,
+        month: date.month,
+        day: date.day,
+      },
+      include: {
+        rentalTypes: {
+          include: {
+            rentalType: true,
+          },
+        },
+      },
+    });
+
+    // reservations.forEach((reservation) => {});
     const timeQuery =
       date.startAt && date.endAt
         ? Prisma.sql`
