@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { PrismaService } from '@/database/prisma.service';
 import { MaxPossibleTime } from '@/interface/space.interface';
 
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -37,7 +38,8 @@ export class SpaceService {
     private readonly spaceRepository: SpaceRepository,
     private readonly rentalTypeService: RentalTypeService,
     private readonly searchRepository: SearchRepository,
-    private readonly reservationRepository: ReservationRepository
+    private readonly reservationRepository: ReservationRepository,
+    private readonly database: PrismaService
   ) {}
 
   async findSpaceIds() {
@@ -74,8 +76,8 @@ export class SpaceService {
       });
     }
 
-    const excludeSpaces = await this.getExcludeSpaces(args, date);
-    const baseWhere = query.generateSqlWhereClause(excludeSpaces, userId);
+    const excludeQuery = this.getExcludeSpaces(date);
+    const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
     let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere);
@@ -85,11 +87,12 @@ export class SpaceService {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
     }
 
+    console.log({ sqlQuery });
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
-
+    console.log({ spaces });
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
@@ -127,29 +130,30 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async getExcludeSpaces(args = {} as Prisma.SpaceFindManyArgs, date?: FindByDateQuery) {
-    const excludeSpaces: string[] = [];
+  getExcludeSpaces(date?: FindByDateQuery) {
+    const timeQuery =
+      date.startAt && date.endAt
+        ? Prisma.sql`
+        AND (
+          ReservationRentalType.startAt >= ${date.startAt} AND ReservationRentalType.endAt <= ${date.endAt}
+        )
+      `
+        : Prisma.empty;
 
-    if (date) {
-      const reservations = await this.reservationRepository.findReservations({
-        where: {
-          year: date.year,
-          month: date.month,
-          day: date.day,
-          ...(date.startAt &&
-            date.endAt && {
-              startAt: {
-                gte: date.startAt,
-              },
-              endAt: {
-                lte: date.endAt,
-              },
-            }),
-        },
-      });
-      excludeSpaces.push(...reservations.map((reservation) => reservation.space.id));
-    }
+    const dateQuery = date
+      ? Prisma.sql`AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
+      : Prisma.empty;
 
-    return excludeSpaces;
+    const query = Prisma.sql`
+        SELECT isp.id
+        FROM Reservation
+        INNER JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
+        INNER JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
+        INNER JOIN Space isp ON RentalType.spaceId = isp.id
+        WHERE 1 = 1 ${dateQuery}
+        GROUP BY isp.id
+      `;
+
+    return query;
   }
 }
