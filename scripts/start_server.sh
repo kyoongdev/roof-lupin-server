@@ -15,12 +15,9 @@ yarn -v
 yarn install
 npm install -g pm2
 
-cp /home/ec2-user/build/env/.env.dev /home/ec2-user/build/.env
+pm2 kill
 
 yarn config:dev
 yarn build
 
-pm2 stop all
-pm2 kill
-
-pm2 start dist/ecosystem.json
+pm2 start ecosystem.json
