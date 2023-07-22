@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { HolidayDTO } from './dto';
+
 @Injectable()
 export class HolidayService {
   constructor(private readonly database: PrismaService) {}
@@ -14,7 +16,7 @@ export class HolidayService {
       },
     });
 
-    return holidays;
+    return holidays.map((holiday) => new HolidayDTO(holiday));
   }
 
   async checkIsHoliday(year: string, month: string, day: string) {
