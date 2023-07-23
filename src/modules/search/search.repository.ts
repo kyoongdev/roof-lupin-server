@@ -4,7 +4,13 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateSearchRecommendDTO, CreateSearchRecordDTO, SearchRecommendDTO, SearchRecordDTO } from './dto';
+import {
+  CreateSearchRecommendDTO,
+  CreateSearchRecordDTO,
+  SearchRecommendDTO,
+  SearchRecordDTO,
+  UpdateSearchRecommendDTO,
+} from './dto';
 import {
   SEARCH_ERROR_CODE,
   SEARCH_RECOMMEND_NOT_FOUND,
@@ -52,6 +58,10 @@ export class SearchRepository {
       throw new SearchException(SEARCH_ERROR_CODE.NOT_FOUND(SEARCH_RECOMMEND_NOT_FOUND));
     }
     return new SearchRecommendDTO(searchRecommend);
+  }
+
+  async countSearchRecommends(args = {} as Prisma.SearchRecommendCountArgs) {
+    return await this.database.searchRecommend.count(args);
   }
 
   async findSearchRecommends(args = {} as Prisma.SearchRecommendFindManyArgs) {
@@ -109,6 +119,15 @@ export class SearchRepository {
     });
 
     return searchRecommend.id;
+  }
+
+  async updateSearchRecommend(id: string, data: UpdateSearchRecommendDTO) {
+    await this.database.searchRecommend.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
   async deleteSearchRecommend(id: string) {
