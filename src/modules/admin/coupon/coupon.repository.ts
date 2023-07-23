@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-import { CreateCouponDTO, UserAdminCouponDTO } from '@/modules/coupon/dto';
-import { AdminCouponDTO } from '@/modules/coupon/dto/admin-coupon.dto';
 import { CouponException } from '@/modules/coupon/exception/coupon.exception';
 import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from '@/modules/coupon/exception/errorCode';
+
+import { AdminCouponDTO, UserAdminCouponDTO } from '../dto/coupon';
 
 @Injectable()
 export class AdminCouponRepository {

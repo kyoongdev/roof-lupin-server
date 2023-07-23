@@ -5,23 +5,12 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
-import {
-  AdminCouponDTO,
-  CouponDTO,
-  CreateCouponDTO,
-  UpdateCouponDTO,
-  UpdateUserCouponDTO,
-  UserAdminCouponDTO,
-  UserCouponDTO,
-} from '@/modules/coupon/dto';
+import { CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO } from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
 
+import { AdminCouponDTO, UserAdminCouponDTO } from '../dto/coupon';
 import { AdminException } from '../exception/admin.exception';
-import {
-  ADMIN_ERROR_CODE,
-  ADMIN_USER_COUPON_ALREADY_EXISTS,
-  ADMIN_USER_COUPON_DUE_DATE_BAD_REQUEST,
-} from '../exception/errorCode';
+import { ADMIN_ERROR_CODE, ADMIN_USER_COUPON_ALREADY_EXISTS } from '../exception/errorCode';
 
 import { AdminCouponRepository } from './coupon.repository';
 
