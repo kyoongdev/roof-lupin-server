@@ -1,8 +1,8 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
+import { EmptyResponseDTO, IdsDTO, ResponseWithIdDTO } from '@/common';
 import { CreateSearchRecommendDTO, SearchRecommendDTO, UpdateSearchRecommendDTO } from '@/modules/search/dto';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -82,7 +82,7 @@ export class AdminSearchController {
     await this.searchService.updateSearchRecommend(id, body);
   }
 
-  @Delete('/recommends/:searchRecommendId')
+  @Delete('/recommends')
   @RequestApi({
     summary: {
       description: '추천 검색어 삭제하기',
@@ -95,7 +95,7 @@ export class AdminSearchController {
     },
     204
   )
-  async deleteSearchRecommend(@Param('searchRecommendId') id: string) {
-    await this.searchService.deleteSearchRecommend(id);
+  async deleteSearchRecommend(@Query() query: IdsDTO) {
+    await Promise.all(query.ids.split(',').map((id) => this.searchService.deleteSearchRecommend(id)));
   }
 }
