@@ -2,7 +2,7 @@ import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
+import { EmptyResponseDTO, IdsDTO, ResponseWithIdDTO } from '@/common';
 import { RequestAdmin, RequestHost } from '@/interface/role.interface';
 import { CreateReportAnswerDTO, ReportDetailDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
@@ -136,5 +136,23 @@ export class AdminReportController {
   )
   async deleteReportAnswer(@Param('reportAnswerId') id: string, @ReqUser() user: RequestAdmin) {
     await this.adminReportService.deleteReportAnswer(id, user.id);
+  }
+
+  @Delete('many')
+  @RequestApi({
+    summary: {
+      description: '신고 다수 삭제하기',
+      summary: '신고 다수 삭제하기',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteReports(@Query() query: IdsDTO) {
+    console.log({ query });
+    await Promise.all(query.ids.split(',').map((id) => this.adminReportService.deleteReport(id)));
   }
 }

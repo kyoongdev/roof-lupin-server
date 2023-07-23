@@ -6,13 +6,12 @@ export interface IdsDTOProps {
 }
 
 export class IdsDTO {
-  @Transform(({ value }) => value.split(','))
   @Property({ apiProperty: { type: 'string', description: '아이디들', example: '1,2,3' } })
-  ids: string[];
+  ids: string;
 
   constructor(props?: IdsDTOProps) {
     if (props) {
-      this.ids = props.ids.split(',');
+      this.ids = props.ids;
     }
   }
 }

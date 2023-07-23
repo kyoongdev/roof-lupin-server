@@ -121,8 +121,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               name: '시간당 요금',
               rentalType: 1,
               baseHour: 2,
-              startAt: 14,
-              endAt: 24,
+              startAt: 9,
+              endAt: 9,
               day: 1,
               additionalServices: {
                 create: {
@@ -510,8 +510,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 rentalTypes: {
                   create: [
                     {
-                      startAt: 14,
-                      endAt: 16,
+                      startAt: 12,
+                      endAt: 8,
                       rentalType: {
                         connect: {
                           id: rentalType.id,

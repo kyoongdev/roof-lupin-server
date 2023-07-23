@@ -3,7 +3,6 @@ import { Property } from 'wemacu-nestjs';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 import { AdminCouponDTO, AdminCouponDTOProps } from './admin-coupon.dto';
-import { CouponDTO, CouponDTOProps } from './coupon.dto';
 
 export interface UserAdminCouponDTOProps {
   id: string;

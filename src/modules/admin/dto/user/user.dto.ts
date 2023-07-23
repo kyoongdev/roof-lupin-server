@@ -8,6 +8,7 @@ export interface AdminUserDTOProps extends CommonUserProps {
   unBlockAt?: Date;
   loginedAt?: Date;
   socialType?: SocialType;
+  pushToken?: string;
 }
 export class AdminUserDTO extends CommonUserDTO {
   @Property({ apiProperty: { type: 'boolean', description: '차단 여부' } })
@@ -22,11 +23,15 @@ export class AdminUserDTO extends CommonUserDTO {
   @Property({ apiProperty: { type: 'string', example: Object.keys(SOCIAL_TYPE).join(','), description: '소셜 종류' } })
   socialType?: string;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '푸시 토큰' } })
+  pushToken?: string;
+
   constructor(props: AdminUserDTOProps) {
     super(props);
     this.isBlocked = props.isBlocked;
     this.unBlockAT = props.unBlockAt;
     this.loginedAt = props.loginedAt;
     this.socialType = props.socialType;
+    this.pushToken = props.pushToken;
   }
 }

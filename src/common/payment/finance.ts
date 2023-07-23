@@ -26,7 +26,7 @@ export class FinanceProvider {
           auth_type: 1,
         },
       });
-      console.log(response.data);
+
       return response.data;
     } catch (err) {
       console.log(err);
@@ -43,8 +43,6 @@ export class FinanceProvider {
           scope: 'oob',
         },
       });
-
-      console.log(response.data);
     } catch (err) {
       console.log(err);
     }

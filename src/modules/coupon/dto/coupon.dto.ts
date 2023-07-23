@@ -9,6 +9,7 @@ import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../validation/di
 export interface CouponDTOProps {
   id: string;
   name: string;
+
   discountType: number;
   discountValue: number;
   description: string;

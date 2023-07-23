@@ -4,7 +4,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { CategoryDTO, CategoryDTOProps } from '@/modules/category/dto';
 
-import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../validation/discount-value.validation';
+import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../../../coupon/validation/discount-value.validation';
 
 export interface AdminCouponDTOProps {
   id: string;

@@ -14,12 +14,12 @@ export class ReportDetailDTO extends ReportDTO {
   @Property({ apiProperty: { type: SpaceDTO, description: '신고된 공간' } })
   space: SpaceDTO;
 
-  @Property({ apiProperty: { type: ReportAnswerDTO, description: '신고 답변' } })
-  answer: ReportAnswerDTO;
+  @Property({ apiProperty: { type: ReportAnswerDTO, nullable: true, description: '신고 답변' } })
+  answer?: ReportAnswerDTO;
 
   constructor(props: ReportDetailDTOProps) {
     super(props);
     this.space = new SpaceDTO(props.space);
-    this.answer = new ReportAnswerDTO(props.answer);
+    this.answer = props.answer ? new ReportAnswerDTO(props.answer) : null;
   }
 }

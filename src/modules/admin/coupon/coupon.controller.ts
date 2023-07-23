@@ -3,13 +3,14 @@ import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from '@/modules/coupon/dto';
+import { CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO } from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { AdminFindUserCouponsQuery } from '../dto/query';
+import { AdminCouponDTO, UserAdminCouponDTO } from '../dto/coupon';
+import { AdminFindCouponsQuery, AdminFindUserCouponsQuery } from '../dto/query';
 
 import { AdminCouponService } from './coupon.service';
 
@@ -26,7 +27,7 @@ export class AdminCouponController {
     },
   })
   @ResponseApi({
-    type: CouponDTO,
+    type: AdminCouponDTO,
   })
   async getCoupon(@Param('couponId') id: string) {
     return await this.couponService.findCoupon(id);
@@ -38,16 +39,13 @@ export class AdminCouponController {
       description: '쿠폰 목록 조회',
       summary: '쿠폰 목록 조회 - 관리자만 사용 가능',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
-    type: CouponDTO,
+    type: AdminCouponDTO,
     isPaging: true,
   })
-  async getCoupons(@Paging() paging: PagingDTO) {
-    return await this.couponService.findPagingCoupons(paging);
+  async getCoupons(@Paging() paging: PagingDTO, @Query() query: AdminFindCouponsQuery) {
+    return await this.couponService.findPagingCoupons(paging, query.generateQuery());
   }
 
   @Get('users/:userCouponId/detail')
@@ -58,7 +56,7 @@ export class AdminCouponController {
     },
   })
   @ResponseApi({
-    type: UserCouponDTO,
+    type: UserAdminCouponDTO,
   })
   async getUserCoupon(@Param('userCouponId') id: string) {
     return await this.couponService.findUserCoupon(id);
@@ -72,7 +70,7 @@ export class AdminCouponController {
     },
   })
   @ResponseApi({
-    type: UserCouponDTO,
+    type: UserAdminCouponDTO,
     isPaging: true,
   })
   async getUserCoupons(@Paging() paging: PagingDTO, @Query() query: AdminFindUserCouponsQuery) {
