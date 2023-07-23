@@ -1,4 +1,4 @@
-import { Controller, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { FCMEvent } from '@/event/fcm';
@@ -17,6 +17,7 @@ import { RankingRepository } from '../ranking/ranking.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { SearchRepository } from '../search/search.repository';
 import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
@@ -47,6 +48,8 @@ import { AdminReservationController } from './reservation/reservation.controller
 import { AdminReservationService } from './reservation/reservation.service';
 import { AdminReviewController } from './review/review.controller';
 import { AdminReviewService } from './review/review.service';
+import { AdminSearchController } from './search/search.controller';
+import { AdminSearchService } from './search/search.service';
 import { AdminSettlementController } from './settlement/settlement.controller';
 import { AdminSettlementService } from './settlement/settlement.service';
 import { AdminSpaceController } from './space/space.controller';
@@ -95,6 +98,8 @@ import { AdminUserService } from './user/user.service';
     AdminRankingService,
     RankingRepository,
     AdminHomeService,
+    AdminSearchService,
+    SearchRepository,
   ],
   controllers: [
     AdminController,
@@ -112,6 +117,7 @@ import { AdminUserService } from './user/user.service';
     AdminCategoryController,
     AdminRankingController,
     AdminHomeController,
+    AdminSearchController,
   ],
 })
 export class AdminModule {}
