@@ -9,6 +9,10 @@ import { SearchRepository } from '@/modules/search/search.repository';
 export class AdminSearchService {
   constructor(private readonly searchRepository: SearchRepository) {}
 
+  async findSearchRecommend(id: string) {
+    return await this.searchRepository.findSearchRecommend(id);
+  }
+
   async findPagingSearchRecommends(paging: PagingDTO) {
     const { skip, take } = paging.getSkipTake();
 

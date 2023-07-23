@@ -15,6 +15,20 @@ import { AdminSearchService } from './search.service';
 export class AdminSearchController {
   constructor(private readonly searchService: AdminSearchService) {}
 
+  @Get('/recommends/:searchRecommendId/detail')
+  @RequestApi({
+    summary: {
+      description: '추천 검색어 자세히 불러오기',
+      summary: '추천 검색어 자세히 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: SearchRecommendDTO,
+  })
+  async getSearchRecommend(@Param('searchRecommendId') id: string) {
+    return await this.searchService.findSearchRecommend(id);
+  }
+
   @Get('/recommends')
   @RequestApi({
     summary: {
