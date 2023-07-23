@@ -28,7 +28,7 @@ export class AdminReportService {
       skip,
       take,
     });
-
+    console.log(reports, args);
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
 
@@ -48,6 +48,11 @@ export class AdminReportService {
     }
 
     await this.reportRepository.updateReportAnswer(id, data);
+  }
+
+  async deleteReport(id: string) {
+    await this.findReport(id);
+    await this.reportRepository.deleteReport(id);
   }
 
   async deleteReportAnswer(id: string, adminId: string) {
