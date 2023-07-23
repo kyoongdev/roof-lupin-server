@@ -27,12 +27,6 @@ export class ReportRepository {
   }
 
   async findReports(args = {} as Prisma.SpaceReportFindManyArgs) {
-    const data = await this.database.spaceReport.findMany({
-      where: {
-        userId: '19a0942e-7f03-47d9-b1ad-205595a393c0',
-      },
-    });
-    console.log({ data });
     const reports = await this.database.spaceReport.findMany({
       where: args.where,
       orderBy: {

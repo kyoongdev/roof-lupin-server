@@ -9,7 +9,7 @@ import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { AdminFindUserCouponsQuery } from '../dto/query';
+import { AdminFindCouponsQuery, AdminFindUserCouponsQuery } from '../dto/query';
 
 import { AdminCouponService } from './coupon.service';
 
@@ -38,16 +38,13 @@ export class AdminCouponController {
       description: '쿠폰 목록 조회',
       summary: '쿠폰 목록 조회 - 관리자만 사용 가능',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: CouponDTO,
     isPaging: true,
   })
-  async getCoupons(@Paging() paging: PagingDTO) {
-    return await this.couponService.findPagingCoupons(paging);
+  async getCoupons(@Paging() paging: PagingDTO, @Query() query: AdminFindCouponsQuery) {
+    return await this.couponService.findPagingCoupons(paging, query.generateQuery());
   }
 
   @Get('users/:userCouponId/detail')

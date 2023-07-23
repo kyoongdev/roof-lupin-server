@@ -119,7 +119,7 @@ export class AdminUserController {
   )
   async deleteUsers(@Query() query: IdsDTO) {
     await Promise.all(
-      query.ids.map(async (id) => {
+      query.ids.split(',').map(async (id) => {
         await this.userService.hardDeleteUser(id);
       })
     );

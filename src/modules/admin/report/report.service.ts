@@ -28,7 +28,7 @@ export class AdminReportService {
       skip,
       take,
     });
-    console.log(reports, args);
+
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
 

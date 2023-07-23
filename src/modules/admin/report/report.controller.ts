@@ -138,7 +138,7 @@ export class AdminReportController {
     await this.adminReportService.deleteReportAnswer(id, user.id);
   }
 
-  @Delete()
+  @Delete('many')
   @RequestApi({
     summary: {
       description: '신고 다수 삭제하기',
@@ -152,6 +152,7 @@ export class AdminReportController {
     204
   )
   async deleteReports(@Query() query: IdsDTO) {
-    await Promise.all(query.ids.map((id) => this.adminReportService.deleteReport(id)));
+    console.log({ query });
+    await Promise.all(query.ids.split(',').map((id) => this.adminReportService.deleteReport(id)));
   }
 }
