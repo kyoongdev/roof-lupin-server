@@ -17,8 +17,6 @@ export interface SpaceDTOProps {
   isApproved: boolean;
   thumbnail: string;
   hostId: string;
-  startAt: string;
-  endAt: string;
   publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
   rentalType: RentalType[];
@@ -58,12 +56,6 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 
-  @Property({ apiProperty: { type: 'string', description: '운영 시작 시간' } })
-  startAt: string;
-
-  @Property({ apiProperty: { type: 'string', description: '운영 종료 시간' } })
-  endAt: string;
-
   @Property({ apiProperty: { type: 'string', description: '호스트 id' } })
   hostId: string;
 
@@ -83,8 +75,6 @@ export class SpaceDTO {
     this.hostId = props.hostId;
     this.isInterested = props.isInterested ?? false;
     this.isImmediateReservation = props.isImmediateReservation;
-    this.startAt = props.startAt;
-    this.endAt = props.endAt;
     this.isPublic = typeof props.isPublic === 'boolean' ? props.isPublic : props.isPublic === 1;
     this.isApproved = typeof props.isApproved === 'boolean' ? props.isApproved : props.isApproved === 1;
     this.thumbnail = props.thumbnail;

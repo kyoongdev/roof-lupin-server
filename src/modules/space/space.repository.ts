@@ -29,7 +29,6 @@ export class SpaceRepository {
   }
 
   async findSpacesWithSQL(sql: Prisma.Sql) {
-    console.log(sql);
     const spaces: any[] = await this.database.$queryRaw(sql);
 
     const data = await Promise.all(
