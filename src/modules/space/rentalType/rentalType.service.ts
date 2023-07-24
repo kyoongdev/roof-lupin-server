@@ -81,13 +81,16 @@ export class RentalTypeService {
     return this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
   }
 
-  async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, query: PossibleRentalTypeByMonthQuery) {
-    const paging = query.getPaging();
+  async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO) {
     await this.spaceRepository.findSpace(spaceId);
-
+    console.log({ paging });
     const data = await Promise.all(
-      range(paging.page + Number(paging.startMonth) - 1, paging.limit + 1).map(async (month, index) => {
-        const year = index !== 0 && month === 1 ? Number(query.year) + 1 : Number(query.year);
+      range(
+        paging.page + Number(paging.startMonth) - 1,
+        paging.page + Number(paging.startMonth) + paging.limit - 1
+      ).map(async (month, index) => {
+        console.log({ month });
+        const year = index !== 0 && month === 1 ? Number(paging.startYear) + 1 : Number(paging.startYear);
         const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
           {
             where: {
@@ -110,11 +113,20 @@ export class RentalTypeService {
           },
         });
 
-        return await this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
+        return await this.getPossibleRentalTypesBySpaceIdWithMonth(
+          {
+            year: `${year}`,
+            month: `${month}`,
+          },
+          rentalTypes,
+          blockedTimes
+        );
       })
     );
 
-    return new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
+    const result = new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
+    console.log(result.paging);
+    return result;
   }
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {

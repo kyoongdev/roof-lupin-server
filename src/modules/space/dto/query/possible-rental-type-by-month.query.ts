@@ -10,23 +10,10 @@ export interface PossibleRentalTypeByMonthQueryProps {
   day: string;
 }
 
-export class PossibleRentalTypeByMonthQuery extends PossibleRentalTypePagingDTO {
+export class PossibleRentalTypeByMonthQuery {
   @Property({ apiProperty: { type: 'string', description: '년도' } })
   year: string;
 
   @Property({ apiProperty: { type: 'string', description: '월' } })
   month: string;
-
-  getPaging(): PossibleRentalTypePagingDTO {
-    if (this.maxLimit < this.limit) {
-      throw new BadRequestException('maxLimit은 limit보다 작아야합니다.');
-    }
-    return {
-      limit: this.limit,
-      page: this.page,
-      maxLimit: this.maxLimit,
-      startMonth: this.startMonth,
-      startYear: this.startYear,
-    };
-  }
 }
