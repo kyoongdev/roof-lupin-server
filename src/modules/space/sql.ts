@@ -8,11 +8,12 @@ import { FindSpacesQuery } from './dto/query';
 const BASE_SELECT = Prisma.sql`
   sp.id as id, sp.title as title, sp.description as description, sp.buildingType as buildingType, sp.thumbnail as thumbnail, 
   sp.minUser as minUser , sp.maxUser as maxUser , sp.overflowUserCost as overflowUserCost, sp.overflowUserCount as overflowUserCount,
-  sp.minCost as minCost , sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.createdAt as createdAt, 
+  sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.createdAt as createdAt, 
   sp.updatedAt as updatedAt, sp.deletedAt as deletedAt, sp.isApproved as isApproved, sp.isPublic as isPublic,
   sp.startAt as startAt, sp.endAt as endAt,
   sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress,
-  COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount
+  COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount,
+  min(rt.baseCost) as baseCost
 
 `;
 
@@ -53,9 +54,9 @@ export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: Paging
 export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, where: Prisma.Sql) => {
   const orderBy =
     query.sort === 'PRICE_HIGH'
-      ? Prisma.sql`rt.baseCost DESC`
+      ? Prisma.sql`baseCost DESC`
       : query.sort === 'PRICE_LOW'
-      ? Prisma.sql`rt.baseCost ASC`
+      ? Prisma.sql`baseCost ASC`
       : Prisma.sql`sp.createdAt DESC`;
 
   return Prisma.sql`
