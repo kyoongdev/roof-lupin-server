@@ -1,6 +1,6 @@
 import { Get, Param, Query } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -93,5 +93,23 @@ export class RentalTypeController {
     @Query() query: PossibleRentalTypeByMonthQuery
   ) {
     return await this.rentalTypeService.findPossibleRentalTypesBySpaceIdWithMonth(spaceId, query);
+  }
+
+  @Get(':spaceId/possible/month/paging')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '공간 및 날짜별 가능한 대여 타입  조회하기',
+      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 -유저만 사용 가능',
+    },
+  })
+  @ResponseApi({
+    type: PossibleRentalTypesDTO,
+  })
+  async getPagingPossibleSpaceRentalTypesByMoth(
+    @Param('spaceId') spaceId: string,
+    @Query() query: PossibleRentalTypeByMonthQuery
+  ) {
+    return await this.rentalTypeService.findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId, query);
   }
 }

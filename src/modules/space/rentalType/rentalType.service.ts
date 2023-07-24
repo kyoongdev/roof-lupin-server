@@ -9,6 +9,7 @@ import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
+import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import {
   PossiblePackageDTO,
   PossibleRentalTypeByMonthDTOProps,
@@ -77,6 +78,35 @@ export class RentalTypeService {
     });
 
     return this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
+  }
+
+  async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, query: PossibleRentalTypeByMonthQuery) {
+    const paging = query.getPaging();
+    await this.spaceRepository.findSpace(spaceId);
+
+    const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
+      {
+        where: {
+          spaceId,
+        },
+      },
+      {
+        where: {
+          year: query.year,
+          month: query.month,
+        },
+      }
+    );
+
+    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
+      where: {
+        spaceId,
+        year: query.year,
+        month: query.month,
+      },
+    });
+
+    const result = await this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
   }
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {

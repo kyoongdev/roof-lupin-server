@@ -21,4 +21,11 @@ export class OpenHourDTO {
 
   @DayResDecorator()
   day: number;
+
+  constructor(props: OpenHourDTOProps) {
+    this.id = props.id;
+    this.startAt = props.startAt;
+    this.endAt = props.endAt;
+    this.day = props.day;
+  }
 }
