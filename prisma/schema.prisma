@@ -133,7 +133,6 @@ model Space {
   overflowUserCost  Int    @db.MediumInt
   //NOTE: 초과 인원 기준 인원
   overflowUserCount Int    @db.TinyInt
-  minCost           Int    @default(0) @db.MediumInt
   minSize           Int    @default(0) @db.SmallInt
   startAt           String @db.VarChar(2)
   endAt             String @db.VarChar(2)

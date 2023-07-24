@@ -277,10 +277,6 @@ export class SpaceRepository {
 
     data.validateRefundPolicies();
 
-    const minCost = Math.min(
-      ...rentalTypes.map((rentalType) => rentalType.baseCost),
-      ...flatMap(rentalTypes.map((rentalType) => rentalType.timeCostInfos?.map((timeCostInfo) => timeCostInfo.cost)))
-    );
     const minSize = Math.min(...sizes.map((size) => size.size));
 
     const id = await this.database.$transaction(async (prisma) => {
@@ -292,7 +288,6 @@ export class SpaceRepository {
       const space = await prisma.space.create({
         data: {
           ...rest,
-          minCost,
           minSize,
           host: {
             connect: {

@@ -111,7 +111,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         overflowUserCost: 15000,
         buildingType: 1,
         minSize: 80,
-        minCost: 5000,
+
         isPublic: true,
         isApproved: true,
         rentalType: {
