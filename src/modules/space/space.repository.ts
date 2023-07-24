@@ -130,6 +130,8 @@ export class SpaceRepository {
         },
         userInterests: true,
         sizes: true,
+        openHours: true,
+        holiday: true,
       },
     });
 
@@ -272,6 +274,8 @@ export class SpaceRepository {
       hashTags: hashTagProps,
       publicTransportations,
       sizes,
+      openHours,
+      holiday,
       ...rest
     } = data;
 
@@ -341,6 +345,14 @@ export class SpaceRepository {
               ...locationProps,
             },
           },
+          openHours: {
+            create: openHours.map((openHour) => openHour),
+          },
+          ...(holiday && {
+            holiday: {
+              create: holiday,
+            },
+          }),
         },
       });
       await this.rentalTypeRepository.createRentalTypes(prisma, space.id, rentalTypes);
@@ -364,6 +376,8 @@ export class SpaceRepository {
       hashTags: hashTagProps,
       publicTransportations,
       sizes,
+      openHours,
+      holiday,
       ...rest
     } = data;
 
@@ -378,6 +392,34 @@ export class SpaceRepository {
     };
 
     await this.database.$transaction(async (prisma) => {
+      if (holiday) {
+        await prisma.spaceHoliday.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+        updateArgs.data = {
+          ...updateArgs.data,
+          holiday: {
+            create: holiday,
+          },
+        };
+      }
+
+      if (openHours) {
+        await prisma.openHour.deleteMany({
+          where: {
+            spaceId,
+          },
+        });
+        updateArgs.data = {
+          ...updateArgs.data,
+          openHours: {
+            create: openHours.map((openHour) => openHour),
+          },
+        };
+      }
+
       if (images) {
         await prisma.image.deleteMany({
           where: {
