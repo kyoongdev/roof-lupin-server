@@ -72,6 +72,8 @@ export class FindSpacesQuery extends PagingDTO {
               title: {
                 contains: this.keyword,
               },
+            },
+            {
               location: {
                 jibunAddress: {
                   contains: this.keyword,
@@ -80,10 +82,23 @@ export class FindSpacesQuery extends PagingDTO {
                   contains: this.keyword,
                 },
               },
+            },
+            {
               publicTransportations: {
                 some: {
                   name: {
                     contains: this.keyword,
+                  },
+                },
+              },
+            },
+            {
+              hashTags: {
+                some: {
+                  hashTag: {
+                    name: {
+                      contains: this.keyword,
+                    },
                   },
                 },
               },
