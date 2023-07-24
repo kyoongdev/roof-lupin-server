@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'wemacu-nestjs';
 
 import { PossibleRentalTypePagingDTO } from './possible-rental-type-paging.dto';
@@ -8,20 +10,10 @@ export interface PossibleRentalTypeByMonthQueryProps {
   day: string;
 }
 
-export class PossibleRentalTypeByMonthQuery extends PossibleRentalTypePagingDTO {
+export class PossibleRentalTypeByMonthQuery {
   @Property({ apiProperty: { type: 'string', description: '년도' } })
   year: string;
 
   @Property({ apiProperty: { type: 'string', description: '월' } })
   month: string;
-
-  getPaging(): PossibleRentalTypePagingDTO {
-    return {
-      limit: this.limit,
-      page: this.page,
-      maxLimit: this.maxLimit,
-      startMonth: this.startMonth,
-      startYear: this.startYear,
-    };
-  }
 }

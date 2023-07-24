@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
+import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from '../dto/rentalType';
 
 import { RentalTypeService } from './rentalType.service';
@@ -108,7 +109,7 @@ export class RentalTypeController {
   })
   async getPagingPossibleSpaceRentalTypesByMoth(
     @Param('spaceId') spaceId: string,
-    @Query() query: PossibleRentalTypeByMonthQuery
+    @Query() query: PossibleRentalTypePagingDTO
   ) {
     return await this.rentalTypeService.findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId, query);
   }

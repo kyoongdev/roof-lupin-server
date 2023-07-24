@@ -22,7 +22,7 @@ export const RoleGuard = (...roles: RoleType[]) => {
       if (!roles.includes(req.user.role)) {
         throw new ForbiddenException(`${req.user.role}는 사용할 수 없습니다.`);
       }
-      console.log('ASDFA');
+
       return true;
     }
   }
