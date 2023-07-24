@@ -9,3 +9,10 @@ export const getTimeDiff = (dateOne: Date, dateTwo: Date) => {
   const diffDays = Math.ceil(diff / (1000 * 3600));
   return diffDays;
 };
+
+export const getWeek = (date: Date) => {
+  const currentDate = date.getDate();
+  const firstDay = new Date(date.setDate(1)).getDay();
+
+  return Math.ceil((currentDate + firstDay) / 7);
+};

@@ -103,8 +103,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         불은 호스트가 직접피어 드립니다
         넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
         thumbnail: 'https://dev-image.rooflupin.com/IMG_5913.jpg',
-        minUser: 0,
-        maxUser: 0,
+        minUser: 5,
+        maxUser: 10,
         overflowUserCount: 6,
         overflowUserCost: 15000,
         buildingType: 1,

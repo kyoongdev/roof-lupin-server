@@ -4,9 +4,11 @@ import { Prisma } from '@prisma/client';
 import { range } from 'lodash';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
+import { getWeek } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import { MaxPossibleTime } from '@/interface/space.interface';
+import { DAY_ENUM } from '@/utils/validation';
 
+import { HolidayService } from '../holiday/holiday.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SearchRepository } from '../search/search.repository';
 
@@ -14,8 +16,6 @@ import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
-import { PossiblePackageDTO, PossibleRentalTypeDTO } from './dto/rentalType';
-import { RENTAL_TYPE_ENUM } from './dto/validation/rental-type.validation';
 import {
   ALREADY_INTERESTED,
   CURRENT_LOCATION_BAD_REQUEST,
@@ -37,10 +37,8 @@ import {
 export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeService: RentalTypeService,
-    private readonly searchRepository: SearchRepository,
-    private readonly reservationRepository: ReservationRepository,
-    private readonly database: PrismaService
+    private readonly holidayService: HolidayService,
+    private readonly searchRepository: SearchRepository
   ) {}
 
   async findSpaceIds() {
@@ -77,7 +75,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = this.getExcludeSpaces(date);
+    const excludeQuery = await this.getExcludeSpaces(date);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -130,7 +128,7 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  getExcludeSpaces(date?: FindByDateQuery) {
+  async getExcludeSpaces(date?: FindByDateQuery) {
     if (!date) {
       return null;
     }
@@ -148,8 +146,15 @@ export class SpaceService {
             )}
           ) `;
 
+    const targetDate = new Date(Number(date.year), Number(date.month) - 1, Number(date.day));
+    const isHoliday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
+    const week = getWeek(targetDate);
+    const day = isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
     const dateQuery = date
-      ? Prisma.sql` Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
+      ? Prisma.sql`Reservation.year = ${date.year} 
+      AND Reservation.month = ${date.month} 
+      AND Reservation.day = ${date.day}
+      ${timeQuery}`
       : Prisma.empty;
 
     const query = Prisma.sql`
@@ -158,6 +163,8 @@ export class SpaceService {
     LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
     LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
     LEFT JOIN Space isp ON RentalType.spaceId = isp.id
+    LEFT JOIN SpaceHoliday sh ON isp.id = sh.spaceId
+    LEFT JOIN OpenHour oh ON isp.id = oh.spaceId
     WHERE  ${dateQuery}
     GROUP BY isp.id
       `;
