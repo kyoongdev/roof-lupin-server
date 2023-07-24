@@ -25,6 +25,7 @@ const BASE_JOIN = Prisma.sql`
   LEFT JOIN Category ca ON sc.categoryId = ca.id 
   LEFT JOIN SpaceHashTag sh ON sp.id = sh.spaceId
   LEFT JOIN HashTag ht ON sh.hashTagId = ht.id
+  LEFT JOIN RentalType rt ON sp.id = rt.spaceId
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
@@ -40,7 +41,6 @@ export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.
 export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`
   SELECT ${BASE_SELECT}, (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
     -radians(${location.lng}))+sin(radians(${location.lat}))*sin(radians(sl.lat)))) as distance
-
   FROM Space sp
   ${BASE_JOIN}
   ${where} AND  (6371*acos(cos(radians(${location.lat}))*cos(radians(sl.lat))*cos(radians(sl.lng)
@@ -53,9 +53,9 @@ export const getFindSpacesWithDistanceSQL = (location: LatLngDTO, paging: Paging
 export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, where: Prisma.Sql) => {
   const orderBy =
     query.sort === 'PRICE_HIGH'
-      ? Prisma.sql`sp.minCost DESC`
+      ? Prisma.sql`rt.baseCost DESC`
       : query.sort === 'PRICE_LOW'
-      ? Prisma.sql`sp.minCost ASC`
+      ? Prisma.sql`rt.baseCost ASC`
       : Prisma.sql`sp.createdAt DESC`;
 
   return Prisma.sql`

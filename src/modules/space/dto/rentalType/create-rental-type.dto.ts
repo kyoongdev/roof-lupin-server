@@ -22,7 +22,7 @@ export class CreateRentalTypeDTO {
   @Property({ apiProperty: { type: 'string', description: '대여타입 이름' } })
   name: string;
 
-  @Property({ apiProperty: { type: 'number', description: '기본 가격' } })
+  @Property({ apiProperty: { type: 'number', description: '기본 가격 (시간 상품은 최소값)' } })
   baseCost: number;
 
   @RentalTypeReqDecorator(false)
