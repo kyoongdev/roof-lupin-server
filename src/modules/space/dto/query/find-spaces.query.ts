@@ -48,22 +48,6 @@ export class FindSpacesQuery extends PagingDTO {
   sort?: keyof typeof SPACE_SORT_OPTION;
 
   findSpacesFindManyClause(userId?: string): Prisma.SpaceFindManyArgs {
-    let orderBy: Prisma.Enumerable<Prisma.SpaceOrderByWithRelationInput> = {
-      createdAt: 'desc',
-    };
-    if (this.sort === 'RECENT') {
-      orderBy = {
-        createdAt: 'desc',
-      };
-    } else if (this.sort === 'PRICE_HIGH') {
-      orderBy = {
-        minCost: 'desc',
-      };
-    } else if (this.sort === 'PRICE_LOW') {
-      orderBy = {
-        minCost: 'asc',
-      };
-    }
     return {
       where: {
         ...(this.keyword && {
@@ -72,6 +56,8 @@ export class FindSpacesQuery extends PagingDTO {
               title: {
                 contains: this.keyword,
               },
+            },
+            {
               location: {
                 jibunAddress: {
                   contains: this.keyword,
@@ -80,10 +66,23 @@ export class FindSpacesQuery extends PagingDTO {
                   contains: this.keyword,
                 },
               },
+            },
+            {
               publicTransportations: {
                 some: {
                   name: {
                     contains: this.keyword,
+                  },
+                },
+              },
+            },
+            {
+              hashTags: {
+                some: {
+                  hashTag: {
+                    name: {
+                      contains: this.keyword,
+                    },
                   },
                 },
               },
@@ -141,7 +140,6 @@ export class FindSpacesQuery extends PagingDTO {
           ],
         }),
       },
-      orderBy,
     };
   }
 

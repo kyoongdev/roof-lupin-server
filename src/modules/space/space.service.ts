@@ -77,7 +77,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = await this.getExcludeSpaces(date);
+    const excludeQuery = this.getExcludeSpaces(date);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -130,9 +130,12 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async getExcludeSpaces(date?: FindByDateQuery) {
+  getExcludeSpaces(date?: FindByDateQuery) {
+    if (!date) {
+      return null;
+    }
     const timeQuery =
-      date.startAt && date.endAt
+      date?.startAt && date?.endAt
         ? Prisma.sql`AND (IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${
             date.startAt
           } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
