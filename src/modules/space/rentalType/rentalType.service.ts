@@ -19,6 +19,7 @@ import {
   PossibleRentalTypesDTOProps,
   RentalTypeWithReservationDTO,
 } from '../dto/rentalType';
+import { PaginationPossibleRentalTypesByMonthDTO } from '../dto/rentalType/pagination-possible-rental-types-by-month.dto';
 import { PossibleTimeCostInfoDTOProps } from '../dto/timeCostInfo/possible-time-cost-info.dto';
 import { RENTAL_TYPE_ENUM } from '../dto/validation/rental-type.validation';
 import { SpaceRepository } from '../space.repository';
@@ -84,29 +85,36 @@ export class RentalTypeService {
     const paging = query.getPaging();
     await this.spaceRepository.findSpace(spaceId);
 
-    const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
-      {
-        where: {
-          spaceId,
-        },
-      },
-      {
-        where: {
-          year: query.year,
-          month: query.month,
-        },
-      }
+    const data = await Promise.all(
+      range(paging.page + Number(paging.startMonth) - 1, paging.limit + 1).map(async (month, index) => {
+        const year = index !== 0 && month === 1 ? Number(query.year) + 1 : Number(query.year);
+        const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
+          {
+            where: {
+              spaceId,
+            },
+          },
+          {
+            where: {
+              year: `${year}`,
+              month: `${month}`,
+            },
+          }
+        );
+
+        const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
+          where: {
+            spaceId,
+            year: `${year}`,
+            month: `${month}`,
+          },
+        });
+
+        return await this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
+      })
     );
 
-    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
-      where: {
-        spaceId,
-        year: query.year,
-        month: query.month,
-      },
-    });
-
-    const result = await this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
+    return new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
   }
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {

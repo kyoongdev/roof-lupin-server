@@ -17,4 +17,10 @@ export class PossibleRentalTypesByMonthDTO {
 
   @Property({ apiProperty: { type: PossibleRentalTypeByMonthDTO, isArray: true, description: '일별 대여 정보' } })
   days: PossibleRentalTypeByMonthDTO[];
+
+  constructor(props: PossibleRentalTypesByMonthDTOProps) {
+    this.year = props.year;
+    this.month = props.month;
+    this.days = props.days.map((item) => new PossibleRentalTypeByMonthDTO(item));
+  }
 }

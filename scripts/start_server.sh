@@ -19,6 +19,7 @@ pm2 kill
 
 yarn config:dev
 yarn build
-yarn prisma db push
+yarn prisma db push --accept-data-loss	
+yarn seed
 
 pm2 start ecosystem.json

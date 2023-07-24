@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'wemacu-nestjs';
 
 import { PossibleRentalTypePagingDTO } from './possible-rental-type-paging.dto';
@@ -16,6 +18,9 @@ export class PossibleRentalTypeByMonthQuery extends PossibleRentalTypePagingDTO 
   month: string;
 
   getPaging(): PossibleRentalTypePagingDTO {
+    if (this.maxLimit < this.limit) {
+      throw new BadRequestException('maxLimit은 limit보다 작아야합니다.');
+    }
     return {
       limit: this.limit,
       page: this.page,
