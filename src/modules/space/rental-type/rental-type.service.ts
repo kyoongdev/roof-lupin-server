@@ -378,182 +378,19 @@ export class RentalTypeService {
 
     const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
       (acc, next) => {
-        // const possibleRentalType = this.getPossibleRentalType(
-        //   next,
-        //   [...timeReservations, ...packageReservations],
-        //   blockedTimes,
-        //   openHours,
-        //   spaceHolidays,
-        //   targetDate
-        // );
+        const possibleRentalType = this.getPossibleRentalType(
+          next,
+          [...timeReservations, ...packageReservations],
+          blockedTimes,
+          openHours,
+          spaceHolidays,
+          targetDate
+        );
         if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          // acc.time = possibleRentalType;
-          const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
-            ...range(9, 24).map((hour: number) => ({
-              cost: 0,
-              isPossible: false,
-              time: hour,
-            })),
-            ...range(0, 9).map((hour: number) => ({
-              cost: 0,
-              isPossible: false,
-              time: hour,
-            })),
-          ];
-
-          //INFO: true로 초기화
-          next.timeCostInfos.forEach((timeInfo) => {
-            timeCostInfos.forEach((info) => {
-              if (info.time === timeInfo.time) {
-                info.cost = timeInfo.cost;
-                info.isPossible = true;
-              }
-            });
-          });
-
-          //INFO: 이미 예약된 시간 정보
-          [...timeReservations, ...packageReservations].forEach((reservation) => {
-            if (
-              targetDate.year === reservation.year &&
-              targetDate.month === reservation.month &&
-              targetDate.day === reservation.day
-            ) {
-              reservation.rentalTypes.forEach((reservedRentalType) => {
-                const startAt =
-                  reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-                const endAt =
-                  reservedRentalType.startAt >= reservedRentalType.endAt
-                    ? reservedRentalType.endAt + 24
-                    : reservedRentalType.endAt;
-                range(startAt, endAt).forEach((hour) => {
-                  const index = timeCostInfos.findIndex((timeCostInfo) =>
-                    hour >= 24 ? timeCostInfo.time === hour - 24 : timeCostInfo.time === hour
-                  );
-
-                  if (index !== -1) {
-                    timeCostInfos[index].isPossible = false;
-                  }
-                });
-              });
-            }
-          });
-
-          //INFO: 막아둔 날짜는 block
-          blockedTimes.forEach((blockedTime) => {
-            if (
-              targetDate.year === blockedTime.year &&
-              targetDate.month === blockedTime.month &&
-              targetDate.day === blockedTime.day
-            )
-              for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
-                timeCostInfos[time].isPossible = false;
-              }
-          });
-
-          if (targetDate) {
-            const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
-            const currentDay = isHoliday
-              ? DAY_ENUM.HOLIDAY
-              : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
-
-            const holidays = this.getHolidays(targetDate, spaceHolidays);
-            if (holidays.length > 0) {
-              acc.time = {
-                ...next,
-
-                timeCostInfos: timeCostInfos.map((timeCostInfo) => {
-                  return {
-                    ...timeCostInfo,
-                    isPossible: false,
-                  };
-                }),
-              };
-            }
-
-            openHours
-              .filter((openHour) => openHour.day === currentDay)
-              .forEach((openHour) => {
-                const openStart = Number(openHour.startAt);
-                const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
-                timeCostInfos.forEach((timeCostInfo, index) => {
-                  if (timeCostInfo.time < openStart || timeCostInfo.time > openEnd) {
-                    timeCostInfos[index].isPossible = false;
-                  }
-                });
-              });
-          }
-
-          acc.time = {
-            ...next,
-            timeCostInfos,
-          };
+          acc.time = possibleRentalType;
         } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-          let isPossible = true;
-          [...timeReservations, ...packageReservations].forEach((reservation) => {
-            if (
-              targetDate.year === reservation.year &&
-              targetDate.month === reservation.month &&
-              targetDate.day === reservation.day
-            ) {
-              reservation.rentalTypes.forEach((reservedRentalType) => {
-                if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-                  isPossible = !(
-                    next.startAt === reservedRentalType.startAt && next.endAt === reservedRentalType.endAt
-                  );
-                } else {
-                  const startAt =
-                    reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-                  const endAt =
-                    reservedRentalType.startAt >= reservedRentalType.endAt
-                      ? reservedRentalType.endAt + 24
-                      : reservedRentalType.endAt;
-                  const nextStartAt = next.startAt;
-                  const nextEndAt = next.startAt >= next.endAt ? next.endAt + 24 : next.endAt;
-                  range(startAt, endAt + 1).forEach((hour) => {
-                    if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
-                  });
-                }
-              });
-            }
-          });
-
-          blockedTimes.forEach((blockedTime) => {
-            if (
-              targetDate.year === blockedTime.year &&
-              targetDate.month === blockedTime.month &&
-              targetDate.day === blockedTime.day &&
-              blockedTime.startAt <= next.endAt &&
-              blockedTime.endAt >= next.startAt
-            )
-              isPossible = false;
-          });
-
-          if (targetDate) {
-            const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
-            const currentDay = isHoliday
-              ? DAY_ENUM.HOLIDAY
-              : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
-
-            const holidays = this.getHolidays(targetDate, spaceHolidays);
-            if (holidays.length > 0) {
-              isPossible = false;
-            }
-
-            openHours
-              .filter((openHour) => openHour.day === currentDay)
-              .forEach((openHour) => {
-                const openStart = Number(openHour.startAt);
-                const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
-                if (next.startAt > openEnd || next.endAt < openStart) isPossible = false;
-              });
-          }
-
-          acc.package.push({
-            ...next,
-            isPossible,
-          });
+          acc.package.push(possibleRentalType as PossiblePackageDTO);
         }
-
         return acc;
       },
       { time: null, package: [] }
