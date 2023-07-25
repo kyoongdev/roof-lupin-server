@@ -159,11 +159,11 @@ export class FindSpacesQuery extends PagingDTO {
       : Prisma.empty;
     const keywordWhere = this.keyword
       ? Prisma.sql`
-    AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
-    OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
-    OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
-    OR pt.name LIKE '%${Prisma.raw(this.keyword)}%'
-    OR ht.name LIKE '%${Prisma.raw(this.keyword)}%')`
+          AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
+          OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
+          OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
+          OR pt.name LIKE '%${Prisma.raw(this.keyword)}%'
+          OR ht.name LIKE '%${Prisma.raw(this.keyword)}%')`
       : Prisma.empty;
 
     const excludeIds =
@@ -173,7 +173,7 @@ export class FindSpacesQuery extends PagingDTO {
             ''
           )}`
         : Prisma.empty;
-    console.log(excludeIds);
+
     const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
 
     return where;

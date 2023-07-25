@@ -5,11 +5,9 @@ import { range } from 'lodash';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { getWeek } from '@/common/date';
-import { PrismaService } from '@/database/prisma.service';
 import { DAY_ENUM } from '@/utils/validation';
 
 import { HolidayService } from '../holiday/holiday.service';
-import { ReservationRepository } from '../reservation/reservation.repository';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -23,7 +21,6 @@ import {
   SPACE_ERROR_CODE,
 } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
-import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
 import {
   getCountDistanceSpacesSQL,
@@ -38,8 +35,7 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly holidayService: HolidayService,
-    private readonly searchRepository: SearchRepository,
-    private readonly database: PrismaService
+    private readonly searchRepository: SearchRepository
   ) {}
 
   async findSpaceIds() {
@@ -53,10 +49,21 @@ export class SpaceService {
     }
     return space;
   }
+  async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.spaceRepository.countSpaces({
+      where: args.where,
+    });
+    const spaces = await this.spaceRepository.findSpaces({
+      ...args,
+      skip,
+      take,
+    });
+    return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
 
-  async findPagingSpaces(
+  async findPagingSpacesWithSQL(
     paging: PagingDTO,
-    args = {} as Prisma.SpaceFindManyArgs,
     query?: FindSpacesQuery,
     location?: FindByLocationQuery,
     date?: FindByDateQuery,
@@ -139,7 +146,7 @@ export class SpaceService {
             } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
           : Prisma.sql`AND (      
             ${Prisma.join(
-              range(9, 33).map((value, cur) => {
+              range(9, 33).map((value) => {
                 return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${value}  )`;
               }),
               ` AND `
@@ -158,23 +165,24 @@ export class SpaceService {
         : Prisma.empty;
 
       const query = Prisma.sql`
-      SELECT isp.id
-      FROM Reservation
-      LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
-      LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
-      LEFT JOIN Space isp ON RentalType.spaceId = isp.id
-      LEFT JOIN SpaceHoliday sh ON isp.id = sh.spaceId
-      LEFT JOIN OpenHour oh ON isp.id = oh.spaceId
-      WHERE  ${dateQuery}
-      GROUP BY isp.id
+        SELECT isp.id
+        FROM Reservation
+        LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
+        LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
+        LEFT JOIN Space isp ON RentalType.spaceId = isp.id
+        LEFT JOIN SpaceHoliday sh ON isp.id = sh.spaceId
+        LEFT JOIN OpenHour oh ON isp.id = oh.spaceId
+        WHERE  ${dateQuery}
+        GROUP BY isp.id
       `;
+
       const holidayQuery = Prisma.sql`
-      SELECT sp.id
-      FROM Space sp
-      LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
-      LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
-      WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week})  
-      GROUP BY sp.id
+        SELECT sp.id
+        FROM Space sp
+        LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
+        LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
+        WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week})  
+        GROUP BY sp.id
       `;
       queries.push(query, holidayQuery);
     }
