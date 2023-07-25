@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
+import type { Prisma, SpaceHoliday } from '@prisma/client';
 import { flatMap, flatten, range } from 'lodash';
 
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
+import { OpenHourDTO } from '@/modules/host/dto/openHour';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
+import { SpaceHolidayDTO } from '../dto/holiday';
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
 import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import {
@@ -157,7 +159,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
@@ -207,7 +209,8 @@ export class RentalTypeService {
         day: query.day,
       },
     });
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
+
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
   }
 
   async getPossibleRentalTypesBySpaceIdWithMonth(
@@ -244,7 +247,7 @@ export class RentalTypeService {
           })
           .filter(Boolean);
 
-        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, `${day}`);
+        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, [], [], `${day}`);
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
@@ -265,6 +268,8 @@ export class RentalTypeService {
   getPossibleRentalTypesBySpaceId(
     rentalTypes: RentalTypeWithReservationDTO[],
     blockedTimes: BlockedTimeDTO[],
+    spaceHolidays: SpaceHolidayDTO[],
+    openHours: OpenHourDTO[],
     targetDay?: string
   ) {
     const timeReservations = flatten(
