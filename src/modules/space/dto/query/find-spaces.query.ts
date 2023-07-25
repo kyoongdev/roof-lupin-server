@@ -3,6 +3,9 @@ import { PagingDTO, Property } from 'wemacu-nestjs';
 
 import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
 
+import { FindByDateQuery } from './find-by-date.query';
+import { FindByLocationQuery } from './find-by-location.query';
+
 export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '검색어' } })
   keyword?: string;
@@ -140,6 +143,24 @@ export class FindSpacesQuery extends PagingDTO {
           ],
         }),
       },
+    };
+  }
+
+  getFindByDateQuery(): FindByDateQuery {
+    return {
+      year: this.year,
+      month: this.month,
+      day: this.day,
+      startAt: this.startAt,
+      endAt: this.endAt,
+    };
+  }
+
+  getFindByLocationQuery(): FindByLocationQuery {
+    return {
+      lat: this.lat,
+      lng: this.lng,
+      distance: this.distance,
     };
   }
 

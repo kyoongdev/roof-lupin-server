@@ -62,14 +62,9 @@ export class SpaceService {
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
-  async findPagingSpacesWithSQL(
-    paging: PagingDTO,
-    query?: FindSpacesQuery,
-    location?: FindByLocationQuery,
-    date?: FindByDateQuery,
-    userId?: string
-  ) {
-    const isDistance = query.sort === 'DISTANCE' || location;
+  async findPagingSpacesWithSQL(paging: PagingDTO, query?: FindSpacesQuery, userId?: string) {
+    const location = query.getFindByLocationQuery();
+    const isDistance = query.sort === 'DISTANCE' || Boolean(location);
 
     if (isDistance) {
       if (!query.lat && !query.lng && !query.distance) {
@@ -83,7 +78,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = await this.getExcludeSpaces(date);
+    const excludeQuery = await this.getExcludeSpaces(query);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -136,7 +131,8 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async getExcludeSpaces(date?: FindByDateQuery) {
+  async getExcludeSpaces(query?: FindSpacesQuery) {
+    const date = query.getFindByDateQuery();
     const queries: Prisma.Sql[] = [];
     if (date) {
       const timeQuery =
