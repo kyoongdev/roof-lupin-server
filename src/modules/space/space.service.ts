@@ -4,18 +4,16 @@ import { Prisma } from '@prisma/client';
 import { range } from 'lodash';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
-import { MaxPossibleTime } from '@/interface/space.interface';
+import { getWeek } from '@/common/date';
+import { DAY_ENUM } from '@/utils/validation';
 
-import { ReservationRepository } from '../reservation/reservation.repository';
+import { HolidayService } from '../holiday/holiday.service';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
 import { FindByDateQuery } from './dto/query/find-by-date.query';
 import { FindByLocationQuery } from './dto/query/find-by-location.query';
-import { PossiblePackageDTO, PossibleRentalTypeDTO } from './dto/rentalType';
-import { RENTAL_TYPE_ENUM } from './dto/validation/rental-type.validation';
 import {
   ALREADY_INTERESTED,
   CURRENT_LOCATION_BAD_REQUEST,
@@ -23,7 +21,6 @@ import {
   SPACE_ERROR_CODE,
 } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
-import { RentalTypeService } from './rentalType/rentalType.service';
 import { SpaceRepository } from './space.repository';
 import {
   getCountDistanceSpacesSQL,
@@ -37,10 +34,8 @@ import {
 export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly rentalTypeService: RentalTypeService,
-    private readonly searchRepository: SearchRepository,
-    private readonly reservationRepository: ReservationRepository,
-    private readonly database: PrismaService
+    private readonly holidayService: HolidayService,
+    private readonly searchRepository: SearchRepository
   ) {}
 
   async findSpaceIds() {
@@ -54,10 +49,21 @@ export class SpaceService {
     }
     return space;
   }
+  async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.spaceRepository.countSpaces({
+      where: args.where,
+    });
+    const spaces = await this.spaceRepository.findSpaces({
+      ...args,
+      skip,
+      take,
+    });
+    return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
 
-  async findPagingSpaces(
+  async findPagingSpacesWithSQL(
     paging: PagingDTO,
-    args = {} as Prisma.SpaceFindManyArgs,
     query?: FindSpacesQuery,
     location?: FindByLocationQuery,
     date?: FindByDateQuery,
@@ -77,7 +83,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = this.getExcludeSpaces(date);
+    const excludeQuery = await this.getExcludeSpaces(date);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -130,38 +136,56 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  getExcludeSpaces(date?: FindByDateQuery) {
-    if (!date) {
-      return null;
-    }
-    const timeQuery =
-      date?.startAt && date?.endAt
-        ? Prisma.sql`AND (IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${
-            date.startAt
-          } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
-        : Prisma.sql`AND (      
+  async getExcludeSpaces(date?: FindByDateQuery) {
+    const queries: Prisma.Sql[] = [];
+    if (date) {
+      const timeQuery =
+        date?.startAt && date?.endAt
+          ? Prisma.sql`AND (IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${
+              date.startAt
+            } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
+          : Prisma.sql`AND (      
             ${Prisma.join(
-              range(9, 33).map((value, cur) => {
+              range(9, 33).map((value) => {
                 return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${value}  )`;
               }),
               ` AND `
             )}
           ) `;
 
-    const dateQuery = date
-      ? Prisma.sql` Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day} ${timeQuery}`
-      : Prisma.empty;
+      const targetDate = new Date(Number(date.year), Number(date.month) - 1, Number(date.day));
 
-    const query = Prisma.sql`
-    SELECT isp.id
-    FROM Reservation
-    LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
-    LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
-    LEFT JOIN Space isp ON RentalType.spaceId = isp.id
-    WHERE  ${dateQuery}
-    GROUP BY isp.id
+      const isHoliday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
+      const week = getWeek(new Date(Number(date.year), Number(date.month) - 1, Number(date.day)));
+
+      const day = isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+
+      const dateQuery = date
+        ? Prisma.sql`(Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
+        : Prisma.empty;
+
+      const query = Prisma.sql`
+        SELECT isp.id
+        FROM Reservation
+        LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
+        LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
+        LEFT JOIN Space isp ON RentalType.spaceId = isp.id
+        LEFT JOIN SpaceHoliday sh ON isp.id = sh.spaceId
+        LEFT JOIN OpenHour oh ON isp.id = oh.spaceId
+        WHERE  ${dateQuery}
+        GROUP BY isp.id
       `;
 
-    return query;
+      const holidayQuery = Prisma.sql`
+        SELECT sp.id
+        FROM Space sp
+        LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
+        LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
+        WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week})  
+        GROUP BY sp.id
+      `;
+      queries.push(query, holidayQuery);
+    }
+    return queries;
   }
 }

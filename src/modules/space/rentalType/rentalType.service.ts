@@ -83,13 +83,12 @@ export class RentalTypeService {
 
   async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO) {
     await this.spaceRepository.findSpace(spaceId);
-    console.log({ paging });
+
     const data = await Promise.all(
       range(
         paging.page + Number(paging.startMonth) - 1,
         paging.page + Number(paging.startMonth) + paging.limit - 1
       ).map(async (month, index) => {
-        console.log({ month });
         const year = index !== 0 && month === 1 ? Number(paging.startYear) + 1 : Number(paging.startYear);
         const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
           {
@@ -125,7 +124,7 @@ export class RentalTypeService {
     );
 
     const result = new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
-    console.log(result.paging);
+
     return result;
   }
 

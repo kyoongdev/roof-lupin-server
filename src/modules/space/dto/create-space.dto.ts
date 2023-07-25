@@ -10,6 +10,8 @@ import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './cate
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
+import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
+import { CreateOpenHourDTO, CreateOpenHourDTOProps } from './openHour';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
 import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from './rentalType';
 import { CreateServiceDTO, type CreateServiceDTOProps } from './service';
@@ -39,6 +41,8 @@ export interface CreateSpaceDTOProps {
   hashTags: CreateHashTagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
+  openHours: CreateOpenHourDTOProps[];
+  holiday?: CreateSpaceHolidayDTOProps;
 }
 
 export class CreateSpaceDTO {
@@ -108,6 +112,12 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateSizeDTO, description: '면적' } })
   sizes: CreateSizeDTO[];
 
+  @Property({ apiProperty: { type: CreateOpenHourDTO, isArray: true, description: '영업시간' } })
+  openHours: CreateOpenHourDTO[];
+
+  @Property({ apiProperty: { type: CreateSpaceHolidayDTO, nullable: true, description: '휴일' } })
+  holiday?: CreateSpaceHolidayDTO;
+
   constructor(props?: CreateSpaceDTOProps) {
     if (props) {
       this.title = props.title;
@@ -134,6 +144,8 @@ export class CreateSpaceDTO {
         (transportation) => new CreateTransportationDTO(transportation)
       );
       this.sizes = props.sizes.map((size) => new CreateSizeDTO(size));
+      this.openHours = props.openHours.map((openHour) => new CreateOpenHourDTO(openHour));
+      this.holiday = props.holiday ? new CreateSpaceHolidayDTO(props.holiday) : undefined;
     }
   }
 

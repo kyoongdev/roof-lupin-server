@@ -143,7 +143,7 @@ export class FindSpacesQuery extends PagingDTO {
     };
   }
 
-  generateSqlWhereClause(excludeQuery?: Prisma.Sql, userId?: string) {
+  generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
     const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.empty;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
@@ -159,14 +159,21 @@ export class FindSpacesQuery extends PagingDTO {
       : Prisma.empty;
     const keywordWhere = this.keyword
       ? Prisma.sql`
-    AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
-    OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
-    OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
-    OR pt.name LIKE '%${Prisma.raw(this.keyword)}%'
-    OR ht.name LIKE '%${Prisma.raw(this.keyword)}%')`
+          AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
+          OR sl.jibunAddress LIKE '%${Prisma.raw(this.keyword)}%'
+          OR sl.roadAddress LIKE '%${Prisma.raw(this.keyword)}%'
+          OR pt.name LIKE '%${Prisma.raw(this.keyword)}%'
+          OR ht.name LIKE '%${Prisma.raw(this.keyword)}%')`
       : Prisma.empty;
 
-    const excludeIds = excludeQuery ? Prisma.sql`AND sp.id  NOT in (${excludeQuery})` : Prisma.empty;
+    const excludeIds =
+      excludeQueries.length > 0
+        ? Prisma.sql`${Prisma.join(
+            excludeQueries.map((query) => Prisma.sql`AND sp.id NOT in (${query})`),
+            ''
+          )}`
+        : Prisma.empty;
+
     const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
 
     return where;

@@ -10,6 +10,8 @@ import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
 import { BuildingDTO, type BuildingDTOProps } from './facility';
+import { SpaceHolidayDTO, SpaceHolidayDTOProps } from './holiday';
+import { OpenHourDTO, OpenHourDTOProps } from './openHour';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
 import { SizeDTO, SizeDTOProps } from './size';
@@ -45,6 +47,8 @@ export interface SpaceDetailDTOProps extends DateProps {
   sizes: SizeDTOProps[];
   bestPhotos: BestPhotoDTOProps[];
   reviews: ReviewDTOProps[];
+  openHours: OpenHourDTOProps[];
+  holiday: SpaceHolidayDTOProps;
 }
 
 export class SpaceDetailDTO {
@@ -135,6 +139,12 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: BestPhotoDTO, isArray: true, description: '베스트 포토' } })
   bestPhotos: BestPhotoDTO[];
 
+  @Property({ apiProperty: { type: OpenHourDTO, isArray: true, description: '영업시간' } })
+  openHours: OpenHourDTO[];
+
+  @Property({ apiProperty: { type: SpaceHolidayDTO, isArray: true } })
+  holiday: SpaceHolidayDTO;
+
   constructor(props: SpaceDetailDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -167,5 +177,7 @@ export class SpaceDetailDTO {
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
     this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
+    this.openHours = props.openHours.map((openHour) => new OpenHourDTO(openHour));
+    this.holiday = props.holiday ? new SpaceHolidayDTO(props.holiday) : null;
   }
 }

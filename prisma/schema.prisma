@@ -170,7 +170,7 @@ model Space {
   contentCategories     ContentCategorySpace[]
   rankings              RankingSpaces[]
   openHours             OpenHour[]
-  holidays              SpaceHoliday[]
+  holiday               SpaceHoliday?
 }
 
 //INFO: 공간 영업시간
@@ -192,7 +192,7 @@ model SpaceHoliday {
   day      Int @db.TinyInt
   interval Int @db.TinyInt //INFO: 1, 2, 3은 주 단위, 4는 월 단위
 
-  spaceId String
+  spaceId String @unique
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
