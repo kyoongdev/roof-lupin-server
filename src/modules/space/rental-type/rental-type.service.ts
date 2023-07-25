@@ -19,8 +19,10 @@ import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/
 import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import {
   PossiblePackageDTO,
+  PossiblePackageDTOProps,
   PossibleRentalTypeByMonthDTOProps,
   PossibleRentalTypeDTO,
+  PossibleRentalTypeDTOProps,
   PossibleRentalTypesByMonthDTOProps,
   PossibleRentalTypesDTO,
   PossibleRentalTypesDTOProps,
@@ -98,7 +100,13 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, spaceHolidays, openHours, blockedTimes);
+    return await this.getPossibleRentalTypesBySpaceIdWithMonth(
+      query,
+      rentalTypes,
+      spaceHolidays,
+      openHours,
+      blockedTimes
+    );
   }
 
   async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO) {
@@ -201,7 +209,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
@@ -232,7 +240,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalType(
+    return await this.getPossibleRentalType(
       rentalType,
       rentalType.reservations,
       blockedTimes,
@@ -285,7 +293,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
 
   async getPossibleRentalTypesBySpaceIdWithMonth(
@@ -324,11 +332,17 @@ export class RentalTypeService {
           })
           .filter(Boolean);
 
-        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, spaceHolidays, openHours, {
-          year: query.year,
-          month: query.month,
-          day: `${day}`,
-        });
+        const result = await this.getPossibleRentalTypesBySpaceId(
+          parsedRentalType,
+          blockedTimes,
+          spaceHolidays,
+          openHours,
+          {
+            year: query.year,
+            month: query.month,
+            day: `${day}`,
+          }
+        );
 
         const currentDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
 
@@ -358,7 +372,7 @@ export class RentalTypeService {
     return possibleRentalTypes;
   }
 
-  getPossibleRentalTypesBySpaceId(
+  async getPossibleRentalTypesBySpaceId(
     rentalTypes: RentalTypeWithReservationDTO[],
     blockedTimes: BlockedTimeDTO[],
     spaceHolidays: SpaceHolidayDTO[],
@@ -376,30 +390,33 @@ export class RentalTypeService {
         .map((rentalType) => rentalType.reservations)
     ).filter(Boolean);
 
-    const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
-      (acc, next) => {
-        const possibleRentalType = this.getPossibleRentalType(
-          next,
+    const result: PossibleRentalTypesDTOProps = {
+      time: null,
+      package: [],
+    };
+
+    await Promise.all(
+      rentalTypes.map(async (rentalType) => {
+        const possibleRentalType = await this.getPossibleRentalType(
+          rentalType,
           [...timeReservations, ...packageReservations],
           blockedTimes,
           openHours,
           spaceHolidays,
           targetDate
         );
-        if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          acc.time = possibleRentalType;
-        } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-          acc.package.push(possibleRentalType as PossiblePackageDTO);
+        if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
+          result.time = possibleRentalType;
+        } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+          result.package.push(possibleRentalType as PossiblePackageDTO);
         }
-        return acc;
-      },
-      { time: null, package: [] }
+      })
     );
 
-    return new PossibleRentalTypesDTO(possibleRentalTypes);
+    return new PossibleRentalTypesDTO(result);
   }
 
-  getPossibleRentalType(
+  async getPossibleRentalType(
     rentalType: RentalTypeWithReservationDTO,
     reservations: ReservationDTO[],
     blockedTimes: BlockedTimeDTO[],
@@ -467,10 +484,10 @@ export class RentalTypeService {
       });
 
       if (targetDate) {
-        const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+        const isHoliday = await this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
         const currentDay = isHoliday
           ? DAY_ENUM.HOLIDAY
-          : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
+          : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
         if (holidays.length > 0) {
@@ -484,6 +501,7 @@ export class RentalTypeService {
           .forEach((openHour) => {
             const openStart = Number(openHour.startAt);
             const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+
             timeCostInfos.forEach((timeCostInfo, index) => {
               if (timeCostInfo.time < openStart || timeCostInfo.time > openEnd) {
                 timeCostInfos[index].isPossible = false;
@@ -498,6 +516,7 @@ export class RentalTypeService {
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       let isPossible = true;
+
       reservations.forEach((reservation) => {
         if (
           targetDate.year === reservation.year &&
@@ -565,8 +584,9 @@ export class RentalTypeService {
 
     const currentDay = isHoliday
       ? DAY_ENUM.HOLIDAY
-      : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
+      : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
     const week = getWeek(currentDate);
+
     return spaceHolidays.filter((holiday) => {
       if (holiday.interval === INTERVAL_WEEK.TWO) {
         return (week === 2 || week === 4) && holiday.day === currentDay;
