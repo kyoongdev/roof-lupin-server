@@ -3,7 +3,7 @@ import { Property } from 'wemacu-nestjs';
 import {
   AdditionalServiceReservationDTO,
   AdditionalServiceReservationDTOProps,
-} from '@/modules/space/dto/additionalService';
+} from '@/modules/space/dto/additional-service';
 
 import { TimeValidation } from './validation';
 

@@ -1,6 +1,7 @@
 import { range } from 'lodash';
 import { Property } from 'wemacu-nestjs';
 
+import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
@@ -11,9 +12,8 @@ import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
-import { CreateOpenHourDTO, CreateOpenHourDTOProps } from './openHour';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
-import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from './rentalType';
+import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from './rental-type';
 import { CreateServiceDTO, type CreateServiceDTOProps } from './service';
 import { CreateSizeDTO, type CreateSizeDTOProps } from './size';
 import { CreateTransportationDTO, type CreateTransportationDTOProps } from './transportaion';

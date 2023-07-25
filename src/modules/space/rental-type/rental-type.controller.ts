@@ -8,9 +8,9 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
 import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
-import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from '../dto/rentalType';
+import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from '../dto/rental-type';
 
-import { RentalTypeService } from './rentalType.service';
+import { RentalTypeService } from './rental-type.service';
 
 @ApiController('rental-types', '대여 타입')
 export class RentalTypeController {

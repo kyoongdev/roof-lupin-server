@@ -18,7 +18,7 @@ import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { SearchRepository } from '../search/search.repository';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 

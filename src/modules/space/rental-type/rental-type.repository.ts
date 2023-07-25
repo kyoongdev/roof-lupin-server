@@ -7,14 +7,14 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationRentalType, CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
-import { AdditionalServiceDTO } from '../dto/additionalService';
+import { AdditionalServiceDTO } from '../dto/additional-service';
 import {
   CreateRentalTypeDTO,
   RentalTypeDTO,
   RentalTypeWithReservationDTO,
   SpaceRentalTypeDTO,
   UpdateRentalTypeDTO,
-} from '../dto/rentalType';
+} from '../dto/rental-type';
 import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 

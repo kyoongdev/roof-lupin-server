@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { AdditionalServiceReservationDTOProps } from '@/modules/space/dto/additionalService';
+import { AdditionalServiceReservationDTOProps } from '@/modules/space/dto/additional-service';
 
 import { CreatePaymentDTO, CreatePaymentDTOProps } from './create-payment';
 import {

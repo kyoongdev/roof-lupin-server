@@ -7,7 +7,7 @@ import {
   AdditionalServiceDTOProps,
   UpdateAdditionalServiceDTO,
   UpdateAdditionalServiceDTOProps,
-} from '../additionalService';
+} from '../additional-service';
 import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
 import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 

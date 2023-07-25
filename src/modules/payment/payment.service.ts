@@ -16,10 +16,10 @@ import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reserva
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDetailDTO } from '../space/dto';
-import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../space/dto/rentalType';
+import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../space/dto/rental-type';
 import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
-import { RentalTypeService } from '../space/rentalType/rentalType.service';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
+import { RentalTypeService } from '../space/rental-type/rental-type.service';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 

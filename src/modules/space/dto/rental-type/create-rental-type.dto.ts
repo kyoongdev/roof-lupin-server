@@ -2,7 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { DayReqDecorator } from '@/utils/validation/day.validation';
 
-import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from '../additionalService';
+import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from '../additional-service';
 import { CreateTimeCostInfoDTO, CreateTimeCostInfoDTOProps } from '../timeCostInfo';
 import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 

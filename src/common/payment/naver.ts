@@ -6,7 +6,7 @@ import axios from 'axios';
 import { PayReserveParameters } from '@/interface/payment/naver.interface';
 import { CreatePaymentDTO } from '@/modules/reservation/dto';
 import { SpaceDetailDTO } from '@/modules/space/dto';
-import { RentalTypeDTO } from '@/modules/space/dto/rentalType';
+import { RentalTypeDTO } from '@/modules/space/dto/rental-type';
 import { CommonUserDTO } from '@/modules/user/dto';
 
 @Injectable()
