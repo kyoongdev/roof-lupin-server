@@ -11,8 +11,6 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO } from './dto';
 import { InterestedDTO } from './dto/interested.dto';
 import { FindSpacesQuery } from './dto/query';
-import { FindByDateQuery } from './dto/query/find-by-date.query';
-import { FindByLocationQuery } from './dto/query/find-by-location.query';
 import { SpaceService } from './space.service';
 
 @ApiController('spaces', '공간')

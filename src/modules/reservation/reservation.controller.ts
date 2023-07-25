@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -10,13 +10,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { PaymentService } from '../payment/payment.service';
 
-import {
-  CreatePaymentDTO,
-  CreateReservationDTO,
-  ReservationDetailDTO,
-  ReservationDTO,
-  UpdateReservationDTO,
-} from './dto';
+import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO } from './dto';
 import { FindReservationQuery } from './dto/query';
 import { ReservationService } from './reservation.service';
 

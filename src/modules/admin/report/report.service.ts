@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { FCMEvent, FCMEventProvider } from '@/event/fcm';
+import { FCMEvent } from '@/event/fcm';
 import { CreateReportAnswerDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
 import { REPORT_ANSWER_MUTATION_FORBIDDEN, REPORT_ERROR_CODE } from '@/modules/report/exception/errorCode';
 import { ReportException } from '@/modules/report/exception/report.exception';

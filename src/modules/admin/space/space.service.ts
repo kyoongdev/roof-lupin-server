@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { SpaceDTO } from '@/modules/space/dto';
+import { SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
 import { UpdateSpaceOrderDTO } from '../dto/space';
@@ -29,6 +29,11 @@ export class AdminSpaceService {
       take,
     });
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
+  }
+
+  async updateSpace(id: string, data: UpdateSpaceDTO) {
+    await this.findSpace(id);
+    await this.spaceRepository.updateSpace(id, data);
   }
 
   async updateSpaceOrder(id: string, data: UpdateSpaceOrderDTO) {

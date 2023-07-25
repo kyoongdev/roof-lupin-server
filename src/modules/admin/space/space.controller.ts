@@ -3,7 +3,7 @@ import { Body, Get, Param, Patch } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { SpaceDetailDTO, SpaceDTO } from '@/modules/space/dto';
+import { SpaceDetailDTO, SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -47,6 +47,23 @@ export class AdminSpaceController {
   })
   async getSpace(@Param('spaceId') id: string) {
     return await this.spaceService.findSpace(id);
+  }
+
+  @Patch(':spaceId')
+  @RequestApi({
+    summary: {
+      description: '공간 수정',
+      summary: '공간 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateSpace(@Param('spaceId') id: string, @Body() body: UpdateSpaceDTO) {
+    await this.spaceService.updateSpace(id, body);
   }
 
   @Patch(':spaceId/order')

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma, SpaceHoliday } from '@prisma/client';
-import { flatMap, flatten, range } from 'lodash';
+import type { Prisma } from '@prisma/client';
+import { flatten, range } from 'lodash';
 
 import { getWeek } from '@/common/date';
 import { INTERVAL_WEEK } from '@/interface/token.interface';
@@ -19,10 +19,8 @@ import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/
 import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import {
   PossiblePackageDTO,
-  PossiblePackageDTOProps,
   PossibleRentalTypeByMonthDTOProps,
   PossibleRentalTypeDTO,
-  PossibleRentalTypeDTOProps,
   PossibleRentalTypesByMonthDTOProps,
   PossibleRentalTypesDTO,
   PossibleRentalTypesDTOProps,
