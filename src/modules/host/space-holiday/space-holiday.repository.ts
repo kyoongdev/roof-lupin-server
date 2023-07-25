@@ -36,6 +36,16 @@ export class SpaceHolidayRepository {
     return holidays.map((holiday) => new SpaceHolidayDTO(holiday));
   }
 
+  async findSpaceHolidayBySpaceId(spaceId: string) {
+    const holiday = await this.database.spaceHoliday.findFirst({
+      where: {
+        spaceId,
+      },
+    });
+
+    return holiday ? new SpaceHolidayDTO(holiday) : undefined;
+  }
+
   async createSpaceHoliday(spaceId: string, data: CreateSpaceHolidayDTO) {
     const holiday = await this.database.spaceHoliday.create({
       data: {

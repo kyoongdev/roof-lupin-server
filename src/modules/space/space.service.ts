@@ -12,8 +12,6 @@ import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
-import { FindByDateQuery } from './dto/query/find-by-date.query';
-import { FindByLocationQuery } from './dto/query/find-by-location.query';
 import {
   ALREADY_INTERESTED,
   CURRENT_LOCATION_BAD_REQUEST,

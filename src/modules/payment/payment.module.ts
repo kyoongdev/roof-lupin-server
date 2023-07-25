@@ -8,7 +8,9 @@ import { FCMEvent } from '@/event/fcm';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HolidayService } from '../holiday/holiday.service';
 import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
+import { OpenHourRepository } from '../host/open-hour/open-hour.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
+import { SpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { RentalTypeService } from '../space/rental-type/rental-type.service';
@@ -35,6 +37,8 @@ import { PaymentService } from './payment.service';
     FCMEvent,
     SettlementRepository,
     FinanceProvider,
+    OpenHourRepository,
+    SpaceHolidayRepository,
   ],
   controllers: [PaymentController],
   exports: [

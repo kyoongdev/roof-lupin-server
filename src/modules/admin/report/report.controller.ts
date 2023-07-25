@@ -152,7 +152,6 @@ export class AdminReportController {
     204
   )
   async deleteReports(@Query() query: IdsDTO) {
-    console.log({ query });
     await Promise.all(query.ids.split(',').map((id) => this.adminReportService.deleteReport(id)));
   }
 }

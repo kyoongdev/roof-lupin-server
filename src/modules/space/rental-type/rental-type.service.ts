@@ -3,10 +3,15 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma, SpaceHoliday } from '@prisma/client';
 import { flatMap, flatten, range } from 'lodash';
 
+import { getWeek } from '@/common/date';
+import { INTERVAL_WEEK } from '@/interface/token.interface';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
 import { OpenHourDTO } from '@/modules/host/dto/openHour';
+import { OpenHourRepository } from '@/modules/host/open-hour/open-hour.repository';
+import { SpaceHolidayRepository } from '@/modules/host/space-holiday/space-holiday.repository';
+import { ReservationDTO } from '@/modules/reservation/dto';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
 import { SpaceHolidayDTO } from '../dto/holiday';
@@ -14,8 +19,10 @@ import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/
 import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
 import {
   PossiblePackageDTO,
+  PossiblePackageDTOProps,
   PossibleRentalTypeByMonthDTOProps,
   PossibleRentalTypeDTO,
+  PossibleRentalTypeDTOProps,
   PossibleRentalTypesByMonthDTOProps,
   PossibleRentalTypesDTO,
   PossibleRentalTypesDTOProps,
@@ -34,7 +41,9 @@ export class RentalTypeService {
     private readonly spaceRepository: SpaceRepository,
     private readonly rentalTypeRepository: RentalTypeRepository,
     private readonly blockedTimeRepository: BlockedTimeRepository,
-    private readonly holidayService: HolidayService
+    private readonly holidayService: HolidayService,
+    private readonly spaceHolidayRepository: SpaceHolidayRepository,
+    private readonly openHourRepository: OpenHourRepository
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
@@ -80,7 +89,24 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceIdWithMonth(query, rentalTypes, blockedTimes);
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        spaceId,
+      },
+    });
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        spaceId,
+      },
+    });
+
+    return await this.getPossibleRentalTypesBySpaceIdWithMonth(
+      query,
+      rentalTypes,
+      spaceHolidays,
+      openHours,
+      blockedTimes
+    );
   }
 
   async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO) {
@@ -113,6 +139,16 @@ export class RentalTypeService {
             month: `${month}`,
           },
         });
+        const openHours = await this.openHourRepository.findOpenHours({
+          where: {
+            spaceId,
+          },
+        });
+        const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+          where: {
+            spaceId,
+          },
+        });
 
         return await this.getPossibleRentalTypesBySpaceIdWithMonth(
           {
@@ -120,6 +156,8 @@ export class RentalTypeService {
             month: `${month}`,
           },
           rentalTypes,
+          spaceHolidays,
+          openHours,
           blockedTimes
         );
       })
@@ -159,7 +197,19 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        spaceId,
+      },
+    });
+
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        spaceId,
+      },
+    });
+
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
@@ -178,7 +228,26 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalType(rentalType, blockedTimes);
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        spaceId: rentalType.spaceId,
+      },
+    });
+
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        spaceId: rentalType.spaceId,
+      },
+    });
+
+    return await this.getPossibleRentalType(
+      rentalType,
+      rentalType.reservations,
+      blockedTimes,
+      openHours,
+      spaceHolidays,
+      query
+    );
   }
 
   async findPossibleRentalTypesBySpaces(query: PossibleRentalTypeQuery, args = {} as Prisma.SpaceFindManyArgs) {
@@ -210,12 +279,28 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        space: {
+          ...args.where,
+        },
+      },
+    });
+
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        space: { ...args.where },
+      },
+    });
+
+    return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
 
   async getPossibleRentalTypesBySpaceIdWithMonth(
     query: PossibleRentalTypeByMonthQuery,
     rentalTypes: RentalTypeWithReservationDTO[],
+    spaceHolidays: SpaceHolidayDTO[],
+    openHours: OpenHourDTO[],
     blockedTimes: BlockedTimeDTO[]
   ) {
     const possibleRentalTypes: PossibleRentalTypesByMonthDTOProps = {
@@ -247,7 +332,29 @@ export class RentalTypeService {
           })
           .filter(Boolean);
 
-        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, [], [], `${day}`);
+        const result = await this.getPossibleRentalTypesBySpaceId(
+          parsedRentalType,
+          blockedTimes,
+          spaceHolidays,
+          openHours,
+          {
+            year: query.year,
+            month: query.month,
+            day: `${day}`,
+          }
+        );
+
+        const currentDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
+
+        const currentDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(day));
+        const week = getWeek(currentDate);
+        const holidays = spaceHolidays.filter((holiday) => {
+          if (holiday.interval === INTERVAL_WEEK.TWO) {
+            return (week === 2 || week === 4) && holiday.day === currentDay;
+          } else {
+            return holiday.day === currentDay;
+          }
+        });
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
@@ -255,7 +362,7 @@ export class RentalTypeService {
         const data: PossibleRentalTypeByMonthDTOProps = {
           day: `${day}`,
           isHoliday,
-          isPossible: !isImpossible,
+          isPossible: holidays.length > 0 ? false : !isImpossible,
           rentalType: result,
         };
         possibleRentalTypes.days.push(data);
@@ -265,12 +372,12 @@ export class RentalTypeService {
     return possibleRentalTypes;
   }
 
-  getPossibleRentalTypesBySpaceId(
+  async getPossibleRentalTypesBySpaceId(
     rentalTypes: RentalTypeWithReservationDTO[],
     blockedTimes: BlockedTimeDTO[],
     spaceHolidays: SpaceHolidayDTO[],
     openHours: OpenHourDTO[],
-    targetDay?: string
+    targetDate?: PossibleRentalTypeQuery
   ) {
     const timeReservations = flatten(
       rentalTypes
@@ -283,113 +390,40 @@ export class RentalTypeService {
         .map((rentalType) => rentalType.reservations)
     ).filter(Boolean);
 
-    const possibleRentalTypes = rentalTypes.reduce<PossibleRentalTypesDTOProps>(
-      (acc, next) => {
-        if (next.rentalType === RENTAL_TYPE_ENUM.TIME) {
-          const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
-            ...range(9, 24).map((hour: number) => ({
-              cost: 0,
-              isPossible: false,
-              time: hour,
-            })),
-            ...range(0, 9).map((hour: number) => ({
-              cost: 0,
-              isPossible: false,
-              time: hour,
-            })),
-          ];
+    const result: PossibleRentalTypesDTOProps = {
+      time: null,
+      package: [],
+    };
 
-          //INFO: true로 초기화
-          next.timeCostInfos.forEach((timeInfo) => {
-            timeCostInfos.forEach((info) => {
-              if (info.time === timeInfo.time) {
-                info.cost = timeInfo.cost;
-                info.isPossible = true;
-              }
-            });
-          });
-
-          //INFO: 이미 예약된 시간 정보
-          [...timeReservations, ...packageReservations].forEach((reservation) => {
-            if (targetDay === reservation.day) {
-              reservation.rentalTypes.forEach((reservedRentalType) => {
-                const startAt =
-                  reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-                const endAt =
-                  reservedRentalType.startAt >= reservedRentalType.endAt
-                    ? reservedRentalType.endAt + 24
-                    : reservedRentalType.endAt;
-                range(startAt, endAt).forEach((hour) => {
-                  const index = timeCostInfos.findIndex((timeCostInfo) =>
-                    hour >= 24 ? timeCostInfo.time === hour - 24 : timeCostInfo.time === hour
-                  );
-
-                  if (index !== -1) {
-                    timeCostInfos[index].isPossible = false;
-                  }
-                });
-              });
-            }
-          });
-
-          //INFO: 막아둔 날짜는 block
-          blockedTimes.forEach((blockedTime) => {
-            if (targetDay === blockedTime.day)
-              for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
-                timeCostInfos[time].isPossible = false;
-              }
-          });
-
-          acc.time = {
-            ...next,
-            timeCostInfos,
-          };
-        } else if (next.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-          let isPossible = true;
-          [...timeReservations, ...packageReservations].forEach((reservation) => {
-            if (targetDay === reservation.day) {
-              reservation.rentalTypes.forEach((reservedRentalType) => {
-                if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-                  isPossible = !(
-                    next.startAt === reservedRentalType.startAt && next.endAt === reservedRentalType.endAt
-                  );
-                } else {
-                  const startAt =
-                    reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-                  const endAt =
-                    reservedRentalType.startAt >= reservedRentalType.endAt
-                      ? reservedRentalType.endAt + 24
-                      : reservedRentalType.endAt;
-                  const nextStartAt = next.startAt;
-                  const nextEndAt = next.startAt >= next.endAt ? next.endAt + 24 : next.endAt;
-                  range(startAt, endAt + 1).forEach((hour) => {
-                    if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
-                  });
-                }
-              });
-            }
-          });
-
-          blockedTimes.forEach((blockedTime) => {
-            if (targetDay === blockedTime.day && blockedTime.startAt <= next.endAt && blockedTime.endAt >= next.startAt)
-              isPossible = false;
-          });
-
-          acc.package.push({
-            ...next,
-            isPossible,
-          });
+    await Promise.all(
+      rentalTypes.map(async (rentalType) => {
+        const possibleRentalType = await this.getPossibleRentalType(
+          rentalType,
+          [...timeReservations, ...packageReservations],
+          blockedTimes,
+          openHours,
+          spaceHolidays,
+          targetDate
+        );
+        if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
+          result.time = possibleRentalType;
+        } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+          result.package.push(possibleRentalType as PossiblePackageDTO);
         }
-
-        return acc;
-      },
-      { time: null, package: [] }
+      })
     );
 
-    return new PossibleRentalTypesDTO(possibleRentalTypes);
+    return new PossibleRentalTypesDTO(result);
   }
 
-  getPossibleRentalType(rentalType: RentalTypeWithReservationDTO, blockedTimes: BlockedTimeDTO[]) {
+  async getPossibleRentalType(
+    rentalType: RentalTypeWithReservationDTO,
+    reservations: ReservationDTO[],
+    blockedTimes: BlockedTimeDTO[],
+    openHours: OpenHourDTO[],
+    spaceHolidays: SpaceHolidayDTO[],
+    targetDate: PossibleRentalTypeQuery
+  ) {
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
         ...range(9, 24).map((hour: number) => ({
@@ -412,34 +446,153 @@ export class RentalTypeService {
         });
       });
 
-      rentalType.reservations.forEach((reservation) => {
-        reservation.rentalTypes.forEach((rentalType) => {
-          range(rentalType.startAt, rentalType.endAt).forEach((hour) => {
-            timeCostInfos[hour].isPossible = false;
+      reservations.forEach((reservation) => {
+        if (
+          targetDate.year === reservation.year &&
+          targetDate.month === reservation.month &&
+          targetDate.day === reservation.day
+        ) {
+          reservation.rentalTypes.forEach((reservedRentalType) => {
+            const startAt =
+              reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
+            const endAt =
+              reservedRentalType.startAt >= reservedRentalType.endAt
+                ? reservedRentalType.endAt + 24
+                : reservedRentalType.endAt;
+            range(startAt, endAt).forEach((hour) => {
+              const index = timeCostInfos.findIndex((timeCostInfo) =>
+                hour >= 24 ? timeCostInfo.time === hour - 24 : timeCostInfo.time === hour
+              );
+
+              if (index !== -1) {
+                timeCostInfos[index].isPossible = false;
+              }
+            });
           });
-        });
-      });
-      blockedTimes.forEach((blockedTime) => {
-        for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
-          timeCostInfos[time].isPossible = false;
         }
       });
+      //INFO: 막아둔 날짜는 block
+      blockedTimes.forEach((blockedTime) => {
+        if (
+          targetDate.year === blockedTime.year &&
+          targetDate.month === blockedTime.month &&
+          targetDate.day === blockedTime.day
+        )
+          for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
+            timeCostInfos[time].isPossible = false;
+          }
+      });
+
+      if (targetDate) {
+        const isHoliday = await this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+        const currentDay = isHoliday
+          ? DAY_ENUM.HOLIDAY
+          : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
+
+        const holidays = this.getHolidays(targetDate, spaceHolidays);
+        if (holidays.length > 0) {
+          timeCostInfos.forEach((timeCostInfo, index) => {
+            timeCostInfos[index].isPossible = false;
+          });
+        }
+
+        openHours
+          .filter((openHour) => openHour.day === currentDay)
+          .forEach((openHour) => {
+            const openStart = Number(openHour.startAt);
+            const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+
+            timeCostInfos.forEach((timeCostInfo, index) => {
+              if (timeCostInfo.time < openStart || timeCostInfo.time > openEnd) {
+                timeCostInfos[index].isPossible = false;
+              }
+            });
+          });
+      }
 
       return new PossibleRentalTypeDTO({
         ...rentalType,
         timeCostInfos,
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-      let isPossible = rentalType.reservations.length === 0;
+      let isPossible = true;
+
+      reservations.forEach((reservation) => {
+        if (
+          targetDate.year === reservation.year &&
+          targetDate.month === reservation.month &&
+          targetDate.day === reservation.day
+        ) {
+          reservation.rentalTypes.forEach((reservedRentalType) => {
+            if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+              isPossible = !(
+                rentalType.startAt === reservedRentalType.startAt && rentalType.endAt === reservedRentalType.endAt
+              );
+            } else {
+              const startAt =
+                reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
+              const endAt =
+                reservedRentalType.startAt >= reservedRentalType.endAt
+                  ? reservedRentalType.endAt + 24
+                  : reservedRentalType.endAt;
+              const nextStartAt = rentalType.startAt;
+              const nextEndAt = rentalType.startAt >= rentalType.endAt ? rentalType.endAt + 24 : rentalType.endAt;
+              range(startAt, endAt + 1).forEach((hour) => {
+                if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
+              });
+            }
+          });
+        }
+      });
+
       blockedTimes.forEach((blockedTime) => {
         if (blockedTime.startAt <= rentalType.endAt && blockedTime.endAt >= rentalType.startAt) {
           isPossible = false;
         }
       });
+
+      if (targetDate) {
+        const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+        const currentDay = isHoliday
+          ? DAY_ENUM.HOLIDAY
+          : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
+
+        const holidays = this.getHolidays(targetDate, spaceHolidays);
+        if (holidays.length > 0) {
+          isPossible = false;
+        }
+
+        openHours
+          .filter((openHour) => openHour.day === currentDay)
+          .forEach((openHour) => {
+            const openStart = Number(openHour.startAt);
+            const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+            if (rentalType.startAt > openEnd || rentalType.endAt < openStart) isPossible = false;
+          });
+      }
+
       return new PossiblePackageDTO({
         ...rentalType,
         isPossible,
       });
     }
+  }
+
+  getHolidays(targetDate: PossibleRentalTypeQuery, spaceHolidays: SpaceHolidayDTO[]) {
+    const currentDate = new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day));
+    const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+
+    const currentDay = isHoliday
+      ? DAY_ENUM.HOLIDAY
+      : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
+    const week = getWeek(currentDate);
+
+    return spaceHolidays.filter((holiday) => {
+      if (holiday.interval === INTERVAL_WEEK.TWO) {
+        return (week === 2 || week === 4) && holiday.day === currentDay;
+      } else {
+        return holiday.day === currentDay;
+      }
+    });
   }
 }
