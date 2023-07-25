@@ -4,18 +4,20 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateOpenHourDTO, UpdateOpenHourDTO } from '../dto/openHour';
+import { CreateOpenHourDTO, OpenHourDTO, UpdateOpenHourDTO } from '../dto/openHour';
 
 @Injectable()
 export class OpenHourRepository {
   constructor(private readonly database: PrismaService) {}
 
   async countOpenHours(args = {} as Prisma.OpenHourCountArgs) {
-    return this.database.openHour.count(args);
+    return await this.database.openHour.count(args);
   }
 
   async findOpenHours(args = {} as Prisma.OpenHourFindManyArgs) {
-    return this.database.openHour.findMany(args);
+    const openHours = await this.database.openHour.findMany(args);
+
+    return openHours.map((openHour) => new OpenHourDTO(openHour));
   }
 
   async createOpenHour(spaceId: string, data: CreateOpenHourDTO) {
