@@ -1,4 +1,4 @@
-version: 1.0
+version: 0.2
 
 phases:
   install:
@@ -16,3 +16,6 @@ artifacts:
   files:
     - '**/*'
   name: rooflupin-build-$(date +%Y-%m-%d)
+cache:
+  paths:
+    - 'node_modules/**/*'
