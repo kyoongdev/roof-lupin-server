@@ -159,7 +159,7 @@ export class RentalTypeService {
       },
     });
 
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
@@ -209,7 +209,8 @@ export class RentalTypeService {
         day: query.day,
       },
     });
-    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, query.day);
+
+    return this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, [], [], query.day);
   }
 
   async getPossibleRentalTypesBySpaceIdWithMonth(
@@ -246,7 +247,7 @@ export class RentalTypeService {
           })
           .filter(Boolean);
 
-        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, `${day}`);
+        const result = this.getPossibleRentalTypesBySpaceId(parsedRentalType, blockedTimes, [], [], `${day}`);
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
