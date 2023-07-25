@@ -143,7 +143,7 @@ export class FindSpacesQuery extends PagingDTO {
     };
   }
 
-  generateSqlWhereClause(excludeQuery?: Prisma.Sql, userId?: string) {
+  generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
     const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.empty;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
@@ -166,7 +166,14 @@ export class FindSpacesQuery extends PagingDTO {
     OR ht.name LIKE '%${Prisma.raw(this.keyword)}%')`
       : Prisma.empty;
 
-    const excludeIds = excludeQuery ? Prisma.sql`AND sp.id  NOT in (${excludeQuery})` : Prisma.empty;
+    const excludeIds =
+      excludeQueries.length > 0
+        ? Prisma.sql`${Prisma.join(
+            excludeQueries.map((query) => Prisma.sql`AND sp.id NOT in (${query})`),
+            ''
+          )}`
+        : Prisma.empty;
+    console.log(excludeIds);
     const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
 
     return where;

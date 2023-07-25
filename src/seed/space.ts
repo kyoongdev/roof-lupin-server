@@ -917,6 +917,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           id: realHost.id,
         },
       },
+      holiday: {
+        create: {
+          day: 4,
+          interval: 2,
+        },
+      },
     },
   });
   const space2 = await database.space.create({
@@ -944,6 +950,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       minSize: 12,
       isPublic: true,
       isApproved: true,
+      holiday: {
+        create: {
+          day: 14,
+          interval: 4,
+        },
+      },
       sizes: {
         create: [
           {
