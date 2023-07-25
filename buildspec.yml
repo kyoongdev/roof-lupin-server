@@ -1,0 +1,18 @@
+version: 1.0
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install
+  pre_build:
+    commands:
+      - npm run config:dev
+  build:
+    commands:
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  name: rooflupin-build-$(date +%Y-%m-%d)

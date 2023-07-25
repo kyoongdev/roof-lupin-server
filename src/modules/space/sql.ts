@@ -83,13 +83,13 @@ export const getCountDistanceSpacesSQL = (location: LatLngDTO, where: Prisma.Sql
 `;
 
 export const getCountSpacesSQL = (where: Prisma.Sql) => Prisma.sql`
-SELECT id
-FROM  
-(
-  SELECT sp.id 
-  FROM Space sp
-  ${BASE_JOIN}
-  ${where} 
-  GROUP BY sp.id
-) as sub  
+  SELECT id
+  FROM  
+  (
+    SELECT sp.id 
+    FROM Space sp
+    ${BASE_JOIN}
+    ${where} 
+    GROUP BY sp.id
+  ) as sub  
 `;

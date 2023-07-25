@@ -172,14 +172,21 @@ export class SpaceService {
         GROUP BY isp.id
       `;
 
+      const openHourTimeQuery =
+        date.startAt && date.endAt
+          ? Prisma.sql`AND oh.endAt <= ${date.startAt} OR oh.startAt >= ${date.endAt}`
+          : Prisma.empty;
+
       const holidayQuery = Prisma.sql`
         SELECT sp.id
         FROM Space sp
         LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
         LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
-        WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week})  
+        WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week}) 
+        OR (oh.day != ${day}  ${openHourTimeQuery})
         GROUP BY sp.id
       `;
+
       queries.push(query, holidayQuery);
     }
     return queries;
