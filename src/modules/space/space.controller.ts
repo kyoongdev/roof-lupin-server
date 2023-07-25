@@ -88,25 +88,7 @@ export class SpaceController {
     isPaging: true,
   })
   async getPagingSpaces(@Paging() paging: PagingDTO, @Query() query: FindSpacesQuery, @ReqUser() user?: RequestUser) {
-    const location: FindByLocationQuery | undefined = query.lat &&
-      query.lat &&
-      query.distance && {
-        lat: query.lat,
-        lng: query.lng,
-        distance: query.distance,
-      };
-
-    const date: FindByDateQuery | undefined = query.year &&
-      query.month &&
-      query.day && {
-        day: query.day,
-        month: query.month,
-        year: query.year,
-        startAt: query.startAt,
-        endAt: query.endAt,
-      };
-
-    return await this.spaceService.findPagingSpaces(paging, query, location, date, user?.id);
+    return await this.spaceService.findPagingSpacesWithSQL(paging, query, user?.id);
   }
 
   @Get('interest')
