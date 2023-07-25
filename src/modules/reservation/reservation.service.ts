@@ -6,7 +6,7 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
 import { RENTAL_TYPE_ERROR, SPACE_ERROR_CODE } from '../space/exception/errorCode';
 import { SpaceException } from '../space/exception/space.exception';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 
 import { CreatePaymentDTO, CreateReservationDTO, ReservationDTO, UpdateReservationDTO } from './dto';
 import {

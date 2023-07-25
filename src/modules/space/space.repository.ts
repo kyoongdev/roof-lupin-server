@@ -13,7 +13,7 @@ import { RefundPolicyDTO } from './dto/refund';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
-import { RentalTypeRepository } from './rentalType/rentalType.repository';
+import { RentalTypeRepository } from './rental-type/rental-type.repository';
 
 @Injectable()
 export class SpaceRepository {

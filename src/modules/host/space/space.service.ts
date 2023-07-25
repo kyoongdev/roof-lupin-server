@@ -6,9 +6,9 @@ import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 import { FileService } from '@/modules/file/file.service';
 import { SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
-import { UpdateRentalTypeDTO } from '@/modules/space/dto/rentalType';
+import { UpdateRentalTypeDTO } from '@/modules/space/dto/rental-type';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
-import { RentalTypeRepository } from '@/modules/space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '@/modules/space/rental-type/rental-type.repository';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
 import {

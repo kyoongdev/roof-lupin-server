@@ -8,7 +8,7 @@ import { QnARepository } from '../qna/qna.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { TaxReturnRepository } from '../tax-return/tax-return.repository';
 

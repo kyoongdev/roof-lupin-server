@@ -18,13 +18,13 @@ import {
   PossibleRentalTypesDTO,
   PossibleRentalTypesDTOProps,
   RentalTypeWithReservationDTO,
-} from '../dto/rentalType';
-import { PaginationPossibleRentalTypesByMonthDTO } from '../dto/rentalType/pagination-possible-rental-types-by-month.dto';
+} from '../dto/rental-type';
+import { PaginationPossibleRentalTypesByMonthDTO } from '../dto/rental-type/pagination-possible-rental-types-by-month.dto';
 import { PossibleTimeCostInfoDTOProps } from '../dto/timeCostInfo/possible-time-cost-info.dto';
 import { RENTAL_TYPE_ENUM } from '../dto/validation/rental-type.validation';
 import { SpaceRepository } from '../space.repository';
 
-import { RentalTypeRepository } from './rentalType.repository';
+import { RentalTypeRepository } from './rental-type.repository';
 
 @Injectable()
 export class RentalTypeService {

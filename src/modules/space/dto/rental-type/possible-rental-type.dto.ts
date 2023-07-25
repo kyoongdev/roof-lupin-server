@@ -2,7 +2,7 @@ import { Property } from 'wemacu-nestjs';
 
 import { DayResDecorator } from '@/utils/validation/day.validation';
 
-import { AdditionalServiceDTO, AdditionalServiceDTOProps } from '../additionalService';
+import { AdditionalServiceDTO, AdditionalServiceDTOProps } from '../additional-service';
 import {
   PossibleTimeCostInfoDTO,
   type PossibleTimeCostInfoDTOProps,

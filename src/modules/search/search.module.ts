@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { SearchController } from './search.controller';

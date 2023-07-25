@@ -10,8 +10,8 @@ import { HolidayService } from '../holiday/holiday.service';
 import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
-import { RentalTypeService } from '../space/rentalType/rentalType.service';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
+import { RentalTypeService } from '../space/rental-type/rental-type.service';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 

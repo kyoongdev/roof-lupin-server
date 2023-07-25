@@ -1,6 +1,6 @@
 import { Property } from 'wemacu-nestjs';
 
-import { RentalTypeDTO, type RentalTypeDTOProps } from '@/modules/space/dto/rentalType';
+import { RentalTypeDTO, type RentalTypeDTOProps } from '@/modules/space/dto/rental-type';
 
 import { TimeValidation } from './validation';
 

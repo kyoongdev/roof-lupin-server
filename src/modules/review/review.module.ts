@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { FileService } from '../file/file.service';
 import { LocationRepository } from '../location/location.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
-import { RentalTypeRepository } from '../space/rentalType/rentalType.repository';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { ReviewController } from './review.controller';
