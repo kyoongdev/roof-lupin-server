@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -79,5 +79,22 @@ export class AdminSpaceController {
   )
   async updateSpaceOrder(@Param('spaceId') id: string, @Body() body: UpdateSpaceOrderDTO) {
     await this.spaceService.updateSpaceOrder(id, body);
+  }
+
+  @Delete(':spaceId/order')
+  @RequestApi({
+    summary: {
+      description: '공간 순서 변경 - 광고용',
+      summary: '공간 순서 변경 - 광고용',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteSpaceOrder(@Param('spaceId') id: string) {
+    await this.spaceService.deleteSpaceOrder(id);
   }
 }

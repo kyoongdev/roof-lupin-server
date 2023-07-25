@@ -40,4 +40,9 @@ export class AdminSpaceService {
     await this.findSpace(id);
     await this.spaceRepository.updateSpaceOrder(id, data.orderNo);
   }
+
+  async deleteSpaceOrder(id: string) {
+    await this.findSpace(id);
+    await this.spaceRepository.deleteSpaceOrder(id);
+  }
 }

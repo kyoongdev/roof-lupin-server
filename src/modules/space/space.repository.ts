@@ -622,6 +622,17 @@ export class SpaceRepository {
     });
   }
 
+  async deleteSpaceOrder(id: string) {
+    await this.database.space.update({
+      where: {
+        id,
+      },
+      data: {
+        orderNo: null,
+      },
+    });
+  }
+
   async deleteSpace(id: string) {
     await this.database.space.update({
       where: {
