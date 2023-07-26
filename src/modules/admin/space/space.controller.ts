@@ -30,7 +30,7 @@ export class AdminSpaceController {
     isPaging: true,
   })
   async getSpaces(@Paging() paging: PagingDTO, @Query() query: AdminFindSpacesQuery) {
-    return await this.spaceService.findPagingSpaces(paging, query.generateQuery());
+    return await this.spaceService.findPagingSpaces(paging, query);
   }
 
   @Get(':spaceId/detail')

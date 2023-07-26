@@ -133,25 +133,30 @@ export class RankingRepository {
 
   async createRankingSpace(rankingId: string, data: CreateRankingSpaceDTO) {
     await this.database.$transaction(async (prisma) => {
-      const isRankingSpaceExist = await prisma.rankingSpaces.findFirst({
+      await prisma.rankingSpaces.updateMany({
         where: {
-          orderNo: data.orderNo,
+          orderNo: {
+            gte: data.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            increment: 1,
+          },
         },
       });
-
-      if (isRankingSpaceExist) {
-        await prisma.rankingSpaces.update({
-          where: {
-            spaceId_rankingId: {
-              rankingId: isRankingSpaceExist.rankingId,
-              spaceId: isRankingSpaceExist.spaceId,
-            },
+      await prisma.rankingSpaces.updateMany({
+        where: {
+          orderNo: {
+            lte: data.orderNo,
           },
-          data: {
-            orderNo: isRankingSpaceExist.orderNo + 1,
+        },
+        data: {
+          orderNo: {
+            decrement: 1,
           },
-        });
-      }
+        },
+      });
 
       await prisma.rankingSpaces.create({
         data: {
@@ -182,25 +187,51 @@ export class RankingRepository {
         },
       });
       if (!isExist) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
-      const rankingSpace = await prisma.rankingSpaces.findFirst({
+
+      await prisma.space.updateMany({
         where: {
-          orderNo: data.orderNo,
+          ...(isExist.orderNo > data.orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: isExist.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: data.orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: data.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: isExist.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
         },
       });
-
-      if (rankingSpace) {
-        await prisma.rankingSpaces.update({
-          where: {
-            spaceId_rankingId: {
-              rankingId: rankingSpace.rankingId,
-              spaceId: rankingSpace.spaceId,
-            },
-          },
-          data: {
-            orderNo: isExist.orderNo > data.orderNo ? rankingSpace.orderNo + 1 : rankingSpace.orderNo - 1,
-          },
-        });
-      }
       await prisma.rankingSpaces.update({
         where: {
           spaceId_rankingId: {

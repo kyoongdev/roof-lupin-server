@@ -612,13 +612,66 @@ export class SpaceRepository {
   }
 
   async updateSpaceOrder(id: string, orderNo: number) {
-    await this.database.space.update({
-      where: {
-        id,
-      },
-      data: {
-        orderNo,
-      },
+    await this.database.$transaction(async (prisma) => {
+      const space = await prisma.space.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      await prisma.space.updateMany({
+        where: {
+          ...(space.orderNo > orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: space.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: space.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(space.orderNo > orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
+        },
+      });
+
+      await prisma.space.update({
+        where: {
+          id,
+        },
+        data: {
+          orderNo,
+        },
+      });
     });
   }
 
