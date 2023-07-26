@@ -22,6 +22,23 @@ import { HostException } from './exception/host.exception';
 export class HostRepository {
   constructor(private readonly database: PrismaService, private readonly encrypt: EncryptProvider) {}
 
+  async findHostBySpaceId(spaceId: string) {
+    const host = await this.database.host.findFirst({
+      where: {
+        spaces: {
+          some: {
+            id: spaceId,
+          },
+        },
+      },
+    });
+    if (!host) {
+      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+    }
+
+    return new HostDTO(host);
+  }
+
   async findHosts(args = {} as Prisma.HostFindManyArgs) {
     const hosts = await this.database.host.findMany({
       where: {

@@ -21,6 +21,10 @@ import { HostRepository } from './host.repository';
 export class HostService {
   constructor(private readonly hostRepository: HostRepository, private readonly encrypt: EncryptProvider) {}
 
+  async findHostBySpaceId(spaceId: string) {
+    return await this.hostRepository.findHostBySpaceId(spaceId);
+  }
+
   async findHost(id: string) {
     return await this.hostRepository.findHost(id);
   }
