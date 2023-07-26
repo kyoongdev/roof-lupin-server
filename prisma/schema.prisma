@@ -11,7 +11,7 @@ datasource db {
 model HomeContents {
   id String @id @default(uuid())
 
-  orderNo Int @db.TinyInt
+  orderNo Int? @db.TinyInt
 
   contentsCategory ContentCategory?
   exhibition       Exhibition?

@@ -110,7 +110,6 @@ export class AdminHomeService {
 
     const content = await this.database.homeContents.create({
       data: {
-        orderNo: data.orderNo,
         ...(data.contentCategoryId && {
           contentsCategory: {
             connect: {
