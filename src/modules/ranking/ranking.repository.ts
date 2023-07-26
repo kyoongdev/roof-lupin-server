@@ -145,18 +145,6 @@ export class RankingRepository {
           },
         },
       });
-      await prisma.rankingSpaces.updateMany({
-        where: {
-          orderNo: {
-            lte: data.orderNo,
-          },
-        },
-        data: {
-          orderNo: {
-            decrement: 1,
-          },
-        },
-      });
 
       await prisma.rankingSpaces.create({
         data: {

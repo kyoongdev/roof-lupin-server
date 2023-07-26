@@ -166,19 +166,6 @@ export class CurationRepository {
         },
       });
 
-      await prisma.curationSpace.updateMany({
-        where: {
-          orderNo: {
-            lte: data.orderNo,
-          },
-        },
-        data: {
-          orderNo: {
-            decrement: 1,
-          },
-        },
-      });
-
       await prisma.curationSpace.create({
         data: {
           orderNo: data.orderNo,

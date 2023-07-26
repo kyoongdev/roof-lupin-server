@@ -10,12 +10,19 @@ import {
   CategoryDTO,
   CreateCategoryDTO,
   CreateContentCategoryDTO,
+  CreateContentCategorySpaceDTO,
   UpdateCategoryDTO,
   UpdateContentCategoryDTO,
+  UpdateContentCategorySpaceDTO,
 } from './dto';
 import { ContentCategoryDTO } from './dto/content-category.dto';
 import { CategoryException } from './exception/category.exception';
-import { CATEGORY_ERROR_CODE, CATEGORY_NOT_FOUND, CONTENT_CATEGORY_NOT_FOUND } from './exception/errorCode';
+import {
+  CATEGORY_ERROR_CODE,
+  CATEGORY_NOT_FOUND,
+  CONTENT_CATEGORY_NOT_FOUND,
+  CONTENT_CATEGORY_SPACE_NOT_FOUND,
+} from './exception/errorCode';
 
 @Injectable()
 export class CategoryRepository {
@@ -145,6 +152,39 @@ export class CategoryRepository {
     return category.id;
   }
 
+  async createContentCategorySpace(categoryId: string, data: CreateContentCategorySpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      await prisma.contentCategorySpace.updateMany({
+        where: {
+          orderNo: {
+            gte: data.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            increment: 1,
+          },
+        },
+      });
+
+      await prisma.contentCategorySpace.create({
+        data: {
+          orderNo: data.orderNo,
+          contentCategory: {
+            connect: {
+              id: categoryId,
+            },
+          },
+          space: {
+            connect: {
+              id: data.spaceId,
+            },
+          },
+        },
+      });
+    });
+  }
+
   async updateCategory(id: string, data: UpdateCategoryDTO) {
     await this.database.category.update({
       where: {
@@ -180,6 +220,76 @@ export class CategoryRepository {
     });
   }
 
+  async updateContentCategorySpace(categoryId: string, data: UpdateContentCategorySpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.contentCategorySpace.findUnique({
+        where: {
+          contentCategoryId_spaceId: {
+            contentCategoryId: categoryId,
+            spaceId: data.spaceId,
+          },
+        },
+      });
+      if (!isExist) {
+        throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_SPACE_NOT_FOUND));
+      }
+
+      await prisma.contentCategorySpace.updateMany({
+        where: {
+          ...(isExist.orderNo > data.orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: isExist.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: data.orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: data.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: isExist.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
+        },
+      });
+      await prisma.contentCategorySpace.update({
+        where: {
+          contentCategoryId_spaceId: {
+            contentCategoryId: categoryId,
+            spaceId: data.spaceId,
+          },
+        },
+        data,
+      });
+    });
+  }
+
   async deleteCategory(id: string) {
     await this.database.category.delete({
       where: {
@@ -193,6 +303,44 @@ export class CategoryRepository {
       where: {
         id,
       },
+    });
+  }
+
+  async deleteContentCategorySpace(categoryId: string, spaceId: string) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.contentCategorySpace.findUnique({
+        where: {
+          contentCategoryId_spaceId: {
+            contentCategoryId: categoryId,
+            spaceId,
+          },
+        },
+      });
+
+      if (!isExist) {
+        throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_SPACE_NOT_FOUND));
+      }
+
+      await prisma.contentCategorySpace.updateMany({
+        where: {
+          orderNo: {
+            gt: isExist.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            decrement: 1,
+          },
+        },
+      });
+      await prisma.contentCategorySpace.delete({
+        where: {
+          contentCategoryId_spaceId: {
+            contentCategoryId: categoryId,
+            spaceId,
+          },
+        },
+      });
     });
   }
 }
