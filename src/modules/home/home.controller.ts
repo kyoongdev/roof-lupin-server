@@ -43,7 +43,6 @@ export class HomeController {
   }
 
   @Get('curations')
-  @CreateCache({ key: HOME_CURATION_CACHE.KEY, ttl: HOME_CURATION_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 화면 큐레이션 목록 조회',
@@ -64,7 +63,6 @@ export class HomeController {
   }
 
   @Get('categories')
-  @CreateCache({ key: HOME_CATEGORY_CACHE.KEY, ttl: HOME_CATEGORY_CACHE.TTL })
   @RequestApi({
     summary: {
       description: '홈 카테고리 리스트 조회',

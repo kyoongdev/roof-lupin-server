@@ -618,9 +618,7 @@ export class SpaceRepository {
           id,
         },
       });
-      //c4efa199-a072-408d-b8b5-85e7d1eb6688
-      //기존 space.orderNo = 5;
-      //이후 orderNo       = 1;
+
       await prisma.space.updateMany({
         where: {
           ...(space.orderNo > orderNo
@@ -628,7 +626,7 @@ export class SpaceRepository {
                 AND: [
                   {
                     orderNo: {
-                      lte: space.orderNo,
+                      lt: space.orderNo,
                     },
                   },
                   {
@@ -647,7 +645,7 @@ export class SpaceRepository {
                   },
                   {
                     orderNo: {
-                      gte: space.orderNo,
+                      gt: space.orderNo,
                     },
                   },
                 ],
