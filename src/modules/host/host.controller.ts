@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
@@ -25,6 +25,20 @@ import { HostService } from './host.service';
 @ApiController('', '호스트')
 export class HostController {
   constructor(private readonly hostService: HostService) {}
+
+  @Get('spaces/:spaceId')
+  @RequestApi({
+    summary: {
+      description: '공간 id 로 호스트 조회하기기',
+      summary: '공간 id 로 호스트 조회하기기',
+    },
+  })
+  @ResponseApi({
+    type: HostDTO,
+  })
+  async getHostBySpaceId(@Param('spaceId') id: string) {
+    return await this.hostService.findHostBySpaceId(id);
+  }
 
   @Get('me')
   @Auth([JwtAuthGuard, RoleGuard('HOST')])

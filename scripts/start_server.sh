@@ -15,6 +15,7 @@ npm install -g pm2
 
 pm2 kill
 
+yarn config:dev
 yarn prisma db push --accept-data-loss	
 yarn seed
 
