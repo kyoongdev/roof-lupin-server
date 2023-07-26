@@ -175,7 +175,6 @@ export class RankingRepository {
         },
       });
       if (!isExist) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
-
       await prisma.space.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
