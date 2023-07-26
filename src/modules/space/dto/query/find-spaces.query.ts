@@ -156,7 +156,11 @@ export class FindSpacesQuery extends PagingDTO {
     };
   }
 
-  getFindByLocationQuery(): FindByLocationQuery {
+  getFindByLocationQuery(): FindByLocationQuery | null {
+    if (!this.lat || !this.lng || !this.distance) {
+      return null;
+    }
+
     return {
       lat: this.lat,
       lng: this.lng,

@@ -6,7 +6,14 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 
-import { CreateExhibitionDTO, ExhibitionDetailDTO, ExhibitionDTO, UpdateExhibitionDTO } from './dto';
+import {
+  CreateExhibitionDTO,
+  CreateExhibitionSpaceDTO,
+  ExhibitionDetailDTO,
+  ExhibitionDTO,
+  UpdateExhibitionDTO,
+  UpdateExhibitionOrderDTO,
+} from './dto';
 import { EXHIBITION_ERROR_CODE, EXHIBITION_NOT_FOUND } from './exception/errorCode';
 import { ExhibitionException } from './exception/exhibition.exception';
 
@@ -125,6 +132,39 @@ export class ExhibitionRepository {
     return exhibition.id;
   }
 
+  async createExhibitionSpaceOrder(exhibitionId: string, data: CreateExhibitionSpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      await prisma.exhibitionSpace.updateMany({
+        where: {
+          orderNo: {
+            gte: data.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            increment: 1,
+          },
+        },
+      });
+
+      await prisma.exhibitionSpace.create({
+        data: {
+          orderNo: data.orderNo,
+          exhibition: {
+            connect: {
+              id: exhibitionId,
+            },
+          },
+          space: {
+            connect: {
+              id: data.spaceId,
+            },
+          },
+        },
+      });
+    });
+  }
+
   async updateExhibition(id: string, data: UpdateExhibitionDTO) {
     const { spaces, images, couponIds, ...rest } = data;
 
@@ -172,6 +212,84 @@ export class ExhibitionRepository {
           },
         }),
       },
+    });
+  }
+  async updateExhibitionOrder(id: string, data: UpdateExhibitionOrderDTO) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.exhibition.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
+
+      if (!isExist.orderNo) {
+        await prisma.exhibition.updateMany({
+          where: {
+            orderNo: {
+              gte: data.orderNo,
+            },
+          },
+          data: {
+            orderNo: {
+              increment: 1,
+            },
+          },
+        });
+      } else {
+        await prisma.exhibition.updateMany({
+          where: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  AND: [
+                    {
+                      orderNo: {
+                        lt: isExist.orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gte: data.orderNo,
+                      },
+                    },
+                  ],
+                }
+              : {
+                  AND: [
+                    {
+                      orderNo: {
+                        lte: data.orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gt: isExist.orderNo,
+                      },
+                    },
+                  ],
+                }),
+          },
+          data: {
+            orderNo: {
+              ...(isExist.orderNo > data.orderNo
+                ? {
+                    increment: 1,
+                  }
+                : {
+                    decrement: 1,
+                  }),
+            },
+          },
+        });
+      }
+      await prisma.exhibition.update({
+        where: {
+          id,
+        },
+        data: {
+          orderNo: data.orderNo,
+        },
+      });
     });
   }
 

@@ -1,23 +1,13 @@
 import { PagingMetaDTO, PagingMetaDTOInterface, Property } from 'wemacu-nestjs';
 
-import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
-
-import { RankingDTO, RankingDTOProps } from './ranking.dto';
+import { SpaceDTO } from '@/modules/space/dto';
 
 export interface PagingRankingDTOProps {
-  name: string;
-  description: string;
   spaces: SpaceDTO[];
   paging: PagingMetaDTOInterface;
 }
 
 export class PagingRankingDTO {
-  @Property({ apiProperty: { type: 'string', description: '이름' } })
-  name: string;
-
-  @Property({ apiProperty: { type: 'string', description: '설명' } })
-  description: string;
-
   @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '랭킹' } })
   data: SpaceDTO[];
 
@@ -25,8 +15,6 @@ export class PagingRankingDTO {
   paging: PagingMetaDTO;
 
   constructor(props: PagingRankingDTOProps) {
-    this.name = props.name;
-    this.description = props.description;
     this.data = props.spaces;
     this.paging = new PagingMetaDTO(props.paging);
   }

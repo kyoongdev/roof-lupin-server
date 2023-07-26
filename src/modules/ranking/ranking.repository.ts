@@ -145,18 +145,6 @@ export class RankingRepository {
           },
         },
       });
-      await prisma.rankingSpaces.updateMany({
-        where: {
-          orderNo: {
-            lte: data.orderNo,
-          },
-        },
-        data: {
-          orderNo: {
-            decrement: 1,
-          },
-        },
-      });
 
       await prisma.rankingSpaces.create({
         data: {
@@ -187,7 +175,6 @@ export class RankingRepository {
         },
       });
       if (!isExist) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
-
       await prisma.space.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
@@ -289,10 +276,15 @@ export class RankingRepository {
       });
       if (!rankingSpace) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
 
-      const rankingSpaces = await prisma.rankingSpaces.findMany({
+      await prisma.rankingSpaces.updateMany({
         where: {
           orderNo: {
             gt: rankingSpace.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            decrement: 1,
           },
         },
       });
@@ -305,22 +297,6 @@ export class RankingRepository {
           },
         },
       });
-
-      await Promise.all(
-        rankingSpaces.map(async (rankingSpace) => {
-          await prisma.rankingSpaces.update({
-            where: {
-              spaceId_rankingId: {
-                rankingId: rankingSpace.rankingId,
-                spaceId: rankingSpace.spaceId,
-              },
-            },
-            data: {
-              orderNo: rankingSpace.orderNo - 1,
-            },
-          });
-        })
-      );
     });
   }
 }
