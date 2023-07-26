@@ -55,7 +55,6 @@ export class AdminCurationService {
   }
 
   async updateCurationSpace(curationId: string, data: UpdateCurationSpaceDTO) {
-    await this.findCuration(curationId);
     await this.curationRepository.updateCurationSpace(curationId, data);
   }
 
@@ -66,5 +65,9 @@ export class AdminCurationService {
 
   async deleteCuration(id: string) {
     await this.curationRepository.deleteCuration(id);
+  }
+
+  async deleteCurationSpace(curationId: string, spaceId: string) {
+    await this.curationRepository.deleteCurationSpace(curationId, spaceId);
   }
 }
