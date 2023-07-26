@@ -9,9 +9,9 @@ export const getAdminFindSpacesSQL = (query: AdminFindSpacesQuery, paging: Pagin
   let orderBy: Prisma.Sql = Prisma.sql`ORDER BY sp.createdAt DESC`;
 
   if (query.sort === 'AVERAGE_RATING_HIGH') {
-    orderBy = Prisma.sql`ORDER BY sp.averageScore DESC`;
+    orderBy = Prisma.sql`ORDER BY averageScore DESC`;
   } else if (query.sort === 'AVERAGE_RATING_LOW') {
-    orderBy = Prisma.sql`ORDER BY sp.averageScore ASC`;
+    orderBy = Prisma.sql`ORDER BY averageScore ASC`;
   } else if (query.sort === 'PRICE_HIGH') {
     orderBy = Prisma.sql`ORDER BY baseCost DESC`;
   } else if (query.sort === 'PRICE_LOW') {
