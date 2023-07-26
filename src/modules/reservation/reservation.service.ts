@@ -55,12 +55,6 @@ export class ReservationService {
       },
       orderBy: [
         {
-          year: 'desc',
-        },
-        {
-          month: 'desc',
-        },
-        {
           day: 'desc',
         },
       ],

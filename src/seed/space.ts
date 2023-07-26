@@ -497,9 +497,9 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           users.map(async (user, index) => {
             const reservation = await database.reservation.create({
               data: {
-                year: '2023',
-                month: '9',
-                day: `${spIdx % 30}`,
+                year: 2023,
+                month: 9,
+                day: (spIdx % 29) + 1,
                 userName: '용준',
                 userPhoneNumber: '01012341234',
                 originalCost: 10000,
@@ -508,7 +508,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 userCount: 3,
                 vatCost: 1000,
                 isApproved: true,
-
+                code: `${new Date().getTime()}${index}${spIdx}`,
                 user: {
                   connect: {
                     id: user.id,

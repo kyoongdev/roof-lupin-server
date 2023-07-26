@@ -62,9 +62,9 @@ export class BlockedTimeService {
 
     const reservations = await this.reservationRepository.findReservations({
       where: {
-        year: data.year,
-        month: data.month,
-        day: data.day,
+        year: Number(data.year),
+        month: Number(data.month),
+        day: Number(data.day),
         rentalTypes: {
           some: {
             rentalType: {
@@ -87,9 +87,9 @@ export class BlockedTimeService {
     }
     const reservations = await this.reservationRepository.findReservations({
       where: {
-        year: data.year,
-        month: data.month,
-        day: data.day,
+        year: Number(data.year),
+        month: Number(data.month),
+        day: Number(data.day),
         rentalTypes: {
           some: {
             rentalType: {
