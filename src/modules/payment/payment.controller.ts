@@ -1,6 +1,6 @@
 import { Body, Get, Post, Query, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ResponseWithIdDTO } from '@/common';
 import { BANK_CODE } from '@/common/constants';

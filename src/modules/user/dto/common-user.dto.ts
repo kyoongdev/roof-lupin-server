@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { Expose } from 'class-transformer';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { GENDER_VALUE, GenderReqTransForm, GenderResTransForm } from '@/utils/validation';
 

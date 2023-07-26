@@ -1,8 +1,8 @@
 import { Body, Get, Post, Query, Response } from '@nestjs/common';
 
+import { AppleLogin, KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'cumuco-nestjs';
 import type { Response as ResponseType } from 'express';
 import { nanoid } from 'nanoid';
-import { AppleLogin, KakaoLogin, NaverLogin, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { ApiController } from '@/utils';
 

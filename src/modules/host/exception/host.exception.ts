@@ -1,6 +1,6 @@
 import { HttpException } from '@nestjs/common';
 
-import { BaseErrorCode } from 'wemacu-nestjs';
+import { BaseErrorCode } from 'cumuco-nestjs';
 
 export class HostException extends HttpException {
   constructor(error: BaseErrorCode) {

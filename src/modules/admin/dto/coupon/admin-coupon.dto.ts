@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CategoryDTO, CategoryDTOProps } from '@/modules/category/dto';
 

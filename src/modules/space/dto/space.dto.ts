@@ -1,5 +1,5 @@
 import { RentalType } from '@prisma/client';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';

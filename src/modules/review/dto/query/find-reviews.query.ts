@@ -1,4 +1,4 @@
-import { PagingDTO, Property, ToBoolean } from 'wemacu-nestjs';
+import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
 import { REVIEWS_SORT, REVIEWS_SORT_KEYS } from '../validation';
 

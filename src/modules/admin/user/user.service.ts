@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { UpdateUserDTO } from '@/modules/user/dto';
 import { USER_ALREADY_BLOCKED, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';

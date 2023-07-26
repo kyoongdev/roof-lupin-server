@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property } from 'wemacu-nestjs';
+import { PagingDTO, Property } from 'cumuco-nestjs';
 
 export class AdminFindCouponsQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'name', nullable: true, description: '쿠폰 이름' } })

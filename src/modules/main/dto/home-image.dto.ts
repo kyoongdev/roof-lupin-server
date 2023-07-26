@@ -1,5 +1,5 @@
 import { MainImage } from '@prisma/client';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 export type MainImageDTOProps = MainImage;
 
 export class MainImageDTO {

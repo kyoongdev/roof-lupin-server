@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { PackageRentalTypeDTO, PackageRentalTypeDTOProps } from './package-rental-type.dto';
 import { RentalTypeDTOProps } from './rental-type.dto';

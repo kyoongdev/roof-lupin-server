@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const CURATION_NOT_FOUND = '큐레이션을 찾을 수 없습니다.' as const;
 export const CURATION_SPACE_NOT_FOUND = '큐레이션 공간을 찾을 수 없습니다.' as const;

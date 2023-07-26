@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CouponDTO, type CouponDTOProps } from '@/modules/coupon/dto';
 import { ImageDTO, type ImageDTOProps } from '@/modules/file/dto';

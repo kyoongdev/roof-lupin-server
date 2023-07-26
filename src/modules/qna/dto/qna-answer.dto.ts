@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { DateDTO, type DateProps } from '@/common';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto/host.dto';

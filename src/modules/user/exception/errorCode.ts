@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import type { ErrorCode } from 'wemacu-nestjs';
+import type { ErrorCode } from 'cumuco-nestjs';
 
 export const SOCIAL_USER_NOT_FOUND = '해당 소셜 ID에 해당하는 유저가 없습니다.' as const;
 export const USER_ALREADY_EXIST = '이미 존재하는 유저입니다.' as const;

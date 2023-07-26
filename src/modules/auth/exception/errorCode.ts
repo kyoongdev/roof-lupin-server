@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const WRONG_ACCESS_TOKEN = '잘못된 액세스 토큰입니다.' as const;
 export const WRONG_REFRESH_TOKEN = '잘못된 리프레쉬 토큰입니다.' as const;

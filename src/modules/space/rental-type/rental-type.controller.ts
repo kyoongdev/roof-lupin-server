@@ -1,6 +1,6 @@
 import { Get, Param, Query } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';

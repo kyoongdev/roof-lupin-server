@@ -1,6 +1,6 @@
 import { Get, Param } from '@nestjs/common';
 
-import { Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ApiController } from '@/utils';
 

@@ -1,6 +1,6 @@
 import { Delete, Get, Patch, Post, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';

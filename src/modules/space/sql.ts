@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
+import { PagingDTO } from 'cumuco-nestjs';
 
 import { LatLngDTO } from '../location/dto';
 

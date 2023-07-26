@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import type { ErrorCode } from 'wemacu-nestjs';
+import type { ErrorCode } from 'cumuco-nestjs';
 
 export const SCORE_BAD_REQUEST = '점수는 1점에서 5점만 입력 가능합니다.' as const;
 export const REVIEW_MUTATION_FORBIDDEN = '본인의 리뷰만 수정/삭제 가능합니다.' as const;

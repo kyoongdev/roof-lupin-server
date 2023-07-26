@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property, ToBoolean } from 'wemacu-nestjs';
+import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
 import {
   ADMIN_SPACE_SORT_OPTION,

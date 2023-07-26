@@ -1,6 +1,6 @@
 import { Get, Param, Query } from '@nestjs/common';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ReservationDetailDTO, ReservationDTO } from '@/modules/reservation/dto';
 import { ApiController } from '@/utils';

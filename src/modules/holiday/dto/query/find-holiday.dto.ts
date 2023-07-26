@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class FindHolidayDTO {
   @Property({ apiProperty: { type: 'string', description: '연도' } })

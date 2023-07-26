@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CreateCurationSpaceDTO, CreateCurationSpaceDTOProps } from './create-curation-space.dto';
 

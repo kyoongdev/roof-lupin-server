@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class BlockUserDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '차단 해제일' } })

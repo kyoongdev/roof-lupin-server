@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class LatLngDTO {
   @Property({ apiProperty: { type: 'string', description: '위도' } })

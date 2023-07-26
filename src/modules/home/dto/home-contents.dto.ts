@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { ContentCategoryDTO, ContentCategoryDTOProps } from '@/modules/category/dto';
 import { ExhibitionDTO, ExhibitionDTOProps } from '@/modules/exhibition/dto';

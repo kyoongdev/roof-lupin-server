@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property, ToBoolean } from 'wemacu-nestjs';
+import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
 export class AdminFindReportsQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '유저 id' } })

@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class HostAuthDTO {
   @Property({ apiProperty: { type: 'string', description: '이메일' } })

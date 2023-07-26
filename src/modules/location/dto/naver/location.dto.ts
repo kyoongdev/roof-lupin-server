@@ -1,4 +1,4 @@
-import { NaverGeocodeResponse, Property } from 'wemacu-nestjs';
+import { NaverGeocodeResponse, Property } from 'cumuco-nestjs';
 
 import { NaverAddresssDTO } from './address.dto';
 import { NaverMetaDTO } from './meta.dto';

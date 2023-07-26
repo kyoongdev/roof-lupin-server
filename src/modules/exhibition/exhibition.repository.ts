@@ -224,20 +224,7 @@ export class ExhibitionRepository {
       });
       if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
 
-      if (!isExist.orderNo) {
-        await prisma.exhibition.updateMany({
-          where: {
-            orderNo: {
-              gte: data.orderNo,
-            },
-          },
-          data: {
-            orderNo: {
-              increment: 1,
-            },
-          },
-        });
-      } else {
+      if (isExist.orderNo) {
         await prisma.exhibition.updateMany({
           where: {
             ...(isExist.orderNo > data.orderNo

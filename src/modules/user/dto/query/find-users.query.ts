@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property } from 'wemacu-nestjs';
+import { PagingDTO, Property } from 'cumuco-nestjs';
 
 export class FindUsersQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '닉네임' } })

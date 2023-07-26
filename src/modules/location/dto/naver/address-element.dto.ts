@@ -1,4 +1,4 @@
-import { type NaverAddressElement, Property } from 'wemacu-nestjs';
+import { type NaverAddressElement, Property } from 'cumuco-nestjs';
 
 export class NaverAddressElementDTO {
   @Property({ apiProperty: { type: 'string', isArray: true } })

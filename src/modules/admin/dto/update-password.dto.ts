@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class UpdateAdminPasswordDTO {
   @Property({ apiProperty: { type: 'string', description: '새로운 비밀번호' } })

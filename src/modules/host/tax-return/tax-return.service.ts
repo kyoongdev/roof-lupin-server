@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { TaxReturnDTO } from '@/modules/tax-return/dto';
 import { TaxReturnRepository } from '@/modules/tax-return/tax-return.repository';

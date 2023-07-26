@@ -1,4 +1,4 @@
-import { type NaverAddress, Property } from 'wemacu-nestjs';
+import { type NaverAddress, Property } from 'cumuco-nestjs';
 
 import { NaverAddressElementDTO } from './address-element.dto';
 

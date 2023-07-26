@@ -1,4 +1,4 @@
-import { PagingMetaDTO, PagingMetaDTOInterface, Property } from 'wemacu-nestjs';
+import { PagingMetaDTO, PagingMetaDTOInterface, Property } from 'cumuco-nestjs';
 
 import { SpaceDTO } from '@/modules/space/dto';
 

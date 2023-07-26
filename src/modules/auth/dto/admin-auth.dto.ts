@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class AdminAuthDTO {
   @Property({ apiProperty: { type: 'string', description: '아이디' } })

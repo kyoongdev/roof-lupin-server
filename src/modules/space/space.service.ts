@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { range } from 'lodash';
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { getWeek } from '@/common/date';
 import { DAY_ENUM } from '@/utils/validation';
@@ -47,6 +47,7 @@ export class SpaceService {
     }
     return space;
   }
+
   async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.spaceRepository.countSpaces({
@@ -86,12 +87,12 @@ export class SpaceService {
     } else if (isDistance) {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
     }
-
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
 
+    console.log(sqlQuery, sqlPaging, spaces.length);
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 

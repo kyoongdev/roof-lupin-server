@@ -1,5 +1,5 @@
+import { Property } from 'cumuco-nestjs';
 import { range } from 'lodash';
-import { Property } from 'wemacu-nestjs';
 
 import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';

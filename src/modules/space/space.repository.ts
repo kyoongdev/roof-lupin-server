@@ -619,20 +619,7 @@ export class SpaceRepository {
         },
       });
 
-      if (!space.orderNo) {
-        await prisma.space.updateMany({
-          where: {
-            orderNo: {
-              gte: orderNo,
-            },
-          },
-          data: {
-            orderNo: {
-              increment: 1,
-            },
-          },
-        });
-      } else {
+      if (space.orderNo) {
         await prisma.space.updateMany({
           where: {
             ...(space.orderNo > orderNo

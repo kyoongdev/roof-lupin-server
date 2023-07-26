@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class FindSettlementsQuery {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '연도' } })

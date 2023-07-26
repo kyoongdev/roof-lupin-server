@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const ADMIN_NOT_FOUND = '관리자를 찾을 수 없습니다.' as const;
 export const ADMIN_SETTLEMENT_ALREADY_EXISTS = '정산 내역이 이미 존재합니다.' as const;
