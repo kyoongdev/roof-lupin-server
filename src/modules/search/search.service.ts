@@ -2,17 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 
-import { PrismaService } from '@/database/prisma.service';
-
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateSearchRecommendDTO, CreateSearchRecordDTO, SearchRecommendDTO, SearchRecordDTO } from './dto';
-import {
-  SEARCH_ERROR_CODE,
-  SEARCH_RECOMMEND_NOT_FOUND,
-  SEARCH_RECORD_FORBIDDEN,
-  SEARCH_RECORD_NOT_FOUND,
-} from './exception/errorCode';
+import { SEARCH_ERROR_CODE, SEARCH_RECORD_FORBIDDEN } from './exception/errorCode';
 import { SearchException } from './exception/search.exception';
 import { SearchRepository } from './search.repository';
 

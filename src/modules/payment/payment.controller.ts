@@ -1,4 +1,4 @@
-import { Body, Get, Post, Query, Response, UseInterceptors } from '@nestjs/common';
+import { Body, Get, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
 

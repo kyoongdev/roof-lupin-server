@@ -11,12 +11,7 @@ import {
   SearchRecordDTO,
   UpdateSearchRecommendDTO,
 } from './dto';
-import {
-  SEARCH_ERROR_CODE,
-  SEARCH_RECOMMEND_NOT_FOUND,
-  SEARCH_RECORD_FORBIDDEN,
-  SEARCH_RECORD_NOT_FOUND,
-} from './exception/errorCode';
+import { SEARCH_ERROR_CODE, SEARCH_RECOMMEND_NOT_FOUND, SEARCH_RECORD_NOT_FOUND } from './exception/errorCode';
 import { SearchException } from './exception/search.exception';
 
 @Injectable()

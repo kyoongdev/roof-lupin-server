@@ -16,6 +16,7 @@ import { LocationModule } from './location/location.module';
 import { MainModule } from './main/main.module';
 import { PaymentModule } from './payment/payment.module';
 import { QnaModule } from './qna/qna.module';
+import { RankingModule } from './ranking/ranking.module';
 import { ReportModule } from './report/report.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ReviewModule } from './review/review.module';
@@ -48,6 +49,7 @@ export const Modules = [
   PaymentModule,
   ExhibitionModule,
   HolidayModule,
+  RankingModule,
 ];
 @Module({
   imports: [...Modules],

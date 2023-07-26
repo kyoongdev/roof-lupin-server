@@ -1,11 +1,11 @@
-import { Body, Delete, Get, Param, Patch, Post, Query, Req, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
+import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';

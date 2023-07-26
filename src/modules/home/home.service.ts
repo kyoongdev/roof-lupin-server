@@ -73,6 +73,8 @@ export class HomeService {
               orderBy: {
                 orderNo: 'asc',
               },
+              skip: 0,
+              take: 3,
             },
           },
         },

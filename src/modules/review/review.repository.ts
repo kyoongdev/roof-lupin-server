@@ -13,7 +13,7 @@ import {
   UpdateReviewReportDTO,
 } from './dto';
 import { ReviewDTO } from './dto/review.dto';
-import { BEST_PHOTO_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
+import { REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()

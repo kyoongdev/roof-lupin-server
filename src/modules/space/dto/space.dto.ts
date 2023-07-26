@@ -20,6 +20,7 @@ export interface SpaceDTOProps {
   publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
   rentalType: RentalType[];
+  orderNo: number;
 }
 
 export class SpaceDTO {
@@ -65,6 +66,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: LocationDTO, nullable: true, description: '공간 위치' } })
   location: LocationDTO | null;
 
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '공간 순서' } })
+  orderNo?: number;
+
   constructor(props: SpaceDTOProps) {
     const timeRentals = props.rentalType.filter((target) => target.rentalType === 1);
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
@@ -83,6 +87,7 @@ export class SpaceDTO {
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
     this.packageCost =
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
+    this.orderNo = props.orderNo ?? null;
   }
 
   static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {
