@@ -15,6 +15,18 @@ import { ReservationException } from './exception/reservation.exception';
 export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs) {
+    const reservation = (await this.database.reservation.findFirst({
+      ...args,
+      where: {
+        ...args.where,
+      },
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
+
+    return reservation ? new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)) : null;
+  }
+
   async findReservation(id: string) {
     const reservation = (await this.database.reservation.findUnique({
       where: {

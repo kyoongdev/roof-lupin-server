@@ -47,6 +47,25 @@ export class ReservationService {
     return reservation;
   }
 
+  async findMyCloseReservation(userId: string) {
+    return await this.reservationRepository.findFirstReservation({
+      where: {
+        userId,
+      },
+      orderBy: [
+        {
+          year: 'desc',
+        },
+        {
+          month: 'desc',
+        },
+        {
+          day: 'desc',
+        },
+      ],
+    });
+  }
+
   async deleteMyReservation(id: string, userId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
 

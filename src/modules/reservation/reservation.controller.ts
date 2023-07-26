@@ -14,6 +14,7 @@ import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO } from './dt
 import { FindReservationQuery } from './dto/query';
 import { ReservationService } from './reservation.service';
 
+@Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('reservations', '예약하기')
 export class ReservationController {
   constructor(
@@ -21,8 +22,21 @@ export class ReservationController {
     private readonly paymentService: PaymentService
   ) {}
 
+  @Get('me/close')
+  @RequestApi({
+    summary: {
+      description: '내 근접한 예약 조회',
+      summary: '내 근접한 예약 조회 response nullable',
+    },
+  })
+  @ResponseApi({
+    type: ReservationDTO,
+  })
+  async getMyCloseReservations(@ReqUser() user: RequestUser) {
+    return await this.reservationService.findMyCloseReservation(user.id);
+  }
+
   @Get('me/paging')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 예약 조회',
@@ -42,7 +56,6 @@ export class ReservationController {
   }
 
   @Get(':reservationId/me')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 예약 상세 조회',
@@ -57,7 +70,6 @@ export class ReservationController {
   }
 
   @Post('prepare')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -73,7 +85,6 @@ export class ReservationController {
   }
 
   @Delete(':reservationId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '예약 삭제하기',
