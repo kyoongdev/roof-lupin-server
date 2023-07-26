@@ -138,42 +138,100 @@ export class AdminHomeService {
   }
 
   async updateHomeContent(id: string, data: UpdateHomeContentsDTO) {
-    await this.findHomeContent(id);
+    const isExist = await this.findHomeContent(id);
     this.validateMutatingHomeContent(data);
+    await this.database.$transaction(async (prisma) => {
+      await prisma.homeContents.updateMany({
+        where: {
+          ...(isExist.orderNo > data.orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: isExist.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: data.orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: data.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: isExist.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
+        },
+      });
 
-    await this.database.homeContents.update({
-      where: {
-        id,
-      },
-      data: {
-        orderNo: data.orderNo,
-        ...(data.contentCategoryId && {
-          contentsCategory: {
-            connect: {
-              id: data.contentCategoryId,
+      await prisma.homeContents.update({
+        where: {
+          id,
+        },
+        data: {
+          orderNo: data.orderNo,
+          ...(data.contentCategoryId && {
+            contentsCategory: {
+              connect: {
+                id: data.contentCategoryId,
+              },
             },
-          },
-        }),
-        ...(data.exhibitionId && {
-          exhibition: {
-            connect: {
-              id: data.exhibitionId,
+          }),
+          ...(data.exhibitionId && {
+            exhibition: {
+              connect: {
+                id: data.exhibitionId,
+              },
             },
-          },
-        }),
-        ...(data.rankingId && {
-          ranking: {
-            connect: {
-              id: data.rankingId,
+          }),
+          ...(data.rankingId && {
+            ranking: {
+              connect: {
+                id: data.rankingId,
+              },
             },
-          },
-        }),
-      },
+          }),
+        },
+      });
     });
   }
 
   async deleteHomeContent(id: string) {
-    await this.findHomeContent(id);
+    const homeContent = await this.findHomeContent(id);
+    await this.database.homeContents.updateMany({
+      where: {
+        orderNo: {
+          gt: homeContent.orderNo,
+        },
+      },
+      data: {
+        orderNo: {
+          decrement: 1,
+        },
+      },
+    });
     await this.database.homeContents.delete({
       where: {
         id,

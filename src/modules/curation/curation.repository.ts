@@ -5,9 +5,11 @@ import type { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 import { CommonCurationSpace } from '@/interface/curation.interface';
 
+import { CreateRankingSpaceDTO } from '../ranking/dto';
 import { SpaceDTO } from '../space/dto';
 
 import { CreateCurationDTO, CurationDetailDTO, CurationDTO, UpdateCurationDTO } from './dto';
+import { UpdateCurationSpaceDTO } from './dto/update-curation-space.dto';
 import { CurationException } from './exception/curation.exception';
 import { CURATION_ERROR_CODE, CURATION_NOT_FOUND } from './exception/errorCode';
 
@@ -135,6 +137,172 @@ export class CurationRepository {
           },
         }),
       },
+    });
+  }
+
+  async createCurationSpace(curationId: string, data: CreateRankingSpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      await prisma.curationSpace.updateMany({
+        where: {
+          orderNo: {
+            gte: data.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            increment: 1,
+          },
+        },
+      });
+      await prisma.curationSpace.updateMany({
+        where: {
+          orderNo: {
+            lte: data.orderNo,
+          },
+        },
+        data: {
+          orderNo: {
+            decrement: 1,
+          },
+        },
+      });
+
+      await prisma.curationSpace.create({
+        data: {
+          orderNo: data.orderNo,
+          curation: {
+            connect: {
+              id: curationId,
+            },
+          },
+          space: {
+            connect: {
+              id: data.spaceId,
+            },
+          },
+        },
+      });
+    });
+  }
+
+  async updateCurationSpace(id: string, data: UpdateCurationSpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.curationSpace.findUnique({
+        where: {
+          curationId_spaceId: {
+            curationId: id,
+            spaceId: data.spaceId,
+          },
+        },
+      });
+
+      if (!isExist) {
+        throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+      }
+
+      await prisma.curationSpace.updateMany({
+        where: {
+          ...(isExist.orderNo > data.orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: isExist.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: data.orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: data.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: isExist.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
+        },
+      });
+    });
+  }
+
+  async updateCurationOrder(id: string, orderNo: number) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.curation.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!isExist) {
+        throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+      }
+
+      await prisma.curation.updateMany({
+        where: {
+          ...(isExist.orderNo > orderNo
+            ? {
+                AND: [
+                  {
+                    orderNo: {
+                      lt: isExist.orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gte: orderNo,
+                    },
+                  },
+                ],
+              }
+            : {
+                AND: [
+                  {
+                    orderNo: {
+                      lte: orderNo,
+                    },
+                  },
+                  {
+                    orderNo: {
+                      gt: isExist.orderNo,
+                    },
+                  },
+                ],
+              }),
+        },
+        data: {
+          orderNo: {
+            ...(isExist.orderNo > orderNo
+              ? {
+                  increment: 1,
+                }
+              : {
+                  decrement: 1,
+                }),
+          },
+        },
+      });
     });
   }
 
