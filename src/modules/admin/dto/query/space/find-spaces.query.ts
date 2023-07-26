@@ -1,6 +1,12 @@
 import { Prisma } from '@prisma/client';
 import { PagingDTO, Property, ToBoolean } from 'wemacu-nestjs';
 
+import {
+  ADMIN_SPACE_SORT_OPTION,
+  ADMIN_SPACE_SORT_OPTION_VALUES,
+  AdminSpaceSortValidation,
+} from '../../validation/space-sort.validation';
+
 export class AdminFindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 이름' } })
   title?: string;
@@ -13,15 +19,7 @@ export class AdminFindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '공간 노출 여부' } })
   isPublic?: boolean;
 
-  generateQuery(): Prisma.SpaceFindManyArgs {
-    return {
-      where: {
-        ...(this.title && {
-          title: {
-            contains: this.title,
-          },
-        }),
-      },
-    };
-  }
+  @AdminSpaceSortValidation()
+  @Property({ apiProperty: { type: 'string', nullable: true, enum: ADMIN_SPACE_SORT_OPTION_VALUES } })
+  sort?: keyof typeof ADMIN_SPACE_SORT_OPTION;
 }
