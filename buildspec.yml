@@ -5,14 +5,15 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - npm install
+      - npm install -g yarn
+      - yarn install
   pre_build:
     commands:
-      - npm run config:dev
-      - npm prisma generate
+      - yarn config:dev
+      - yarn prisma generate
   build:
     commands:
-      - npm run build
+      - yarn build
 artifacts:
   files:
     - '**/*'
