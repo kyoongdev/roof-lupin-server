@@ -74,6 +74,7 @@ export class BlockedTimeService {
         },
       },
     });
+
     this.validateBlockTime(data.startAt, data.endAt, reservations);
     return await this.blockedTimeRepository.createBlockedTime(data);
   }

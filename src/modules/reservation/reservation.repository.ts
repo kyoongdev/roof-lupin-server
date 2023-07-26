@@ -17,7 +17,6 @@ export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs) {
-    console.log(args);
     const reservation = (await this.database.reservation.findFirst({
       ...args,
       where: {
