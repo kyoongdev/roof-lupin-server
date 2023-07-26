@@ -3,7 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
-import { CreateRankingDTO, RankingDTO, UpdateRankingDTO } from '@/modules/ranking/dto';
+import {
+  CreateRankingDTO,
+  CreateRankingSpaceDTO,
+  RankingDTO,
+  UpdateRankingDTO,
+  UpdateRankingSpaceDTO,
+} from '@/modules/ranking/dto';
 import { RankingRepository } from '@/modules/ranking/ranking.repository';
 
 @Injectable()
@@ -32,13 +38,28 @@ export class AdminRankingService {
     return await this.rankingRepository.createRanking(data);
   }
 
+  async createRankingSpace(rankingId: string, data: CreateRankingSpaceDTO) {
+    await this.findRanking(rankingId);
+    await this.createRankingSpace(rankingId, data);
+  }
+
   async updateRanking(id: string, data: UpdateRankingDTO) {
     await this.findRanking(id);
     await this.rankingRepository.updateRanking(id, data);
   }
 
+  async updateRankingSpace(rankingId: string, data: UpdateRankingSpaceDTO) {
+    await this.findRanking(rankingId);
+    await this.updateRankingSpace(rankingId, data);
+  }
+
   async deleteRanking(id: string) {
     await this.findRanking(id);
     await this.rankingRepository.deleteRanking(id);
+  }
+
+  async deleteRankingSpace(rankingId: string, spaceId: string) {
+    await this.findRanking(rankingId);
+    await this.rankingRepository.deleteRankingSpace(rankingId, spaceId);
   }
 }
