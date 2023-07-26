@@ -56,7 +56,7 @@ export class AuthService {
   ) {}
 
   async testUserLogin() {
-    const user = await this.userRepository.findUserByNickname('testUser');
+    const user = await this.userRepository.findUserByNickname('user2');
 
     const tokens = await this.createTokens({ id: user.id, role: 'USER' });
     return tokens;

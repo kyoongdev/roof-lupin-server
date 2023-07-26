@@ -21,6 +21,7 @@ export class ReservationService {
     const count = await this.reservationRepository.countReservations({
       where: {
         userId,
+        ...args.where,
       },
     });
 

@@ -490,7 +490,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   }
 
   await Promise.all(
-    spaces.map(async (space) => {
+    spaces.map(async (space, spIdx) => {
       const rentalType = space.rentalType.find((type: any) => type.name === '시간당 요금');
       if (rentalType)
         await Promise.all(
@@ -499,7 +499,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               data: {
                 year: '2023',
                 month: '9',
-                day: '4',
+                day: `${spIdx % 30}`,
                 userName: '용준',
                 userPhoneNumber: '01012341234',
                 originalCost: 10000,
