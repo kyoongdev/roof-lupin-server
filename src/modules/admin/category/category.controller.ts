@@ -8,8 +8,10 @@ import {
   ContentCategoryDTO,
   CreateCategoryDTO,
   CreateContentCategoryDTO,
+  CreateContentCategorySpaceDTO,
   UpdateCategoryDTO,
   UpdateContentCategoryDTO,
+  UpdateContentCategorySpaceDTO,
 } from '@/modules/category/dto';
 import { FindCategoriesQuery, FindContentCategoryQuery } from '@/modules/category/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
@@ -100,6 +102,26 @@ export class AdminCategoryController {
     return await this.categoryService.createContentCategory(body);
   }
 
+  @Post('/contents/:contentCategoryId/spaces')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 공간 추가하기',
+      summary: '콘텐츠 카테고리 공간 추가하기',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    201
+  )
+  async createContentCategorySpace(
+    @Param('contentCategoryId') id: string,
+    @Body() body: CreateContentCategorySpaceDTO
+  ) {
+    return await this.categoryService.createContentCategorySpace(id, body);
+  }
+
   @Patch(':categoryId')
   @RequestApi({
     summary: {
@@ -134,6 +156,26 @@ export class AdminCategoryController {
     await this.categoryService.updateContentCategory(id, data);
   }
 
+  @Patch('/contents/:contentCategoryId/spaces')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 공간 수정',
+      summary: '콘텐츠 카테고리 공간 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateContentCategorySpace(
+    @Param('contentCategoryId') id: string,
+    @Body() data: UpdateContentCategorySpaceDTO
+  ) {
+    await this.categoryService.updateContentCategorySpace(id, data);
+  }
+
   @Delete(':categoryId')
   @RequestApi({
     summary: {
@@ -166,5 +208,22 @@ export class AdminCategoryController {
   )
   async deleteContentCategory(@Param('contentCategoryId') id: string) {
     await this.categoryService.deleteContentCategory(id);
+  }
+
+  @Delete('/contents/:contentCategoryId/spaces/:spaceId')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 수정',
+      summary: '콘텐츠 카테고리 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteContentCategorySpace(@Param('contentCategoryId') id: string, @Param('spaceId') spaceId: string) {
+    await this.categoryService.deleteContentCategorySpace(id, spaceId);
   }
 }
