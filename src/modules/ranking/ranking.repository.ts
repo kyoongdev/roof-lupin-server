@@ -6,7 +6,14 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 
-import { CreateRankingDTO, CreateRankingSpaceDTO, RankingDTO, RankingIdsDTO, UpdateRankingDTO } from './dto';
+import {
+  CreateRankingDTO,
+  CreateRankingSpaceDTO,
+  RankingDTO,
+  RankingIdsDTO,
+  UpdateRankingDTO,
+  UpdateRankingSpaceDTO,
+} from './dto';
 import { RANKING_ERROR_CODE, RANKING_NOT_FOUND, RANKING_SPACE_NOT_FOUND } from './exception/errorCode';
 import { RankingException } from './exception/ranking.exception';
 
@@ -160,6 +167,48 @@ export class RankingRepository {
             },
           },
         },
+      });
+    });
+  }
+
+  async updateRankingSpace(rankingId: string, data: UpdateRankingSpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      const isExist = await prisma.rankingSpaces.findUnique({
+        where: {
+          spaceId_rankingId: {
+            rankingId,
+            spaceId: data.spaceId,
+          },
+        },
+      });
+      if (!isExist) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
+      const rankingSpace = await prisma.rankingSpaces.findFirst({
+        where: {
+          orderNo: data.orderNo,
+        },
+      });
+
+      if (rankingSpace) {
+        await prisma.rankingSpaces.update({
+          where: {
+            spaceId_rankingId: {
+              rankingId: rankingSpace.rankingId,
+              spaceId: rankingSpace.spaceId,
+            },
+          },
+          data: {
+            orderNo: isExist.orderNo > data.orderNo ? rankingSpace.orderNo + 1 : rankingSpace.orderNo - 1,
+          },
+        });
+      }
+      await prisma.rankingSpaces.update({
+        where: {
+          spaceId_rankingId: {
+            rankingId,
+            spaceId: data.spaceId,
+          },
+        },
+        data,
       });
     });
   }
