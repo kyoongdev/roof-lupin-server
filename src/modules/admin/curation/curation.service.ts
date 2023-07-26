@@ -4,7 +4,10 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
 
 import { CurationRepository } from '@/modules/curation/curation.repository';
-import { CurationDTO } from '@/modules/curation/dto';
+import { CreateCurationSpaceDTO, CurationDTO } from '@/modules/curation/dto';
+import { UpdateCurationSpaceDTO } from '@/modules/curation/dto/update-curation-space.dto';
+import { CurationException } from '@/modules/curation/exception/curation.exception';
+import { CURATION_ERROR_CODE, CURATION_SPACE_ALREADY_EXIST } from '@/modules/curation/exception/errorCode';
 
 import { AdminCreateCurationDTO, AdminUpdateCurationDTO } from '../dto/curation';
 
@@ -35,13 +38,33 @@ export class AdminCurationService {
     return await this.curationRepository.createCuration(data);
   }
 
+  async createCurationSpace(curationId: string, data: CreateCurationSpaceDTO) {
+    await this.findCuration(curationId);
+    const isExist = await this.curationRepository.checkCurationSpace(curationId, data.spaceId);
+
+    if (isExist) {
+      throw new CurationException(CURATION_ERROR_CODE.CONFLICT(CURATION_SPACE_ALREADY_EXIST));
+    }
+
+    await this.curationRepository.createCurationSpace(curationId, data);
+  }
+
   async updateCuration(id: string, data: AdminUpdateCurationDTO) {
     await this.findCuration(id);
     await this.curationRepository.updateCuration(id, data);
   }
 
+  async updateCurationSpace(curationId: string, data: UpdateCurationSpaceDTO) {
+    await this.findCuration(curationId);
+    await this.curationRepository.updateCurationSpace(curationId, data);
+  }
+
+  async updateCurationOrder(curation: string, orderNo: number) {
+    await this.findCuration(curation);
+    await this.curationRepository.updateCurationOrder(curation, orderNo);
+  }
+
   async deleteCuration(id: string) {
-    await this.findCuration(id);
     await this.curationRepository.deleteCuration(id);
   }
 }
