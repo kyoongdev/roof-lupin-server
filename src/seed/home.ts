@@ -51,7 +51,8 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
 
   const ranking = await database.ranking.create({
     data: {
-      name: '구매율 TOP 5',
+      name: '20대 초반 유저 PICK!',
+      description: '2023년도 상반기 인기만점 옥상 공간',
     },
   });
 

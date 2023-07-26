@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 
-import { CreateRankingDTO, RankingDTO, UpdateRankingDTO } from './dto';
+import { CreateRankingDTO, RankingDTO, RankingIdsDTO, UpdateRankingDTO } from './dto';
 import { RANKING_ERROR_CODE, RANKING_NOT_FOUND } from './exception/errorCode';
 import { RankingException } from './exception/ranking.exception';
 
@@ -14,13 +14,23 @@ import { RankingException } from './exception/ranking.exception';
 export class RankingRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async findRanking(id: string) {
+  async findRankingIds() {
+    const id = await this.database.ranking.findMany({
+      select: {
+        id: true,
+      },
+    });
+    return new RankingIdsDTO({ ids: id.map((id) => id.id) });
+  }
+
+  async findRanking(id: string, args = {} as Prisma.Ranking$spacesArgs) {
     const ranking = await this.database.ranking.findUnique({
       where: {
         id,
       },
       include: {
         spaces: {
+          ...args,
           include: {
             space: {
               include: {
@@ -51,6 +61,13 @@ export class RankingRepository {
 
   async countRankings(args = {} as Prisma.RankingCountArgs) {
     return await this.database.ranking.count(args);
+  }
+  async countRankingSpaces(rankingId: string) {
+    return await this.database.rankingSpaces.count({
+      where: {
+        rankingId,
+      },
+    });
   }
 
   async findRankings(args = {} as Prisma.RankingFindManyArgs) {
