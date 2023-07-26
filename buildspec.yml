@@ -9,6 +9,7 @@ phases:
   pre_build:
     commands:
       - npm run config:dev
+      - npm prisma generate
   build:
     commands:
       - npm run build

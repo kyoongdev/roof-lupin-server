@@ -6,8 +6,8 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { SpaceDTO } from '../space/dto';
 
-import { CreateRankingDTO, RankingDTO, RankingIdsDTO, UpdateRankingDTO } from './dto';
-import { RANKING_ERROR_CODE, RANKING_NOT_FOUND } from './exception/errorCode';
+import { CreateRankingDTO, CreateRankingSpaceDTO, RankingDTO, RankingIdsDTO, UpdateRankingDTO } from './dto';
+import { RANKING_ERROR_CODE, RANKING_NOT_FOUND, RANKING_SPACE_NOT_FOUND } from './exception/errorCode';
 import { RankingException } from './exception/ranking.exception';
 
 @Injectable()
@@ -105,6 +105,7 @@ export class RankingRepository {
 
   async createRanking(data: CreateRankingDTO) {
     const { spaces, ...rest } = data;
+
     const ranking = await this.database.ranking.create({
       data: {
         ...rest,
@@ -121,6 +122,46 @@ export class RankingRepository {
       },
     });
     return ranking.id;
+  }
+
+  async createRankingSpace(rankingId: string, data: CreateRankingSpaceDTO) {
+    await this.database.$transaction(async (prisma) => {
+      const isRankingSpaceExist = await prisma.rankingSpaces.findFirst({
+        where: {
+          orderNo: data.orderNo,
+        },
+      });
+
+      if (isRankingSpaceExist) {
+        await prisma.rankingSpaces.update({
+          where: {
+            spaceId_rankingId: {
+              rankingId: isRankingSpaceExist.rankingId,
+              spaceId: isRankingSpaceExist.spaceId,
+            },
+          },
+          data: {
+            orderNo: isRankingSpaceExist.orderNo + 1,
+          },
+        });
+      }
+
+      await prisma.rankingSpaces.create({
+        data: {
+          orderNo: data.orderNo,
+          ranking: {
+            connect: {
+              id: rankingId,
+            },
+          },
+          space: {
+            connect: {
+              id: data.spaceId,
+            },
+          },
+        },
+      });
+    });
   }
 
   async updateRanking(id: string, data: UpdateRankingDTO) {
@@ -153,6 +194,53 @@ export class RankingRepository {
       where: {
         id,
       },
+    });
+  }
+
+  async deleteRankingSpace(rankingId: string, spaceId: string) {
+    await this.database.$transaction(async (prisma) => {
+      const rankingSpace = await prisma.rankingSpaces.findUnique({
+        where: {
+          spaceId_rankingId: {
+            rankingId,
+            spaceId,
+          },
+        },
+      });
+      if (!rankingSpace) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
+
+      const rankingSpaces = await prisma.rankingSpaces.findMany({
+        where: {
+          orderNo: {
+            gt: rankingSpace.orderNo,
+          },
+        },
+      });
+
+      await prisma.rankingSpaces.delete({
+        where: {
+          spaceId_rankingId: {
+            rankingId,
+            spaceId,
+          },
+        },
+      });
+
+      await Promise.all(
+        rankingSpaces.map(async (rankingSpace) => {
+          await prisma.rankingSpaces.update({
+            where: {
+              spaceId_rankingId: {
+                rankingId: rankingSpace.rankingId,
+                spaceId: rankingSpace.spaceId,
+              },
+            },
+            data: {
+              orderNo: rankingSpace.orderNo - 1,
+            },
+          });
+        })
+      );
     });
   }
 }
