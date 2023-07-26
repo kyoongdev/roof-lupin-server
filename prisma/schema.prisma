@@ -295,9 +295,10 @@ model ReservationRentalType {
 model Reservation {
   id String @id @unique @default(uuid())
 
-  year  String @db.Char(4)
-  month String @db.VarChar(2)
-  day   String @db.VarChar(2)
+  year  Int    @db.SmallInt
+  month Int    @db.TinyInt
+  day   Int    @db.TinyInt
+  code  String @unique @db.VarChar(25)
 
   totalCost           Int @db.MediumInt //INFO: 결제 금액 (originalCost - discountCost)
   vatCost             Int @db.MediumInt //INFO: VAT 금액

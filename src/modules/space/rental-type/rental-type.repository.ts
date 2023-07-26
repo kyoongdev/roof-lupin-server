@@ -196,6 +196,9 @@ export class RentalTypeRepository {
         const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
         return {
           ...rest,
+          year: String(rest.year),
+          month: String(rest.month),
+          day: String(rest.day),
           rentalTypes: rentalTypes.map((rentalType) => rentalType),
           space: {
             ...space,

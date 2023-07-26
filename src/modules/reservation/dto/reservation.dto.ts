@@ -42,6 +42,9 @@ export class ReservationDTO extends BaseReservationDTO {
 
     return {
       ...rest,
+      year: `${rest.year}`,
+      month: `${rest.month}`,
+      day: `${rest.day}`,
       user: rest.user,
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: {

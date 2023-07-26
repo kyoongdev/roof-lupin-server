@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { flatMap } from 'lodash';
 
+import { getRandom } from '@/common';
 import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservation } from '@/interface/reservation.interface';
@@ -14,6 +15,19 @@ import { ReservationException } from './exception/reservation.exception';
 @Injectable()
 export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
+
+  async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs) {
+    console.log(args);
+    const reservation = (await this.database.reservation.findFirst({
+      ...args,
+      where: {
+        ...args.where,
+      },
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
+
+    return reservation ? new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)) : null;
+  }
 
   async findReservation(id: string) {
     const reservation = (await this.database.reservation.findUnique({
@@ -88,6 +102,7 @@ export class ReservationRepository {
 
     const reservation = await this.database.reservation.create({
       data: {
+        ...rest,
         user: {
           connect: {
             id: userId,
@@ -123,7 +138,10 @@ export class ReservationRepository {
         }),
         vatCost: rest.totalCost - taxCost,
         isApproved: typeof isApproved === 'boolean' ? isApproved : true,
-        ...rest,
+        year: Number(rest.year),
+        month: Number(rest.month),
+        day: Number(rest.day),
+        code: `${new Date().getTime()}${getRandom(10, 99)}`,
       },
     });
     return reservation.id;
@@ -136,6 +154,11 @@ export class ReservationRepository {
 
     const reservation = await database.reservation.create({
       data: {
+        ...rest,
+        year: Number(rest.year),
+        month: Number(rest.month),
+        day: Number(rest.day),
+        code: `${new Date().getTime()}${getRandom(10, 99)}`,
         user: {
           connect: {
             id: userId,
@@ -170,7 +193,6 @@ export class ReservationRepository {
           },
         }),
         vatCost: rest.totalCost - taxCost,
-        ...rest,
       },
     });
     return reservation;
@@ -183,6 +205,9 @@ export class ReservationRepository {
       },
       data: {
         ...data,
+        year: data.year ? Number(data.year) : undefined,
+        month: data.month ? Number(data.month) : undefined,
+        day: data.day ? Number(data.day) : undefined,
         approvedAt: data.isApproved ? new Date() : null,
       },
     });

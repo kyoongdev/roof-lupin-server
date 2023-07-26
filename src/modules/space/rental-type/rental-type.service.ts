@@ -73,8 +73,8 @@ export class RentalTypeService {
       },
       {
         where: {
-          year: query.year,
-          month: query.month,
+          year: Number(query.year),
+          month: Number(query.month),
         },
       }
     );
@@ -124,8 +124,8 @@ export class RentalTypeService {
           },
           {
             where: {
-              year: `${year}`,
-              month: `${month}`,
+              year: year,
+              month: month,
             },
           }
         );
@@ -179,9 +179,9 @@ export class RentalTypeService {
       },
       {
         where: {
-          year: query.year,
-          month: query.month,
-          day: query.day,
+          year: Number(query.year),
+          month: Number(query.month),
+          day: Number(query.day),
         },
       }
     );
@@ -212,9 +212,9 @@ export class RentalTypeService {
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
       where: {
-        year: query.year,
-        month: query.month,
-        day: query.day,
+        year: Number(query.year),
+        month: Number(query.month),
+        day: Number(query.day),
       },
     });
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
@@ -259,9 +259,9 @@ export class RentalTypeService {
       },
       {
         where: {
-          year: query.year,
-          month: query.month,
-          day: query.day,
+          year: Number(query.year),
+          month: Number(query.month),
+          day: Number(query.day),
         },
       }
     );

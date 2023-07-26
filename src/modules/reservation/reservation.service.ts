@@ -21,6 +21,7 @@ export class ReservationService {
     const count = await this.reservationRepository.countReservations({
       where: {
         userId,
+        ...args.where,
       },
     });
 
@@ -45,6 +46,19 @@ export class ReservationService {
     }
 
     return reservation;
+  }
+
+  async findMyCloseReservation(userId: string) {
+    return await this.reservationRepository.findFirstReservation({
+      where: {
+        userId,
+      },
+      orderBy: [
+        {
+          day: 'desc',
+        },
+      ],
+    });
   }
 
   async deleteMyReservation(id: string, userId: string) {
