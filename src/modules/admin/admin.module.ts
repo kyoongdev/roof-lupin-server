@@ -9,6 +9,7 @@ import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { FileService } from '../file/file.service';
+import { FrequentQuestionRepository } from '../frequent-question/frequent-question.repository';
 import { HostRepository } from '../host/host.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { LocationRepository } from '../location/location.repository';
@@ -34,6 +35,8 @@ import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
 import { AdminExhibitionController } from './exhibition/exhibition.controller';
 import { AdminExhibitionService } from './exhibition/exhibition.service';
+import { AdminFrequentlyQuestionController } from './frequent-question/frequent-question.controller';
+import { AdminFrequentQuestionService } from './frequent-question/frequent-question.service';
 import { AdminHomeController } from './home/home.controller';
 import { AdminHomeService } from './home/home.service';
 import { AdminHostController } from './host/host.controller';
@@ -100,6 +103,8 @@ import { AdminUserService } from './user/user.service';
     AdminHomeService,
     AdminSearchService,
     SearchRepository,
+    AdminFrequentQuestionService,
+    FrequentQuestionRepository,
   ],
   controllers: [
     AdminController,
@@ -118,6 +123,7 @@ import { AdminUserService } from './user/user.service';
     AdminRankingController,
     AdminHomeController,
     AdminSearchController,
+    AdminFrequentlyQuestionController,
   ],
 })
 export class AdminModule {}

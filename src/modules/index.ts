@@ -10,6 +10,7 @@ import { CurationModule } from './curation/curation.module';
 import { ExhibitionModule } from './exhibition/exhibition.module';
 import { FaqModule } from './faq/faq.module';
 import { FileModule } from './file/file.module';
+import { FrequentQuestionModule } from './frequent-question/frequent-question.module';
 import { HolidayModule } from './holiday/holiday.module';
 import { HomeModule } from './home/home.module';
 import { LocationModule } from './location/location.module';
@@ -50,6 +51,7 @@ export const Modules = [
   ExhibitionModule,
   HolidayModule,
   RankingModule,
+  FrequentQuestionModule,
 ];
 @Module({
   imports: [...Modules],
