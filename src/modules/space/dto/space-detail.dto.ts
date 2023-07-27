@@ -162,7 +162,7 @@ export class SpaceDetailDTO {
     this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;
-    this.deposit = props.deposit;
+    this.deposit = props.deposit ?? null;
     this.orderNo = props.orderNo;
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
