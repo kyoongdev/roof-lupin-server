@@ -24,5 +24,6 @@ export class SizeDTO {
     this.id = props.id;
     this.size = props.size;
     this.floor = props.floor;
+    this.isRoof = props.isRoof;
   }
 }

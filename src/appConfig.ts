@@ -18,7 +18,7 @@ class AppConfig {
 
     await this.configureDatabase();
     await this.app.listen(8000, () => {
-      console.info('🔥루프루팡 서버 시작 8000🔥');
+      console.info('🔥루프루팡 서버 시작!! 8000🔥');
     });
   }
 
