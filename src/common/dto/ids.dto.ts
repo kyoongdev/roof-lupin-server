@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export interface IdsDTOProps {
   ids: string;

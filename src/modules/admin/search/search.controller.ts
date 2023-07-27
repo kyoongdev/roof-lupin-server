@@ -1,6 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, IdsDTO, ResponseWithIdDTO } from '@/common';
 import { CreateSearchRecommendDTO, SearchRecommendDTO, UpdateSearchRecommendDTO } from '@/modules/search/dto';

@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { HostAccountDTO, HostAccountDTOProps } from './host-account.dto';
 import { HostDTO, type HostDTOProps } from './host.dto';

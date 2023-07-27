@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';

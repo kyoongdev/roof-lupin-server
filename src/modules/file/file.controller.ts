@@ -2,7 +2,7 @@ import { Delete, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nes
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
 import { ApiController } from '@/utils';

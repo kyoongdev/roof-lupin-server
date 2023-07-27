@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const ENCRYPT_ERROR = '암호화 중 오류가 발생했습니다.' as const;
 

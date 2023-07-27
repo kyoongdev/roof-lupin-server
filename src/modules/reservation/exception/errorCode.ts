@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const RESERVATION_NOT_FOUND = '예약을 찾을 수 없습니다.' as const;
 export const RESERVATION_USER_FIND_FORBIDDEN = '본인의 예약 내역만 조회할 수 있습니다.' as const;

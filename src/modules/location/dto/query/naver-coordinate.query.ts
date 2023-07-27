@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class NaverCoordinateQuery {
   @Property({ apiProperty: { type: 'string', description: '중심 위도' } })

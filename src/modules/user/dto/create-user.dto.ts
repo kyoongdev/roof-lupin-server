@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { GENDER, GENDER_VALUE, GenderReqDecorators, GenderValidation } from '../../../utils/validation/gender.validate';
 

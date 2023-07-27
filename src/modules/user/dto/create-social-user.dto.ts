@@ -1,4 +1,4 @@
-import { KakaoGetUser, Property } from 'wemacu-nestjs';
+import { KakaoGetUser, Property } from 'cumuco-nestjs';
 
 import { type SocialType } from '@/interface/user.interface';
 

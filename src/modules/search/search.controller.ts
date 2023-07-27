@@ -1,6 +1,6 @@
 import { Delete, Get, Param } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';

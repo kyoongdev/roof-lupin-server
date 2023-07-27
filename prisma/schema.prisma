@@ -11,7 +11,7 @@ datasource db {
 model HomeContents {
   id String @id @default(uuid())
 
-  orderNo Int @db.TinyInt
+  orderNo Int? @db.TinyInt
 
   contentsCategory ContentCategory?
   exhibition       Exhibition?
@@ -223,11 +223,12 @@ model RecentSpace {
 }
 
 model SpaceSize {
-  id      String @id @default(uuid())
-  size    Int    @db.SmallInt
-  floor   String @db.VarChar(10)
+  id      String  @id @default(uuid())
+  size    Int     @db.SmallInt
+  floor   String  @db.VarChar(10)
+  isRoof  Boolean @default(false)
   spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  space   Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PublicTransportation {

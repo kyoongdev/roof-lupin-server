@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const ANNOUNCEMENT_NOT_FOUND = '공지사항을 찾을 수 없습니다.' as const;
 

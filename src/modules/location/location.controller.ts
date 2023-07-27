@@ -1,6 +1,6 @@
 import { Get, Query } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ApiController } from '@/utils';
 

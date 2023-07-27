@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { AppleLogin, KakaoLogin, NaverLogin } from 'cumuco-nestjs';
 import type { Response } from 'express';
 import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
-import { AppleLogin, KakaoLogin, NaverLogin } from 'wemacu-nestjs';
 
 import { EncryptProvider } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';

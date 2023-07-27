@@ -1,6 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';

@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { GenderValidation } from '../../../utils/validation/gender.validate';
 

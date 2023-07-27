@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { UpdateCurationDTO, UpdateCurationDTOProps } from '@/modules/curation/dto';
 

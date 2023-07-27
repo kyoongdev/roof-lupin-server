@@ -1,4 +1,4 @@
-import { BaseErrorCode, ErrorCode, HTTP_STATUS } from 'wemacu-nestjs';
+import { BaseErrorCode, ErrorCode, HTTP_STATUS } from 'cumuco-nestjs';
 
 export const APP_INFO_NOT_FOUND = '앱 정보를 찾을 수 없습니다.' as const;
 

@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { PhoneNumberValidation } from '@/utils/validation';
 

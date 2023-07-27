@@ -1,5 +1,5 @@
 import { Admin } from '@prisma/client';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 type Props = Partial<Admin>;
 

@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 export interface CreateBuildingDTOProps {
   iconPath: string;
   name: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { SocialLocationService } from 'wemacu-nestjs';
+import { SocialLocationService } from 'cumuco-nestjs';
 
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
 import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';

@@ -619,50 +619,52 @@ export class SpaceRepository {
         },
       });
 
-      await prisma.space.updateMany({
-        where: {
-          ...(space.orderNo > orderNo
-            ? {
-                AND: [
-                  {
-                    orderNo: {
-                      lt: space.orderNo,
-                    },
-                  },
-                  {
-                    orderNo: {
-                      gte: orderNo,
-                    },
-                  },
-                ],
-              }
-            : {
-                AND: [
-                  {
-                    orderNo: {
-                      lte: orderNo,
-                    },
-                  },
-                  {
-                    orderNo: {
-                      gt: space.orderNo,
-                    },
-                  },
-                ],
-              }),
-        },
-        data: {
-          orderNo: {
+      if (space.orderNo) {
+        await prisma.space.updateMany({
+          where: {
             ...(space.orderNo > orderNo
               ? {
-                  increment: 1,
+                  AND: [
+                    {
+                      orderNo: {
+                        lt: space.orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gte: orderNo,
+                      },
+                    },
+                  ],
                 }
               : {
-                  decrement: 1,
+                  AND: [
+                    {
+                      orderNo: {
+                        lte: orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gt: space.orderNo,
+                      },
+                    },
+                  ],
                 }),
           },
-        },
-      });
+          data: {
+            orderNo: {
+              ...(space.orderNo > orderNo
+                ? {
+                    increment: 1,
+                  }
+                : {
+                    decrement: 1,
+                  }),
+            },
+          },
+        });
+      }
 
       await prisma.space.update({
         where: {

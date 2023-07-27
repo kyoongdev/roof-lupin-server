@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import type { ErrorCode } from 'wemacu-nestjs';
+import type { ErrorCode } from 'cumuco-nestjs';
 
 export const TAX_RETURN_NOT_FOUND = '세금계산서 신고 내역을 찾을 수 없습니다.' as const;
 

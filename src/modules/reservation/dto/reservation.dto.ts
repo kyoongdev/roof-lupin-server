@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CommonReservation } from '@/interface/reservation.interface';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';

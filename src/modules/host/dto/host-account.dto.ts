@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { BANK_CODES, BankCodeReqDecorator } from '@/utils/validation';
 

@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { CreateExhibitionDTO, ExhibitionDTO, UpdateExhibitionDTO } from '@/modules/exhibition/dto';
+import {
+  CreateExhibitionDTO,
+  CreateExhibitionSpaceDTO,
+  ExhibitionDTO,
+  UpdateExhibitionDTO,
+  UpdateExhibitionOrderDTO,
+  UpdateExhibitionSpaceDTO,
+} from '@/modules/exhibition/dto';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
 import { FileService } from '@/modules/file/file.service';
 
@@ -33,6 +40,11 @@ export class AdminExhibitionService {
     return await this.exhibitionRepository.createExhibition(data);
   }
 
+  async createExhibitionSpace(id: string, data: CreateExhibitionSpaceDTO) {
+    await this.findExhibition(id);
+    return await this.exhibitionRepository.createExhibitionSpace(id, data);
+  }
+
   async updateExhibition(id: string, data: UpdateExhibitionDTO) {
     await this.findExhibition(id);
     if (data.images) {
@@ -45,8 +57,27 @@ export class AdminExhibitionService {
     await this.exhibitionRepository.updateExhibition(id, data);
   }
 
+  async updateExhibitionOrder(id: string, data: UpdateExhibitionOrderDTO) {
+    await this.findExhibition(id);
+    await this.exhibitionRepository.updateExhibitionOrder(id, data);
+  }
+
+  async updateExhibitionSpace(id: string, data: UpdateExhibitionSpaceDTO) {
+    await this.findExhibition(id);
+    await this.exhibitionRepository.updateExhibitionSpace(id, data);
+  }
+
   async deleteExhibition(id: string) {
     await this.findExhibition(id);
     await this.exhibitionRepository.deleteExhibition(id);
+  }
+
+  async deleteExhibitionOrder(id: string) {
+    await this.exhibitionRepository.deleteExhibitionOrder(id);
+  }
+
+  async deleteExhibitionSpace(id: string, spaceId: string) {
+    await this.findExhibition(id);
+    await this.exhibitionRepository.deleteExhibitionSpace(id, spaceId);
   }
 }

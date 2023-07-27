@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
+import { PagingDTO } from 'cumuco-nestjs';
 
 import { BASE_SPACE_JOIN, BASE_SPACE_SELECT } from '@/modules/space/sql';
 
@@ -31,7 +31,7 @@ export const getAdminFindSpacesSQL = (query: AdminFindSpacesQuery, paging: Pagin
   ${where}
   GROUP BY sp.id
   ${orderBy}
-  LIMIT ${paging.page},${paging.limit ?? 10}
+  LIMIT ${paging.page}, ${paging.limit}
   `;
 };
 

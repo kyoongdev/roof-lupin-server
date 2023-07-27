@@ -1,6 +1,6 @@
 import { Body, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
 import { SpaceDetailDTO, SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';
@@ -9,7 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminFindSpacesQuery } from '../dto/query/space';
-import { UpdateSpaceOrderDTO } from '../dto/space';
+import { SpaceCountDTO, UpdateSpaceOrderDTO } from '../dto/space';
 
 import { AdminSpaceService } from './space.service';
 
@@ -17,6 +17,20 @@ import { AdminSpaceService } from './space.service';
 @ApiController('spaces', '[관리자] 공간 관리')
 export class AdminSpaceController {
   constructor(private readonly spaceService: AdminSpaceService) {}
+
+  @Get('count')
+  @RequestApi({
+    summary: {
+      description: '공간 개수 불러오기',
+      summary: '공간 개수 불러오기 ',
+    },
+  })
+  @ResponseApi({
+    type: SpaceCountDTO,
+  })
+  async countSpaces() {
+    return await this.spaceService.countSpaces();
+  }
 
   @Get()
   @RequestApi({

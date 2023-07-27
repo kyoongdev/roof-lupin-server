@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PagingDTO } from 'wemacu-nestjs';
+import { PagingDTO } from 'cumuco-nestjs';
 
 import { SpaceDTO } from '../space/dto';
 import { SpaceRepository } from '../space/space.repository';

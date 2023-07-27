@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { SocialLoginModule } from 'wemacu-nestjs';
+import { SocialLoginModule } from 'cumuco-nestjs';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { AdminRepository } from '@/modules/admin/admin.repository';

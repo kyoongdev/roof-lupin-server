@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property } from 'wemacu-nestjs';
+import { PagingDTO, Property } from 'cumuco-nestjs';
 
 export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 제목' } })

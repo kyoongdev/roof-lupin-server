@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { UpdateContentCategorySpaceDTO, UpdateContentCategorySpaceDTOProps } from './update-content-category-space.dto';
 

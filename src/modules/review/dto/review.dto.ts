@@ -1,5 +1,5 @@
 import { Image, Prisma, PrismaClient, SpaceReview, User } from '@prisma/client';
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { DateDTO } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';

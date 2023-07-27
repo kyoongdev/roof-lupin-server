@@ -4300,6 +4300,39 @@ crypto@^1.0.1:
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
   integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
+cumuco-nestjs@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cumuco-nestjs/-/cumuco-nestjs-1.0.0.tgz#a421fc6a7cc7c72320a46a4847ac3fd70718dcac"
+  integrity sha512-qQBtYl+UkYDtpXRF2x6HgERiiVX618ILAmadAaUkpv6qyimjkoagsReha8JNCoC1SGyjG5iLI6V8OgGPDZHkpA==
+  dependencies:
+    "@nestjs/common" "^9.0.0"
+    "@nestjs/config" "^2.2.0"
+    "@nestjs/core" "^9.0.0"
+    "@nestjs/cqrs" "^9.0.1"
+    "@nestjs/passport" "^9.0.0"
+    "@nestjs/platform-express" "^9.0.0"
+    "@nestjs/swagger" "^6.0.5"
+    "@prisma/client" "^4.2.1"
+    apple-auth "^1.0.7"
+    class-transformer "^0.5.1"
+    class-validator "^0.13.2"
+    crypto-js "^4.1.1"
+    dotenv "^16.0.1"
+    exceljs "^4.3.0"
+    firebase-admin "^11.0.1"
+    form-data "^4.0.0"
+    hangul-js "^0.2.6"
+    jsonwebtoken "^8.5.1"
+    lodash "^4.17.21"
+    passport "^0.6.0"
+    prisma "^4.2.1"
+    qrcode "^1.5.3"
+    query-string "^7.1.1"
+    reflect-metadata "^0.1.13"
+    rimraf "^3.0.2"
+    rxjs "^7.2.0"
+    swagger-ui-express "^4.5.0"
+
 dargs@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/dargs/-/dargs-7.0.0.tgz#04015c41de0bcb69ec84050f3d9be0caf8d6d5cc"
@@ -9784,39 +9817,6 @@ websocket-extensions@>=0.1.1:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
-
-wemacu-nestjs@^1.7.5:
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/wemacu-nestjs/-/wemacu-nestjs-1.7.5.tgz#540a77355251b7cfced868f0ebe5a90e07fa6c27"
-  integrity sha512-9vX5FZMYg24lfqvSWKjvol9MM6U+otu7bVuUEUwyx4FKsvmoO9SoGHHP+oWs/8GKzlXcz0V1fWISUL2WQrziYw==
-  dependencies:
-    "@nestjs/common" "^9.0.0"
-    "@nestjs/config" "^2.2.0"
-    "@nestjs/core" "^9.0.0"
-    "@nestjs/cqrs" "^9.0.1"
-    "@nestjs/passport" "^9.0.0"
-    "@nestjs/platform-express" "^9.0.0"
-    "@nestjs/swagger" "^6.0.5"
-    "@prisma/client" "^4.2.1"
-    apple-auth "^1.0.7"
-    class-transformer "^0.5.1"
-    class-validator "^0.13.2"
-    crypto-js "^4.1.1"
-    dotenv "^16.0.1"
-    exceljs "^4.3.0"
-    firebase-admin "^11.0.1"
-    form-data "^4.0.0"
-    hangul-js "^0.2.6"
-    jsonwebtoken "^8.5.1"
-    lodash "^4.17.21"
-    passport "^0.6.0"
-    prisma "^4.2.1"
-    qrcode "^1.5.3"
-    query-string "^7.1.1"
-    reflect-metadata "^0.1.13"
-    rimraf "^3.0.2"
-    rxjs "^7.2.0"
-    swagger-ui-express "^4.5.0"
 
 whatwg-url@^5.0.0:
   version "5.0.0"

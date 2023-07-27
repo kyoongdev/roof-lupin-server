@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CreateTimeCostInfoDTO, CreateTimeCostInfoDTOProps } from './create-time-cost-info.dto';
 

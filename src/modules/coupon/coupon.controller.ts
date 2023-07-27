@@ -1,6 +1,6 @@
 import { Body, Get, Param, Post, Res, UseInterceptors } from '@nestjs/common';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';

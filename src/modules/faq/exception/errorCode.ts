@@ -1,4 +1,4 @@
-import { ErrorCode, HTTP_STATUS } from 'wemacu-nestjs';
+import { ErrorCode, HTTP_STATUS } from 'cumuco-nestjs';
 
 export const FAQ_NOT_FOUND = 'FAQ를 찾을 수 없습니다.' as const;
 

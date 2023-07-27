@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property } from 'wemacu-nestjs';
+import { PagingDTO, Property } from 'cumuco-nestjs';
 
 import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
 
@@ -147,6 +147,10 @@ export class FindSpacesQuery extends PagingDTO {
   }
 
   getFindByDateQuery(): FindByDateQuery {
+    if (!this.year || !this.month || !this.day) {
+      return null;
+    }
+
     return {
       year: this.year,
       month: this.month,

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { SocialLocationModule } from 'wemacu-nestjs';
+import { SocialLocationModule } from 'cumuco-nestjs';
 
 import { LocationController } from './location.controller';
 import { LocationRepository } from './location.repository';

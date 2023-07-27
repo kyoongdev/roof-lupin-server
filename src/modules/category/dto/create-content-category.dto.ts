@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CreateContentCategorySpaceDTO, CreateContentCategorySpaceDTOProps } from './create-content-category-space.dto';
 

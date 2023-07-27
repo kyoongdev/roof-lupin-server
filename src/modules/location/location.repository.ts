@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma, Space, SpaceLocation } from '@prisma/client';
-import { PagingDTO } from 'wemacu-nestjs';
+import { PagingDTO } from 'cumuco-nestjs';
 
 import {} from 'prisma';
 import { PrismaService } from '@/database/prisma.service';

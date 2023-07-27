@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { type DateProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
@@ -34,6 +34,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   overflowUserCost: number;
   overflowUserCount: number;
   qnaCount: number;
+  orderNo: number;
   isInterested?: boolean;
   host: HostDTOProps;
   isImmediateReservation: boolean;
@@ -100,6 +101,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: 'number', description: '공간 Q&A 개수' } })
   qnaCount: number;
 
+  @Property({ apiProperty: { type: 'number', description: '공간 순서' } })
+  orderNo: number;
+
   @Property({ apiProperty: { type: 'boolean', description: '찜 여부' } })
   isInterested: boolean;
 
@@ -158,7 +162,8 @@ export class SpaceDetailDTO {
     this.buildingType = props.buildingType ?? null;
     this.minUser = props.minUser;
     this.maxUser = props.maxUser;
-    this.deposit = props.deposit;
+    this.deposit = props.deposit ?? null;
+    this.orderNo = props.orderNo;
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
     this.qnaCount = props.qnaCount;

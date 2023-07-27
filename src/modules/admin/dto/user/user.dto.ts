@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { SOCIAL_TYPE, SocialType } from '@/interface/user.interface';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';

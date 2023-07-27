@@ -1,7 +1,7 @@
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Get, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'wemacu-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';

@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { FCMMessageDTO, type FCMMessageDTOProps } from './fcm-message.dto';
 export interface SendMessagesDTOProps {

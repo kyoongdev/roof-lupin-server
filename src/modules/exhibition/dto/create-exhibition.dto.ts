@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { CreateExhibitionSpaceDTO, CreateExhibitionSpaceDTOProps } from './create-exhibition-space.dto';
 

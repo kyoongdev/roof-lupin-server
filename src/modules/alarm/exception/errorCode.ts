@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ErrorCode } from 'wemacu-nestjs';
+import { ErrorCode } from 'cumuco-nestjs';
 
 export const ALARM_NOT_FOUND = '알람을 찾을 수 없습니다.' as const;
 export const ALARM_MUTATION_FORBIDDEN = '알람을 수정할 권한이 없습니다.' as const;

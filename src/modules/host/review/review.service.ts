@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import { ReviewRepository } from '@/modules/review/review.repository';

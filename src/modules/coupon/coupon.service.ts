@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PaginationDTO, PagingDTO } from 'wemacu-nestjs';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CouponRepository } from './coupon.repository';
 import { RegisterCouponByCodeDTO, UserCouponDTO } from './dto';

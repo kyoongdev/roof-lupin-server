@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 export class FindByDateQuery {
   @Property({ apiProperty: { type: 'string', description: '예약 가능 연도' } })

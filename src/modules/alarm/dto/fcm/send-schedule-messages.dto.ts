@@ -1,4 +1,4 @@
-import { Property } from 'wemacu-nestjs';
+import { Property } from 'cumuco-nestjs';
 
 import { ScheduleFCMMessageDTO, ScheduleFCMMessageDTOProps } from './schedule-fcm-message.dto';
 
