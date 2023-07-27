@@ -18,6 +18,3 @@ artifacts:
   files:
     - '**/*'
   name: rooflupin-build-$(date +%Y-%m-%d)
-cache:
-  paths:
-    - 'node_modules/**/*'
