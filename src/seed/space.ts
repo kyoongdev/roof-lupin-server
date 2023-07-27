@@ -280,7 +280,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           create: [
             {
               size: 80,
-              floor: '3층',
+              floor: 3,
             },
           ],
         },
@@ -610,7 +610,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             size: 12,
-            floor: '1층',
+            floor: 1,
           },
         ],
       },
@@ -969,7 +969,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             size: 12,
-            floor: '1층',
+            floor: 1,
           },
         ],
       },
@@ -1259,7 +1259,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             size: 12,
-            floor: '1층',
+            floor: 1,
           },
         ],
       },
