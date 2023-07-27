@@ -8,6 +8,14 @@ import { PrismaService } from '@/database/prisma.service';
 export class FrequentQuestionRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async findFrequentQuestion(id: string) {
+    const question = await this.database.frequentQuestion.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async findFrequentQuestions(args = {} as Prisma.FrequentQuestionFindManyArgs) {
     //
   }
