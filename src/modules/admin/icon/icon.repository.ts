@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { IconDTO } from '../dto/icon';
+import { IconDetailDTO, IconDTO, IconInUseDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
 import { AdminException } from '../exception/admin.exception';
 import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
@@ -12,6 +12,27 @@ import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
 @Injectable()
 export class IconRepository {
   constructor(private readonly database: PrismaService) {}
+
+  async checkIconInUse(iconPath: string) {
+    const building = await this.database.building.findFirst({
+      where: {
+        iconPath,
+      },
+    });
+
+    const service = await this.database.service.findFirst({
+      where: {
+        iconPath,
+      },
+    });
+    const category = await this.database.category.findFirst({
+      where: {
+        iconPath,
+      },
+    });
+
+    return new IconInUseDTO({ inUse: !!building || !!service || !!category });
+  }
 
   async findIcon(id: string) {
     const icon = await this.database.icon.findUnique({
@@ -24,7 +45,10 @@ export class IconRepository {
       throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_ICON_NOT_FOUND));
     }
 
-    return new IconDTO(icon);
+    return new IconDetailDTO({
+      ...icon,
+      inUse: (await this.checkIconInUse(icon.url)).inUse,
+    });
   }
 
   async countIcons(args = {} as Prisma.IconCountArgs) {

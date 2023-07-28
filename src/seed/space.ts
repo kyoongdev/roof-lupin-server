@@ -1255,6 +1255,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       minSize: 12,
       isPublic: true,
       isApproved: true,
+      isImmediateReservation: true,
       sizes: {
         create: [
           {

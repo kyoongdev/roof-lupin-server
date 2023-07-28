@@ -8,7 +8,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { UploadedFileDTO } from '@/modules/file/dto';
 import { ApiController, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 
-import { IconDTO } from '../dto/icon';
+import { IconDetailDTO, IconDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
 
 import { AdminIconService } from './icon.service';
@@ -25,7 +25,7 @@ export class AdminIconController {
     },
   })
   @ResponseApi({
-    type: IconDTO,
+    type: IconDetailDTO,
   })
   async getIcon(@Param('iconId') id: string) {
     return await this.iconService.findIcon(id);
