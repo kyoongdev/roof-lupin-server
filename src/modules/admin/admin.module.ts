@@ -41,6 +41,7 @@ import { AdminHomeController } from './home/home.controller';
 import { AdminHomeService } from './home/home.service';
 import { AdminHostController } from './host/host.controller';
 import { AdminHostService } from './host/host.service';
+import { AdminIconController } from './icon/icon.controller';
 import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
 import { AdminRankingController } from './ranking/ranking.controller';
@@ -124,6 +125,7 @@ import { AdminUserService } from './user/user.service';
     AdminHomeController,
     AdminSearchController,
     AdminFrequentlyQuestionController,
+    AdminIconController,
   ],
 })
 export class AdminModule {}
