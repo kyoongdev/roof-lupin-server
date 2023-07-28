@@ -15,8 +15,8 @@ export class CreateSpaceHolidayDTO {
     apiProperty: {
       type: 'number',
       minimum: 1,
-      maximum: 4,
-      description: '간격 (1 ~ 3 은 해당 월의 n번째주, 4는 월 단위)',
+      maximum: 5,
+      description: '간격 (해당 월의 n번째주)',
     },
   })
   interval: number;
