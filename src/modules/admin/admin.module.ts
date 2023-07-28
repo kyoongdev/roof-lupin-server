@@ -35,6 +35,8 @@ import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
 import { AdminExhibitionController } from './exhibition/exhibition.controller';
 import { AdminExhibitionService } from './exhibition/exhibition.service';
+import { AdminFaqController } from './faq/faq.controller';
+import { AdminFaqService } from './faq/faq.service';
 import { AdminFrequentlyQuestionController } from './frequent-question/frequent-question.controller';
 import { AdminFrequentQuestionService } from './frequent-question/frequent-question.service';
 import { AdminHomeController } from './home/home.controller';
@@ -110,6 +112,7 @@ import { AdminUserService } from './user/user.service';
     FrequentQuestionRepository,
     AdminIconService,
     IconRepository,
+    AdminFaqService,
   ],
   controllers: [
     AdminController,
@@ -130,6 +133,7 @@ import { AdminUserService } from './user/user.service';
     AdminSearchController,
     AdminFrequentlyQuestionController,
     AdminIconController,
+    AdminFaqController,
   ],
 })
 export class AdminModule {}
