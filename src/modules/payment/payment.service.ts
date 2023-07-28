@@ -560,7 +560,8 @@ export class PaymentService {
 
   async sendMessage(reservation: ReservationDetailDTO) {
     const pushToken = await this.userRepository.findUserPushToken(reservation.user.id);
-    if (pushToken.pushToken)
+    const user = await this.userRepository.findUser(reservation.user.id);
+    if (pushToken.pushToken && user.isAlarmAccepted)
       reservation.rentalTypes.forEach((rentalType) => {
         this.fcmEvent.createReservationUsageAlarm({
           year: reservation.year,

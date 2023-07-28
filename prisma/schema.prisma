@@ -45,10 +45,11 @@ model AppInfo {
 }
 
 model FAQ {
-  id       String @id @default(uuid())
-  question String @db.VarChar(120)
-  answer   String @db.MediumText
-  order    Int    @default(0) @db.TinyInt
+  id       String  @id @default(uuid())
+  question String  @db.VarChar(120)
+  answer   String? @db.MediumText
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Announcement {
@@ -682,6 +683,7 @@ model User {
   reservations   Reservation[]
   recentSpaces   RecentSpace[]
   reviewReports  SpaceReviewReport[]
+  faqs           FAQ[]
 }
 
 model UserAlarm {

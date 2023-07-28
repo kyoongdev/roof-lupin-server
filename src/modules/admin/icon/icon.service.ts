@@ -6,6 +6,8 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { FileService } from '@/modules/file/file.service';
 
 import { IconDTO } from '../dto/icon';
+import { AdminException } from '../exception/admin.exception';
+import { ADMIN_ERROR_CODE, ADMIN_ICON_IN_USE } from '../exception/errorCode';
 
 import { IconRepository } from './icon.repository';
 
@@ -36,6 +38,12 @@ export class AdminIconService {
 
   async deleteIcon(id: string) {
     const icon = await this.findIcon(id);
+    const result = await this.iconRepository.checkIconInUse(icon.url);
+
+    if (result.inUse) {
+      throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_ICON_IN_USE));
+    }
+
     await this.fileService.deleteFile(icon.url);
     return await this.iconRepository.deleteIcon(id);
   }

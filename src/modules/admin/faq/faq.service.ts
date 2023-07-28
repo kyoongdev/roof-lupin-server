@@ -1,22 +1,21 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
+import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
-import { CreateFAQDTO, FAQDTO, UpdateFAQDTO } from '@/modules/faq/dto';
+import { FAQDTO } from '@/modules/faq/dto';
 import { FAQ_ERROR_CODE, FAQ_NOT_FOUND } from '@/modules/faq/exception/errorCode';
 import { FAQException } from '@/modules/faq/exception/faq.exception';
+import { FaqRepository } from '@/modules/faq/faq.repository';
+
+import { AdminUpdateFAQAnswerDTO } from '../dto/faq';
 
 @Injectable()
 export class AdminFaqService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly FaqRepository: FaqRepository) {}
 
   async findFAQ(id: string) {
-    const faq = await this.database.fAQ.findUnique({
-      where: {
-        id,
-      },
-    });
+    const faq = await this.FaqRepository.findFAQ(id);
 
     if (!faq) {
       throw new FAQException(FAQ_ERROR_CODE.NOT_FOUND(FAQ_NOT_FOUND));
@@ -24,42 +23,27 @@ export class AdminFaqService {
     return new FAQDTO(faq);
   }
 
-  async countFAQs(args = {} as Prisma.FAQCountArgs) {
-    return await this.database.fAQ.count(args);
-  }
-
-  async findFAQs(args = {} as Prisma.FAQFindManyArgs) {
-    const faqs = await this.database.fAQ.findMany({
+  async findPagingFAQ(paging: PagingDTO, args = {} as Prisma.FAQFindManyArgs) {
+    const { skip, take } = paging.getSkipTake();
+    const count = await this.FaqRepository.countFAQs({
+      where: args.where,
+    });
+    const faqs = await this.FaqRepository.findFAQs({
       ...args,
-      orderBy: {
-        order: 'asc',
-      },
+      skip,
+      take,
     });
 
-    return faqs.map((faq) => new FAQDTO(faq));
+    return new PaginationDTO<FAQDTO>(faqs, { count, paging });
   }
 
-  async createFAQ(data: CreateFAQDTO) {
-    const faq = await this.database.fAQ.create({ data });
-    return faq.id;
-  }
-
-  async updateFAQ(id: string, data: UpdateFAQDTO) {
+  async updateAnswerFAQ(id: string, data: AdminUpdateFAQAnswerDTO) {
     await this.findFAQ(id);
-    const faq = await this.database.fAQ.update({
-      where: {
-        id,
-      },
-      data,
-    });
+    await this.FaqRepository.updateFAQ(id, data);
   }
 
   async deleteFAQ(id: string) {
     await this.findFAQ(id);
-    await this.database.fAQ.delete({
-      where: {
-        id,
-      },
-    });
+    await this.FaqRepository.deleteFAQ(id);
   }
 }

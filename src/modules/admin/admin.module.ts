@@ -8,6 +8,7 @@ import { AlarmRepository } from '../alarm/alarm.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
+import { FaqRepository } from '../faq/faq.repository';
 import { FileService } from '../file/file.service';
 import { FrequentQuestionRepository } from '../frequent-question/frequent-question.repository';
 import { HostRepository } from '../host/host.repository';
@@ -35,6 +36,8 @@ import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
 import { AdminExhibitionController } from './exhibition/exhibition.controller';
 import { AdminExhibitionService } from './exhibition/exhibition.service';
+import { AdminFaqController } from './faq/faq.controller';
+import { AdminFaqService } from './faq/faq.service';
 import { AdminFrequentlyQuestionController } from './frequent-question/frequent-question.controller';
 import { AdminFrequentQuestionService } from './frequent-question/frequent-question.service';
 import { AdminHomeController } from './home/home.controller';
@@ -110,7 +113,10 @@ import { AdminUserService } from './user/user.service';
     FrequentQuestionRepository,
     AdminIconService,
     IconRepository,
+    AdminFaqService,
+    FaqRepository,
   ],
+
   controllers: [
     AdminController,
     AdminReviewController,
@@ -130,6 +136,7 @@ import { AdminUserService } from './user/user.service';
     AdminSearchController,
     AdminFrequentlyQuestionController,
     AdminIconController,
+    AdminFaqController,
   ],
 })
 export class AdminModule {}
