@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { FAQRepository } from '../admin/faq/faq.repository';
-
 import { FaqController } from './faq.controller';
+import { FAQRepository } from './faq.repository';
 import { FaqService } from './faq.service';
 
 @Module({

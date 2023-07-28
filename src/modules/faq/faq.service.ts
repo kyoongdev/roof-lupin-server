@@ -3,14 +3,11 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
-
-import { FAQRepository } from '../admin/faq/faq.repository';
-
-import { CreateFAQDTO, FAQDTO, UpdateFAQDTO } from './dto';
+import { CreateFAQDTO, FAQDTO } from './dto';
 import { UserUpdateFAQDTO } from './dto/user-update-faq.dto';
-import { FAQ_ERROR_CODE, FAQ_MUTATION_FORBIDDEN, FAQ_NOT_FOUND } from './exception/errorCode';
+import { FAQ_ERROR_CODE, FAQ_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { FAQException } from './exception/faq.exception';
+import { FAQRepository } from './faq.repository';
 
 @Injectable()
 export class FaqService {
