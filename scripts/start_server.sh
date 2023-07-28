@@ -9,8 +9,7 @@ cd /home/ec2-user/build
 
 pm2 kill
 
-yarn config:dev
-yarn prisma db push --accept-data-loss	
-yarn seed
+node ./dist/seed-db.js
 
-pm2 start ecosystem.json
+
+pm2 start ecosystem.json  

@@ -578,19 +578,12 @@ export class RentalTypeService {
 
   getHolidays(targetDate: PossibleRentalTypeQuery, spaceHolidays: SpaceHolidayDTO[]) {
     const currentDate = new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day));
-    const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+    const currentDay = currentDate.getDay();
 
-    const currentDay = isHoliday
-      ? DAY_ENUM.HOLIDAY
-      : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
     const week = getWeek(currentDate);
 
     return spaceHolidays.filter((holiday) => {
-      if (holiday.interval === INTERVAL_WEEK.TWO) {
-        return (week === 2 || week === 4) && holiday.day === currentDay;
-      } else {
-        return holiday.day === currentDay;
-      }
+      return holiday.interval === week && holiday.day === currentDay;
     });
   }
 }
