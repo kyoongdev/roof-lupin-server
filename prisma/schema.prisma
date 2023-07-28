@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Icon {
+  id   String @id @default(uuid())
+  name String @db.VarChar(120)
+  url  String
+}
+
 model FrequentQuestion {
   id       String @id @default(uuid())
   question String @db.VarChar(120)

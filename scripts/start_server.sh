@@ -13,6 +13,4 @@ yarn config:dev
 yarn prisma db push --accept-data-loss	
 yarn seed
 
-
-
 pm2 start ecosystem.json

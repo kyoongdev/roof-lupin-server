@@ -1,13 +1,10 @@
-import { Delete, Get, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Get } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { ApiController, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
-import { RoleGuard } from '@/utils/guards/role.guard';
+import { ApiController } from '@/utils';
 
-import { CreateFAQDTO, FAQDTO, UpdateFAQDTO } from './dto';
+import { FAQDTO } from './dto';
 import { FaqService } from './faq.service';
 
 @ApiController('faqs', 'FAQ')
