@@ -8,7 +8,7 @@ import { FAQ_ERROR_CODE, FAQ_NOT_FOUND } from '@/modules/faq/exception/errorCode
 import { FAQException } from '@/modules/faq/exception/faq.exception';
 
 @Injectable()
-export class FAQRepository {
+export class FaqRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findFAQ(id: string) {

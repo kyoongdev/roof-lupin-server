@@ -8,6 +8,7 @@ import { AlarmRepository } from '../alarm/alarm.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
+import { FaqRepository } from '../faq/faq.repository';
 import { FileService } from '../file/file.service';
 import { FrequentQuestionRepository } from '../frequent-question/frequent-question.repository';
 import { HostRepository } from '../host/host.repository';
@@ -113,7 +114,9 @@ import { AdminUserService } from './user/user.service';
     AdminIconService,
     IconRepository,
     AdminFaqService,
+    FaqRepository,
   ],
+
   controllers: [
     AdminController,
     AdminReviewController,
