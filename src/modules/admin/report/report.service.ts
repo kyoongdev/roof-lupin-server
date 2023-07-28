@@ -49,7 +49,7 @@ export class AdminReportService {
 
     const user = await this.userRepository.findUser(report.user.id);
 
-    if (user.pushToken) {
+    if (user.pushToken && user.isAlarmAccepted) {
       this.fcmEvent.sendAlarm(
         {
           pushToken: user.pushToken,
