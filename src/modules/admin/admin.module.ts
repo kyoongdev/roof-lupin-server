@@ -42,6 +42,8 @@ import { AdminHomeService } from './home/home.service';
 import { AdminHostController } from './host/host.controller';
 import { AdminHostService } from './host/host.service';
 import { AdminIconController } from './icon/icon.controller';
+import { IconRepository } from './icon/icon.repository';
+import { AdminIconService } from './icon/icon.service';
 import { AdminQnAController } from './qna';
 import { AdminQnAService } from './qna/qna.service';
 import { AdminRankingController } from './ranking/ranking.controller';
@@ -106,6 +108,8 @@ import { AdminUserService } from './user/user.service';
     SearchRepository,
     AdminFrequentQuestionService,
     FrequentQuestionRepository,
+    AdminIconService,
+    IconRepository,
   ],
   controllers: [
     AdminController,

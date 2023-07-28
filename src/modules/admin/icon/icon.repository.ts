@@ -6,6 +6,8 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { IconDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
+import { AdminException } from '../exception/admin.exception';
+import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
 
 @Injectable()
 export class IconRepository {
@@ -17,6 +19,10 @@ export class IconRepository {
         id,
       },
     });
+
+    if (!icon) {
+      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_ICON_NOT_FOUND));
+    }
 
     return new IconDTO(icon);
   }
