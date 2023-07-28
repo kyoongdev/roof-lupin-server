@@ -42,7 +42,7 @@ export interface CreateSpaceDTOProps {
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
   openHours: CreateOpenHourDTOProps[];
-  holiday?: CreateSpaceHolidayDTOProps;
+  holidays?: CreateSpaceHolidayDTOProps[];
 }
 
 export class CreateSpaceDTO {
@@ -115,8 +115,8 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours: CreateOpenHourDTO[];
 
-  @Property({ apiProperty: { type: CreateSpaceHolidayDTO, nullable: true, description: '휴일' } })
-  holiday?: CreateSpaceHolidayDTO;
+  @Property({ apiProperty: { type: CreateSpaceHolidayDTO, isArray: true, nullable: true, description: '휴일' } })
+  holidays?: CreateSpaceHolidayDTO[];
 
   constructor(props?: CreateSpaceDTOProps) {
     if (props) {
@@ -145,7 +145,7 @@ export class CreateSpaceDTO {
       );
       this.sizes = props.sizes.map((size) => new CreateSizeDTO(size));
       this.openHours = props.openHours.map((openHour) => new CreateOpenHourDTO(openHour));
-      this.holiday = props.holiday ? new CreateSpaceHolidayDTO(props.holiday) : undefined;
+      this.holidays = props.holidays?.map((holiday) => new CreateSpaceHolidayDTO(holiday));
     }
   }
 

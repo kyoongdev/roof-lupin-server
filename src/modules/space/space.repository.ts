@@ -131,7 +131,7 @@ export class SpaceRepository {
         userInterests: true,
         sizes: true,
         openHours: true,
-        holiday: true,
+        holidays: true,
       },
     });
 
@@ -149,6 +149,8 @@ export class SpaceRepository {
       services,
       userInterests,
       refundPolicies,
+      openHours,
+      holidays,
     } = space;
     const bestPhotos = await this.database.spaceReviewImage.findMany({
       where: {
@@ -180,6 +182,8 @@ export class SpaceRepository {
         id: photo.image.id,
         url: photo.image.url,
       })),
+      openHours,
+      holidays,
     });
   }
 
@@ -275,7 +279,7 @@ export class SpaceRepository {
       publicTransportations,
       sizes,
       openHours,
-      holiday,
+      holidays,
       ...rest
     } = data;
 
@@ -348,9 +352,9 @@ export class SpaceRepository {
           openHours: {
             create: openHours.map((openHour) => openHour),
           },
-          ...(holiday && {
+          ...(holidays && {
             holiday: {
-              create: holiday,
+              create: holidays.map((holiday) => holiday),
             },
           }),
         },
@@ -377,7 +381,7 @@ export class SpaceRepository {
       publicTransportations,
       sizes,
       openHours,
-      holiday,
+      holidays,
       ...rest
     } = data;
 
@@ -392,7 +396,7 @@ export class SpaceRepository {
     };
 
     await this.database.$transaction(async (prisma) => {
-      if (holiday) {
+      if (holidays) {
         await prisma.spaceHoliday.deleteMany({
           where: {
             spaceId,
@@ -400,8 +404,8 @@ export class SpaceRepository {
         });
         updateArgs.data = {
           ...updateArgs.data,
-          holiday: {
-            create: holiday,
+          holidays: {
+            create: holidays.map((holiday) => holiday),
           },
         };
       }
