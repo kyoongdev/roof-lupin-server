@@ -35,16 +35,25 @@ export const seedDatabase = async (database: PrismaClient) => {
   const users: User[] = [];
   await Promise.all(
     range(1, 50).map(async (i) => {
-      users.push(
-        await database.user.create({
-          data: {
-            nickname: `user${i}`,
-            name: `테스트유저${i}`,
-            gender: i % 2 === 0 ? 1 : 2,
-            email: `testUser${i}@gmail.com`,
+      const user = await database.user.create({
+        data: {
+          nickname: `user${i}`,
+          name: `테스트유저${i}`,
+          gender: i % 2 === 0 ? 1 : 2,
+          email: `testUser${i}@gmail.com`,
+        },
+      });
+      await database.fAQ.create({
+        data: {
+          question: `테스트유저${i}의 질문`,
+          user: {
+            connect: {
+              id: user.id,
+            },
           },
-        })
-      );
+        },
+      });
+      users.push(user);
     })
   );
   await database.coupon.create({

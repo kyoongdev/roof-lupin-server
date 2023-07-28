@@ -119,6 +119,48 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               startAt: '10',
               endAt: '2',
             },
+            {
+              day: 2,
+              startAt: '10',
+              endAt: '2',
+            },
+            {
+              day: 3,
+              startAt: '10',
+              endAt: '2',
+            },
+            {
+              day: 4,
+              startAt: '10',
+              endAt: '2',
+            },
+            {
+              day: 5,
+              startAt: '10',
+              endAt: '2',
+            },
+            {
+              day: 6,
+              startAt: '10',
+              endAt: '2',
+            },
+            {
+              day: 7,
+              startAt: '10',
+              endAt: '2',
+            },
+          ],
+        },
+        holidays: {
+          create: [
+            {
+              day: 2,
+              interval: 2,
+            },
+            {
+              day: 3,
+              interval: 2,
+            },
           ],
         },
         rentalType: {
@@ -926,11 +968,13 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           id: realHost.id,
         },
       },
-      holiday: {
-        create: {
-          day: 4,
-          interval: 2,
-        },
+      holidays: {
+        create: [
+          {
+            day: 4,
+            interval: 2,
+          },
+        ],
       },
     },
   });
@@ -959,11 +1003,13 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       minSize: 12,
       isPublic: true,
       isApproved: true,
-      holiday: {
-        create: {
-          day: 14,
-          interval: 4,
-        },
+      holidays: {
+        create: [
+          {
+            day: 14,
+            interval: 4,
+          },
+        ],
       },
       sizes: {
         create: [

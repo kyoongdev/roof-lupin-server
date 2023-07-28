@@ -184,7 +184,7 @@ model Space {
   contentCategories     ContentCategorySpace[]
   rankings              RankingSpaces[]
   openHours             OpenHour[]
-  holiday               SpaceHoliday?
+  holidays              SpaceHoliday[]
 }
 
 //INFO: 공간 영업시간

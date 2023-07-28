@@ -22,7 +22,7 @@ import { CreateTransportationDTO } from './transportaion';
 export type UpdateSpaceDTOProps = Partial<Omit<CreateSpaceDTOProps, 'holiday'>> & {
   isPublic?: boolean;
   isApproved?: boolean;
-  holiday?: UpdateSpaceHolidayDTOProps;
+  holidays?: UpdateSpaceHolidayDTOProps[];
 };
 
 export class UpdateSpaceDTO {
@@ -101,8 +101,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: UpdateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours?: UpdateOpenHourDTO[];
 
-  @Property({ apiProperty: { type: UpdateSpaceHolidayDTO, nullable: true, description: '휴무일' } })
-  holiday?: UpdateSpaceHolidayDTO;
+  @Property({ apiProperty: { type: UpdateSpaceHolidayDTO, isArray: true, nullable: true, description: '휴무일' } })
+  holidays?: UpdateSpaceHolidayDTO[];
 
   constructor(props?: UpdateSpaceDTOProps) {
     if (props) {
@@ -133,7 +133,7 @@ export class UpdateSpaceDTO {
       );
       this.sizes = props.sizes.map((size) => new CreateSizeDTO(size));
       this.openHours = props.openHours.map((openHour) => new UpdateOpenHourDTO(openHour));
-      this.holiday = props.holiday ? new UpdateSpaceHolidayDTO(props.holiday) : undefined;
+      this.holidays = props.holidays.map((holiday) => new UpdateSpaceHolidayDTO(holiday));
     }
   }
 
