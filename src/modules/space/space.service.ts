@@ -77,7 +77,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = await this.getExcludeSpaces(query);
+    const excludeQuery = this.getExcludeSpaces(query);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -92,7 +92,6 @@ export class SpaceService {
     );
     const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery);
 
-    console.log(sqlQuery, sqlPaging, spaces.length);
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 
@@ -130,7 +129,7 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async getExcludeSpaces(query?: FindSpacesQuery) {
+  getExcludeSpaces(query?: FindSpacesQuery) {
     const date = query.getFindByDateQuery();
     const queries: Prisma.Sql[] = [];
     if (date) {
@@ -150,10 +149,8 @@ export class SpaceService {
 
       const targetDate = new Date(Number(date.year), Number(date.month) - 1, Number(date.day));
 
-      const isHoliday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
       const week = getWeek(new Date(Number(date.year), Number(date.month) - 1, Number(date.day)));
-
-      const day = isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+      const day = targetDate.getDay();
 
       const dateQuery = date
         ? Prisma.sql`(Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
@@ -181,7 +178,7 @@ export class SpaceService {
         FROM Space sp
         LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
         LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
-        WHERE sh.day = IF(sh.interval = 4, ${targetDate.getDate()}, ${day}) AND sh.interval = IF(sh.interval = 4, 4, ${week}) 
+        WHERE sh.day = ${day} AND sh.interval = ${week}
         OR (oh.day != ${day}  ${openHourTimeQuery})
         GROUP BY sp.id
       `;
