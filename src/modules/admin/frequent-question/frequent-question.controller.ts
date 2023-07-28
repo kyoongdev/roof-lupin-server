@@ -8,7 +8,7 @@ import {
   FrequentQuestionDTO,
   UpdateFrequentQuestionDTO,
 } from '@/modules/frequent-question/dto';
-import { ApiController, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -42,6 +42,7 @@ export class AdminFrequentlyQuestionController {
   })
   @ResponseApi({
     type: FrequentQuestionDTO,
+    isArray: true,
   })
   async getFrequentQuestions() {
     return await this.frequentQuestionService.findFrequentQuestions();
