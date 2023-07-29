@@ -25,4 +25,6 @@ import { AppModule } from './app.module';
       })
     )
     .init();
+
+  console.log(new Date(2023, 9, 2, 14));
 })();

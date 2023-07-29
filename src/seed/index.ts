@@ -55,6 +55,14 @@ export const seedDatabase = async (database: PrismaClient) => {
           },
         },
       });
+      if (i < 20) {
+        await database.frequentQuestion.create({
+          data: {
+            question: `자주 묻는 질문 ${i}`,
+            answer: `자주 묻는 질문 ${i}의 답변`,
+          },
+        });
+      }
       users.push(user);
     })
   );

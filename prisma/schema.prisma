@@ -337,10 +337,11 @@ model Reservation {
   settlementId String?
   settlement   Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  payedAt            DateTime?
-  createdAt          DateTime                    @default(now())
-  updatedAt          DateTime                    @updatedAt
-  deletedAt          DateTime?
+  payedAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
   spaceReviews       SpaceReview[]
   userCoupon         UserCoupon[]
   additionalServices ReservedAdditionalService[]
