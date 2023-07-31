@@ -47,7 +47,7 @@ export class FileService {
 
             return new S3ImageDTO({
               key: file.Key,
-              url: `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${file.Key}`,
+              url,
               inUse,
             });
           })
