@@ -1,14 +1,19 @@
 import { Property } from 'cumuco-nestjs';
 
 export interface SpaceIdsDTOProps {
-  ids: string[];
+  id: string;
+  title: string;
 }
 
 export class SpaceIdsDTO {
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '공간 id들' } })
-  ids: string[];
+  @Property({ apiProperty: { type: 'string', description: '공간 id' } })
+  id: string;
+
+  @Property({ apiProperty: { type: 'string', description: '공간 이름' } })
+  title: string;
 
   constructor(props: SpaceIdsDTOProps) {
-    this.ids = props.ids;
+    this.id = props.id;
+    this.title = props.title;
   }
 }

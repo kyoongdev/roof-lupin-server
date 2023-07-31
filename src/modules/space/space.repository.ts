@@ -23,9 +23,11 @@ export class SpaceRepository {
     const spaces = await this.database.space.findMany({
       select: {
         id: true,
+        title: true,
       },
     });
-    return new SpaceIdsDTO({ ids: spaces.map((space) => space.id) });
+
+    return spaces.map((space) => new SpaceIdsDTO(space));
   }
 
   async findSpacesWithSQL(sql: Prisma.Sql) {

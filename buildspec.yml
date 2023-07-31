@@ -12,6 +12,7 @@ phases:
       - yarn config:dev
       - yarn prisma db push --accept-data-loss
       - yarn prisma generate
+      - yarn seed
   build:
     commands:
       - yarn build
