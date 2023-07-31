@@ -24,6 +24,7 @@ export class SpaceRepository {
       select: {
         id: true,
         title: true,
+        thumbnail: true,
       },
     });
 

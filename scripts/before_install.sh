@@ -8,15 +8,3 @@ if [ -d /home/ec2-user/build ]; then
 fi
 mkdir /home/ec2-user/build
 
-cd /home/ec2-user/build
-echo "cd to build File"
-source /home/ec2-user/.bash_profile
-
-
-npm install -g yarn 
-npm install -g pm2
-
-npm -v
-node -v
-yarn -v
-echo "yarn installed"

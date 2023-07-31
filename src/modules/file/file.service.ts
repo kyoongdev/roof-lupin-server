@@ -65,7 +65,7 @@ export class FileService {
         file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer
       );
 
-      const result = await new AWS.S3({
+      await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
           accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
