@@ -3,7 +3,7 @@ import { Body, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { SpaceDetailDTO, SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';
+import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
@@ -17,6 +17,21 @@ import { AdminSpaceService } from './space.service';
 @ApiController('spaces', '[관리자] 공간 관리')
 export class AdminSpaceController {
   constructor(private readonly spaceService: AdminSpaceService) {}
+
+  @Get('ids')
+  @RequestApi({
+    summary: {
+      description: '공간 id, title 불러오기',
+      summary: '공간 id, title 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: SpaceIdsDTO,
+    isArray: true,
+  })
+  async getSpaceIds() {
+    return await this.spaceService.findSpaceIds();
+  }
 
   @Get('count')
   @RequestApi({

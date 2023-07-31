@@ -68,6 +68,7 @@ export class SpaceController {
   })
   @ResponseApi({
     type: SpaceIdsDTO,
+    isArray: true,
   })
   async getSpaceIds() {
     return await this.spaceService.findSpaceIds();
