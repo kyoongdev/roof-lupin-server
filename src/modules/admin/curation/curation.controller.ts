@@ -8,7 +8,12 @@ import { FindCurationsQuery } from '@/modules/curation/dto/query';
 import { UpdateCurationSpaceDTO } from '@/modules/curation/dto/update-curation-space.dto';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 
-import { AdminCreateCurationDTO, AdminUpdateCurationDTO, AdminUpdateCurationOrderDTO } from '../dto/curation';
+import {
+  AdminCreateCurationDTO,
+  AdminUpdateCurationDTO,
+  AdminUpdateCurationOrderDTO,
+  CurationCountDTO,
+} from '../dto/curation';
 
 import { AdminCurationService } from './curation.service';
 
@@ -45,6 +50,19 @@ export class AdminCurationController {
     return await this.curationService.findPagingCurations(paging, query.generateQuery());
   }
 
+  @Get('count')
+  @RequestApi({
+    summary: {
+      description: '큐레이션 개수 불러오기',
+      summary: '큐레이션 개수 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: CurationCountDTO,
+  })
+  async countCurations() {
+    return await this.curationService.countCurations();
+  }
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
