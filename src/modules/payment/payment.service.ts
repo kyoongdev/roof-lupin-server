@@ -597,8 +597,14 @@ export class PaymentService {
           day: data.day,
         });
 
+        const possibleEndAt =
+          possibleRentalType.endAt <= possibleRentalType.startAt
+            ? possibleRentalType.endAt + 24
+            : possibleRentalType.endAt;
+        const itemEndAt = item.endAt <= item.startAt ? item.endAt + 24 : item.endAt;
+
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
-        if (item.startAt < possibleRentalType.startAt || possibleRentalType.endAt < item.endAt) {
+        if (item.startAt < possibleRentalType.startAt || possibleEndAt < itemEndAt) {
           throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
         }
 
@@ -618,7 +624,9 @@ export class PaymentService {
           });
 
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
-            if (item.startAt <= next.time && next.time < item.endAt) {
+            const targetTime = next.time < 9 ? next.time + 24 : next.time;
+
+            if (item.startAt <= targetTime && targetTime < itemEndAt) {
               acc += next.cost;
             }
             return acc;

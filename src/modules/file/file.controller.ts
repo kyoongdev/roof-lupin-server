@@ -1,4 +1,5 @@
 import {
+  Body,
   Delete,
   FileTypeValidator,
   Get,
@@ -18,7 +19,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { UploadedFileDTO } from './dto';
+import { DeleteFileDTO, UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')
@@ -134,5 +135,22 @@ export class FileController {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadFile(file)));
 
     return images;
+  }
+
+  @Post('delete')
+  @RequestApi({
+    summary: {
+      description: '이미지 삭제',
+      summary: '이미지 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteImage(@Body() body: DeleteFileDTO) {
+    await this.fileService.deleteFile(body.url);
   }
 }
