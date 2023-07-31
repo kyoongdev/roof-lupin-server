@@ -5,11 +5,13 @@ import * as AWS from '@aws-sdk/client-s3';
 import convert from 'heic-convert';
 import sharp from 'sharp';
 
-import { ImageDTO, UploadedFileDTO } from './dto';
+import { PrismaService } from '@/database/prisma.service';
+
+import { ImageDTO, S3ImageDTO, UploadedFileDTO } from './dto';
 
 @Injectable()
 export class FileService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly database: PrismaService, private readonly configService: ConfigService) {}
 
   toBuffer(arrayBuffer: ArrayBuffer) {
     const buffer = Buffer.alloc(arrayBuffer.byteLength);
@@ -22,7 +24,7 @@ export class FileService {
 
   async deleteAll() {
     const files = await this.getAllFiles();
-    await Promise.all(files.map((file) => this.deleteFile(file.Key)));
+    await Promise.all(files.map((file) => this.deleteFile(file.key)));
   }
 
   async getAllFiles() {
@@ -34,10 +36,22 @@ export class FileService {
       },
     }).listObjects({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
-      Prefix: this.configService.get('NODE_ENV'),
+      Prefix: 'dev',
     });
 
-    return files.Contents.filter((file) => file.Size > 0);
+    return files.Contents
+      ? await Promise.all(
+          files.Contents.filter((file) => file.Size > 0).map(async (file) => {
+            const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${file.Key}`;
+            const inUse = await this.checkInUse(url);
+            return new S3ImageDTO({
+              key: file.Key,
+              url: `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${file.Key}`,
+              inUse,
+            });
+          })
+        )
+      : [];
   }
 
   async uploadFile(file: Express.Multer.File) {
@@ -128,5 +142,80 @@ export class FileService {
       quality: 1,
     });
     return this.toBuffer(transformer);
+  }
+
+  async checkInUse(url: string) {
+    const image = await this.database.image.findFirst({
+      where: {
+        url,
+      },
+    });
+    const icon = await this.database.icon.findFirst({
+      where: {
+        url,
+      },
+    });
+    const building = await this.database.building.findFirst({
+      where: {
+        iconPath: url,
+      },
+    });
+
+    const service = await this.database.service.findFirst({
+      where: {
+        iconPath: url,
+      },
+    });
+
+    const category = await this.database.category.findFirst({
+      where: {
+        iconPath: url,
+      },
+    });
+
+    const exhibition = await this.database.exhibition.findFirst({
+      where: {
+        thumbnail: url,
+      },
+    });
+    const curation = await this.database.curation.findFirst({
+      where: {
+        thumbnail: url,
+      },
+    });
+    const mainImage = await this.database.mainImage.findFirst({
+      where: {
+        url,
+      },
+    });
+    const space = await this.database.space.findFirst({
+      where: { thumbnail: url },
+    });
+
+    const host = await this.database.host.findFirst({
+      where: {
+        profileImage: url,
+      },
+    });
+
+    const user = await this.database.user.findFirst({
+      where: {
+        profileImage: url,
+      },
+    });
+
+    return (
+      Boolean(user) ||
+      Boolean(host) ||
+      Boolean(space) ||
+      Boolean(mainImage) ||
+      Boolean(exhibition) ||
+      Boolean(curation) ||
+      Boolean(category) ||
+      Boolean(service) ||
+      Boolean(building) ||
+      Boolean(icon) ||
+      Boolean(image)
+    );
   }
 }

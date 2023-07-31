@@ -1,6 +1,7 @@
 import {
   Delete,
   FileTypeValidator,
+  Get,
   ParseFilePipe,
   Post,
   UploadedFile,
@@ -37,6 +38,20 @@ export class FileController {
   })
   async deleteAll() {
     await this.fileService.deleteAll();
+  }
+
+  @Get()
+  @RequestApi({
+    summary: {
+      description: '모든 파일 불러오기',
+      summary: '모든 S3 파일 불러오기 - 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: UploadedFileDTO,
+  })
+  async getAll() {
+    return await this.fileService.getAllFiles();
   }
 
   // @Auth([JwtAuthGuard])
