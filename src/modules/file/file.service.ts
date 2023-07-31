@@ -42,8 +42,9 @@ export class FileService {
     return files.Contents
       ? await Promise.all(
           files.Contents.filter((file) => file.Size > 0).map(async (file) => {
-            const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${file.Key}`;
+            const url = ImageDTO.parseS3ImageURL(file.Key);
             const inUse = await this.checkInUse(url);
+
             return new S3ImageDTO({
               key: file.Key,
               url: `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${file.Key}`,

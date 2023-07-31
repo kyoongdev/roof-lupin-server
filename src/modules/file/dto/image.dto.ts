@@ -25,4 +25,11 @@ export class ImageDTO {
 
     return `${configService.get('NODE_ENV')}${key}`;
   }
+
+  static parseS3ImageURL(key: string) {
+    const configService = new ConfigService();
+    const file = key.split('/').at(-1);
+
+    return `${configService.get('AWS_CLOUD_FRONT_URL')}/${file}`;
+  }
 }
