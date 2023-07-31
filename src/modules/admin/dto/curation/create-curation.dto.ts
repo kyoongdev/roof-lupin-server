@@ -7,7 +7,7 @@ export interface AdminCreateCurationDTOProps extends CreateCurationDTOProps {
 }
 
 export class AdminCreateCurationDTO extends CreateCurationDTO {
-  @Property({ apiProperty: { type: 'number', description: '순서' } })
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '순서' } })
   orderNo?: number;
 
   constructor(props?: AdminCreateCurationDTOProps) {
