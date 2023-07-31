@@ -9,7 +9,4 @@ cd /home/ec2-user/build
 
 pm2 kill
 
-node ./dist/seed-db.js
-
-
 pm2 start ecosystem.json  

@@ -176,12 +176,28 @@ export class FileService {
 
     const exhibition = await this.database.exhibition.findFirst({
       where: {
-        thumbnail: url,
+        OR: [
+          {
+            thumbnail: url,
+          },
+          {
+            content: {
+              contains: url,
+            },
+          },
+        ],
       },
     });
     const curation = await this.database.curation.findFirst({
       where: {
-        thumbnail: url,
+        OR: [
+          { thumbnail: url },
+          {
+            content: {
+              contains: url,
+            },
+          },
+        ],
       },
     });
     const mainImage = await this.database.mainImage.findFirst({
