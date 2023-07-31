@@ -284,7 +284,7 @@ export class CurationRepository {
                   },
                   {
                     orderNo: {
-                      gt: isExist.orderNo,
+                      gt: isExist.orderNo ?? 0,
                     },
                   },
                 ],
@@ -300,6 +300,14 @@ export class CurationRepository {
                   decrement: 1,
                 }),
           },
+        },
+      });
+      await prisma.curation.update({
+        where: {
+          id,
+        },
+        data: {
+          orderNo,
         },
       });
     });

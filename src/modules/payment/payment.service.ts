@@ -411,7 +411,7 @@ export class PaymentService {
   async confirmTossPayment(data: ConfirmTossPaymentDTO) {
     const { paymentKey } = data;
     const reservation = await this.reservationRepository.findReservationByOrderResultId(paymentKey);
-
+    console.log({ data });
     try {
       if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
@@ -435,6 +435,7 @@ export class PaymentService {
 
       await this.sendMessage(reservation);
     } catch (err) {
+      console.log(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -533,11 +534,13 @@ export class PaymentService {
       data.day,
       data.space.hostId
     );
+    const lupinCost = data.totalCost * 0.1;
+    const settlementCost = data.totalCost - lupinCost;
     if (isExist) {
       await this.settlementRepository.updateSettlementWithTransaction(database, isExist.id, {
         discountCost: isExist.discountCost + data.discountCost,
         originalCost: isExist.originalCost + data.originalCost,
-        settlementCost: isExist.settlementCost + data.totalCost * (100 / 111),
+        settlementCost: isExist.settlementCost + settlementCost,
         totalCost: isExist.totalCost + data.totalCost,
         vatCost: isExist.vatCost + data.vatCost,
         reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
@@ -548,7 +551,7 @@ export class PaymentService {
         month: data.month,
         day: data.day,
         hostId: data.space.hostId,
-        settlementCost: data.totalCost * (100 / 111),
+        settlementCost,
         totalCost: data.totalCost,
         vatCost: data.vatCost,
         discountCost: data.discountCost,

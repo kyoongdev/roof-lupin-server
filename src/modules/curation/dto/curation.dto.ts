@@ -10,6 +10,7 @@ export interface CurationDTOProps {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
+  orderNo?: number;
   spaces: SpaceDTOProps[];
 }
 
@@ -35,13 +36,16 @@ export class CurationDTO {
   @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '큐레이션 공간' } })
   spaces: SpaceDTO[];
 
+  @Property({ apiProperty: { type: 'number', description: '순서' } })
+  orderNo?: number;
+
   constructor(props: CurationDTOProps) {
     this.id = props.id;
     this.title = props.title;
     this.subTitle = props.subTitle;
     this.thumbnail = props.thumbnail;
     this.createdAt = props.createdAt;
-
+    this.orderNo = props.orderNo;
     this.updatedAt = props.updatedAt;
     this.spaces = props.spaces.map((space) => new SpaceDTO(space));
   }
