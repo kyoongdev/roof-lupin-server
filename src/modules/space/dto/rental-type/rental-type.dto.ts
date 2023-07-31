@@ -65,9 +65,8 @@ export class RentalTypeDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.spaceId = props.spaceId;
-    this.additionalServices = props.additionalServices.map(
-      (additionalService) => new AdditionalServiceDTO(additionalService)
-    );
+    this.additionalServices =
+      props.additionalServices?.map((additionalService) => new AdditionalServiceDTO(additionalService)) ?? [];
     if (props.rentalType === RENTAL_TYPE_ENUM.TIME)
       this.timeCostInfos = props.timeCostInfo.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
   }
