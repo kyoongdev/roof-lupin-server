@@ -625,7 +625,7 @@ export class PaymentService {
 
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time < 9 ? next.time + 24 : next.time;
-
+            console.log({ targetTime, itemStartAt: item.startAt, itemEndAt: item.endAt });
             if (item.startAt <= targetTime && targetTime <= itemEndAt) {
               acc += next.cost;
             }
