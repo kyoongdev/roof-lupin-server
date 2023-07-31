@@ -85,7 +85,7 @@ export class FileController {
   async uploadImage(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
+        validators: [new FileTypeValidator({ fileType: '.(jpg|jpeg|png|heic)' })],
       })
     )
     file: Express.Multer.File
