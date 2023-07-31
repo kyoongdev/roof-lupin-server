@@ -7,6 +7,7 @@ import { SchedulerEvent } from '@/event/scheduler';
 import { AlarmRepository } from '../alarm/alarm.repository';
 import { CategoryRepository } from '../category/category.repository';
 import { CouponRepository } from '../coupon/coupon.repository';
+import { CurationRepository } from '../curation/curation.repository';
 import { ExhibitionRepository } from '../exhibition/exhibition.repository';
 import { FaqRepository } from '../faq/faq.repository';
 import { FileService } from '../file/file.service';
@@ -34,6 +35,8 @@ import { AdminCategoryService } from './category/category.service';
 import { AdminCouponController } from './coupon/coupon.controller';
 import { AdminCouponRepository } from './coupon/coupon.repository';
 import { AdminCouponService } from './coupon/coupon.service';
+import { AdminCurationController } from './curation/curation.controller';
+import { AdminCurationService } from './curation/curation.service';
 import { AdminExhibitionController } from './exhibition/exhibition.controller';
 import { AdminExhibitionService } from './exhibition/exhibition.service';
 import { AdminFaqController } from './faq/faq.controller';
@@ -115,6 +118,8 @@ import { AdminUserService } from './user/user.service';
     IconRepository,
     AdminFaqService,
     FaqRepository,
+    AdminCurationService,
+    CurationRepository,
   ],
 
   controllers: [
@@ -137,6 +142,7 @@ import { AdminUserService } from './user/user.service';
     AdminFrequentlyQuestionController,
     AdminIconController,
     AdminFaqController,
+    AdminCurationController,
   ],
 })
 export class AdminModule {}

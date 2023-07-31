@@ -18,6 +18,20 @@ import { AdminFaqService } from './faq.service';
 export class AdminFaqController {
   constructor(private readonly faqService: AdminFaqService) {}
 
+  @Get(':faqId/detail')
+  @RequestApi({
+    summary: {
+      description: ' FAQ 상세 조회',
+      summary: ' FAQ 상세 조회',
+    },
+  })
+  @ResponseApi({
+    type: FAQDTO,
+  })
+  async findFAQ(@Param('faqId') id: string) {
+    return await this.faqService.findFAQ(id);
+  }
+
   @Get()
   @RequestApi({
     summary: {

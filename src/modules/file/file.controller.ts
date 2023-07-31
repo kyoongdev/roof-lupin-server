@@ -1,4 +1,14 @@
-import { Delete, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Delete,
+  FileTypeValidator,
+  Get,
+  ParseFilePipe,
+  Post,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
@@ -9,7 +19,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { UploadedFileDTO } from './dto';
+import { DeleteFileDTO, UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')
@@ -29,6 +39,20 @@ export class FileController {
   })
   async deleteAll() {
     await this.fileService.deleteAll();
+  }
+
+  @Get()
+  @RequestApi({
+    summary: {
+      description: '모든 파일 불러오기',
+      summary: '모든 S3 파일 불러오기 - 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: UploadedFileDTO,
+  })
+  async getAll() {
+    return await this.fileService.getAllFiles();
   }
 
   // @Auth([JwtAuthGuard])
@@ -58,7 +82,14 @@ export class FileController {
     },
     201
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
+      })
+    )
+    file: Express.Multer.File
+  ) {
     return this.fileService.uploadFile(file);
   }
 
@@ -93,9 +124,33 @@ export class FileController {
     },
     201
   )
-  async uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadImages(
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
+      })
+    )
+    files: Express.Multer.File[]
+  ) {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadFile(file)));
 
     return images;
+  }
+
+  @Post('delete')
+  @RequestApi({
+    summary: {
+      description: '이미지 삭제',
+      summary: '이미지 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteImage(@Body() body: DeleteFileDTO) {
+    await this.fileService.deleteFile(body.url);
   }
 }
