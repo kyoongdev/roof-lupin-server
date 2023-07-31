@@ -74,7 +74,7 @@ export class FileService {
     try {
       const originalname = file.originalname.split('.').shift();
 
-      const key = `${Date.now() + `${originalname}.jpeg`}`;
+      const key = `${Date.now() + `${originalname}.svg`}`;
 
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),

@@ -1,4 +1,14 @@
-import { Body, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Delete,
+  FileTypeValidator,
+  Get,
+  Param,
+  ParseFilePipe,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
@@ -78,7 +88,15 @@ export class AdminIconController {
     },
     201
   )
-  async createIcon(@UploadedFile() file: Express.Multer.File, @Body() body: CreateIconDTO) {
+  async createIcon(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: /\.(svg)$/ })],
+      })
+    )
+    file: Express.Multer.File,
+    @Body() body: CreateIconDTO
+  ) {
     return await this.iconService.createIcon(file, body.name);
   }
 

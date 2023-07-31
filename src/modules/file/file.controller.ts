@@ -1,4 +1,12 @@
-import { Delete, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Delete,
+  FileTypeValidator,
+  ParseFilePipe,
+  Post,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
@@ -58,7 +66,14 @@ export class FileController {
     },
     201
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
+      })
+    )
+    file: Express.Multer.File
+  ) {
     return this.fileService.uploadFile(file);
   }
 
@@ -93,7 +108,14 @@ export class FileController {
     },
     201
   )
-  async uploadImages(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadImages(
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
+      })
+    )
+    files: Express.Multer.File[]
+  ) {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadFile(file)));
 
     return images;
