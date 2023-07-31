@@ -9,11 +9,15 @@ import { UpdateCurationSpaceDTO } from '@/modules/curation/dto/update-curation-s
 import { CurationException } from '@/modules/curation/exception/curation.exception';
 import { CURATION_ERROR_CODE, CURATION_SPACE_ALREADY_EXIST } from '@/modules/curation/exception/errorCode';
 
-import { AdminCreateCurationDTO, AdminUpdateCurationDTO } from '../dto/curation';
+import { AdminCreateCurationDTO, AdminUpdateCurationDTO, CurationCountDTO } from '../dto/curation';
 
 @Injectable()
 export class AdminCurationService {
   constructor(private readonly curationRepository: CurationRepository) {}
+  async countCurations() {
+    const count = await this.curationRepository.countCurations();
+    return new CurationCountDTO({ count });
+  }
 
   async findCuration(id: string) {
     return await this.curationRepository.findCuration(id);
