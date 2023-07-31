@@ -626,11 +626,12 @@ export class PaymentService {
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time < 9 ? next.time + 24 : next.time;
 
-            if (item.startAt <= targetTime && targetTime < itemEndAt) {
+            if (item.startAt <= targetTime && targetTime <= itemEndAt) {
               acc += next.cost;
             }
             return acc;
           }, 0);
+          console.log({ cost });
 
           const realCost = await this.getRealCost(cost, data, space);
           //INFO: 가격 정보가 올바르지 않을 때
@@ -737,6 +738,7 @@ export class PaymentService {
       const userCount = data.userCount - space.overflowUserCount;
       additionalCost += space.overflowUserCost * userCount;
     }
+    console.log({ cost, discountCost, additionalCost });
     return cost - discountCost + additionalCost;
   }
 }

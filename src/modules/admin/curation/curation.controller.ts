@@ -63,6 +63,7 @@ export class AdminCurationController {
   async countCurations() {
     return await this.curationService.countCurations();
   }
+
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
