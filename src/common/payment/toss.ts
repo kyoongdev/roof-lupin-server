@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import axios from 'axios';
+import { range } from 'lodash';
 
 import type {
   Payment,
@@ -68,6 +69,11 @@ export class TossPayProvider {
           failUrl,
           easyPay,
           flowMode,
+          cardOptions: {
+            options: range(1, 11).map((code) => ({
+              cardCompanyCode: code,
+            })),
+          },
           ...rest,
         },
         {
