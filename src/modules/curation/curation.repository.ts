@@ -91,7 +91,7 @@ export class CurationRepository {
           ...curation,
           spaces: curation.spaces.map((space) => ({
             ...SpaceDTO.generateSpaceDTO(space.space),
-            orderNo: space.orderNo,
+            curationOrderNo: space.orderNo,
           })),
         })
     );

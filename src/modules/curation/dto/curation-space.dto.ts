@@ -3,15 +3,15 @@ import { Property } from 'cumuco-nestjs';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 
 export interface CurationSpaceDTOProps extends SpaceDTOProps {
-  orderNo: number;
+  curationOrderNo?: number;
 }
 
 export class CurationSpaceDTO extends SpaceDTO {
-  @Property({ apiProperty: { type: 'number', description: '순서' } })
-  orderNo: number;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '순서' } })
+  curationOrderNo?: number;
 
   constructor(props: CurationSpaceDTOProps) {
     super(props);
-    this.orderNo = props.orderNo;
+    this.curationOrderNo = props.curationOrderNo || null;
   }
 }
