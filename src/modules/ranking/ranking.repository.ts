@@ -46,6 +46,11 @@ export class RankingRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },
@@ -91,6 +96,11 @@ export class RankingRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },

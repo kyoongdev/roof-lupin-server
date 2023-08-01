@@ -42,6 +42,11 @@ export class CurationRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },
@@ -75,6 +80,11 @@ export class CurationRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },

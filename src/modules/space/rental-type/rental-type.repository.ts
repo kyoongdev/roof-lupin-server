@@ -166,6 +166,11 @@ export class RentalTypeRepository {
                             publicTransportations: true,
                             userInterests: true,
                             rentalType: true,
+                            categories: {
+                              include: {
+                                category: true,
+                              },
+                            },
                           },
                         },
                       },
@@ -205,6 +210,7 @@ export class RentalTypeRepository {
             reviewCount: space.reviews.length,
             location: space.location?.['location'],
             averageScore,
+            categories: space.categories.map((category) => category.category),
           },
           isReviewed: rest.spaceReviews.length > 0,
         };

@@ -64,6 +64,11 @@ export class ReportRepository {
             publicTransportations: true,
             userInterests: true,
             rentalType: true,
+            categories: {
+              include: {
+                category: true,
+              },
+            },
           },
         },
         user: true,

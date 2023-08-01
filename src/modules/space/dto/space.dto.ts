@@ -4,6 +4,7 @@ import { Property } from 'cumuco-nestjs';
 import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
+import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { TransportationDTO, type TransportationDTOProps } from './transportaion';
 
 export interface SpaceDTOProps {
@@ -20,6 +21,7 @@ export interface SpaceDTOProps {
   publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
   rentalType: RentalType[];
+  categories: SpaceCategoryDTOProps[];
   orderNo: number;
 }
 
@@ -69,6 +71,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '공간 순서' } })
   orderNo?: number;
 
+  @Property({ apiProperty: { type: SpaceCategoryDTO, isArray: true, description: '공간이 속한 카테고리' } })
+  categories: SpaceCategoryDTO[];
+
   constructor(props: SpaceDTOProps) {
     const timeRentals = props.rentalType.filter((target) => target.rentalType === 1);
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
@@ -88,6 +93,7 @@ export class SpaceDTO {
     this.packageCost =
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
     this.orderNo = props.orderNo ?? null;
+    this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));
   }
 
   static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {
@@ -97,6 +103,7 @@ export class SpaceDTO {
       location: space.location,
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+      categories: space.categories.map(({ category }) => category),
     };
   }
 }

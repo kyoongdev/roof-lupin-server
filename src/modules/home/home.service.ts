@@ -27,6 +27,11 @@ export class HomeService {
                     publicTransportations: true,
                     userInterests: true,
                     rentalType: true,
+                    categories: {
+                      include: {
+                        category: true,
+                      },
+                    },
                   },
                 },
               },
@@ -47,6 +52,11 @@ export class HomeService {
                     publicTransportations: true,
                     userInterests: true,
                     rentalType: true,
+                    categories: {
+                      include: {
+                        category: true,
+                      },
+                    },
                   },
                 },
               },
@@ -67,6 +77,11 @@ export class HomeService {
                     publicTransportations: true,
                     userInterests: true,
                     rentalType: true,
+                    categories: {
+                      include: {
+                        category: true,
+                      },
+                    },
                   },
                 },
               },
