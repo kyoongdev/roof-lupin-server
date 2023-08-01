@@ -47,12 +47,7 @@ export class ReservationDTO extends BaseReservationDTO {
       day: `${rest.day}`,
       user: rest.user,
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
-      space: {
-        ...space,
-        reviewCount: space.reviews.length,
-        location: space.location?.['location'],
-        averageScore: averageScore,
-      },
+      space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
     };
   }

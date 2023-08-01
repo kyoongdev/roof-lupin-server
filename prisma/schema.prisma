@@ -623,11 +623,12 @@ model Host {
 model HostAccount {
   id String @id @default(uuid())
 
-  ownerName                  String @db.VarChar(20)
-  bankCode                   String @db.Char(3)
-  businessRegistrationNumber String @db.Char(10)
-  account                    String @db.VarChar(40)
-  accountOwner               String @db.VarChar(20)
+  accountType                Int     @db.TinyInt
+  bankCode                   String  @db.Char(3)
+  ownerName                  String  @db.VarChar(20)
+  businessRegistrationNumber String? @db.Char(10)
+  account                    String  @db.VarChar(40)
+  accountOwner               String  @db.VarChar(20)
 
   hostId String @unique
   host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)

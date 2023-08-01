@@ -55,6 +55,11 @@ export class ExhibitionRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },

@@ -23,6 +23,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           accountOwner: '박용준',
           bankCode: '046',
           businessRegistrationNumber: '1234567890',
+          accountType: 2,
         },
       },
     },

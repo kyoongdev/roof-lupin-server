@@ -42,6 +42,11 @@ export class CurationRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },
@@ -57,7 +62,10 @@ export class CurationRepository {
     }
     return new CurationDetailDTO({
       ...curation,
-      spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+      spaces: curation.spaces.map((space) => ({
+        ...SpaceDTO.generateSpaceDTO(space.space),
+        curationOrderNo: space.orderNo,
+      })),
     });
   }
 
@@ -75,6 +83,11 @@ export class CurationRepository {
                 publicTransportations: true,
                 userInterests: true,
                 rentalType: true,
+                categories: {
+                  include: {
+                    category: true,
+                  },
+                },
               },
             },
           },
@@ -89,7 +102,12 @@ export class CurationRepository {
       (curation) =>
         new CurationDTO({
           ...curation,
-          spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+          spaces: curation.spaces.map((space) => {
+            return {
+              ...SpaceDTO.generateSpaceDTO(space.space),
+              curationOrderNo: space.orderNo,
+            };
+          }),
         })
     );
   }
@@ -100,8 +118,10 @@ export class CurationRepository {
 
   async createCuration(data: CreateCurationDTO, userId?: string) {
     const { spaces, ...rest } = data;
+
     const curation = await this.database.curation.create({
       data: {
+        ...rest,
         ...(userId && {
           user: {
             connect: {
@@ -109,19 +129,16 @@ export class CurationRepository {
             },
           },
         }),
-        ...(spaces && {
-          spaces: {
-            create: spaces.map((space) => ({
-              space: {
-                connect: {
-                  id: space.spaceId,
-                },
+        spaces: {
+          create: spaces.map((space) => ({
+            space: {
+              connect: {
+                id: space.spaceId,
               },
-              orderNo: space.orderNo,
-            })),
-          },
-        }),
-        ...rest,
+            },
+            orderNo: space.orderNo,
+          })),
+        },
       },
     });
 
@@ -198,7 +215,7 @@ export class CurationRepository {
       if (!isExist) {
         throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_SPACE_NOT_FOUND));
       }
-
+      console.log({ isExist, data });
       await prisma.curationSpace.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo

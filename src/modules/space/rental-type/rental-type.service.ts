@@ -115,7 +115,10 @@ export class RentalTypeService {
         paging.page + Number(paging.startMonth) - 1,
         paging.page + Number(paging.startMonth) + paging.limit - 1
       ).map(async (month, index) => {
-        const year = index !== 0 && month === 1 ? Number(paging.startYear) + 1 : Number(paging.startYear);
+        const currentYear =
+          month / 12 > 1 ? Number(paging.startYear) + Math.floor(month / 12) : Number(paging.startYear);
+        const currentMonth = month % 12 === 0 ? 12 : month % 12;
+
         const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
           {
             where: {
@@ -124,8 +127,8 @@ export class RentalTypeService {
           },
           {
             where: {
-              year: year,
-              month: month,
+              year: currentYear,
+              month: currentMonth,
             },
           }
         );
@@ -133,8 +136,8 @@ export class RentalTypeService {
         const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
           where: {
             spaceId,
-            year: `${year}`,
-            month: `${month}`,
+            year: `${currentYear}`,
+            month: `${currentMonth}`,
           },
         });
         const openHours = await this.openHourRepository.findOpenHours({
@@ -150,8 +153,8 @@ export class RentalTypeService {
 
         return await this.getPossibleRentalTypesBySpaceIdWithMonth(
           {
-            year: `${year}`,
-            month: `${month}`,
+            year: `${currentYear}`,
+            month: `${currentMonth}`,
           },
           rentalTypes,
           spaceHolidays,

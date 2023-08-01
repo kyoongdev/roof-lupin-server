@@ -2,6 +2,8 @@ import { Property } from 'cumuco-nestjs';
 
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 
+import { CurationSpaceDTO, CurationSpaceDTOProps } from './curation-space.dto';
+
 export interface CurationDTOProps {
   id: string;
   title: string;
@@ -11,7 +13,7 @@ export interface CurationDTOProps {
   createdAt: Date;
   updatedAt: Date;
   orderNo?: number;
-  spaces: SpaceDTOProps[];
+  spaces: CurationSpaceDTOProps[];
 }
 
 export class CurationDTO {
@@ -33,8 +35,8 @@ export class CurationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '큐레이션 수정일' } })
   updatedAt: Date;
 
-  @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '큐레이션 공간' } })
-  spaces: SpaceDTO[];
+  @Property({ apiProperty: { type: CurationSpaceDTO, isArray: true, description: '큐레이션 공간' } })
+  spaces: CurationSpaceDTO[];
 
   @Property({ apiProperty: { type: 'number', description: '순서' } })
   orderNo?: number;
@@ -47,6 +49,6 @@ export class CurationDTO {
     this.createdAt = props.createdAt;
     this.orderNo = props.orderNo;
     this.updatedAt = props.updatedAt;
-    this.spaces = props.spaces.map((space) => new SpaceDTO(space));
+    this.spaces = props.spaces.map((space) => new CurationSpaceDTO(space));
   }
 }

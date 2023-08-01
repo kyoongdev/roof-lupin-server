@@ -46,6 +46,15 @@ export class SpaceRepository {
             spaceId: space.id,
           },
         });
+        const categories = await this.database.category.findMany({
+          where: {
+            spaceUsageCategories: {
+              some: {
+                spaceId: space.id,
+              },
+            },
+          },
+        });
 
         return new SpaceDTO({
           ...space,
@@ -58,6 +67,7 @@ export class SpaceRepository {
           },
           publicTransportations,
           rentalType,
+          categories,
         });
       })
     );
@@ -201,6 +211,11 @@ export class SpaceRepository {
         publicTransportations: true,
         userInterests: true,
         rentalType: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
     if (!space) {
@@ -213,6 +228,7 @@ export class SpaceRepository {
       location: space.location,
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+      categories: space.categories.map(({ category }) => category),
     });
   }
 
@@ -228,6 +244,7 @@ export class SpaceRepository {
 
   async findSpaces(args = {} as Prisma.SpaceFindManyArgs, userId?: string) {
     const spaces = await this.database.space.findMany({
+      ...args,
       where: args.where,
       include: {
         location: true,
@@ -235,11 +252,15 @@ export class SpaceRepository {
         publicTransportations: true,
         userInterests: true,
         rentalType: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
       orderBy: {
         ...args.orderBy,
       },
-      ...args,
     });
 
     //TODO: isBest는 어떻게 산정?
@@ -252,6 +273,7 @@ export class SpaceRepository {
           location: space.location,
           averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+          categories: space.categories.map(({ category }) => category),
         })
     );
   }

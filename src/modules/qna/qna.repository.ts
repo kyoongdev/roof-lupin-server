@@ -4,6 +4,8 @@ import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { SpaceDTO } from '../space/dto';
+
 import { CreateQnAAnswerDTO, CreateQnADTO, QnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
@@ -32,6 +34,11 @@ export class QnARepository {
             publicTransportations: true,
             userInterests: true,
             rentalType: true,
+            categories: {
+              include: {
+                category: true,
+              },
+            },
           },
         },
       },
@@ -47,13 +54,7 @@ export class QnARepository {
       (qna) =>
         new QnADTO({
           ...qna,
-          space: {
-            ...qna.space,
-            reviewCount: qna.space.reviews.length,
-            location: qna.space.location,
-            averageScore: qna.space.reviews.reduce((acc, cur) => acc + cur.score, 0) / qna.space.reviews.length,
-            isInterested: false,
-          },
+          space: SpaceDTO.generateSpaceDTO(qna.space),
         })
     );
   }
@@ -75,6 +76,11 @@ export class QnARepository {
             publicTransportations: true,
             userInterests: true,
             rentalType: true,
+            categories: {
+              include: {
+                category: true,
+              },
+            },
           },
         },
         answers: {
@@ -94,13 +100,7 @@ export class QnARepository {
 
     return new QnADTO({
       ...qna,
-      space: {
-        ...qna.space,
-        reviewCount: qna.space.reviews.length,
-        location: qna.space.location,
-        averageScore: qna.space.reviews.reduce((acc, cur) => acc + cur.score, 0) / qna.space.reviews.length,
-        isInterested: false,
-      },
+      space: SpaceDTO.generateSpaceDTO(qna.space),
     });
   }
 

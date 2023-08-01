@@ -1,6 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
 import { CommonReservation } from '@/interface/reservation.interface';
+import { SpaceDTO } from '@/modules/space/dto';
 
 import { ReservationDTO, type ReservationDTOProps } from './reservation.dto';
 
@@ -58,12 +59,7 @@ export class ReservationDetailDTO extends ReservationDTO {
       month: String(rest.month),
       day: String(rest.day),
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
-      space: {
-        ...space,
-        reviewCount: space.reviews.length,
-        location: space.location?.['location'],
-        averageScore,
-      },
+      space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: rest.spaceReviews.length > 0,
     };
   }
