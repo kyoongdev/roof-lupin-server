@@ -182,7 +182,7 @@ export class SpaceDetailDTO {
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
     this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
-    console.log(props.openHours);
+
     this.openHours = props.openHours.map((openHour) => new OpenHourDTO(openHour));
     this.holidays = props.holidays ? props.holidays.map((holiday) => new SpaceHolidayDTO(holiday)) : null;
   }

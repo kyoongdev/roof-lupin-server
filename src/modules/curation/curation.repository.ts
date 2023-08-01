@@ -215,7 +215,7 @@ export class CurationRepository {
       if (!isExist) {
         throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_SPACE_NOT_FOUND));
       }
-      console.log({ isExist, data });
+
       await prisma.curationSpace.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
@@ -258,6 +258,18 @@ export class CurationRepository {
                   decrement: 1,
                 }),
           },
+        },
+      });
+
+      await prisma.curationSpace.update({
+        where: {
+          curationId_spaceId: {
+            curationId: id,
+            spaceId: data.spaceId,
+          },
+        },
+        data: {
+          orderNo: data.orderNo,
         },
       });
     });
