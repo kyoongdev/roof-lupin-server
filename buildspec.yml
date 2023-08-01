@@ -10,7 +10,7 @@ phases:
   pre_build:
     commands:
       - yarn config:dev
-      - yarn prisma db push --accept-data-loss
+      - yarn prisma db push --force-reset
       - yarn prisma generate
       - yarn seed
   build:
