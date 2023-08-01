@@ -147,7 +147,6 @@ export class AdminCurationController {
     204
   )
   async updateCurationOrder(@Param('curationId') id: string, @Body() data: AdminUpdateCurationOrderDTO) {
-    console.log({ data });
     await this.curationService.updateCurationOrder(id, data.orderNo);
   }
 
