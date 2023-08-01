@@ -62,7 +62,10 @@ export class CurationRepository {
     }
     return new CurationDetailDTO({
       ...curation,
-      spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+      spaces: curation.spaces.map((space) => ({
+        ...SpaceDTO.generateSpaceDTO(space.space),
+        curationOrderNo: space.orderNo,
+      })),
     });
   }
 
@@ -99,10 +102,12 @@ export class CurationRepository {
       (curation) =>
         new CurationDTO({
           ...curation,
-          spaces: curation.spaces.map((space) => ({
-            ...SpaceDTO.generateSpaceDTO(space.space),
-            curationOrderNo: space.orderNo,
-          })),
+          spaces: curation.spaces.map((space) => {
+            return {
+              ...SpaceDTO.generateSpaceDTO(space.space),
+              curationOrderNo: space.orderNo,
+            };
+          }),
         })
     );
   }
@@ -210,7 +215,7 @@ export class CurationRepository {
       if (!isExist) {
         throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_SPACE_NOT_FOUND));
       }
-
+      console.log({ isExist, data });
       await prisma.curationSpace.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo

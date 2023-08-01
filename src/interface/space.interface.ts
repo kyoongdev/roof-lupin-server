@@ -15,7 +15,7 @@ export interface CommonSpace extends Space {
   publicTransportations: PublicTransportation[];
   rentalType: RentalType[];
   userInterests: SpaceInterest[];
-  categories: (SpaceCategory & {
+  categories?: (SpaceCategory & {
     category: Category;
   })[];
 }
