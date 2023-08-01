@@ -89,7 +89,10 @@ export class CurationRepository {
       (curation) =>
         new CurationDTO({
           ...curation,
-          spaces: curation.spaces.map((space) => SpaceDTO.generateSpaceDTO(space.space)),
+          spaces: curation.spaces.map((space) => ({
+            ...SpaceDTO.generateSpaceDTO(space.space),
+            orderNo: space.orderNo,
+          })),
         })
     );
   }
@@ -100,8 +103,10 @@ export class CurationRepository {
 
   async createCuration(data: CreateCurationDTO, userId?: string) {
     const { spaces, ...rest } = data;
+
     const curation = await this.database.curation.create({
       data: {
+        ...rest,
         ...(userId && {
           user: {
             connect: {
@@ -109,19 +114,16 @@ export class CurationRepository {
             },
           },
         }),
-        ...(spaces && {
-          spaces: {
-            create: spaces.map((space) => ({
-              space: {
-                connect: {
-                  id: space.spaceId,
-                },
+        spaces: {
+          create: spaces.map((space) => ({
+            space: {
+              connect: {
+                id: space.spaceId,
               },
-              orderNo: space.orderNo,
-            })),
-          },
-        }),
-        ...rest,
+            },
+            orderNo: space.orderNo,
+          })),
+        },
       },
     });
 
