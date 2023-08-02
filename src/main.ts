@@ -2,13 +2,13 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 
 import AppConfig from '@/appConfig';
-import { winstonLogger } from '@/log';
+import { logger } from '@/log';
 
 import { AppModule } from './app.module';
 
 (async function () {
   const app = await NestFactory.create(AppModule, {
-    logger: winstonLogger,
+    logger,
   });
 
   await new AppConfig(app)

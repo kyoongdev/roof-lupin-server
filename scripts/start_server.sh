@@ -9,4 +9,4 @@ cd /home/ec2-user/build
 
 pm2 kill
 pm2 flush
-pm2 start ecosystem.json  
+pm2 start ecosystem.json    
