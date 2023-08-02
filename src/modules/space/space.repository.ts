@@ -216,6 +216,7 @@ export class SpaceRepository {
             category: true,
           },
         },
+        reports: true,
       },
     });
     if (!space) {
@@ -229,6 +230,7 @@ export class SpaceRepository {
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories.map(({ category }) => category),
+      reportCount: space.reports.length,
     });
   }
 
@@ -257,6 +259,7 @@ export class SpaceRepository {
             category: true,
           },
         },
+        reports: true,
       },
       orderBy: {
         ...args.orderBy,
@@ -274,6 +277,7 @@ export class SpaceRepository {
           averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
           categories: space.categories.map(({ category }) => category),
+          reportCount: space.reports.length,
         })
     );
   }
