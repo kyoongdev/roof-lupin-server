@@ -13,6 +13,7 @@ export interface SpaceDTOProps {
   averageScore: number;
   reviewCount: number;
   isInterested?: boolean;
+  interestCount: number;
   isImmediateReservation: boolean;
   isPublic: boolean;
   isApproved: boolean;
@@ -57,6 +58,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
 
+  @Property({ apiProperty: { type: 'number', description: '찜 개수' } })
+  interestCount: number;
+
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '즉각 예약 여부' } })
   isImmediateReservation: boolean;
 
@@ -94,6 +98,7 @@ export class SpaceDTO {
     this.isPublic = typeof props.isPublic === 'boolean' ? props.isPublic : props.isPublic === 1;
     this.isApproved = typeof props.isApproved === 'boolean' ? props.isApproved : props.isApproved === 1;
     this.thumbnail = props.thumbnail;
+    this.interestCount = props.interestCount ?? 0;
     this.publicTransportations = props.publicTransportations.map((target) => new TransportationDTO(target));
     this.location = props.location ? new LocationDTO(props.location) : null;
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
@@ -112,6 +117,7 @@ export class SpaceDTO {
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories ? space.categories?.map(({ category }) => category) : [],
       reportCount: space.reports.length,
+      interestCount: space.userInterests.length,
     };
   }
 

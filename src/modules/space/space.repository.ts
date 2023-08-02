@@ -56,22 +56,16 @@ export class SpaceRepository {
           },
         });
 
-        const isInterested = userId
-          ? Boolean(
-              await this.database.spaceInterest.findUnique({
-                where: {
-                  userId_spaceId: {
-                    userId,
-                    spaceId: space.id,
-                  },
-                },
-              })
-            )
-          : false;
+        const interests = await this.database.spaceInterest.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
 
         return new SpaceDTO({
           ...space,
-          isInterested,
+          isInterested: interests.some((interest) => interest.userId === userId),
+          interestCount: interests.length,
           location: {
             id: space.slId,
             lat: space.lat,
@@ -245,6 +239,7 @@ export class SpaceRepository {
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories.map(({ category }) => category),
       reportCount: space.reports.length,
+      interestCount: space.userInterests.length,
     });
   }
 
@@ -292,6 +287,7 @@ export class SpaceRepository {
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
           categories: space.categories.map(({ category }) => category),
           reportCount: space.reports.length,
+          interestCount: space.userInterests.length,
         })
     );
   }
