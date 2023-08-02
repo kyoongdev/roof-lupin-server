@@ -58,7 +58,17 @@ export class FileController {
   // @Auth([JwtAuthGuard])
   @Post('/image')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('image', { limits: { fileSize: 1024 * 1024 * 10 } }))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter(req, file, callback) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|heic)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+      limits: { fileSize: 1024 * 1024 * 10 },
+    })
+  )
   @RequestApi({
     summary: {
       description: '이미지 업로드',
@@ -83,11 +93,7 @@ export class FileController {
     201
   )
   async uploadImage(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: '.(jpg|jpeg|png|heic)' })],
-      })
-    )
+    @UploadedFile()
     file: Express.Multer.File
   ) {
     return this.fileService.uploadFile(file);
@@ -96,7 +102,18 @@ export class FileController {
   // @Auth([JwtAuthGuard])
   @Post('/images')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FilesInterceptor('images', undefined, { limits: { fileSize: 1024 * 1024 * 10 } }))
+  @UseInterceptors(
+    FilesInterceptor('images', undefined, {
+      fileFilter(req, file, callback) {
+        console.log(!file.originalname.match(/\.(jpg|jpeg|png|heic)$/));
+        if (!file.originalname.match(/\.(jpg|jpeg|png|heic)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+      limits: { fileSize: 1024 * 1024 * 10 },
+    })
+  )
   @RequestApi({
     summary: {
       description: '이미지 업로드',
@@ -125,11 +142,7 @@ export class FileController {
     201
   )
   async uploadImages(
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: /\.(jpg|jpeg|png|heic)$/ })],
-      })
-    )
+    @UploadedFiles()
     files: Express.Multer.File[]
   ) {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadFile(file)));
