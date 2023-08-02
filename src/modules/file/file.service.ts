@@ -101,6 +101,31 @@ export class FileService {
     }
   }
 
+  async uploadBuffer(buffer: Buffer, originKey: string, contentType = 'image/jpeg') {
+    try {
+      const key = originKey;
+
+      await new AWS.S3({
+        region: this.configService.get('AWS_REGION'),
+        credentials: {
+          accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+          secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
+        },
+      }).putObject({
+        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Body: buffer,
+        Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+        ContentType: contentType,
+      });
+
+      const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${key}`;
+
+      return new UploadedFileDTO(url);
+    } catch (error) {
+      throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
+    }
+  }
+
   async uploadIcon(file: Express.Multer.File) {
     try {
       const originalname = file.originalname.split('.').shift();
