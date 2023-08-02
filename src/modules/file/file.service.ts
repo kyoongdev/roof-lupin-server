@@ -36,7 +36,7 @@ export class FileService {
       },
     }).listObjects({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
-      Prefix: 'dev',
+      Prefix: this.configService.get('NODE_ENV'),
     });
 
     return files.Contents
@@ -55,11 +55,26 @@ export class FileService {
       : [];
   }
 
-  async uploadFile(file: Express.Multer.File) {
+  async getFile(key: string) {
+    const file = await new AWS.S3({
+      region: this.configService.get('AWS_REGION'),
+      credentials: {
+        accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+        secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
+      },
+    }).getObject({
+      Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+      Key: key,
+    });
+
+    return file.Body ? file.Body : null;
+  }
+
+  async uploadFile(file: Express.Multer.File, originKey?: string) {
     try {
       const originalname = file.originalname.split('.').shift();
 
-      const key = `${Date.now() + `${originalname}.jpeg`}`;
+      const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
 
       const resizedFile = await this.imageResize(
         file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer
