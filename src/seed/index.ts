@@ -129,12 +129,12 @@ export const seedDatabase = async (database: PrismaClient) => {
   const spaces: Space[] = await seedSpace(users, database);
 
   await seedHome(database, spaces);
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 1; i++) {
     await database.curation.create({
       data: {
-        title: `테스트 큐레이션${i + 1}`,
-        subTitle: `테스트 큐레이션 서브 타이틀${i + 1}`,
-        content: `테스트 큐레이션 내용${i + 1}`,
+        title: `이달의 공간`,
+        subTitle: `더운 여름 속 루프라이프`,
+        content: `더운 여름 속, 루프라이프를 즐기세요!`,
         thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
         isMain: true,
         user: {

@@ -99,7 +99,7 @@ export class FileService {
         },
       }).putObject({
         Key: `${this.configService.get('NODE_ENV')}/${key}`,
-        Body: file,
+        Body: file.buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
 
@@ -107,6 +107,7 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
