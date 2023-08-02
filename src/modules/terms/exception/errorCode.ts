@@ -2,9 +2,10 @@ import { HttpStatus } from '@nestjs/common';
 
 import type { ErrorCode } from 'cumuco-nestjs';
 
-export const TAX_RETURN_NOT_FOUND = '세금계산서 신고 내역을 찾을 수 없습니다.' as const;
+export const TERM_ALREADY_EXISTS = '이미 약관이 존재합니다.' as const;
+export const TERM_NOT_FOUND = '약관을 찾을 수 없습니다.' as const;
 
-export const TAX_RETURN_ERROR_CODE: ErrorCode<'NOT_FOUND' | 'CONFLICT' | 'INTERNAL_SERVER_ERROR' | 'BAD_REQUEST'> = {
+export const TERM_ERROR_CODE: ErrorCode<'NOT_FOUND' | 'CONFLICT' | 'INTERNAL_SERVER_ERROR' | 'BAD_REQUEST'> = {
   NOT_FOUND: (message = 'NOT_FOUND') => ({
     code: HttpStatus.NOT_FOUND,
     message,
