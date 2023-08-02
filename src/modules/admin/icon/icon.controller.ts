@@ -61,7 +61,18 @@ export class AdminIconController {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('icon', { limits: { fileSize: 1024 * 1024 * 10 } }), ResponseWithIdInterceptor)
+  @UseInterceptors(
+    FileInterceptor('icon', {
+      fileFilter(req, file, callback) {
+        if (!file.originalname.match(/\.(svg)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+      limits: { fileSize: 1024 * 1024 * 10 },
+    }),
+    ResponseWithIdInterceptor
+  )
   @RequestApi({
     summary: {
       description: '아이콘 업로드',
@@ -89,11 +100,7 @@ export class AdminIconController {
     201
   )
   async createIcon(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: /\.(svg)$/ })],
-      })
-    )
+    @UploadedFile()
     file: Express.Multer.File,
     @Body() body: CreateIconDTO
   ) {

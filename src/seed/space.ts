@@ -31,8 +31,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
 
   const category1 = await database.category.create({
     data: {
-      name: `루프탑`,
-      iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+      name: `바베큐`,
+      iconPath: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
       isHome: true,
       isRecommended: false,
     },
@@ -41,7 +41,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const category2 = await database.category.create({
     data: {
       name: `영화`,
-      iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+      iconPath: 'https://dev-image.rooflupin.com/1690960214691Video.svg',
       isHome: true,
       isRecommended: true,
     },
@@ -50,7 +50,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const category3 = await database.category.create({
     data: {
       name: `글램핑`,
-      iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+      iconPath: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
       isHome: true,
       isRecommended: false,
     },
@@ -59,7 +59,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const category4 = await database.category.create({
     data: {
       name: `파티룸`,
-      iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+      iconPath: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
       isHome: true,
       isRecommended: false,
     },
@@ -68,7 +68,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const category5 = await database.category.create({
     data: {
       name: `촬영`,
-      iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+      iconPath: 'https://dev-image.rooflupin.com/1690960264699film.svg',
       isHome: true,
       isRecommended: false,
     },
