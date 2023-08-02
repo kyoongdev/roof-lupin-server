@@ -13,7 +13,7 @@ const { combine, timestamp, printf } = winston.format;
 
 const logFormat = printf((info) => `${info.timestamp} ${info.level}: ${info.message}`);
 
-const timezoned = () => {
+const winstonTimeZone = () => {
   return new Date().toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
   });
@@ -36,14 +36,14 @@ const loggerOption = new winston.transports.Console({
             },
           }),
           winston.format.timestamp({
-            format: timezoned,
+            format: winstonTimeZone,
           }),
           utilities.format.nestLike('루프루팡', { prettyPrint: true, colors: true })
         ),
 });
 
 const logger = WinstonModule.createLogger({
-  format: combine(timestamp({ format: 'YYYY-MM_DD HH:mm:ss' }), logFormat),
+  format: combine(timestamp({ format: winstonTimeZone }), logFormat),
   transports: [
     loggerOption,
     ...(config.get('APP_ENV') === 'local'
