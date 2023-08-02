@@ -70,7 +70,7 @@ export class FileService {
     return file.Body ? file.Body : null;
   }
 
-  async uploadFile(file: Express.Multer.File, originKey?: string) {
+  async uploadFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
     try {
       const originalname = file.originalname.split('.').shift();
 
@@ -90,6 +90,7 @@ export class FileService {
         Key: `${this.configService.get('NODE_ENV')}/${key}`,
         Body: resizedFile,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+        ContentType: contentType,
       });
 
       const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${key}`;

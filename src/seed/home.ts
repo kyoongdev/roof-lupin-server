@@ -54,6 +54,25 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
             },
           },
         });
+        await database.ranking.update({
+          where: {
+            id: ranking.id,
+          },
+          data: {
+            spaces: {
+              create: [
+                {
+                  space: {
+                    connect: {
+                      id: spaces.id,
+                    },
+                  },
+                  orderNo: index,
+                },
+              ],
+            },
+          },
+        });
         await database.exhibition.update({
           where: {
             id: exhibition.id,
