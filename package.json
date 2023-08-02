@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "start": "nest start",
-    "local": "yarn config:local && nest start --watch",
+    "local": "rm -rf logs && yarn config:local && nest start --watch",
     "stage": "yarn config:stage && nest start --watch",
     "dev": "yarn config:dev &&  nest start --watch",
     "start:prod": "node dist/main",
