@@ -1582,7 +1582,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       
       친구, 가족, 연인, 좋아하는 사람들과 옥상 정원에서 행복한 파티를 해보세요!
         `,
-      thumbnail: 'https://dev-image.rooflupin.com/1688632936057asdf.jpeg',
+      thumbnail: 'https://dev-image.rooflupin.com/1690959585318asdfsda.jpeg',
       minUser: 1,
       maxUser: 6,
       overflowUserCost: 20000,
@@ -1606,14 +1606,21 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             image: {
               create: {
-                url: 'https://dev-image.rooflupin.com/1688632936058basdb.jpeg',
+                url: 'https://dev-image.rooflupin.com/1690959585320bcsdgas.jpeg',
               },
             },
           },
           {
             image: {
               create: {
-                url: 'https://dev-image.rooflupin.com/1688632936059bcbcxcb.jpeg',
+                url: 'https://dev-image.rooflupin.com/1690959585320image1.jpeg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1690959585320image2.jpeg',
               },
             },
           },
@@ -1642,24 +1649,23 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       cautions: {
         create: [
           {
-            content: '조용한 주택가라 시끄럽게 못하는 공간인 점 양해 부탁드립니다.',
+            content: '조용한 주택가에 위치한 곳이라 시끄럽게 떠들지 못하는 공간인 점 양해 부탁드립니다',
           },
           {
-            content: '저희 공간은 숙박 시설이 아니므로 숙박 물품은 제공하지 않습니다.',
+            content: '저희 공간은 숙박시설이 아니므로 숙박 물품은 제공하지 않습니다. (무릎 담요 등 제공)',
+          },
+          {
+            content: '예약은 선입금제로만 가능하며, 예약된 사용 시간 전에 퇴실하여도 잔여 시간은 환불이 불가합니다.',
           },
           {
             content:
-              '예약 인원 확인 및 안전 상의 이유로 CCTV는 25시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.',
+              '예약 인원 확인 및 안전상의 이유로 CCTV는 24시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.(방에는 CCTV가 없습니다)',
           },
           {
             content: '건물 내 화장실을 사용합니다.',
           },
           {
-            content: '방역지침을 준수합니다.',
-          },
-          {
-            content:
-              '기존에 준비된 장비 이외에 추가로 숯불이나 화롯불 등의 개인장비 및 화기를 가져와 사용할 수 없습니다.',
+            content: '공간 사용후에는 정리를 해주셔야 합니다',
           },
         ],
       },
@@ -1752,10 +1758,10 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       },
       location: {
         create: {
-          roadAddress: '서울특별시 중구 충무로 46-1',
-          jibunAddress: '서울특별시 중구 초동 17-4',
-          lng: '126.9929866',
-          lat: '37.5651794',
+          roadAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
+          jibunAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
+          lng: '126.8875',
+          lat: '37.5215',
         },
       },
       buildings: {
@@ -1772,7 +1778,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             building: {
               create: {
                 iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '3층',
+                name: '4층',
               },
             },
           },
@@ -1839,7 +1845,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         ],
       },
       publicTransportations: {
-        create: [{ name: '을지로 3가', timeTaken: 6 }],
+        create: [{ name: '양평역', timeTaken: 10 }],
       },
       categories: {
         create: [

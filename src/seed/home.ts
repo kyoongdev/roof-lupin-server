@@ -7,30 +7,6 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
       name: '기획전',
     },
   });
-  const category2 = await database.contentCategory.create({
-    data: {
-      highlight: '루프탑 바',
-      name: '인기 10위',
-    },
-  });
-  const category3 = await database.contentCategory.create({
-    data: {
-      highlight: '여름 휴가',
-      name: '옥상 바베큐',
-    },
-  });
-  const category4 = await database.contentCategory.create({
-    data: {
-      highlight: '루프루팡 픽!',
-      name: '최고의 옥상',
-    },
-  });
-  const category5 = await database.contentCategory.create({
-    data: {
-      highlight: '옥상에서 즐기는',
-      name: '영화 감상',
-    },
-  });
 
   const exhibition = await database.exhibition.create({
     data: {
@@ -97,105 +73,6 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
             },
           },
         });
-      } else if (index < 10) {
-        await database.contentCategory.update({
-          where: {
-            id: category2.id,
-          },
-          data: {
-            spaces: {
-              create: [
-                {
-                  space: {
-                    connect: {
-                      id: spaces.id,
-                    },
-                  },
-                  orderNo: index,
-                },
-              ],
-            },
-          },
-        });
-      } else if (index < 15) {
-        await database.contentCategory.update({
-          where: {
-            id: category3.id,
-          },
-          data: {
-            spaces: {
-              create: [
-                {
-                  space: {
-                    connect: {
-                      id: spaces.id,
-                    },
-                  },
-                  orderNo: index,
-                },
-              ],
-            },
-          },
-        });
-        await database.ranking.update({
-          where: {
-            id: ranking.id,
-          },
-          data: {
-            spaces: {
-              create: [
-                {
-                  orderNo: index,
-                  space: {
-                    connect: {
-                      id: spaces.id,
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        });
-      } else if (index < 20) {
-        await database.contentCategory.update({
-          where: {
-            id: category4.id,
-          },
-          data: {
-            spaces: {
-              create: [
-                {
-                  space: {
-                    connect: {
-                      id: spaces.id,
-                    },
-                  },
-                  orderNo: index,
-                },
-              ],
-            },
-          },
-        });
-      } else if (index < 25) {
-        await database.contentCategory.update({
-          where: {
-            id: category5.id,
-          },
-          data: {
-            spaces: {
-              create: [
-                {
-                  space: {
-                    connect: {
-                      id: spaces.id,
-                    },
-                  },
-                  orderNo: index,
-                },
-              ],
-            },
-          },
-        });
       }
     })
   );
@@ -217,39 +94,6 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
       ranking: {
         connect: {
           id: ranking.id,
-        },
-      },
-    },
-  });
-
-  const thirdHome = await database.homeContents.create({
-    data: {
-      orderNo: 3,
-      contentsCategory: {
-        connect: {
-          id: category3.id,
-        },
-      },
-    },
-  });
-
-  const firthHome = await database.homeContents.create({
-    data: {
-      orderNo: 4,
-      exhibition: {
-        connect: {
-          id: exhibition.id,
-        },
-      },
-    },
-  });
-
-  const fifthHome = await database.homeContents.create({
-    data: {
-      orderNo: 5,
-      contentsCategory: {
-        connect: {
-          id: category4.id,
         },
       },
     },
