@@ -52,7 +52,6 @@ const logger = WinstonModule.createLogger({
       dirname: `${appRoot}/info`,
       maxFiles: 30,
       zippedArchive: true,
-
       ...(config.get('APP_ENV') !== 'local'
         ? { stream: getS3StreamLogger('info') }
         : {

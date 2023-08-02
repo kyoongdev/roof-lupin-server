@@ -117,6 +117,7 @@ export class FileService {
         Key: `${this.configService.get('NODE_ENV')}/${key}`,
         Body: file.buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+        ContentType: 'image/svg+xml',
       });
 
       const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${key}`;
