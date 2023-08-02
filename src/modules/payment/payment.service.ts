@@ -101,7 +101,6 @@ export class PaymentService {
     }
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
-
     return reservation;
   }
 
@@ -164,6 +163,7 @@ export class PaymentService {
           name: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
         });
       } catch (err) {
+        console.error(err);
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
@@ -211,6 +211,7 @@ export class PaymentService {
 
       await this.sendMessage(reservation);
     } catch (err) {
+      console.error(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -274,6 +275,7 @@ export class PaymentService {
           orderResultId: result.tid,
         });
       } catch (err) {
+        console.error(err);
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
@@ -317,6 +319,7 @@ export class PaymentService {
 
       await this.sendMessage(reservation);
     } catch (err) {
+      console.error(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -392,6 +395,7 @@ export class PaymentService {
           url: result.checkout.url,
         });
       } catch (err) {
+        console.error(err);
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
@@ -435,7 +439,7 @@ export class PaymentService {
 
       await this.sendMessage(reservation);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -635,9 +639,10 @@ export class PaymentService {
             return acc;
           }, 0);
 
-          const realCost = await this.getRealCost(cost, data, space);
+          const { totalCost, originalCost } = await this.getRealCost(cost, data, space);
+
           //INFO: 가격 정보가 올바르지 않을 때
-          if (realCost !== data.totalCost || cost !== data.originalCost) {
+          if (totalCost !== data.totalCost || originalCost !== data.originalCost) {
             throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
           }
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
@@ -649,9 +654,9 @@ export class PaymentService {
           if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }
-          const realCost = await this.getRealCost(rentalType.baseCost, data, space);
+          const { originalCost, totalCost } = await this.getRealCost(rentalType.baseCost, data, space);
           //INFO: 가격 정보가 올바르지 않을 때
-          if (rentalType.baseCost !== data.originalCost || realCost !== data.totalCost) {
+          if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
             throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
           }
         } else
@@ -741,6 +746,9 @@ export class PaymentService {
       additionalCost += space.overflowUserCost * userCount;
     }
 
-    return cost - discountCost + additionalCost;
+    return {
+      totalCost: cost - discountCost + additionalCost,
+      originalCost: cost + additionalCost,
+    };
   }
 }

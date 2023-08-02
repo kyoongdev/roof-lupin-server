@@ -76,7 +76,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const mainCategories = [category1, category2, category3, category4, category5];
 
   const spaces: any[] = [];
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 1; i++) {
     const space = await database.space.create({
       include: {
         rentalType: true,
