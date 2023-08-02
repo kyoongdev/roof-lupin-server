@@ -31,7 +31,7 @@ export class SpaceRepository {
     return spaces.map((space) => new SpaceIdsDTO(space));
   }
 
-  async findSpacesWithSQL(sql: Prisma.Sql) {
+  async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
     const spaces: any[] = await this.database.$queryRaw(sql);
 
     const data = await Promise.all(
@@ -56,8 +56,16 @@ export class SpaceRepository {
           },
         });
 
+        const interests = await this.database.spaceInterest.findMany({
+          where: {
+            spaceId: space.id,
+          },
+        });
+
         return new SpaceDTO({
           ...space,
+          isInterested: interests.some((interest) => interest.userId === userId),
+          interestCount: interests.length,
           location: {
             id: space.slId,
             lat: space.lat,
@@ -216,6 +224,7 @@ export class SpaceRepository {
             category: true,
           },
         },
+        reports: true,
       },
     });
     if (!space) {
@@ -229,6 +238,8 @@ export class SpaceRepository {
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories.map(({ category }) => category),
+      reportCount: space.reports.length,
+      interestCount: space.userInterests.length,
     });
   }
 
@@ -257,6 +268,7 @@ export class SpaceRepository {
             category: true,
           },
         },
+        reports: true,
       },
       orderBy: {
         ...args.orderBy,
@@ -274,6 +286,8 @@ export class SpaceRepository {
           averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
           isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
           categories: space.categories.map(({ category }) => category),
+          reportCount: space.reports.length,
+          interestCount: space.userInterests.length,
         })
     );
   }

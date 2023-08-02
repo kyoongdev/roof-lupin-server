@@ -7,6 +7,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationRentalType, CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
+import { SpaceDTO } from '../dto';
 import { AdditionalServiceDTO } from '../dto/additional-service';
 import {
   CreateRentalTypeDTO,
@@ -171,6 +172,7 @@ export class RentalTypeRepository {
                                 category: true,
                               },
                             },
+                            reports: true,
                           },
                         },
                       },
@@ -197,21 +199,15 @@ export class RentalTypeRepository {
       timeCostInfo: rentalType.timeCostInfo,
       reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
         const { rentalTypes, ...rest } = reservation;
-        const { space } = (rentalTypes[0] as CommonReservationRentalType).rentalType;
-        const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
+        const { space } = rentalTypes[0].rentalType;
+
         return {
           ...rest,
           year: String(rest.year),
           month: String(rest.month),
           day: String(rest.day),
           rentalTypes: rentalTypes.map((rentalType) => rentalType),
-          space: {
-            ...space,
-            reviewCount: space.reviews.length,
-            location: space.location?.['location'],
-            averageScore,
-            categories: space.categories.map((category) => category.category),
-          },
+          space: SpaceDTO.generateSpaceDTO(space),
           isReviewed: rest.spaceReviews.length > 0,
         };
       }),

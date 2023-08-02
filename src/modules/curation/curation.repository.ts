@@ -36,18 +36,7 @@ export class CurationRepository {
         spaces: {
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {
@@ -77,18 +66,7 @@ export class CurationRepository {
         spaces: {
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {

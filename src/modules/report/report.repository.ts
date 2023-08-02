@@ -69,6 +69,7 @@ export class ReportRepository {
                 category: true,
               },
             },
+            reports: true,
           },
         },
         user: true,

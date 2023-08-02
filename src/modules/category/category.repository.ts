@@ -60,18 +60,7 @@ export class CategoryRepository {
         spaces: {
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {
@@ -103,18 +92,7 @@ export class CategoryRepository {
         spaces: {
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {

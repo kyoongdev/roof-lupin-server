@@ -28,18 +28,7 @@ export class QnARepository {
         },
         user: true,
         space: {
-          include: {
-            location: true,
-            reviews: true,
-            publicTransportations: true,
-            userInterests: true,
-            rentalType: true,
-            categories: {
-              include: {
-                category: true,
-              },
-            },
-          },
+          include: SpaceDTO.getSpacesIncludeOption(),
         },
       },
       orderBy: {
@@ -70,18 +59,7 @@ export class QnARepository {
       },
       include: {
         space: {
-          include: {
-            location: true,
-            reviews: true,
-            publicTransportations: true,
-            userInterests: true,
-            rentalType: true,
-            categories: {
-              include: {
-                category: true,
-              },
-            },
-          },
+          include: SpaceDTO.getSpacesIncludeOption(),
         },
         answers: {
           include: {

@@ -6,10 +6,12 @@ import {
   SpaceCategory,
   SpaceInterest,
   SpaceLocation,
+  SpaceReport,
   SpaceReview,
 } from '@prisma/client';
 
 export interface CommonSpace extends Space {
+  reports: SpaceReport[];
   reviews: SpaceReview[];
   location: SpaceLocation;
   publicTransportations: PublicTransportation[];

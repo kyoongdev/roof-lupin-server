@@ -1,4 +1,4 @@
-import { RentalType } from '@prisma/client';
+import { Prisma, RentalType } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { CommonSpace } from '@/interface/space.interface';
@@ -13,10 +13,12 @@ export interface SpaceDTOProps {
   averageScore: number;
   reviewCount: number;
   isInterested?: boolean;
+  interestCount: number;
   isImmediateReservation: boolean;
   isPublic: boolean;
   isApproved: boolean;
   thumbnail: string;
+  reportCount: number;
   hostId: string;
   publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
@@ -38,6 +40,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'number', description: '공간 리뷰 개수' } })
   reviewCount: number;
 
+  @Property({ apiProperty: { type: 'number', description: '공간 신고 개수' } })
+  reportCount: number;
+
   @Property({ apiProperty: { type: 'number', nullable: true, description: '공간 시간 최소 가격' } })
   timeCost: number | null;
 
@@ -52,6 +57,9 @@ export class SpaceDTO {
 
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
+
+  @Property({ apiProperty: { type: 'number', description: '찜 개수' } })
+  interestCount: number;
 
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '즉각 예약 여부' } })
   isImmediateReservation: boolean;
@@ -85,10 +93,12 @@ export class SpaceDTO {
     this.reviewCount = props.reviewCount ?? 0;
     this.hostId = props.hostId;
     this.isInterested = props.isInterested ?? false;
+    this.reportCount = props.reportCount ?? 0;
     this.isImmediateReservation = props.isImmediateReservation;
     this.isPublic = typeof props.isPublic === 'boolean' ? props.isPublic : props.isPublic === 1;
     this.isApproved = typeof props.isApproved === 'boolean' ? props.isApproved : props.isApproved === 1;
     this.thumbnail = props.thumbnail;
+    this.interestCount = props.interestCount ?? 0;
     this.publicTransportations = props.publicTransportations.map((target) => new TransportationDTO(target));
     this.location = props.location ? new LocationDTO(props.location) : null;
     this.timeCost = timeRentals.length === 0 ? null : Math.min(...timeRentals.map((target) => target.baseCost));
@@ -106,6 +116,24 @@ export class SpaceDTO {
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories ? space.categories?.map(({ category }) => category) : [],
+      reportCount: space.reports.length,
+      interestCount: space.userInterests.length,
+    };
+  }
+
+  static getSpacesIncludeOption() {
+    return {
+      location: true,
+      reviews: true,
+      publicTransportations: true,
+      userInterests: true,
+      rentalType: true,
+      categories: {
+        include: {
+          category: true,
+        },
+      },
+      reports: true,
     };
   }
 }
