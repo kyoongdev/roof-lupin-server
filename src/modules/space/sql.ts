@@ -11,7 +11,7 @@ export const BASE_SPACE_SELECT = Prisma.sql`
   sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.createdAt as createdAt, 
   sp.updatedAt as updatedAt, sp.deletedAt as deletedAt, sp.isApproved as isApproved, sp.isPublic as isPublic, sp.orderNo as orderNo,
   sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress,
-  COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(si.spaceId) as userInterests, COUNT(sr.spaceId) as reviewCount,
+  COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(DISTINCT si.spaceId, si.userId) as userInterests, COUNT(sr.spaceId) as reviewCount,
   min(rt.baseCost) as baseCost, COUNT(srp.id) as reportCount
 
 `;
@@ -27,6 +27,7 @@ export const BASE_SPACE_JOIN = Prisma.sql`
   LEFT JOIN HashTag ht ON sh.hashTagId = ht.id
   LEFT JOIN RentalType rt ON sp.id = rt.spaceId
   LEFT JOIN SpaceReport srp ON sp.id = srp.spaceId
+  
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`

@@ -31,7 +31,7 @@ export class SpaceRepository {
     return spaces.map((space) => new SpaceIdsDTO(space));
   }
 
-  async findSpacesWithSQL(sql: Prisma.Sql) {
+  async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
     const spaces: any[] = await this.database.$queryRaw(sql);
 
     const data = await Promise.all(
@@ -56,8 +56,22 @@ export class SpaceRepository {
           },
         });
 
+        const isInterested = userId
+          ? Boolean(
+              await this.database.spaceInterest.findUnique({
+                where: {
+                  userId_spaceId: {
+                    userId,
+                    spaceId: space.id,
+                  },
+                },
+              })
+            )
+          : false;
+
         return new SpaceDTO({
           ...space,
+          isInterested,
           location: {
             id: space.slId,
             lat: space.lat,
