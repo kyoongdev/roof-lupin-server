@@ -66,6 +66,8 @@ import { AdminSettlementController } from './settlement/settlement.controller';
 import { AdminSettlementService } from './settlement/settlement.service';
 import { AdminSpaceController } from './space/space.controller';
 import { AdminSpaceService } from './space/space.service';
+import { AdminTermsController } from './terms/terms.controller';
+import { AdminTermsService } from './terms/terms.service';
 import { AdminUserController } from './user/user.controller';
 import { AdminUserRepository } from './user/user.repository';
 import { AdminUserService } from './user/user.service';
@@ -120,6 +122,7 @@ import { AdminUserService } from './user/user.service';
     FaqRepository,
     AdminCurationService,
     CurationRepository,
+    AdminTermsService,
   ],
 
   controllers: [
@@ -143,6 +146,7 @@ import { AdminUserService } from './user/user.service';
     AdminIconController,
     AdminFaqController,
     AdminCurationController,
+    AdminTermsController,
   ],
 })
 export class AdminModule {}

@@ -7,7 +7,7 @@ import { TermDTO } from '@/modules/terms/dto';
 import { TERM_ALREADY_EXISTS, TERM_ERROR_CODE, TERM_NOT_FOUND } from '@/modules/terms/exception/errorCode';
 import { TermException } from '@/modules/terms/exception/term.exception';
 
-import { CreateTermDTO } from '../dto/terms';
+import { CreateTermDTO, UpdateTermDTO } from '../dto/terms';
 
 @Injectable()
 export class AdminTermsService {
@@ -47,13 +47,23 @@ export class AdminTermsService {
     return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), data.name, 'text/plain');
   }
 
-  async updateTerm(data: CreateTermDTO) {
-    const term = await this.getTerm(data.name);
+  async updateTerm(name: string, data: UpdateTermDTO) {
+    const term = await this.getTerm(name);
 
     if (!term.content) {
       throw new TermException(TERM_ERROR_CODE.NOT_FOUND(TERM_NOT_FOUND));
     }
-    await this.fileService.deleteFile(`${this.configService.get('AWS_CLOUD_FRONT_URL')}/${data.name}`);
-    return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), data.name, 'text/plain');
+    await this.fileService.deleteFile(`${this.configService.get('AWS_CLOUD_FRONT_URL')}/${name}`);
+    return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), name, 'text/plain');
+  }
+
+  async deleteTerm(name: string) {
+    const term = await this.getTerm(name);
+
+    if (!term.content) {
+      throw new TermException(TERM_ERROR_CODE.NOT_FOUND(TERM_NOT_FOUND));
+    }
+
+    await this.fileService.deleteFile(`${this.configService.get('AWS_CLOUD_FRONT_URL')}/${name}`);
   }
 }
