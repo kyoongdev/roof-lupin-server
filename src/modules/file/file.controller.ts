@@ -105,7 +105,6 @@ export class FileController {
   @UseInterceptors(
     FilesInterceptor('images', undefined, {
       fileFilter(req, file, callback) {
-        console.log(!file.originalname.match(/\.(jpg|jpeg|png|heic)$/));
         if (!file.originalname.match(/\.(jpg|jpeg|png|heic)$/)) {
           return callback(new Error('Only image files are allowed!'), false);
         }

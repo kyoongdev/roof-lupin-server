@@ -126,4 +126,21 @@ export class AdminSpaceController {
   async deleteSpaceOrder(@Param('spaceId') id: string) {
     await this.spaceService.deleteSpaceOrder(id);
   }
+
+  @Delete(':spaceId')
+  @RequestApi({
+    summary: {
+      description: '공간 삭제',
+      summary: '공간 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteSpace(@Param('spaceId') id: string) {
+    await this.spaceService.deleteSpace(id);
+  }
 }

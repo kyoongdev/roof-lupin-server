@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { minimatch } from 'minimatch';
 
+import { logger } from '@/log';
+
 export type TransactionPrisma = Omit<PrismaService, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>;
 
 @Injectable()
@@ -41,7 +43,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         this.logger.log('Duration: ' + event.duration + 'ms');
       });
     } catch (err) {
-      console.log(err);
+      logger.error(err);
     }
   }
 

@@ -62,4 +62,9 @@ export class AdminSpaceService {
     await this.findSpace(id);
     await this.spaceRepository.deleteSpaceOrder(id);
   }
+
+  async deleteSpace(id: string) {
+    await this.findSpace(id);
+    await this.spaceRepository.deleteSpace(id);
+  }
 }

@@ -46,26 +46,42 @@ const logger = WinstonModule.createLogger({
   format: combine(timestamp({ format: winstonTimeZone }), logFormat),
   transports: [
     loggerOption,
-    ...(config.get('APP_ENV') === 'local'
-      ? [
-          new winstonDaily({
-            level: 'info',
-            datePattern: 'YYYY-MM-DD',
-            dirname: `${appRoot}/info`,
-            maxFiles: 30,
-            zippedArchive: true,
-            stream: getS3StreamLogger('info'),
+    new winstonDaily({
+      level: 'info',
+      datePattern: 'YYYY-MM-DD',
+      dirname: `${appRoot}/info`,
+      maxFiles: 30,
+      zippedArchive: true,
+      ...(config.get('APP_ENV') !== 'local'
+        ? { stream: getS3StreamLogger('info') }
+        : {
+            filename: `%DATE%.log`,
           }),
-          new winstonDaily({
-            level: 'error',
-            datePattern: 'YYYY-MM-DD',
-            dirname: `${appRoot}/error`,
-            maxFiles: 30,
-            zippedArchive: true,
-            stream: getS3StreamLogger('info'),
+    }),
+    new winstonDaily({
+      level: 'log',
+      datePattern: 'YYYY-MM-DD',
+      dirname: `${appRoot}/log`,
+      maxFiles: 30,
+      zippedArchive: true,
+      ...(config.get('APP_ENV') !== 'local'
+        ? { stream: getS3StreamLogger('log') }
+        : {
+            filename: `%DATE%.log`,
           }),
-        ]
-      : []),
+    }),
+    new winstonDaily({
+      level: 'error',
+      datePattern: 'YYYY-MM-DD',
+      dirname: `${appRoot}/error`,
+      maxFiles: 30,
+      zippedArchive: true,
+      ...(config.get('APP_ENV') !== 'local'
+        ? { stream: getS3StreamLogger('error') }
+        : {
+            filename: `%DATE%.log`,
+          }),
+    }),
   ],
   exceptionHandlers: [
     ...(config.get('APP_ENV') === 'local'

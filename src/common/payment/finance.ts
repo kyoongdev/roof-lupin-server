@@ -5,6 +5,7 @@ import axios from 'axios';
 import { nanoid, random } from 'nanoid';
 
 import { FinanceUserAuthorizationResBody } from '@/interface/payment/finance.interface';
+import { logger } from '@/log';
 
 @Injectable()
 export class FinanceProvider {
@@ -29,7 +30,7 @@ export class FinanceProvider {
 
       return response.data;
     } catch (err) {
-      console.log(err);
+      logger.log(err);
     }
   }
 
@@ -44,7 +45,7 @@ export class FinanceProvider {
         },
       });
     } catch (err) {
-      console.log(err);
+      logger.log(err);
     }
   }
 

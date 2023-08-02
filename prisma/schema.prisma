@@ -328,6 +328,7 @@ model Reservation {
   payMethod     Int?      @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
   isApproved    Boolean   @default(true) //INFO: 결제 승인 여부
   approvedAt    DateTime?
+  isCanceled    Boolean   @default(false) //INFO: 취소 여부
 
   userName        String?
   userPhoneNumber String? @db.VarChar(11)
