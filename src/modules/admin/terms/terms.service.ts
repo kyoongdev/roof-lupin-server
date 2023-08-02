@@ -31,4 +31,7 @@ export class AdminTermsService {
       content,
     });
   }
+  async createTerm() {
+    //
+  }
 }
