@@ -24,6 +24,7 @@ import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
 import { SpaceModule } from './space/space.module';
 import { TaxReturnModule } from './tax-return/tax-return.module';
+import { TermsModule } from './terms/terms.module';
 import { UserModule } from './user/user.module';
 
 export const Modules = [
@@ -52,6 +53,7 @@ export const Modules = [
   HolidayModule,
   RankingModule,
   FrequentQuestionModule,
+  TermsModule,
 ];
 @Module({
   imports: [...Modules],
