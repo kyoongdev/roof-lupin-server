@@ -1573,5 +1573,293 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
     },
   });
 
+  const space4 = await database.space.create({
+    data: {
+      title: `루프탑 옥상 아무`,
+      description: `
+      도시 한복판에서 하늘과 바람과 꽃 사이에서 한가로운 휴식과 피크닉을 즐겨보세요. 
+      5호선 양평역, 2호선 문래역 근처에 단 한 팀만을 위한 휴식 공간이 마련되어 있습니다. 
+      
+      친구, 가족, 연인, 좋아하는 사람들과 옥상 정원에서 행복한 파티를 해보세요!
+        `,
+      thumbnail: 'https://dev-image.rooflupin.com/1688632936057asdf.jpeg',
+      minUser: 1,
+      maxUser: 6,
+      overflowUserCost: 20000,
+      overflowUserCount: 3,
+      buildingType: 1,
+      minSize: 40,
+      isPublic: true,
+      isApproved: true,
+      isImmediateReservation: true,
+      sizes: {
+        create: [
+          {
+            size: 40,
+            floor: 4,
+            isRoof: true,
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632936058basdb.jpeg',
+              },
+            },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/1688632936059bcbcxcb.jpeg',
+              },
+            },
+          },
+        ],
+      },
+      refundPolicies: {
+        create: [
+          {
+            daysBefore: 0,
+            refundRate: 10,
+          },
+          {
+            daysBefore: 1,
+            refundRate: 20,
+          },
+          {
+            daysBefore: 2,
+            refundRate: 30,
+          },
+          {
+            daysBefore: 3,
+            refundRate: 40,
+          },
+        ],
+      },
+      cautions: {
+        create: [
+          {
+            content: '조용한 주택가라 시끄럽게 못하는 공간인 점 양해 부탁드립니다.',
+          },
+          {
+            content: '저희 공간은 숙박 시설이 아니므로 숙박 물품은 제공하지 않습니다.',
+          },
+          {
+            content:
+              '예약 인원 확인 및 안전 상의 이유로 CCTV는 25시간 녹화되고 있습니다. 기물 파손 시 동일 금액으로 배상하여야 합니다.',
+          },
+          {
+            content: '건물 내 화장실을 사용합니다.',
+          },
+          {
+            content: '방역지침을 준수합니다.',
+          },
+          {
+            content:
+              '기존에 준비된 장비 이외에 추가로 숯불이나 화롯불 등의 개인장비 및 화기를 가져와 사용할 수 없습니다.',
+          },
+        ],
+      },
+
+      rentalType: {
+        create: [
+          {
+            baseCost: 1000,
+            startAt: 14,
+            endAt: 22,
+            name: '시간대여',
+            rentalType: 1,
+            day: 1,
+            baseHour: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
+            timeCostInfo: {
+              create: [
+                {
+                  cost: 1000,
+                  time: 14,
+                },
+                {
+                  cost: 1000,
+                  time: 15,
+                },
+                {
+                  cost: 1000,
+                  time: 16,
+                },
+                {
+                  cost: 2000,
+                  time: 17,
+                },
+                {
+                  cost: 2000,
+                  time: 18,
+                },
+                {
+                  cost: 2000,
+                  time: 19,
+                },
+                {
+                  cost: 2000,
+                  time: 20,
+                },
+                {
+                  cost: 2000,
+                  time: 21,
+                },
+              ],
+            },
+          },
+
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여',
+            rentalType: 2,
+            baseHour: 6,
+            day: 1,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
+          },
+          {
+            baseCost: 100000,
+            startAt: 13,
+            endAt: 24,
+            name: '패키지 대여2',
+            rentalType: 2,
+            baseHour: 6,
+            day: 2,
+            additionalServices: {
+              create: {
+                name: '바베큐',
+                cost: 10000,
+              },
+            },
+          },
+        ],
+      },
+      location: {
+        create: {
+          roadAddress: '서울특별시 중구 충무로 46-1',
+          jibunAddress: '서울특별시 중구 초동 17-4',
+          lng: '126.9929866',
+          lat: '37.5651794',
+        },
+      },
+      buildings: {
+        create: [
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '주차 5대',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '3층',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '엘리베이터 없음',
+              },
+            },
+          },
+        ],
+      },
+      services: {
+        create: [
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '바베큐',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '반려동물 동반가능',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '전기',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '금연',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '인터넷/WIFI',
+              },
+            },
+          },
+          {
+            service: {
+              create: {
+                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                name: '장비대여',
+              },
+            },
+          },
+        ],
+      },
+      publicTransportations: {
+        create: [{ name: '을지로 3가', timeTaken: 6 }],
+      },
+      categories: {
+        create: [
+          {
+            category: {
+              connect: {
+                id: mainCategories[1].id,
+              },
+            },
+          },
+        ],
+      },
+
+      host: {
+        connect: {
+          id: realHost.id,
+        },
+      },
+    },
+  });
+
   return [...spaces, space1, space2, space3].sort(() => Math.random() - 0.5) as Space[];
 };
