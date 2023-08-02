@@ -147,7 +147,7 @@ export const seedDatabase = async (database: PrismaClient) => {
             {
               space: {
                 connect: {
-                  id: spaces[i].id,
+                  id: spaces[0].id,
                 },
               },
               orderNo: i,
