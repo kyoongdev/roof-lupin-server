@@ -99,6 +99,7 @@ export class PaymentService {
     if (space.isImmediateReservation) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_REQUIRED));
     }
+    //TODO: Host 알림 추가
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
     return reservation;
