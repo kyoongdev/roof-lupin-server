@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Property } from 'cumuco-nestjs';
 
 import { CreatePaymentDTO } from '@/modules/reservation/dto';
+import { SpaceDetailDTO } from '@/modules/space/dto';
 import { RentalTypeDTO } from '@/modules/space/dto/rental-type';
 
 import { EscrowProductDTO, EscrowProductDTOProps } from './escrow-product.dto';
@@ -109,20 +110,22 @@ export class PaymentPayloadDTO {
   }
 
   static generatePaymentPayload(
+    space: SpaceDetailDTO,
     orderId: string,
     rentalTypes: RentalTypeDTO[],
     props: CreatePaymentDTO
   ): PaymentPayloadDTO {
     const config = new ConfigService();
-    const orderName =
-      rentalTypes.length > 1 ? `${rentalTypes[0].name} 외 ${rentalTypes.length - 1}건` : rentalTypes[0].name;
+    const orderName = `[${space.title}] ${
+      rentalTypes.length > 1 ? `${rentalTypes[0].name} 외 ${rentalTypes.length - 1}건` : rentalTypes[0].name
+    }`;
 
     return new PaymentPayloadDTO({
       amount: props.totalCost,
       orderId,
       orderName,
-      successUrl: config.get(''),
-      failUrl: config.get(''),
+      successUrl: config.get('PAYMENT_SUCCESS_URL'),
+      failUrl: config.get('PAYMENT_FAIL_URL'),
     });
   }
 }
