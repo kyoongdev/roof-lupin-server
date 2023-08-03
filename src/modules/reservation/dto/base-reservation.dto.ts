@@ -11,6 +11,7 @@ export interface BaseReservationDTOProps {
   vatCost: number;
   discountCost: number;
   originalCost: number;
+  isCanceled: boolean;
   payedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -38,6 +39,9 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'number', description: '유저 수' } })
   userCount: number;
 
+  @Property({ apiProperty: { type: 'boolean', description: '취소여부' } })
+  isCanceled: boolean;
+
   @Property({ apiProperty: { type: 'number', description: 'VAT 금액' } })
   vatCost: number;
 
@@ -53,6 +57,9 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '수정 날짜' } })
   updatedAt: Date;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '결제 날짜' } })
+  payedAt?: Date;
+
   constructor(props: BaseReservationDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -63,6 +70,8 @@ export class BaseReservationDTO {
     this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
+    this.isCanceled = props.isCanceled;
+    this.payedAt = props.payedAt;
     this.userCount = props.userCount;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
