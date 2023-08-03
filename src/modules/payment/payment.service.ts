@@ -111,7 +111,6 @@ export class PaymentService {
   async createPaymentPayload(userId: string, data: CreatePaymentPayloadDTO) {
     const { payType, ...rest } = data;
     const paymentData = new CreatePaymentDTO(rest);
-    const space = await this.spaceRepository.findSpace(paymentData.spaceId);
 
     const totalCost = paymentData.originalCost - paymentData.discountCost;
 
@@ -156,6 +155,8 @@ export class PaymentService {
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
     });
+
+    return result;
   }
 
   async getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO, space: SpaceDetailDTO) {
@@ -709,7 +710,6 @@ export class PaymentService {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }
           const { originalCost, totalCost } = await this.getRealCost(rentalType.baseCost, data, space);
-          console.log({ originalCost, totalCost });
           //INFO: 가격 정보가 올바르지 않을 때
           if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
             throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));

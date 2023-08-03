@@ -116,6 +116,7 @@ export class PaymentPayloadDTO {
     const config = new ConfigService();
     const orderName =
       rentalTypes.length > 1 ? `${rentalTypes[0].name} 외 ${rentalTypes.length - 1}건` : rentalTypes[0].name;
+
     return new PaymentPayloadDTO({
       amount: props.totalCost,
       orderId,

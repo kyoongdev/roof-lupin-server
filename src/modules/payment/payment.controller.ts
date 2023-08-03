@@ -16,7 +16,9 @@ import {
   BankCodeDTO,
   CompletePortOnePaymentDTO,
   ConfirmTossPaymentDTO,
+  CreatePaymentPayloadDTO,
   CreateTossPaymentDTO,
+  PaymentPayloadDTO,
   PortOnePreparePaymentDTO,
   PrepareKakaoPaymentDTO,
   RefundPaymentDTO,
@@ -73,6 +75,21 @@ export class PaymentController {
         name: key,
       });
     });
+  }
+
+  @Post('/payload')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      summary: '포트원 결제 준비하기 ',
+      description: '포트원 결제 준비하기',
+    },
+  })
+  @ResponseApi({
+    type: PaymentPayloadDTO,
+  })
+  async getPaymentPayload(@ReqUser() user: RequestUser, @Body() data: CreatePaymentPayloadDTO) {
+    return await this.paymentService.createPaymentPayload(user.id, data);
   }
 
   @Post('/port-one/prepare')
