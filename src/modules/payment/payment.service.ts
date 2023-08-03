@@ -110,8 +110,7 @@ export class PaymentService {
   }
 
   async createPaymentPayload(userId: string, data: CreatePaymentPayloadDTO) {
-    const { payType, ...rest } = data;
-    const paymentData = new CreatePaymentDTO(rest);
+    const paymentData = new CreatePaymentDTO(data);
 
     const totalCost = paymentData.originalCost - paymentData.discountCost;
 
@@ -128,7 +127,6 @@ export class PaymentService {
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderId,
-          // payMethod: payType,
         });
 
         if (data.userCouponIds)
@@ -482,11 +480,12 @@ export class PaymentService {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
       }
       await this.database.$transaction(async (database) => {
-        await this.tossPay.confirmPayment({
+        const response = await this.tossPay.confirmPayment({
           amount: reservation.totalCost,
           orderId: reservation.orderId,
           paymentKey: reservation.orderResultId,
         });
+        response.method;
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           payedAt: new Date(),
