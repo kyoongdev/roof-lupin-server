@@ -1,8 +1,8 @@
-import { Body, Get, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { ResponseWithIdDTO } from '@/common';
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { BANK_CODE } from '@/common/constants';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
@@ -81,8 +81,8 @@ export class PaymentController {
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
-      summary: '포트원 결제 준비하기 ',
-      description: '포트원 결제 준비하기',
+      summary: '결제 용 data 생성 ',
+      description: '결제 용 data 생성',
     },
   })
   @ResponseApi({
@@ -92,116 +92,116 @@ export class PaymentController {
     return await this.paymentService.createPaymentPayload(user.id, data);
   }
 
-  @Post('/port-one/prepare')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '포트원 결제 준비하기 ',
-      description: '포트원 결제 준비하기',
-    },
-  })
-  @ResponseApi({
-    type: PortOnePreparePaymentDTO,
-  })
-  async preparePortOnePayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
-    return await this.paymentService.preparePortOnePayment(user.id, data);
-  }
+  // @Post('/port-one/prepare')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @RequestApi({
+  //   summary: {
+  //     summary: '포트원 결제 준비하기 ',
+  //     description: '포트원 결제 준비하기',
+  //   },
+  // })
+  // @ResponseApi({
+  //   type: PortOnePreparePaymentDTO,
+  // })
+  // async preparePortOnePayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
+  //   return await this.paymentService.preparePortOnePayment(user.id, data);
+  // }
 
-  @Post('/port-one/complete')
+  // @Post('/port-one/complete')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @UseInterceptors(ResponseWithIdInterceptor)
+  // @RequestApi({
+  //   summary: {
+  //     summary: '포트원 결제 완료하기 ',
+  //     description: '포트원 결제 완료하기',
+  //   },
+  // })
+  // @ResponseApi({
+  //   type: ResponseWithIdDTO,
+  // })
+  // async completePortOnePayment(@Body() data: CompletePortOnePaymentDTO) {
+  //   return await this.paymentService.completePortOnePayment(data);
+  // }
+
+  // @Post('/kakao/prepare/test')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @RequestApi({
+  //   summary: {
+  //     summary: '카카오 결제 준비 테스트하기 ',
+  //     description: '카카오 결제 준비 테스트하기',
+  //   },
+  // })
+  // @ResponseApi({})
+  // async testPrepareKakaoPayment() {
+  //   return await this.paymentService.testKakaoPayment();
+  // }
+
+  // @Post('/kakao/prepare')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @RequestApi({
+  //   summary: {
+  //     summary: '카카오 결제 준비하기 ',
+  //     description: '카카오 결제 준비하기',
+  //   },
+  // })
+  // @ResponseApi({
+  //   type: PrepareKakaoPaymentDTO,
+  // })
+  // async prepareKakaoPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
+  //   return await this.paymentService.prepareKakaoPayment(user.id, data);
+  // }
+
+  // @Post('/kakao/complete')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @UseInterceptors(ResponseWithIdInterceptor)
+  // @RequestApi({
+  //   summary: {
+  //     summary: '카카오 결제 완료하기 ',
+  //     description: '카카오 결제 완료하기',
+  //   },
+  // })
+  // @ResponseApi({
+  //   type: ResponseWithIdDTO,
+  // })
+  // async completeKakaoPayment(@Body() data: ApproveKakaoPaymentDTO) {
+  //   return await this.paymentService.approveKakaoPayment(data);
+  // }
+
+  // @Post('/toss/prepare/test')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @RequestApi({
+  //   summary: {
+  //     summary: '토스 결제 준비 테스트하기 ',
+  //     description: '토스 결제 준비 테스트하기',
+  //   },
+  // })
+  // @ResponseApi({})
+  // async testPrepareTossPayment() {
+  //   return await this.paymentService.testTossPayment();
+  // }
+
+  // @Post('/toss/prepare')
+  // @Auth([JwtAuthGuard, RoleGuard('USER')])
+  // @RequestApi({
+  //   summary: {
+  //     summary: '토스 결제 준비하기 ',
+  //     description: '토스 결제 준비하기',
+  //   },
+  // })
+  // @ResponseApi({
+  //   type: CreateTossPaymentDTO,
+  // })
+  // async prepareTossPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
+  //   return await this.paymentService.createTossPayment(user.id, data);
+  // }
+
+  @Post('/complete')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      summary: '포트원 결제 완료하기 ',
-      description: '포트원 결제 완료하기',
-    },
-  })
-  @ResponseApi({
-    type: ResponseWithIdDTO,
-  })
-  async completePortOnePayment(@Body() data: CompletePortOnePaymentDTO) {
-    return await this.paymentService.completePortOnePayment(data);
-  }
-
-  @Post('/kakao/prepare/test')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '카카오 결제 준비 테스트하기 ',
-      description: '카카오 결제 준비 테스트하기',
-    },
-  })
-  @ResponseApi({})
-  async testPrepareKakaoPayment() {
-    return await this.paymentService.testKakaoPayment();
-  }
-
-  @Post('/kakao/prepare')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '카카오 결제 준비하기 ',
-      description: '카카오 결제 준비하기',
-    },
-  })
-  @ResponseApi({
-    type: PrepareKakaoPaymentDTO,
-  })
-  async prepareKakaoPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
-    return await this.paymentService.prepareKakaoPayment(user.id, data);
-  }
-
-  @Post('/kakao/complete')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @UseInterceptors(ResponseWithIdInterceptor)
-  @RequestApi({
-    summary: {
-      summary: '카카오 결제 완료하기 ',
-      description: '카카오 결제 완료하기',
-    },
-  })
-  @ResponseApi({
-    type: ResponseWithIdDTO,
-  })
-  async completeKakaoPayment(@Body() data: ApproveKakaoPaymentDTO) {
-    return await this.paymentService.approveKakaoPayment(data);
-  }
-
-  @Post('/toss/prepare/test')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '토스 결제 준비 테스트하기 ',
-      description: '토스 결제 준비 테스트하기',
-    },
-  })
-  @ResponseApi({})
-  async testPrepareTossPayment() {
-    return await this.paymentService.testTossPayment();
-  }
-
-  @Post('/toss/prepare')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      summary: '토스 결제 준비하기 ',
-      description: '토스 결제 준비하기',
-    },
-  })
-  @ResponseApi({
-    type: CreateTossPaymentDTO,
-  })
-  async prepareTossPayment(@ReqUser() user: RequestUser, @Body() data: CreatePaymentDTO) {
-    return await this.paymentService.createTossPayment(user.id, data);
-  }
-
-  @Post('/toss/complete')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @UseInterceptors(ResponseWithIdInterceptor)
-  @RequestApi({
-    summary: {
-      summary: '토스 결제 완료하기 ',
-      description: '토스 결제 완료하기',
+      summary: '결제 완료하기 ',
+      description: '결제 완료하기',
     },
   })
   @ResponseApi({
@@ -225,5 +225,23 @@ export class PaymentController {
   })
   async refundPayment(@ReqUser() user: RequestUser, @Body() body: RefundPaymentDTO) {
     return await this.paymentService.refundPayment(user.id, body);
+  }
+
+  @Delete('/failure/:orderId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '결제 실패 시 결제 정보 삭제하기',
+      summary: '결제 실패 시 결제 정보 삭제하기',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deletePaymentInfo(@ReqUser() user: RequestUser, @Param('orderId') orderId: string) {
+    await this.paymentService.deletePayment(orderId, user.id);
   }
 }
