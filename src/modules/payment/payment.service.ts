@@ -7,6 +7,7 @@ import { PortOneProvider } from '@/common/payment/port-one';
 import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
+import { logger } from '@/log';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
@@ -27,7 +28,9 @@ import {
   ApproveKakaoPaymentDTO,
   CompletePortOnePaymentDTO,
   ConfirmTossPaymentDTO,
+  CreatePaymentPayloadDTO,
   CreateTossPaymentDTO,
+  PaymentPayloadDTO,
   PortOnePreparePaymentDTO,
   PrepareKakaoPaymentDTO,
   RefundPaymentDTO,
@@ -103,6 +106,56 @@ export class PaymentService {
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
     return reservation;
+  }
+
+  async createPaymentPayload(userId: string, data: CreatePaymentPayloadDTO) {
+    const { payType, ...rest } = data;
+    const paymentData = new CreatePaymentDTO(rest);
+    const space = await this.spaceRepository.findSpace(paymentData.spaceId);
+
+    const totalCost = paymentData.originalCost - paymentData.discountCost;
+
+    if (totalCost !== paymentData.totalCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+    }
+
+    const result = await this.database.$transaction(async (database) => {
+      const space = await this.spaceRepository.findSpace(paymentData.spaceId);
+      const reservation = await this.getReservation(database, userId, paymentData, space);
+      try {
+        const rentalTypes = await this.validatePayment(paymentData, space);
+        const orderId = this.createOrderId();
+
+        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+          orderId,
+          // payMethod: payType,
+        });
+        if (data.userCouponIds)
+          await Promise.all(
+            data.userCouponIds.map(async (couponId) => {
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count - 1,
+              });
+            })
+          );
+
+        return PaymentPayloadDTO.generatePaymentPayload(orderId, rentalTypes, paymentData);
+      } catch (err) {
+        logger.error(err);
+        if (paymentData.userCouponIds)
+          await Promise.all(
+            paymentData.userCouponIds.map(async (couponId) => {
+              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.updateUserCoupon(couponId, {
+                count: coupon.count + 1,
+              });
+            })
+          );
+        await this.reservationRepository.deleteReservation(reservation.id);
+        throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
+      }
+    });
   }
 
   async getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO, space: SpaceDetailDTO) {
