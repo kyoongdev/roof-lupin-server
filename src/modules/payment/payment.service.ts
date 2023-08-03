@@ -84,18 +84,6 @@ export class PaymentService {
     return await this.financeProvider.getToken();
   }
 
-  // async testKakaoPayment() {
-  //   const result = await this.kakaoPay.preparePayment({
-  //     item_name: 'test',
-  //     quantity: 1,
-  //     tax_free_amount: 0,
-  //     total_amount: 100,
-  //     partner_order_id: this.createOrderId(),
-  //   });
-
-  //   return result;
-  // }
-
   async requestPayment(userId: string, data: CreateReservationDTO) {
     const space = await this.spaceRepository.findSpace(data.spaceId);
     await this.validatePayment(data, space);
@@ -133,9 +121,7 @@ export class PaymentService {
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
               const coupon = await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.updateUserCoupon(couponId, {
-                count: coupon.count - 1,
-              });
+              await this.couponRepository.deleteUserCoupon(couponId);
             })
           );
 
@@ -145,10 +131,8 @@ export class PaymentService {
         if (paymentData.userCouponIds)
           await Promise.all(
             paymentData.userCouponIds.map(async (couponId) => {
-              const coupon = await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.updateUserCoupon(couponId, {
-                count: coupon.count + 1,
-              });
+              await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.restoreUserCoupon(couponId);
             })
           );
         reservation && (await this.reservationRepository.deleteReservation(reservation.id));
@@ -178,294 +162,6 @@ export class PaymentService {
       return await this.reservationRepository.createReservationWithTransaction(database, userId, data);
     }
   }
-
-  // async preparePortOnePayment(userId: string, data: CreatePaymentDTO) {
-  //   const totalCost = data.originalCost - data.discountCost;
-
-  //   if (totalCost !== data.totalCost) {
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-  //   }
-
-  //   const result = await this.database.$transaction(async (database) => {
-  //     const space = await this.spaceRepository.findSpace(data.spaceId);
-  //     const rentalTypes = await this.validatePayment(data, space);
-  //     const reservation = await this.getReservation(database, userId, data, space);
-  //     try {
-  //       const orderId = this.createOrderId();
-
-  //       await this.portOne.preparePayment({
-  //         amount: reservation.totalCost,
-  //         merchant_uid: orderId,
-  //       });
-
-  //       await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-  //         orderId,
-  //         payMethod: PayMethod.PORT_ONE,
-  //       });
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count - 1,
-  //             });
-  //           })
-  //         );
-
-  //       return new PortOnePreparePaymentDTO({
-  //         amount: reservation.totalCost,
-  //         merchant_uid: orderId,
-  //         name: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
-  //       });
-  //     } catch (err) {
-  //       console.error(err);
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count + 1,
-  //             });
-  //           })
-  //         );
-  //       await this.reservationRepository.deleteReservation(reservation.id);
-  //       throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
-  //     }
-  //   });
-  //   return result;
-  // }
-
-  // async completePortOnePayment(props: CompletePortOnePaymentDTO) {
-  //   const reservation = await this.reservationRepository.findReservationByOrderId(props.merchant_uid);
-  //   try {
-  //     await this.database.$transaction(async (database) => {
-  //       const payment = await this.portOne.completePayment({ imp_uid: props.imp_uid });
-
-  //       if (!payment) {
-  //         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
-  //       }
-
-  //       if (payment.amount !== reservation.totalCost) {
-  //         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-  //       }
-
-  //       if (reservation.payMethod !== PayMethod.PORT_ONE) {
-  //         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-  //       }
-
-  //       if (payment.status !== 'paid') {
-  //         throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-  //       }
-  //       await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-  //         orderResultId: props.imp_uid,
-  //         payedAt: new Date(),
-  //       });
-
-  //       await this.createSettlement(database, reservation);
-  //     });
-
-  //     await this.sendMessage(reservation);
-  //   } catch (err) {
-  //     console.error(err);
-  //     const coupons = await this.couponRepository.findUserCoupons({
-  //       where: {
-  //         userId: reservation.user.id,
-  //         reservationId: reservation.id,
-  //       },
-  //     });
-  //     await Promise.all(
-  //       coupons.map(async (coupon) => {
-  //         await this.couponRepository.updateUserCoupon(coupon.id, {
-  //           count: coupon.count + 1,
-  //         });
-  //       })
-  //     );
-  //     await this.reservationRepository.deleteReservation(reservation.id);
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-  //   }
-
-  //   return reservation.id;
-  // }
-
-  // async prepareKakaoPayment(userId: string, data: CreatePaymentDTO) {
-  //   const totalCost = data.originalCost - data.discountCost;
-
-  //   if (totalCost !== data.totalCost) {
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-  //   }
-
-  //   const result = await this.database.$transaction(async (database) => {
-  //     const space = await this.spaceRepository.findSpace(data.spaceId);
-  //     const rentalTypes = await this.validatePayment(data, space);
-  //     const reservation = await this.getReservation(database, userId, data, space);
-  //     try {
-  //       const orderId = this.createOrderId();
-
-  //       const result = await this.kakaoPay.preparePayment({
-  //         item_name: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
-  //         quantity: 1,
-  //         tax_free_amount: 0,
-  //         total_amount: reservation.totalCost,
-  //         partner_order_id: orderId,
-  //       });
-
-  //       await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-  //         orderId,
-  //         orderResultId: result.tid,
-  //         payMethod: PayMethod.KAKAO_PAY,
-  //       });
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count - 1,
-  //             });
-  //           })
-  //         );
-
-  //       return new PrepareKakaoPaymentDTO({
-  //         ...result,
-  //         orderId,
-  //         orderResultId: result.tid,
-  //       });
-  //     } catch (err) {
-  //       console.error(err);
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count + 1,
-  //             });
-  //           })
-  //         );
-
-  //       throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
-  //     }
-  //   });
-  //   return result;
-  // }
-
-  // async approveKakaoPayment(data: ApproveKakaoPaymentDTO) {
-  //   const reservation = await this.reservationRepository.findReservationByOrderId(data.orderId);
-
-  //   try {
-  //     if (data.orderResultId !== reservation.orderResultId) {
-  //       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
-  //     }
-  //     if (reservation.payMethod !== PayMethod.KAKAO_PAY) {
-  //       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-  //     }
-
-  //     await this.database.$transaction(async (database) => {
-  //       await this.kakaoPay.approvePayment({
-  //         partner_order_id: reservation.orderId,
-  //         tid: reservation.orderResultId,
-  //         pg_token: data.pg_token,
-  //         total_amount: reservation.totalCost,
-  //       });
-
-  //       await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-  //         payedAt: new Date(),
-  //       });
-  //       await this.createSettlement(database, reservation);
-  //     });
-
-  //     await this.sendMessage(reservation);
-  //   } catch (err) {
-  //     console.error(err);
-  //     const coupons = await this.couponRepository.findUserCoupons({
-  //       where: {
-  //         userId: reservation.user.id,
-  //         reservationId: reservation.id,
-  //       },
-  //     });
-  //     await Promise.all(
-  //       coupons.map(async (coupon) => {
-  //         await this.couponRepository.updateUserCoupon(coupon.id, {
-  //           count: coupon.count + 1,
-  //         });
-  //       })
-  //     );
-  //     await this.reservationRepository.deleteReservation(reservation.id);
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-  //   }
-
-  //   return reservation.id;
-  // }
-
-  // async testTossPayment() {
-  //   const result = await this.tossPay.createPayment({
-  //     amount: 100,
-  //     orderName: 'test',
-  //     method: '카드',
-  //     orderId: this.createOrderId(),
-  //   });
-
-  //   return result;
-  // }
-
-  // async createTossPayment(userId: string, data: CreatePaymentDTO) {
-  //   const totalCost = data.originalCost - data.discountCost;
-
-  //   if (totalCost !== data.totalCost) {
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-  //   }
-
-  //   if (totalCost !== data.totalCost) {
-  //     throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
-  //   }
-
-  //   const result = await this.database.$transaction(async (database) => {
-  //     const space = await this.spaceRepository.findSpace(data.spaceId);
-  //     const rentalTypes = await this.validatePayment(data, space);
-  //     const reservation = await this.getReservation(database, userId, data, space);
-  //     try {
-  //       const orderId = this.createOrderId();
-
-  //       const result = await this.tossPay.createPayment({
-  //         amount: reservation.totalCost,
-  //         orderName: rentalTypes.map((rentalType) => rentalType.name).join(' & '),
-  //         method: '카드',
-  //         orderId,
-  //       });
-
-  //       await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-  //         orderId,
-  //         orderResultId: result.paymentKey,
-  //         payMethod: PayMethod.TOSS_PAY,
-  //       });
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count - 1,
-  //             });
-  //           })
-  //         );
-
-  //       return new CreateTossPaymentDTO({
-  //         url: result.checkout.url,
-  //       });
-  //     } catch (err) {
-  //       console.error(err);
-  //       if (data.userCouponIds)
-  //         await Promise.all(
-  //           data.userCouponIds.map(async (couponId) => {
-  //             const coupon = await this.couponRepository.findUserCoupon(couponId);
-  //             await this.couponRepository.updateUserCoupon(couponId, {
-  //               count: coupon.count + 1,
-  //             });
-  //           })
-  //         );
-
-  //       throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
-  //     }
-  //   });
-  //   return result;
-  // }
 
   async confirmTossPayment(data: ConfirmTossPaymentDTO) {
     const { paymentKey } = data;
@@ -504,9 +200,7 @@ export class PaymentService {
       });
       await Promise.all(
         coupons.map(async (coupon) => {
-          await this.couponRepository.updateUserCoupon(coupon.id, {
-            count: coupon.count + 1,
-          });
+          await this.couponRepository.restoreUserCoupon(coupon.id);
         })
       );
       reservation && (await this.reservationRepository.deleteReservation(reservation.id));
@@ -602,9 +296,7 @@ export class PaymentService {
     });
     await Promise.all(
       coupons.map(async (coupon) => {
-        await this.couponRepository.updateUserCoupon(coupon.id, {
-          count: coupon.count + 1,
-        });
+        await this.couponRepository.deleteCoupon(coupon.id);
       })
     );
 
@@ -763,10 +455,6 @@ export class PaymentService {
         (data as CreatePaymentDTO).userCouponIds?.map(async (couponId) => {
           const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
           if (isExist) {
-            if (isExist.count === 0) {
-              throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_COUNT_ZERO));
-            }
-
             const usageDateStart = isExist.usageDateStartAt.getTime();
             const usageDateEnd = isExist.usageDateEndAt.getTime();
             const currentDate = new Date();
@@ -779,7 +467,7 @@ export class PaymentService {
               }
 
               if (usageDateEnd < currentDate.getTime()) {
-                await this.couponRepository.updateUserCoupon(isExist.id, { count: isExist.count - 1 });
+                await this.couponRepository.deleteUserCoupon(isExist.id);
 
                 throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
               }

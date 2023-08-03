@@ -26,11 +26,13 @@ export class CouponService {
     const count = await this.couponRepository.countUserCoupons({
       where: {
         userId,
+        deletedAt: null,
       },
     });
     const coupons = await this.couponRepository.findUserCoupons({
       where: {
         userId,
+        deletedAt: null,
       },
       skip,
       take,

@@ -754,7 +754,6 @@ CREATE TABLE `HashTag` (
 -- CreateTable
 CREATE TABLE `UserCoupon` (
     `id` VARCHAR(191) NOT NULL,
-    `count` TINYINT NOT NULL DEFAULT 1,
     `usageDateStartAt` DATETIME NOT NULL,
     `usageDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -762,7 +761,6 @@ CREATE TABLE `UserCoupon` (
     `couponId` VARCHAR(191) NOT NULL,
     `reservationId` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `UserCoupon_userId_couponId_key`(`userId`, `couponId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

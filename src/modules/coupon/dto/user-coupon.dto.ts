@@ -6,7 +6,6 @@ import { CouponDTO, CouponDTOProps } from './coupon.dto';
 
 export interface UserCouponDTOProps {
   id: string;
-  count: number;
   usageDateStartAt: Date;
   usageDateEndAt: Date;
   isUsed: boolean;
@@ -19,9 +18,6 @@ export interface UserCouponDTOProps {
 export class UserCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 쿠폰 id' } })
   id: string;
-
-  @Property({ apiProperty: { type: 'number', description: '쿠폰 개수' } })
-  count: number;
 
   @Property({ apiProperty: { type: 'date', description: '쿠폰 사용 시작일' } })
   usageDateStartAt: Date;
@@ -43,7 +39,6 @@ export class UserCouponDTO {
 
   constructor(props: UserCouponDTOProps) {
     this.id = props.id;
-    this.count = props.count;
     this.usageDateStartAt = props.usageDateStartAt;
     this.usageDateEndAt = props.usageDateEndAt;
     this.reservationId = props.reservationId ?? null;

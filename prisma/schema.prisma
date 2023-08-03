@@ -850,11 +850,10 @@ model HashTag {
 model UserCoupon {
   id String @id @default(uuid())
 
-  //INFO: 기본 6자리 랜덤 생성
-  count            Int      @default(1) @db.TinyInt
-  usageDateStartAt DateTime @db.DateTime
-  usageDateEndAt   DateTime @db.DateTime
-  createdAt        DateTime @default(now())
+  usageDateStartAt DateTime  @db.DateTime
+  usageDateEndAt   DateTime  @db.DateTime
+  createdAt        DateTime  @default(now())
+  deletedAt        DateTime?
 
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -863,8 +862,6 @@ model UserCoupon {
 
   reservationId String?
   reservation   Reservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  @@unique([userId, couponId])
 }
 
 //INFO: 쿠폰
