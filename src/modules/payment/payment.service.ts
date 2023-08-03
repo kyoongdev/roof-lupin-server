@@ -509,7 +509,7 @@ export class PaymentService {
           });
         })
       );
-      await this.reservationRepository.deleteReservation(reservation.id);
+      reservation && (await this.reservationRepository.deleteReservation(reservation.id));
       throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
     }
 
