@@ -7,6 +7,7 @@
 ```code
 yarn docker:local
 [y/n] -> y입력
+yarn prisma db push --force-reset
 yarn seed
 yarn local
 ```
