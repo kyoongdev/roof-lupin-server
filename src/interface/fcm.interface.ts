@@ -42,6 +42,8 @@ export interface SendAlarmTarget {
 export interface SendAlarm {
   body: string;
   title: string;
+  spaceId?: string;
+  exhibitionId?: string;
 }
 export interface SendScheduleAlarm extends SendAlarm {
   targetDate: Date;

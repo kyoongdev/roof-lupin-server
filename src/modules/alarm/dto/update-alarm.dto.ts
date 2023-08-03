@@ -9,6 +9,8 @@ export interface UpdateAlarmDTOProps {
   isPush?: boolean;
   isPushed?: boolean;
   userId?: string;
+  spaceId?: string;
+  exhibitionId?: string;
 }
 
 export class UpdateAlarmDTO {
@@ -36,6 +38,12 @@ export class UpdateAlarmDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '유저 id' } })
   userId?: string;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 id' } })
+  spaceId?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 id' } })
+  exhibitionId?: string;
+
   constructor(props?: UpdateAlarmDTOProps) {
     if (props) {
       this.title = props.title;
@@ -46,6 +54,8 @@ export class UpdateAlarmDTO {
       this.isPush = props.isPush;
       this.isPushed = props.isPushed;
       this.userId = props.userId;
+      this.spaceId = props.spaceId;
+      this.exhibitionId = props.exhibitionId;
     }
   }
 }

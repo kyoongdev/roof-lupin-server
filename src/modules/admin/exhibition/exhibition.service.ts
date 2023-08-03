@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { FCMEvent } from '@/event/fcm';
 import {
   CreateExhibitionDTO,
   CreateExhibitionSpaceDTO,
@@ -16,7 +17,11 @@ import { FileService } from '@/modules/file/file.service';
 
 @Injectable()
 export class AdminExhibitionService {
-  constructor(private readonly exhibitionRepository: ExhibitionRepository, private readonly fileService: FileService) {}
+  constructor(
+    private readonly exhibitionRepository: ExhibitionRepository,
+    private readonly fileService: FileService,
+    private readonly fcmEvent: FCMEvent
+  ) {}
 
   async findExhibition(id: string) {
     return await this.exhibitionRepository.findExhibition(id);

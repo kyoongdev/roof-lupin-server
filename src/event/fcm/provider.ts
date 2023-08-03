@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { nanoid } from 'nanoid';
+
 import { FCMProvider } from '@/common/fcm';
 import { PrismaService } from '@/database/prisma.service';
 import {
@@ -53,13 +55,15 @@ export class FCMEventProvider {
 
   @OnEvent(FCM_EVENT_NAME.SEND_SCHEDULE_ALARM)
   async sendScheduleAlarm(user: SendAlarmTarget, data: SendScheduleAlarm) {
+    const date = new Date();
     const alarm = await this.createAlarm({
       title: data.title,
       content: data.body,
       isPush: true,
       userId: user.userId,
+      ...(data.spaceId && {}),
     });
-    this.schedulerEvent.createSchedule(user.userId, data.targetDate, async () => {
+    this.schedulerEvent.createSchedule(`${user.userId}_${date.getTime()}_${nanoid(2)}`, data.targetDate, async () => {
       await this.fcmService.sendMessage({
         ...data,
         token: user.pushToken,
@@ -150,6 +154,7 @@ export class FCMEventProvider {
     };
     //TODO: 알람 링크 연결
     const alarm = await this.createAlarm({
+      ...data,
       title: alarmData.title,
       content: alarmData.body,
       isPush: true,
@@ -170,7 +175,7 @@ export class FCMEventProvider {
   }
 
   async createAlarm(data: CreateAlarmDTO) {
-    const { userId, ...rest } = data;
+    const { userId, spaceId, exhibitionId, ...rest } = data;
     return await this.database.userAlarm.create({
       data: {
         ...rest,
@@ -179,6 +184,28 @@ export class FCMEventProvider {
             id: userId,
           },
         },
+        ...(spaceId && {
+          alarmSpace: {
+            create: {
+              space: {
+                connect: {
+                  id: spaceId,
+                },
+              },
+            },
+          },
+        }),
+        ...(exhibitionId && {
+          alarmExhibition: {
+            create: {
+              exhibition: {
+                connect: {
+                  id: exhibitionId,
+                },
+              },
+            },
+          },
+        }),
       },
     });
   }

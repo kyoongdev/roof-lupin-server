@@ -22,6 +22,7 @@ export class FCMEvent {
   sendAlarms(users: SendAlarmTarget[], data: SendAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.SEND_ALARMS, users, data);
   }
+
   sendScheduleAlarm(user: SendAlarmTarget, data: SendScheduleAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.SEND_SCHEDULE_ALARM, user, data);
   }
