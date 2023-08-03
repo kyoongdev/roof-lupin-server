@@ -130,6 +130,7 @@ export class PaymentService {
           orderId,
           // payMethod: payType,
         });
+
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
@@ -140,7 +141,7 @@ export class PaymentService {
             })
           );
 
-        return PaymentPayloadDTO.generatePaymentPayload(orderId, rentalTypes, paymentData);
+        return PaymentPayloadDTO.generatePaymentPayload(space, orderId, rentalTypes, paymentData);
       } catch (err) {
         logger.error(err);
         if (paymentData.userCouponIds)
@@ -152,7 +153,7 @@ export class PaymentService {
               });
             })
           );
-        await this.reservationRepository.deleteReservation(reservation.id);
+        reservation && (await this.reservationRepository.deleteReservation(reservation.id));
         throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
       }
     });
