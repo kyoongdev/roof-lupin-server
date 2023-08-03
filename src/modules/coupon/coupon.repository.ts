@@ -231,6 +231,40 @@ export class CouponRepository {
       },
     });
   }
+  async checkUserCouponByCode(code: string) {
+    const userCoupon = await this.database.userCoupon.findFirst({
+      where: {
+        coupon: {
+          code,
+        },
+      },
+      include: {
+        user: true,
+        coupon: {
+          include: {
+            couponCategories: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userCoupon) {
+      return null;
+    }
+
+    return new UserCouponDTO({
+      ...userCoupon,
+      isUsed: !!userCoupon.reservationId,
+      coupon: {
+        ...userCoupon.coupon,
+        categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
+      },
+    });
+  }
 
   async countUserCoupons(args = {} as Prisma.UserCouponCountArgs) {
     return this.database.userCoupon.count(args);

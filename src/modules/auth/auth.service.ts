@@ -10,6 +10,7 @@ import queryString from 'querystring';
 import { EncryptProvider } from '@/common/encrypt';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
+import { logger } from '@/log';
 import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
@@ -138,11 +139,15 @@ export class AuthService {
   }
 
   async kakaoLoginCallback(code: string, res: Response) {
-    const result = await this.kakaoService.getRestCallback(code);
+    try {
+      const result = await this.kakaoService.getRestCallback(code);
+      console.log(result);
+      const { user } = result;
 
-    const { user } = result;
-
-    this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
+      this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
+    } catch (err) {
+      logger.log(err);
+    }
   }
 
   async naverLoginCallback(code: string, res: Response) {

@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { FCMEvent } from '@/event/fcm';
+
 import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
@@ -44,6 +46,7 @@ export class QnAService {
   async createQnA(userId: string, data: CreateQnADTO) {
     return await this.qnaRepository.createQnA(userId, data);
   }
+
   async updateQnA(qnaId: string, userId: string, data: UpdateQnADTO) {
     await this.qnaRepository.findQnA(qnaId);
     await this.checkIsUserValid(qnaId, userId);

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { FCMEvent } from '@/event/fcm';
 
 import { HostRepository } from '../host/host.repository';
 import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
@@ -12,6 +13,6 @@ import { QnAService } from './qna.service';
 
 @Module({
   controllers: [QnAController],
-  providers: [QnAService, QnARepository, SpaceRepository, HostRepository, RentalTypeRepository, EncryptProvider],
+  providers: [QnAService, QnARepository],
 })
 export class QnaModule {}

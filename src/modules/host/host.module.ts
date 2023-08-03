@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { FCMEvent } from '@/event/fcm';
 
 import { FileService } from '../file/file.service';
 import { LocationRepository } from '../location/location.repository';
@@ -59,6 +60,7 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     FileService,
     HostReservationService,
     ReservationRepository,
+    FCMEvent,
   ],
   controllers: [
     HostController,
