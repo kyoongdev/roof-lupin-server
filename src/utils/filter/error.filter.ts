@@ -20,9 +20,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const message =
       errRes?.message && Array.isArray(errRes.message) && errRes.message.length > 0
-        ? errRes.message.join('\n')
+        ? errRes.message
         : exception.message || 'Internal Server Error';
-    logger.error(message, exception);
+
+    logger.error(exception.stack || message);
+
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),

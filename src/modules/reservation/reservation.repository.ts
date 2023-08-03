@@ -96,7 +96,7 @@ export class ReservationRepository {
   //TODO: 결제 시스템까지 도입
   async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
-    const taxCost = Math.floor(rest.totalCost / 1.1);
+    const vatCost = Math.floor(rest.totalCost * (1 / 11));
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await this.database.reservation.create({
@@ -130,12 +130,12 @@ export class ReservationRepository {
                 connect: {
                   id: service.id,
                 },
-                count: service.count,
               },
+              count: service.count,
             })),
           },
         }),
-        vatCost: rest.totalCost - taxCost,
+        vatCost,
         isApproved: typeof isApproved === 'boolean' ? isApproved : true,
         year: Number(rest.year),
         month: Number(rest.month),
@@ -148,7 +148,7 @@ export class ReservationRepository {
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
-    const taxCost = Math.floor(rest.totalCost / 1.1);
+    const vatCost = Math.floor(rest.totalCost * (1 / 11));
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await database.reservation.create({
@@ -186,12 +186,12 @@ export class ReservationRepository {
                 connect: {
                   id: service.id,
                 },
-                count: service.count,
               },
+              count: service.count,
             })),
           },
         }),
-        vatCost: rest.totalCost - taxCost,
+        vatCost,
       },
     });
     return reservation;

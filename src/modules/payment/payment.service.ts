@@ -655,6 +655,7 @@ export class PaymentService {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }
           const { originalCost, totalCost } = await this.getRealCost(rentalType.baseCost, data, space);
+          console.log({ originalCost, totalCost });
           //INFO: 가격 정보가 올바르지 않을 때
           if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
             throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
@@ -725,11 +726,12 @@ export class PaymentService {
           const additionalServices = await this.rentalTypeRepository.findRentalTypeAdditionalServices(
             rentalType.rentalTypeId
           );
-
+          console.log({ rentalType });
           rentalType.additionalServices.forEach((service) => {
             const baseAdditionalCost = additionalServices.find(
               (additionalService) => additionalService.id === service.id
             );
+            console.log({ baseAdditionalCost, service });
             if (baseAdditionalCost) {
               if (baseAdditionalCost.maxCount && baseAdditionalCost.maxCount < service.count) {
                 throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT));
