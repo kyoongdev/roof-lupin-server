@@ -1,1 +1,0 @@
-{"version":3,"file":"interested.dto.js","sourceRoot":"","sources":["../../../../src/modules/space/dto/interested.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,iDAAyC;AAMzC,MAAa,aAAa;IAIxB,YAAY,KAAyB;QACnC,IAAI,CAAC,YAAY,GAAG,KAAK,CAAC,YAAY,CAAC;IACzC,CAAC;CACF;AANC;IAAC,IAAA,wBAAQ,EAAC,EAAE,WAAW,EAAE,EAAE,IAAI,EAAE,SAAS,EAAE,WAAW,EAAE,MAAM,EAAE,EAAE,CAAC;;mDAC9C;AAFxB,sCAOC"}

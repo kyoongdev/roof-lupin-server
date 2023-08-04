@@ -1,1 +1,0 @@
-{"version":3,"file":"token.interface.js","sourceRoot":"","sources":["../../src/interface/token.interface.ts"],"names":[],"mappings":";;;AAAa,QAAA,IAAI,GAAG;IAClB,IAAI,EAAE,MAAM;IACZ,KAAK,EAAE,OAAO;IACd,IAAI,EAAE,MAAM;CACJ,CAAC;AAeX,IAAY,aAKX;AALD,WAAY,aAAa;IACvB,+CAAO,CAAA;IACP,+CAAO,CAAA;IACP,mDAAS,CAAA;IACT,iDAAQ,CAAA;AACV,CAAC,EALW,aAAa,GAAb,qBAAa,KAAb,qBAAa,QAKxB"}

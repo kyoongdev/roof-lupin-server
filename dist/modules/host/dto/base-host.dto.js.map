@@ -1,1 +1,0 @@
-{"version":3,"file":"base-host.dto.js","sourceRoot":"","sources":["../../../../src/modules/host/dto/base-host.dto.ts"],"names":[],"mappings":";;;AAAA,4CAAmC;AAGnC,MAAa,WAAY,SAAQ,gBAAO;IAE/B,mBAAmB,CAAC,MAAe;QACxC,IAAI,MAAM,KAAK,CAAC,EAAE;YAChB,OAAO,IAAI,CAAC;SACb;aAAM,IAAI,MAAM,KAAK,CAAC,EAAE;YACvB,OAAO,IAAI,CAAC;SACb;QACD,OAAO,SAAS,CAAC;IACnB,CAAC;CACF;AAVD,kCAUC"}

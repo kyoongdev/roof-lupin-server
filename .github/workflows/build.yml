@@ -37,7 +37,7 @@ jobs:
 
       # zip 파일 생성
       - name: zip create
-        run: zip -qq -r "rooflupin-build.zip" .
+        run: zip -qq -r "rooflupin-build.zip" ./dist
         shell: bash
 
       # with에 secrets에서 설정한 key를 설정한다.
