@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import Firebase from 'firebase-admin';
 
-import { SendPushMessage } from '@/interface/fcm.interface';
+import { SendMessage, SendPushMessage } from '@/interface/fcm.interface';
 
 import { fcmConfig } from './fcm.config';
 
@@ -12,7 +12,7 @@ export class FCMProvider {
     credential: Firebase.credential.cert(fcmConfig),
   });
 
-  async sendMessage(props: SendPushMessage) {
+  async sendMessage(props: SendMessage) {
     await this.firebaseApp.messaging().send({
       token: props.token,
       notification: {
@@ -29,19 +29,21 @@ export class FCMProvider {
           body: props.body,
         },
       },
-      webpush: {
-        fcmOptions: {
-          link: props.link,
+      ...(props.link && {
+        webpush: {
+          fcmOptions: {
+            link: props.link,
+          },
+          data: {
+            title: props.title,
+            body: props.body,
+          },
         },
-        data: {
-          title: props.title,
-          body: props.body,
-        },
-      },
+      }),
     });
   }
 
-  async sendMessages(props: SendPushMessage[]) {
+  async sendMessages(props: SendMessage[]) {
     await this.firebaseApp.messaging().sendEach(
       props.map((prop) => ({
         token: prop.token,

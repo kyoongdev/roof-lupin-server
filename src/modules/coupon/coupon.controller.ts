@@ -65,6 +65,6 @@ export class CouponController {
     201
   )
   async registerCouponByCode(@ReqUser() user: RequestUser, @Body() body: RegisterCouponByCodeDTO) {
-    return await this.couponService.registerCouponByCode(user.id, body);
+    return await this.couponService.registerCouponByCode(user, body);
   }
 }
