@@ -40,7 +40,7 @@ export class AdminTermsController {
     params: {
       type: 'string',
       enum: [...Object.values(GUEST_TERMS), ...Object.values(HOST_TERMS)],
-      name: '약관 이름',
+      name: 'name',
     },
   })
   @ResponseApi({

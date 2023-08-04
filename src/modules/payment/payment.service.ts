@@ -94,6 +94,7 @@ export class PaymentService {
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(paymentData.spaceId);
       const reservation = await this.getReservation(database, userId, paymentData, space);
+
       try {
         const rentalTypes = await this.validatePayment(paymentData, space);
         const orderId = this.createOrderId();
@@ -113,15 +114,7 @@ export class PaymentService {
         return PaymentPayloadDTO.generatePaymentPayload(space, orderId, rentalTypes, paymentData);
       } catch (err) {
         logger.error(err);
-        if (paymentData.userCouponIds)
-          await Promise.all(
-            paymentData.userCouponIds.map(async (couponId) => {
-              await this.couponRepository.findUserCoupon(couponId);
-              await this.couponRepository.restoreUserCoupon(couponId);
-            })
-          );
-        reservation && (await this.reservationRepository.deleteReservation(reservation.id));
-        throw new InternalServerErrorException('결제 처리 중 오류가 발생했습니다.');
+        throw err;
       }
     });
 
@@ -176,7 +169,6 @@ export class PaymentService {
 
       await this.sendMessage(reservation);
     } catch (err) {
-      console.error(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -189,7 +181,7 @@ export class PaymentService {
         })
       );
       reservation && (await this.reservationRepository.deleteReservation(reservation.id));
-      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
+      throw err;
     }
 
     return reservation.id;

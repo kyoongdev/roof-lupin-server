@@ -26,10 +26,10 @@ export const HOST_TERMS = {
 } as const;
 
 export const HOST_TERMS_KOR: Record<(typeof HOST_TERMS)[keyof typeof HOST_TERMS], string> = {
-  HOST_TERMS_ADVERTISEMENT: '',
-  HOST_TERMS_LOCATION_MANAGEMENT: '',
-  HOST_TERMS_PRIVATE_ESSENTIAL: '',
-  HOST_TERMS_PRIVATE_USAGE: '',
-  HOST_TERMS_SETTLEMENT_REFUND: '',
-  HOST_TERMS_USAGE: '',
+  HOST_TERMS_PRIVATE_USAGE: '호스트 개인정보 처리 방침',
+  HOST_TERMS_USAGE: '호스트 이용약관',
+  HOST_TERMS_SETTLEMENT_REFUND: '정산 및 환불 정책',
+  HOST_TERMS_LOCATION_MANAGEMENT: '루프루팡 공간관리 정책',
+  HOST_TERMS_ADVERTISEMENT: '루프루팡 광고채널 이용약관',
+  HOST_TERMS_PRIVATE_ESSENTIAL: '호스트 개인정보 동의(필수)',
 } as const;
