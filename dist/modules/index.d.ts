@@ -1,4 +1,4 @@
-import { TermsModule } from './terms/terms.module';
-export declare const Modules: (typeof TermsModule)[];
+import { AlarmModule } from './alarm/alarm.module';
+export declare const Modules: (typeof AlarmModule)[];
 export declare class V1Module {
 }

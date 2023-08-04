@@ -50,23 +50,6 @@ export class AdminTermsController {
     return await this.termsService.getTerm(key);
   }
 
-  @Post()
-  @RequestApi({
-    summary: {
-      description: '약관 생성하기',
-      summary: '약관 생성하기',
-    },
-  })
-  @ResponseApi(
-    {
-      type: UploadedFileDTO,
-    },
-    201
-  )
-  async createTerm(@Body() body: CreateTermDTO) {
-    return await this.termsService.createTerm(body);
-  }
-
   @Patch(':name')
   @RequestApi({
     summary: {

@@ -61,4 +61,4 @@ jobs:
           --application-name "rooflupin-code-deploy"
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name "rooflupin-code-deploy-group"
-          --s3-location bucket="rooflupin-build",key="rooflupin-build.zip",bundleType=zip
+          --s3-location bucket="rooflupin-dev-bulid",key="rooflupin-build.zip",bundleType=zip

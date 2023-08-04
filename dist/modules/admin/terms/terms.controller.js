@@ -32,9 +32,6 @@ let AdminTermsController = class AdminTermsController {
     async getTerm(key) {
         return await this.termsService.getTerm(key);
     }
-    async createTerm(body) {
-        return await this.termsService.createTerm(body);
-    }
     async updateTerm(name, body) {
         return await this.termsService.updateTerm(name, body);
     }
@@ -79,22 +76,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdminTermsController.prototype, "getTerm", null);
-__decorate([
-    (0, common_1.Post)(),
-    (0, cumuco_nestjs_1.RequestApi)({
-        summary: {
-            description: '약관 생성하기',
-            summary: '약관 생성하기',
-        },
-    }),
-    (0, cumuco_nestjs_1.ResponseApi)({
-        type: dto_1.UploadedFileDTO,
-    }, 201),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [terms_2.CreateTermDTO]),
-    __metadata("design:returntype", Promise)
-], AdminTermsController.prototype, "createTerm", null);
 __decorate([
     (0, common_1.Patch)(':name'),
     (0, cumuco_nestjs_1.RequestApi)({

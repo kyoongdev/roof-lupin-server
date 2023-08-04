@@ -43,13 +43,6 @@ let AdminTermsService = class AdminTermsService {
             content,
         });
     }
-    async createTerm(data) {
-        const term = await this.getTerm(data.name);
-        if (term.content) {
-            throw new term_exception_1.TermException(errorCode_1.TERM_ERROR_CODE.CONFLICT(errorCode_1.TERM_ALREADY_EXISTS));
-        }
-        return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), data.name, 'text/plain');
-    }
     async updateTerm(name, data) {
         const term = await this.getTerm(name);
         if (!term.content) {

@@ -39,16 +39,6 @@ export class AdminTermsService {
     });
   }
 
-  async createTerm(data: CreateTermDTO) {
-    const term = await this.getTerm(data.name);
-
-    if (term.content) {
-      throw new TermException(TERM_ERROR_CODE.CONFLICT(TERM_ALREADY_EXISTS));
-    }
-
-    return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), data.name, 'text/plain');
-  }
-
   async updateTerm(name: string, data: UpdateTermDTO) {
     const term = await this.getTerm(name);
 
