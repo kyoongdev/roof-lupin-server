@@ -24,22 +24,11 @@ import { RentalTypeService } from '../space/rental-type/rental-type.service';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
-import {
-  ApproveKakaoPaymentDTO,
-  CompletePortOnePaymentDTO,
-  ConfirmTossPaymentDTO,
-  CreatePaymentPayloadDTO,
-  CreateTossPaymentDTO,
-  PaymentPayloadDTO,
-  PortOnePreparePaymentDTO,
-  PrepareKakaoPaymentDTO,
-  RefundPaymentDTO,
-} from './dto';
+import { ConfirmTossPaymentDTO, CreatePaymentPayloadDTO, PaymentPayloadDTO, RefundPaymentDTO } from './dto';
 import {
   PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT,
   PAYMENT_ALREADY_REFUNDED,
   PAYMENT_CONFLICT,
-  PAYMENT_COUPON_COUNT_ZERO,
   PAYMENT_COUPON_DUE_DATE_BEFORE,
   PAYMENT_COUPON_DUE_DATE_EXPIRED,
   PAYMENT_DATE_BAD_REQUEST,
@@ -338,7 +327,7 @@ export class PaymentService {
   }
 
   async sendMessage(reservation: ReservationDetailDTO) {
-    if (reservation.user.isAlarmAccepted)
+    if (reservation.user.isAlarmAccepted) {
       reservation.rentalTypes.forEach((rentalType) => {
         this.fcmEvent.createReservationUsageAlarm({
           year: reservation.year,
@@ -351,6 +340,17 @@ export class PaymentService {
           userId: reservation.user.id,
         });
       });
+
+      this.fcmEvent.createReviewRecommendAlarm({
+        year: reservation.year,
+        month: reservation.month,
+        day: reservation.day + 7,
+        jobId: `${reservation.id}_${reservation.user.id}`,
+        spaceName: reservation.space.title,
+        userId: reservation.user.id,
+        nickname: reservation.user.nickname,
+      });
+    }
   }
 
   createOrderId() {
