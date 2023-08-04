@@ -19,6 +19,7 @@ export class AdminTermsService {
     return await Promise.all(
       keys.map(async (key) => {
         const s3Body = await this.fileService.getFile(key);
+        console.log(s3Body, key);
         const content = s3Body ? await s3Body.transformToString() : null;
         return new TermDTO({
           id: key,
@@ -42,11 +43,10 @@ export class AdminTermsService {
   async updateTerm(name: string, data: UpdateTermDTO) {
     const term = await this.getTerm(name);
 
-    if (!term.content) {
-      throw new TermException(TERM_ERROR_CODE.NOT_FOUND(TERM_NOT_FOUND));
+    if (term.content) {
+      await this.fileService.deleteFile(`${this.configService.get('AWS_CLOUD_FRONT_URL')}/${name}`);
     }
-    await this.fileService.deleteFile(`${this.configService.get('AWS_CLOUD_FRONT_URL')}/${name}`);
-    return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), name, 'text/plain');
+    await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), name, 'text/plain');
   }
 
   async deleteTerm(name: string) {
