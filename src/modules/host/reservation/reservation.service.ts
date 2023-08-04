@@ -64,4 +64,20 @@ export class HostReservationService {
       isApproved: true,
     });
   }
+
+  async cancelReservation(id: string, hostId: string) {
+    const reservation = await this.findReservation(id, hostId);
+
+    if (!reservation.space.isImmediateReservation) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
+    }
+    if (reservation.isApproved) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_ALREADY_APPROVED));
+    }
+
+    await this.reservationRepository.updateReservation(id, {
+      isApproved: false,
+      isCanceled: true,
+    });
+  }
 }
