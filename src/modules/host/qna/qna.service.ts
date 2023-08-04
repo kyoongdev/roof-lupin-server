@@ -60,19 +60,14 @@ export class HostQnAService {
         nickname: true,
       },
     });
-    user &&
-      user.isAlarmAccepted &&
-      user.pushToken &&
-      this.fcmEvent.sendAlarm(
-        {
-          pushToken: user.pushToken,
-          userId: user.id,
-        },
-        {
-          title: '답변이 등록됐어요!',
-          body: `${user.nickname}님! ${qna.space.title}에 문의하신 내용에 대한 답변이 올라왔어요! 확인해보세요!`,
-        }
-      );
+    if (user && user.isAlarmAccepted && user.pushToken) {
+      this.fcmEvent.createQnAAnswerAlarm({
+        userId: user.id,
+        pushToken: user.pushToken,
+        spaceName: qna.space.title,
+        nickname: user.nickname || user.name,
+      });
+    }
 
     return qnaAnswerId;
   }
