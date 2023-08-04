@@ -1,0 +1,1 @@
+{"version":3,"file":"errorCode.js","sourceRoot":"","sources":["../../../../src/modules/frequent-question/exception/errorCode.ts"],"names":[],"mappings":";;;AAAA,iDAAuD;AAE1C,QAAA,2BAA2B,GAAG,sBAA+B,CAAC;AAE9D,QAAA,4BAA4B,GAA2B;IAClE,SAAS,EAAE,CAAC,OAAO,GAAG,WAAW,EAAE,EAAE,CAAC,CAAC;QACrC,IAAI,EAAE,2BAAW,CAAC,SAAS;QAC3B,OAAO;KACR,CAAC;CACH,CAAC"}

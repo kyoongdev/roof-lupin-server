@@ -1,0 +1,42 @@
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
+import { FCMEvent } from '@/event/fcm';
+import { FinanceProvider, TossPayProvider } from '@/utils';
+import { CouponRepository } from '../coupon/coupon.repository';
+import { SettlementRepository } from '../host/settlement/settlement.repository';
+import { CreatePaymentDTO, CreateReservationDTO, ReservationDetailDTO } from '../reservation/dto';
+import { ReservationRepository } from '../reservation/reservation.repository';
+import { SpaceDetailDTO } from '../space/dto';
+import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
+import { RentalTypeService } from '../space/rental-type/rental-type.service';
+import { SpaceRepository } from '../space/space.repository';
+import { UserRepository } from '../user/user.repository';
+import { ConfirmTossPaymentDTO, CreatePaymentPayloadDTO, PaymentPayloadDTO, RefundPaymentDTO } from './dto';
+export declare class PaymentService {
+    private readonly spaceRepository;
+    private readonly reservationRepository;
+    private readonly rentalTypeRepository;
+    private readonly rentalTypeService;
+    private readonly couponRepository;
+    private readonly tossPay;
+    private readonly database;
+    private readonly fcmEvent;
+    private readonly userRepository;
+    private readonly settlementRepository;
+    private readonly financeProvider;
+    constructor(spaceRepository: SpaceRepository, reservationRepository: ReservationRepository, rentalTypeRepository: RentalTypeRepository, rentalTypeService: RentalTypeService, couponRepository: CouponRepository, tossPay: TossPayProvider, database: PrismaService, fcmEvent: FCMEvent, userRepository: UserRepository, settlementRepository: SettlementRepository, financeProvider: FinanceProvider);
+    validateAccount(): Promise<void>;
+    requestPayment(userId: string, data: CreateReservationDTO): Promise<string>;
+    createPaymentPayload(userId: string, data: CreatePaymentPayloadDTO): Promise<PaymentPayloadDTO>;
+    getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO, space: SpaceDetailDTO): Promise<import(".prisma/client").Reservation | ReservationDetailDTO>;
+    confirmTossPayment(data: ConfirmTossPaymentDTO): Promise<string>;
+    refundPayment(userId: string, data: RefundPaymentDTO): Promise<string>;
+    deletePayment(orderId: string, userId: string): Promise<void>;
+    createSettlement(database: TransactionPrisma, data: ReservationDetailDTO): Promise<void>;
+    sendMessage(reservation: ReservationDetailDTO): Promise<void>;
+    createOrderId(): string;
+    validatePayment(data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO): Promise<import("../space/dto/rental-type").RentalTypeDTO[]>;
+    getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO): Promise<{
+        totalCost: number;
+        originalCost: number;
+    }>;
+}
