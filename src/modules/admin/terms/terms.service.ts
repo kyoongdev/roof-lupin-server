@@ -16,7 +16,7 @@ export class AdminTermsService {
   async getTerms() {
     const keys = [...Object.values(GUEST_TERMS), ...Object.values(HOST_TERMS)];
 
-    await Promise.all(
+    return await Promise.all(
       keys.map(async (key) => {
         const s3Body = await this.fileService.getFile(key);
         const content = s3Body ? await s3Body.transformToString() : null;

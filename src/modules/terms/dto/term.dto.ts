@@ -1,12 +1,14 @@
 import { Property } from 'cumuco-nestjs';
 
+import { TermResDecorator } from '@/utils/validation/terms.validation';
+
 export interface TermDTOProps {
   content?: string;
   name: string;
 }
 
 export class TermDTO {
-  @Property({ apiProperty: { type: 'string', description: '이름' } })
+  @TermResDecorator()
   name: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '내용' } })
