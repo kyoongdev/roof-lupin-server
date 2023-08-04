@@ -24,6 +24,7 @@ let TermsService = class TermsService {
             const s3Body = await this.fileService.getFile(key);
             const content = s3Body ? await s3Body.transformToString() : null;
             return new dto_1.TermDTO({
+                id: key,
                 name: key,
                 content,
             });
@@ -33,6 +34,7 @@ let TermsService = class TermsService {
         const s3Body = await this.fileService.getFile(key);
         const content = s3Body ? await s3Body.transformToString() : null;
         return new dto_1.TermDTO({
+            id: key,
             name: key,
             content,
         });

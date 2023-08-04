@@ -14,10 +14,15 @@ const cumuco_nestjs_1 = require("cumuco-nestjs");
 const terms_validation_1 = require("../../../utils/validation/terms.validation");
 class TermDTO {
     constructor(props) {
+        this.id = props.id;
         this.content = props.content;
         this.name = props.name;
     }
 }
+__decorate([
+    (0, cumuco_nestjs_1.Property)({ apiProperty: { type: 'string', description: '약관 id' } }),
+    __metadata("design:type", String)
+], TermDTO.prototype, "id", void 0);
 __decorate([
     (0, terms_validation_1.TermResDecorator)(),
     __metadata("design:type", String)

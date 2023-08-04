@@ -21,6 +21,7 @@ export class AdminTermsService {
         const s3Body = await this.fileService.getFile(key);
         const content = s3Body ? await s3Body.transformToString() : null;
         return new TermDTO({
+          id: key,
           name: key,
           content,
         });
@@ -32,6 +33,7 @@ export class AdminTermsService {
     const s3Body = await this.fileService.getFile(key);
     const content = s3Body ? await s3Body.transformToString() : null;
     return new TermDTO({
+      id: key,
       name: key,
       content,
     });
