@@ -4,7 +4,6 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { nanoid } from 'nanoid';
 
 import { getDateDiff } from '@/common/date';
-import { FCMProvider } from '@/common/fcm';
 import { PrismaService } from '@/database/prisma.service';
 import {
   CreateCouponDurationAlarm,
@@ -18,6 +17,7 @@ import {
   SendScheduleAlarm,
 } from '@/interface/fcm.interface';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
+import { FCMProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
 
@@ -38,6 +38,13 @@ export class FCMEventProvider {
       content: data.body,
       isPush: true,
       userId: user.userId,
+      alarmAt: new Date(),
+      ...(data.spaceId && {
+        spaceId: data.spaceId,
+      }),
+      ...(data.exhibitionId && {
+        exhibitionId: data.exhibitionId,
+      }),
     });
     await this.fcmService.sendMessage({
       ...data,
@@ -63,7 +70,13 @@ export class FCMEventProvider {
       content: data.body,
       isPush: true,
       userId: user.userId,
-      ...(data.spaceId && {}),
+      alarmAt: data.targetDate,
+      ...(data.spaceId && {
+        spaceId: data.spaceId,
+      }),
+      ...(data.exhibitionId && {
+        exhibitionId: data.exhibitionId,
+      }),
     });
     this.schedulerEvent.createSchedule(`${user.userId}_${date.getTime()}_${nanoid(2)}`, data.targetDate, async () => {
       await this.fcmService.sendMessage({
@@ -127,6 +140,7 @@ export class FCMEventProvider {
       content: alarmData.body,
       isPush: true,
       userId: data.userId,
+      alarmAt: targetDate,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
       const user = await this.database.user.findUnique({
@@ -158,6 +172,7 @@ export class FCMEventProvider {
       content: alarmData.body,
       isPush: true,
       userId: data.userId,
+      alarmAt: targetDate,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
       const user = await this.database.user.findUnique({
@@ -188,6 +203,7 @@ export class FCMEventProvider {
       content: alarmData.body,
       isPush: true,
       userId: data.userId,
+      alarmAt: new Date(),
     });
     await this.fcmService.sendMessage(alarmData);
     await this.updatePushedAlarm(alarm.id);
@@ -204,6 +220,7 @@ export class FCMEventProvider {
       body: data.title,
       link: '',
     };
+    const dateDiff = getDateDiff(currentDate, targetDate);
 
     const alarm = await this.createAlarm({
       ...data,
@@ -212,9 +229,8 @@ export class FCMEventProvider {
       isPush: true,
       userId: data.userId,
       exhibitionId: data.exhibitionId,
+      alarmAt: dateDiff <= 1 ? new Date() : targetDate,
     });
-
-    const dateDiff = getDateDiff(currentDate, targetDate);
 
     if (dateDiff <= 1) {
       const user = await this.database.user.findUnique({

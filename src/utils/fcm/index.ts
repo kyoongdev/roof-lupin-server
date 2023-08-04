@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import Firebase from 'firebase-admin';
 
-import { SendMessage, SendPushMessage } from '@/interface/fcm.interface';
+import { SendMessage } from '@/interface/fcm.interface';
 
 import { fcmConfig } from './fcm.config';
 

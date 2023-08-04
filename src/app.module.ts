@@ -8,8 +8,6 @@ import { Modules, V1Module } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
-import { FCMProvider } from './common/fcm';
-import { DynamicLinkProvider } from './common/link';
 import { EventProviders } from './event';
 import { FCMEvent } from './event/fcm';
 import { SchedulerEvent } from './event/scheduler';
@@ -17,6 +15,8 @@ import { AdminModule } from './modules/admin/admin.module';
 import { GlobalModule } from './modules/global';
 import { HostModule } from './modules/host/host.module';
 import { AOPProvider } from './utils/aop';
+import { FCMProvider } from './utils/fcm';
+import { DynamicLinkProvider } from './utils/link';
 
 const providers: Provider[] = [
   ...Filters,

@@ -3,9 +3,11 @@ import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import scheduler from 'node-schedule';
+
 import { PrismaService } from '@/database/prisma.service';
 
-import { seedDatabase } from './seed';
+import { FCMProvider } from './utils/fcm';
 
 class AppConfig {
   private app: INestApplication;
@@ -20,6 +22,62 @@ class AppConfig {
     await this.app.listen(8000, () => {
       console.info('🔥루프루팡 서버 시작!! 8000🔥');
     });
+
+    await this.initAlarm();
+  }
+
+  async initAlarm() {
+    const database = this.app.get(PrismaService);
+    const fcmProvider = this.app.get(FCMProvider);
+
+    const alarms = await database.userAlarm.findMany({
+      where: {
+        isPushed: false,
+        isRead: false,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    await Promise.all(
+      alarms.map(async (alarm) => {
+        const currentDate = new Date();
+        const alarmAt = alarm.alarmAt;
+
+        if (currentDate >= alarmAt) {
+          await fcmProvider.sendMessage({
+            token: alarm.user.pushToken,
+            title: alarm.title,
+            body: alarm.content,
+          });
+          await database.userAlarm.update({
+            where: {
+              id: alarm.id,
+            },
+            data: {
+              isPushed: true,
+            },
+          });
+        } else {
+          scheduler.scheduleJob(alarmAt, async () => {
+            await fcmProvider.sendMessage({
+              token: alarm.user.pushToken,
+              title: alarm.title,
+              body: alarm.content,
+            });
+            await database.userAlarm.update({
+              where: {
+                id: alarm.id,
+              },
+              data: {
+                isPushed: true,
+              },
+            });
+          });
+        }
+      })
+    );
   }
 
   enableCors(options?: CorsOptions | CorsOptionsDelegate<any>) {
