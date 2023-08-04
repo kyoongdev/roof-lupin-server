@@ -61,4 +61,18 @@ export class HostReservationController {
   async approveReservation(@ReqUser() user: RequestHost, @Param('reservationId') id: string) {
     return await this.reservationService.approveReservation(id, user.id);
   }
+
+  @Post(':reservationId/cancel')
+  @RequestApi({
+    summary: {
+      summary: '예약 취소하기',
+      description: '예약 취소하기',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async cancelReservation(@ReqUser() user: RequestHost, @Param('reservationId') id: string) {
+    return await this.reservationService.cancelReservation(id, user.id);
+  }
 }
