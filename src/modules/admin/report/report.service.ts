@@ -55,7 +55,7 @@ export class AdminReportService {
           pushToken: user.pushToken,
           userId: user.id,
         },
-        { title: '신고가 아래와 같이 조치가 완료됐습니다..', body: data.content }
+        { title: '신고가 아래와 같이 조치가 완료됐습니다.', body: data.content }
       );
     }
 

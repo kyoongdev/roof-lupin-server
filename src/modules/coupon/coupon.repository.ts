@@ -299,7 +299,7 @@ export class CouponRepository {
 
   async createUserCoupon(couponId: string, data: CreateUserCouponDTO) {
     const { userId, ...rest } = data;
-    const coupon = await this.findCoupon(couponId);
+    await this.findCoupon(couponId);
 
     const userCoupon = await this.database.userCoupon.create({
       data: {
@@ -313,11 +313,13 @@ export class CouponRepository {
             id: couponId,
           },
         },
-
         ...rest,
       },
+      include: {
+        user: true,
+      },
     });
-    return userCoupon.id;
+    return userCoupon;
   }
 
   async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {

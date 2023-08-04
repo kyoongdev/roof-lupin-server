@@ -8,6 +8,7 @@ import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { FCMEvent } from '@/event/fcm';
 import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
 import { logger } from '@/log';
@@ -53,7 +54,8 @@ export class AuthService {
     private readonly naverService: NaverLogin,
     private readonly appleService: AppleLogin,
     private readonly configService: ConfigService,
-    private readonly encrypt: EncryptProvider
+    private readonly encrypt: EncryptProvider,
+    private readonly fcmEvent: FCMEvent
   ) {}
 
   async testUserLogin() {
@@ -70,6 +72,13 @@ export class AuthService {
     const current = new Date();
     current.setUTCHours(0, 0, 0, 0);
     const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
+    const user = await this.userRepository.findUser(userId);
+    await this.fcmEvent.createCouponDurationAlarm({
+      dueDate: usageDateEndAt,
+      userId,
+      jobId: nanoid(),
+      nickname: user.nickname,
+    });
 
     await this.couponRepository.createUserCoupon(coupon.id, {
       userId,
