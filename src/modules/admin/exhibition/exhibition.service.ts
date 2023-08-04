@@ -62,18 +62,19 @@ export class AdminExhibitionService {
     const targetDate = new Date(data.startAt);
     targetDate.setDate(targetDate.getDate() - 1);
 
-    this.fcmEvent.sendScheduleAlarms(
-      users.map((user) => ({
+    users
+      .map((user) => ({
         pushToken: user.pushToken,
         userId: user.id,
-      })),
-      {
-        title: `루프루팡과 함께 ${data.title}을 즐겨봐요`,
-        body: data.title,
-        targetDate,
-        exhibitionId,
-      }
-    );
+      }))
+      .map((user) => {
+        this.fcmEvent.createMarketingAlarm({
+          ...user,
+          title: data.title,
+          exhibitionId,
+          startAt: data.startAt,
+        });
+      });
 
     return exhibitionId;
   }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
+  CreateMarketingAlarm,
   CreateReservationUsageAlarm,
   CreateReviewRecommendAlarm,
   SendAlarm,
@@ -45,6 +46,10 @@ export class FCMEvent {
 
   createQnAAnswerAlarm(data: CreateReviewRecommendAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM, data);
+  }
+
+  createMarketingAlarm(data: CreateMarketingAlarm) {
+    this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_MARKETING_ALARM, data);
   }
 
   deleteAlarm(alarmId: string) {

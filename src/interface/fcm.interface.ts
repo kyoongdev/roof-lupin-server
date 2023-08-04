@@ -2,11 +2,12 @@ export interface SendPushMessage {
   token: string;
   body: string;
   title: string;
+  link?: string;
 }
 
 export interface BaseAlarmProps {
   pushToken: string;
-  nickname: string;
+  nickname?: string;
   userId: string;
 }
 
@@ -34,6 +35,12 @@ export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
 }
 
+export interface CreateMarketingAlarm extends BaseAlarmProps {
+  title: string;
+  startAt: Date;
+  exhibitionId: string;
+}
+
 export interface SendAlarmTarget {
   userId: string;
   pushToken: string;
@@ -42,6 +49,7 @@ export interface SendAlarmTarget {
 export interface SendAlarm {
   body: string;
   title: string;
+  link: string;
   spaceId?: string;
   exhibitionId?: string;
 }

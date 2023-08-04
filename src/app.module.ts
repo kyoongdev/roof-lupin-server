@@ -9,6 +9,7 @@ import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
 import { FCMProvider } from './common/fcm';
+import { DynamicLinkProvider } from './common/link';
 import { EventProviders } from './event';
 import { FCMEvent } from './event/fcm';
 import { SchedulerEvent } from './event/scheduler';
@@ -27,6 +28,7 @@ const providers: Provider[] = [
   FCMProvider,
   SchedulerEvent,
   FCMEvent,
+  DynamicLinkProvider,
 ];
 
 @Module({

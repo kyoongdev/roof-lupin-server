@@ -3,10 +3,12 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 import { nanoid } from 'nanoid';
 
+import { getDateDiff } from '@/common/date';
 import { FCMProvider } from '@/common/fcm';
 import { PrismaService } from '@/database/prisma.service';
 import {
   CreateCouponDurationAlarm,
+  CreateMarketingAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationUsageAlarm,
   CreateReviewRecommendAlarm,
@@ -128,6 +130,7 @@ export class FCMEventProvider {
   async createCouponDurationAlarm(data: CreateCouponDurationAlarm) {
     const targetDate = data.dueDate;
     targetDate.setUTCDate(targetDate.getUTCDate() - 5);
+    //TODO: 쿠폰함 링크 연결
     const alarmData = {
       title: '쿠폰 기한 만료 전 알림',
       body: `${data.nickname}님! 사용 만료까지 얼마 안남은 쿠폰이 있어요! 쿠폰함에서 확인해보세요!`,
@@ -162,6 +165,39 @@ export class FCMEventProvider {
     });
     await this.fcmService.sendMessage(alarmData);
     await this.updatePushedAlarm(alarm.id);
+  }
+
+  @OnEvent(FCM_EVENT_NAME.CREATE_MARKETING_ALARM)
+  async createMarketIngAlarm(data: CreateMarketingAlarm) {
+    const currentDate = new Date();
+    const targetDate = new Date(data.startAt);
+    targetDate.setDate(targetDate.getDate() - 1);
+
+    const alarmData: SendPushMessage = {
+      title: `루프루팡과 함께 ${data.title}을 즐겨봐요`,
+      body: data.title,
+      link: '',
+      token: data.pushToken,
+    };
+
+    const alarm = await this.createAlarm({
+      ...data,
+      title: alarmData.title,
+      content: alarmData.body,
+      isPush: true,
+      userId: data.userId,
+      exhibitionId: data.exhibitionId,
+    });
+
+    const dateDiff = getDateDiff(currentDate, targetDate);
+
+    if (dateDiff < 0) {
+      await this.sendAlarmWithUpdate(alarm.id, alarmData);
+    } else {
+      this.schedulerEvent.createSchedule(`${data.userId}_${data.exhibitionId}`, targetDate, async () => {
+        await this.sendAlarmWithUpdate(alarm.id, alarmData);
+      });
+    }
   }
 
   @OnEvent(FCM_EVENT_NAME.DELETE_ALARM)

@@ -23,6 +23,21 @@ export class FCMProvider {
         title: props.title,
         body: props.body,
       },
+      android: {
+        data: {
+          title: props.title,
+          body: props.body,
+        },
+      },
+      webpush: {
+        fcmOptions: {
+          link: props.link,
+        },
+        data: {
+          title: props.title,
+          body: props.body,
+        },
+      },
     });
   }
 
