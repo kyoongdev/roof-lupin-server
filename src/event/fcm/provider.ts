@@ -229,7 +229,6 @@ export class FCMEventProvider {
     const dateDiff = getDateDiff(currentDate, targetDate);
 
     const alarm = await this.createAlarm({
-      ...data,
       title: alarmData.title,
       content: alarmData.body,
       isPush: true,
