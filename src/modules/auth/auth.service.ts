@@ -150,7 +150,7 @@ export class AuthService {
   async kakaoLoginCallback(code: string, res: Response) {
     try {
       const result = await this.kakaoService.getRestCallback(code);
-      console.log(result);
+
       const { user } = result;
 
       this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);

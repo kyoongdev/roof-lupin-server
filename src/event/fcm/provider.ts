@@ -16,6 +16,7 @@ import {
   SendPushMessage,
   SendScheduleAlarm,
 } from '@/interface/fcm.interface';
+import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
 import { FCMProvider } from '@/utils/fcm';
 
@@ -191,22 +192,27 @@ export class FCMEventProvider {
   @OnEvent(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM)
   async createQnAAnswerAlarm(data: CreateQnAAnswerAlarm) {
     const alarmData = {
-      title: 'Q&A 알림',
-      body: `${data.nickname}님! ${data.spaceName}에 문의하신 내용에 대한 답변이 올라왔어요! 확인해보세요.`,
+      title: 'Q&A 관련 알림',
+      body: `${data.nickname}님! ${data.spaceName}에 문의하신 내용에 대한 답변이 올라왔어요! 확인해보세요.!`,
       token: data.pushToken,
       isAlarmAccepted: data.isAlarmAccepted,
+      link: 'https://rooflupin.page.link/5kaA',
     };
-    //TODO: 알람 링크 연결
-    const alarm = await this.createAlarm({
-      ...data,
-      title: alarmData.title,
-      content: alarmData.body,
-      isPush: true,
-      userId: data.userId,
-      alarmAt: new Date(),
-    });
-    await this.fcmService.sendMessage(alarmData);
-    await this.updatePushedAlarm(alarm.id);
+
+    try {
+      //TODO: 알람 링크 연결
+      const alarm = await this.createAlarm({
+        title: alarmData.title,
+        content: alarmData.body,
+        isPush: true,
+        userId: data.userId,
+        alarmAt: new Date(),
+      });
+      await this.fcmService.sendMessage(alarmData);
+      await this.updatePushedAlarm(alarm.id);
+    } catch (err) {
+      logger.error(err);
+    }
   }
 
   @OnEvent(FCM_EVENT_NAME.CREATE_MARKETING_ALARM)

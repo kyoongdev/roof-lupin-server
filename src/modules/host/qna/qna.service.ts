@@ -61,15 +61,13 @@ export class HostQnAService {
       },
     });
 
-    if (user && user.pushToken) {
-      this.fcmEvent.createQnAAnswerAlarm({
-        userId: user.id,
-        pushToken: user.pushToken,
-        spaceName: qna.space.title,
-        nickname: user.nickname || user.name,
-        isAlarmAccepted: user.isAlarmAccepted,
-      });
-    }
+    this.fcmEvent.createQnAAnswerAlarm({
+      userId: user.id,
+      pushToken: user.pushToken,
+      spaceName: qna.space.title,
+      nickname: user.nickname || user.name,
+      isAlarmAccepted: user.isAlarmAccepted,
+    });
 
     return qnaAnswerId;
   }

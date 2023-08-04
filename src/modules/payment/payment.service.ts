@@ -2,12 +2,10 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
-import { FinanceProvider, KakaoPayProvider } from '@/common/payment';
-import { PortOneProvider } from '@/common/payment/port-one';
-import { TossPayProvider } from '@/common/payment/toss';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 import { logger } from '@/log';
+import { FinanceProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
@@ -59,9 +57,7 @@ export class PaymentService {
     private readonly rentalTypeRepository: RentalTypeRepository,
     private readonly rentalTypeService: RentalTypeService,
     private readonly couponRepository: CouponRepository,
-    private readonly kakaoPay: KakaoPayProvider,
     private readonly tossPay: TossPayProvider,
-    private readonly portOne: PortOneProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
     private readonly userRepository: UserRepository,
@@ -233,36 +229,10 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_ALREADY_REFUNDED));
     }
 
-    if (reservation.payMethod === PayMethod.KAKAO_PAY) {
-      await this.kakaoPay.cancelPayment({
-        cancel_amount: refundCost,
-        cancel_tax_free_amount: 0,
-        cancel_vat_amount: taxCost,
-        tid: reservation.orderResultId,
-      });
-    } else if (reservation.payMethod === PayMethod.TOSS_PAY) {
-      await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
-        cancelAmount: refundCost,
-        cancelReason: '사용자 환불 요청',
-      });
-    } else if (reservation.payMethod === PayMethod.PORT_ONE) {
-      if (!data.merchant_uid) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MERCHANT_UID_BAD_REQUEST));
-      }
-
-      const result = await this.portOne.cancelPayment({
-        imp_uid: reservation.orderResultId,
-        amount: refundCost,
-        checksum: reservation.totalCost - refundCost,
-        reason: '사용자 환불 요청',
-      });
-
-      if (result.code !== 0) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-      }
-    } else {
-      throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_INTERNAL_SERVER_ERROR));
-    }
+    await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
+      cancelAmount: refundCost,
+      cancelReason: '사용자 환불 요청',
+    });
 
     await this.reservationRepository.updatePayment(reservation.id, {
       refundCost,
@@ -490,12 +460,12 @@ export class PaymentService {
           const additionalServices = await this.rentalTypeRepository.findRentalTypeAdditionalServices(
             rentalType.rentalTypeId
           );
-          console.log({ rentalType });
+
           rentalType.additionalServices.forEach((service) => {
             const baseAdditionalCost = additionalServices.find(
               (additionalService) => additionalService.id === service.id
             );
-            console.log({ baseAdditionalCost, service });
+
             if (baseAdditionalCost) {
               if (baseAdditionalCost.maxCount && baseAdditionalCost.maxCount < service.count) {
                 throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT));

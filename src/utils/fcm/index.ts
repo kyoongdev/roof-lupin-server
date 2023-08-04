@@ -22,6 +22,7 @@ export class FCMProvider {
       data: {
         title: props.title,
         body: props.body,
+        url: props.link,
       },
       android: {
         data: {
