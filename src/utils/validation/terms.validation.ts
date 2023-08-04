@@ -12,4 +12,5 @@ export const termEngToKor = (name: string) => {
 };
 
 export const TermResponseTransForm = () => Transform(({ value }) => termEngToKor(value));
-export const TermResDecorator = (nullable = false) => applyDecorators(TermResponseTransForm(), ApiProperty({}));
+export const TermResDecorator = (nullable = false) =>
+  applyDecorators(TermResponseTransForm(), ApiProperty({ type: 'string', description: '이름' }));
