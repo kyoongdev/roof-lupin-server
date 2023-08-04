@@ -19,7 +19,7 @@ export class AdminTermsService {
     return await Promise.all(
       keys.map(async (key) => {
         const s3Body = await this.fileService.getFile(key);
-        console.log(s3Body, key);
+
         const content = s3Body ? await s3Body.transformToString() : null;
         return new TermDTO({
           id: key,
