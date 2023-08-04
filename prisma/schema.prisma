@@ -185,6 +185,7 @@ model Space {
   rankings              RankingSpaces[]
   openHours             OpenHour[]
   holidays              SpaceHoliday[]
+  alarms                AlarmSpace[]
 }
 
 //INFO: 공간 영업시간
@@ -701,9 +702,29 @@ model UserAlarm {
   isPush   Boolean   @default(false)
   isPushed Boolean   @default(false)
 
-  createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt       DateTime         @default(now())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  alarmSpace      AlarmSpace?
+  alarmExhibition AlarmExhibition?
+}
+
+model AlarmSpace {
+  userAlarmId String    @unique
+  userAlarm   UserAlarm @relation(fields: [userAlarmId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId     String
+  space       Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userAlarmId, spaceId])
+}
+
+model AlarmExhibition {
+  userAlarmId  String     @unique
+  userAlarm    UserAlarm  @relation(fields: [userAlarmId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  exhibitionId String
+  exhibition   Exhibition @relation(fields: [exhibitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userAlarmId, exhibitionId])
 }
 
 //INFO: 유저 검색 기록
@@ -829,15 +850,14 @@ model HashTag {
 model UserCoupon {
   id String @id @default(uuid())
 
-  //INFO: 기본 6자리 랜덤 생성
-  count            Int      @default(1) @db.TinyInt
-  usageDateStartAt DateTime @db.DateTime
-  usageDateEndAt   DateTime @db.DateTime
-  createdAt        DateTime @default(now())
+  usageDateStartAt DateTime  @db.DateTime
+  usageDateEndAt   DateTime  @db.DateTime
+  createdAt        DateTime  @default(now())
+  deletedAt        DateTime?
 
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  couponId String @unique
+  couponId String
   coupon   Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   reservationId String?
@@ -914,4 +934,5 @@ model Exhibition {
   coupons        ExhibitionCoupon[]
   homeContents   HomeContents?      @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   homeContentsId String?            @unique
+  alarms         AlarmExhibition[]
 }

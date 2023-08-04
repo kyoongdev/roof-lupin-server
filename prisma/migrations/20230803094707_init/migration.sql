@@ -289,6 +289,7 @@ CREATE TABLE `Reservation` (
     `payMethod` TINYINT NULL,
     `isApproved` BOOLEAN NOT NULL DEFAULT true,
     `approvedAt` DATETIME(3) NULL,
+    `isCanceled` BOOLEAN NOT NULL DEFAULT false,
     `userName` VARCHAR(191) NULL,
     `userPhoneNumber` VARCHAR(11) NULL,
     `userId` VARCHAR(191) NOT NULL,
@@ -535,9 +536,10 @@ CREATE TABLE `Host` (
 -- CreateTable
 CREATE TABLE `HostAccount` (
     `id` VARCHAR(191) NOT NULL,
-    `ownerName` VARCHAR(20) NOT NULL,
+    `accountType` TINYINT NOT NULL,
     `bankCode` CHAR(3) NOT NULL,
-    `businessRegistrationNumber` CHAR(10) NOT NULL,
+    `ownerName` VARCHAR(20) NOT NULL,
+    `businessRegistrationNumber` CHAR(10) NULL,
     `account` VARCHAR(40) NOT NULL,
     `accountOwner` VARCHAR(20) NOT NULL,
     `hostId` VARCHAR(191) NOT NULL,
@@ -601,6 +603,24 @@ CREATE TABLE `UserAlarm` (
     `userId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `AlarmSpace` (
+    `userAlarmId` VARCHAR(191) NOT NULL,
+    `spaceId` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `AlarmSpace_userAlarmId_key`(`userAlarmId`),
+    PRIMARY KEY (`userAlarmId`, `spaceId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `AlarmExhibition` (
+    `userAlarmId` VARCHAR(191) NOT NULL,
+    `exhibitionId` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `AlarmExhibition_userAlarmId_key`(`userAlarmId`),
+    PRIMARY KEY (`userAlarmId`, `exhibitionId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -734,7 +754,6 @@ CREATE TABLE `HashTag` (
 -- CreateTable
 CREATE TABLE `UserCoupon` (
     `id` VARCHAR(191) NOT NULL,
-    `count` TINYINT NOT NULL DEFAULT 1,
     `usageDateStartAt` DATETIME NOT NULL,
     `usageDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -742,7 +761,6 @@ CREATE TABLE `UserCoupon` (
     `couponId` VARCHAR(191) NOT NULL,
     `reservationId` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `UserCoupon_couponId_key`(`couponId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -982,6 +1000,18 @@ ALTER TABLE `HostAccount` ADD CONSTRAINT `HostAccount_hostId_fkey` FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE `UserAlarm` ADD CONSTRAINT `UserAlarm_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AlarmSpace` ADD CONSTRAINT `AlarmSpace_userAlarmId_fkey` FOREIGN KEY (`userAlarmId`) REFERENCES `UserAlarm`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AlarmSpace` ADD CONSTRAINT `AlarmSpace_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AlarmExhibition` ADD CONSTRAINT `AlarmExhibition_userAlarmId_fkey` FOREIGN KEY (`userAlarmId`) REFERENCES `UserAlarm`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `AlarmExhibition` ADD CONSTRAINT `AlarmExhibition_exhibitionId_fkey` FOREIGN KEY (`exhibitionId`) REFERENCES `Exhibition`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SearchRecord` ADD CONSTRAINT `SearchRecord_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

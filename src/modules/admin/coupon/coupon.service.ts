@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { FCMEvent } from '@/event/fcm';
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
 import { CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO } from '@/modules/coupon/dto';
@@ -19,8 +20,8 @@ export class AdminCouponService {
   constructor(
     private readonly couponRepository: CouponRepository,
     private readonly adminCouponRepository: AdminCouponRepository,
-
-    private readonly categoryRepository: CategoryRepository
+    private readonly categoryRepository: CategoryRepository,
+    private readonly fcmEvent: FCMEvent
   ) {}
 
   async findCoupon(id: string) {
@@ -71,7 +72,16 @@ export class AdminCouponService {
       throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_USER_COUPON_ALREADY_EXISTS));
     }
 
-    return await this.couponRepository.createUserCoupon(couponId, data);
+    const userCoupon = await this.couponRepository.createUserCoupon(couponId, data);
+
+    this.fcmEvent.createCouponDurationAlarm({
+      userId: data.userId,
+      dueDate: userCoupon.usageDateEndAt,
+      jobId: `${data.userId}_${userCoupon.id}`,
+      nickname: userCoupon.user.nickname,
+    });
+
+    return userCoupon.id;
   }
 
   async updateCoupon(id: string, data: UpdateCouponDTO) {

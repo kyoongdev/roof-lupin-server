@@ -10,6 +10,7 @@ import type {
   TossConfirmPayment,
   TossCreatePaymentRequest,
 } from '@/interface/payment/toss.interface';
+import { logger } from '@/log';
 
 @Injectable()
 export class TossPayProvider {
@@ -83,7 +84,7 @@ export class TossPayProvider {
 
       return response.data;
     } catch (err) {
-      console.log(err);
+      logger.error(err);
       throw new InternalServerErrorException(err);
     }
   }
@@ -96,6 +97,7 @@ export class TossPayProvider {
 
       return response.data;
     } catch (err) {
+      logger.error(err);
       throw new InternalServerErrorException(err);
     }
   }

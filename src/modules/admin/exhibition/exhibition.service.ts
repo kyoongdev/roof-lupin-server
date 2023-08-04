@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { PrismaService } from '@/database/prisma.service';
+import { FCMEvent } from '@/event/fcm';
 import {
   CreateExhibitionDTO,
   CreateExhibitionSpaceDTO,
@@ -16,7 +18,12 @@ import { FileService } from '@/modules/file/file.service';
 
 @Injectable()
 export class AdminExhibitionService {
-  constructor(private readonly exhibitionRepository: ExhibitionRepository, private readonly fileService: FileService) {}
+  constructor(
+    private readonly exhibitionRepository: ExhibitionRepository,
+    private readonly fileService: FileService,
+    private readonly fcmEvent: FCMEvent,
+    private readonly database: PrismaService
+  ) {}
 
   async findExhibition(id: string) {
     return await this.exhibitionRepository.findExhibition(id);
@@ -37,7 +44,39 @@ export class AdminExhibitionService {
   }
 
   async createExhibition(data: CreateExhibitionDTO) {
-    return await this.exhibitionRepository.createExhibition(data);
+    const exhibitionId = await this.exhibitionRepository.createExhibition(data);
+
+    const users = await this.database.user.findMany({
+      where: {
+        isAlarmAccepted: true,
+        pushToken: {
+          not: null,
+        },
+      },
+      select: {
+        id: true,
+        pushToken: true,
+      },
+    });
+
+    const targetDate = new Date(data.startAt);
+    targetDate.setDate(targetDate.getDate() - 1);
+
+    users
+      .map((user) => ({
+        pushToken: user.pushToken,
+        userId: user.id,
+      }))
+      .map((user) => {
+        this.fcmEvent.createMarketingAlarm({
+          ...user,
+          title: data.title,
+          exhibitionId,
+          startAt: data.startAt,
+        });
+      });
+
+    return exhibitionId;
   }
 
   async createExhibitionSpace(id: string, data: CreateExhibitionSpaceDTO) {

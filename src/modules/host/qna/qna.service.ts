@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { PrismaService } from '@/database/prisma.service';
+import { FCMEvent } from '@/event/fcm';
 import { CreateQnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO } from '@/modules/qna/dto';
 import { QnARepository } from '@/modules/qna/qna.repository';
 
@@ -11,7 +13,11 @@ import { HostException } from '../exception/host.exception';
 
 @Injectable()
 export class HostQnAService {
-  constructor(private readonly qnaRepository: QnARepository) {}
+  constructor(
+    private readonly qnaRepository: QnARepository,
+    private readonly fcmEvent: FCMEvent,
+    private readonly database: PrismaService
+  ) {}
 
   async findQnA(id: string) {
     return await this.qnaRepository.findQnA(id);
@@ -39,8 +45,31 @@ export class HostQnAService {
   }
 
   async createQnAAnswer(hostId: string, data: CreateQnAAnswerDTO) {
-    await this.findQnA(data.qnaId);
-    return await this.qnaRepository.createQnAAnswer(hostId, data);
+    const qna = await this.findQnA(data.qnaId);
+    const qnaAnswerId = await this.qnaRepository.createQnAAnswer(hostId, data);
+
+    const user = await this.database.user.findUnique({
+      where: {
+        id: qna.user.id,
+      },
+      select: {
+        id: true,
+        pushToken: true,
+        isAlarmAccepted: true,
+        name: true,
+        nickname: true,
+      },
+    });
+
+    this.fcmEvent.createQnAAnswerAlarm({
+      userId: user.id,
+      pushToken: user.pushToken,
+      spaceName: qna.space.title,
+      nickname: user.nickname || user.name,
+      isAlarmAccepted: user.isAlarmAccepted,
+    });
+
+    return qnaAnswerId;
   }
 
   async updateQnAAnswer(qnaAnswerId: string, hostId: string, data: UpdateQnAAnswerDTO) {

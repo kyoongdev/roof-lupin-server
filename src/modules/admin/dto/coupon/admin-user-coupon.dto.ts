@@ -6,7 +6,7 @@ import { AdminCouponDTO, AdminCouponDTOProps } from './admin-coupon.dto';
 
 export interface UserAdminCouponDTOProps {
   id: string;
-  count: number;
+
   usageDateStartAt: Date;
   usageDateEndAt: Date;
   isUsed: boolean;
@@ -19,9 +19,6 @@ export interface UserAdminCouponDTOProps {
 export class UserAdminCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 쿠폰 id' } })
   id: string;
-
-  @Property({ apiProperty: { type: 'number', description: '쿠폰 개수' } })
-  count: number;
 
   @Property({ apiProperty: { type: 'date', description: '쿠폰 사용 시작일' } })
   usageDateStartAt: Date;
@@ -46,7 +43,7 @@ export class UserAdminCouponDTO {
 
   constructor(props: UserAdminCouponDTOProps) {
     this.id = props.id;
-    this.count = props.count;
+
     this.usageDateStartAt = props.usageDateStartAt;
     this.usageDateEndAt = props.usageDateEndAt;
     this.isUsed = props.isUsed;

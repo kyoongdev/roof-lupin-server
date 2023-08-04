@@ -231,6 +231,40 @@ export class CouponRepository {
       },
     });
   }
+  async checkUserCouponByCode(code: string) {
+    const userCoupon = await this.database.userCoupon.findFirst({
+      where: {
+        coupon: {
+          code,
+        },
+      },
+      include: {
+        user: true,
+        coupon: {
+          include: {
+            couponCategories: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userCoupon) {
+      return null;
+    }
+
+    return new UserCouponDTO({
+      ...userCoupon,
+      isUsed: !!userCoupon.reservationId,
+      coupon: {
+        ...userCoupon.coupon,
+        categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
+      },
+    });
+  }
 
   async countUserCoupons(args = {} as Prisma.UserCouponCountArgs) {
     return this.database.userCoupon.count(args);
@@ -265,7 +299,7 @@ export class CouponRepository {
 
   async createUserCoupon(couponId: string, data: CreateUserCouponDTO) {
     const { userId, ...rest } = data;
-    const coupon = await this.findCoupon(couponId);
+    await this.findCoupon(couponId);
 
     const userCoupon = await this.database.userCoupon.create({
       data: {
@@ -279,33 +313,14 @@ export class CouponRepository {
             id: couponId,
           },
         },
-
         ...rest,
       },
+      include: {
+        user: true,
+      },
     });
-    return userCoupon.id;
+    return userCoupon;
   }
-
-  // async useUserCoupon(database: TransactionPrisma, count: number, id: string) {
-  //   await database.userCoupon.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       isUsed: true,
-  //     },
-  //   });
-  // }
-  // async resetUserCoupon(id: string) {
-  //   await this.database.userCoupon.update({
-  //     where: {
-  //       id,
-  //     },
-  //     data: {
-  //       isUsed: false,
-  //     },
-  //   });
-  // }
 
   async updateUserCoupon(id: string, data: UpdateUserCouponDTO) {
     await this.database.userCoupon.update({
@@ -317,9 +332,31 @@ export class CouponRepository {
   }
 
   async deleteUserCoupon(id: string) {
+    await this.database.userCoupon.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteUserCoupon(id: string) {
     await this.database.userCoupon.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async restoreUserCoupon(id: string) {
+    await this.database.userCoupon.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: null,
       },
     });
   }
