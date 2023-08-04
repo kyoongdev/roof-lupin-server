@@ -28,6 +28,7 @@ let AdminTermsService = class AdminTermsService {
             const s3Body = await this.fileService.getFile(key);
             const content = s3Body ? await s3Body.transformToString() : null;
             return new dto_1.TermDTO({
+                id: key,
                 name: key,
                 content,
             });
@@ -37,16 +38,10 @@ let AdminTermsService = class AdminTermsService {
         const s3Body = await this.fileService.getFile(key);
         const content = s3Body ? await s3Body.transformToString() : null;
         return new dto_1.TermDTO({
+            id: key,
             name: key,
             content,
         });
-    }
-    async createTerm(data) {
-        const term = await this.getTerm(data.name);
-        if (term.content) {
-            throw new term_exception_1.TermException(errorCode_1.TERM_ERROR_CODE.CONFLICT(errorCode_1.TERM_ALREADY_EXISTS));
-        }
-        return await this.fileService.uploadBuffer(Buffer.from(data.content, 'utf-8'), data.name, 'text/plain');
     }
     async updateTerm(name, data) {
         const term = await this.getTerm(name);
