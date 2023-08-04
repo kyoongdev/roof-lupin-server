@@ -1,0 +1,48 @@
+import { UpdateOpenHourDTO } from '@/modules/host/dto/openHour';
+import { CreateLocationDTO } from '@/modules/location/dto';
+import { CreateSpaceCategoryDTO } from './category';
+import { CreateCautionDTO } from './caution';
+import { CreateSpaceDTOProps } from './create-space.dto';
+import { CreateBuildingDTO } from './facility';
+import { UpdateHashTagDTO } from './hashTag';
+import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
+import { CreateRefundPolicyDTO } from './refund';
+import { CreateRentalTypeDTO } from './rental-type';
+import { CreateServiceDTO } from './service';
+import { CreateSizeDTO } from './size';
+import { CreateTransportationDTO } from './transportaion';
+export type UpdateSpaceDTOProps = Partial<Omit<CreateSpaceDTOProps, 'holiday'>> & {
+    isPublic?: boolean;
+    isApproved?: boolean;
+    holidays?: UpdateSpaceHolidayDTOProps[];
+};
+export declare class UpdateSpaceDTO {
+    title?: string;
+    description?: string;
+    spaceType?: number;
+    buildingType?: number;
+    thumbnail?: string;
+    deposit?: number;
+    minUser?: number;
+    maxUser?: number;
+    overflowUserCost?: number;
+    overflowUserCount?: number;
+    isPublic?: boolean;
+    isApproved?: boolean;
+    images?: string[];
+    isImmediateReservation?: boolean;
+    refundPolicies?: CreateRefundPolicyDTO[];
+    cautions?: CreateCautionDTO[];
+    rentalTypes?: CreateRentalTypeDTO[];
+    location?: CreateLocationDTO;
+    buildings?: CreateBuildingDTO[];
+    services?: CreateServiceDTO[];
+    categories?: CreateSpaceCategoryDTO[];
+    hashTags?: UpdateHashTagDTO[];
+    publicTransportations?: CreateTransportationDTO[];
+    sizes?: CreateSizeDTO[];
+    openHours?: UpdateOpenHourDTO[];
+    holidays?: UpdateSpaceHolidayDTO[];
+    constructor(props?: UpdateSpaceDTOProps);
+    validateRefundPolicies(): void;
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"admin-detail.dto.js","sourceRoot":"","sources":["../../../../src/modules/admin/dto/admin-detail.dto.ts"],"names":[],"mappings":";;;AAKA,2CAAuC;AAIvC,MAAa,cAAe,SAAQ,oBAAQ;IAK1C,YAAY,KAAY;QACtB,KAAK,CAAC,KAAK,CAAC,CAAC;QACb,IAAI,CAAC,QAAQ,GAAG,KAAK,CAAC,QAAQ,CAAC;QAC/B,IAAI,CAAC,IAAI,GAAG,KAAK,CAAC,IAAI,CAAC;IACzB,CAAC;CACF;AAVD,wCAUC"}

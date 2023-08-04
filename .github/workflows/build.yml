@@ -1,0 +1,64 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build
+
+on:
+  push:
+    branches: ['deploy/dev']
+  pull_request:
+    branches: ['deploy/dev']
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 18.x
+
+      - name: Check Node
+        run: node -v
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Config Setting
+        run: yarn config:dev
+
+      # Build
+      - name: Build
+        run: yarn build
+
+      # zip 파일 생성
+      - name: zip create
+        run: zip -qq -r "rooflupin-build.zip" .
+        shell: bash
+
+      # with에 secrets에서 설정한 key를 설정한다.
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp --region ${{ secrets.AWS_REGION }} "rooflupin-build.zip" s3://rooflupin-build
+
+      - name: Deploy
+        run: aws deploy create-deployment
+          --application-name "rooflupin-code-deploy"
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name "rooflupin-code-deploy-group"
+          --s3-location bucket="rooflupin-build",key="rooflupin-build.zip",bundleType=zip

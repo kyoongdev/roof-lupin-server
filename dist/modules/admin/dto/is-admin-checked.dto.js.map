@@ -1,0 +1,1 @@
+{"version":3,"file":"is-admin-checked.dto.js","sourceRoot":"","sources":["../../../../src/modules/admin/dto/is-admin-checked.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,iDAAyC;AAMzC,MAAa,iBAAiB;IAI5B,YAAY,KAA6B;QACvC,IAAI,CAAC,SAAS,GAAG,KAAK,CAAC,SAAS,CAAC;IACnC,CAAC;CACF;AANC;IAAC,IAAA,wBAAQ,EAAC,EAAE,WAAW,EAAE,EAAE,IAAI,EAAE,SAAS,EAAE,EAAE,CAAC;;oDAC5B;AAFrB,8CAOC"}

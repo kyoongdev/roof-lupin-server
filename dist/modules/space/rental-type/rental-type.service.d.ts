@@ -1,0 +1,35 @@
+import type { Prisma } from '@prisma/client';
+import { HolidayService } from '@/modules/holiday/holiday.service';
+import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
+import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
+import { OpenHourDTO } from '@/modules/host/dto/openHour';
+import { OpenHourRepository } from '@/modules/host/open-hour/open-hour.repository';
+import { SpaceHolidayRepository } from '@/modules/host/space-holiday/space-holiday.repository';
+import { ReservationDTO } from '@/modules/reservation/dto';
+import { SpaceHolidayDTO } from '../dto/holiday';
+import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
+import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
+import { PossiblePackageDTO, PossibleRentalTypeDTO, PossibleRentalTypesByMonthDTOProps, PossibleRentalTypesDTO, RentalTypeWithReservationDTO } from '../dto/rental-type';
+import { PaginationPossibleRentalTypesByMonthDTO } from '../dto/rental-type/pagination-possible-rental-types-by-month.dto';
+import { SpaceRepository } from '../space.repository';
+import { RentalTypeRepository } from './rental-type.repository';
+export declare class RentalTypeService {
+    private readonly spaceRepository;
+    private readonly rentalTypeRepository;
+    private readonly blockedTimeRepository;
+    private readonly holidayService;
+    private readonly spaceHolidayRepository;
+    private readonly openHourRepository;
+    constructor(spaceRepository: SpaceRepository, rentalTypeRepository: RentalTypeRepository, blockedTimeRepository: BlockedTimeRepository, holidayService: HolidayService, spaceHolidayRepository: SpaceHolidayRepository, openHourRepository: OpenHourRepository);
+    findSpaceRentalTypes(spaceId: string, args?: Prisma.RentalTypeFindManyArgs): Promise<import("../dto/rental-type").RentalTypeDTO[]>;
+    findSpaceRentalTypeDetail(spaceId: string): Promise<import("../dto/rental-type").SpaceRentalTypeDTO>;
+    findPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, query: PossibleRentalTypeByMonthQuery): Promise<PossibleRentalTypesByMonthDTOProps>;
+    findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO): Promise<PaginationPossibleRentalTypesByMonthDTO>;
+    findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery): Promise<PossibleRentalTypesDTO>;
+    findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery): Promise<PossibleRentalTypeDTO | PossiblePackageDTO>;
+    findPossibleRentalTypesBySpaces(query: PossibleRentalTypeQuery, args?: Prisma.SpaceFindManyArgs): Promise<PossibleRentalTypesDTO>;
+    getPossibleRentalTypesBySpaceIdWithMonth(query: PossibleRentalTypeByMonthQuery, rentalTypes: RentalTypeWithReservationDTO[], spaceHolidays: SpaceHolidayDTO[], openHours: OpenHourDTO[], blockedTimes: BlockedTimeDTO[]): Promise<PossibleRentalTypesByMonthDTOProps>;
+    getPossibleRentalTypesBySpaceId(rentalTypes: RentalTypeWithReservationDTO[], blockedTimes: BlockedTimeDTO[], spaceHolidays: SpaceHolidayDTO[], openHours: OpenHourDTO[], targetDate?: PossibleRentalTypeQuery): Promise<PossibleRentalTypesDTO>;
+    getPossibleRentalType(rentalType: RentalTypeWithReservationDTO, reservations: ReservationDTO[], blockedTimes: BlockedTimeDTO[], openHours: OpenHourDTO[], spaceHolidays: SpaceHolidayDTO[], targetDate: PossibleRentalTypeQuery): Promise<PossibleRentalTypeDTO | PossiblePackageDTO>;
+    getHolidays(targetDate: PossibleRentalTypeQuery, spaceHolidays: SpaceHolidayDTO[]): SpaceHolidayDTO[];
+}
