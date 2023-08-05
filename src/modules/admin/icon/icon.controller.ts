@@ -70,8 +70,7 @@ export class AdminIconController {
         callback(null, true);
       },
       limits: { fileSize: 1024 * 1024 * 10 },
-    }),
-    ResponseWithIdInterceptor
+    })
   )
   @RequestApi({
     summary: {
@@ -95,7 +94,7 @@ export class AdminIconController {
   })
   @ResponseApi(
     {
-      type: ResponseWithIdDTO,
+      type: IconDTO,
     },
     201
   )
