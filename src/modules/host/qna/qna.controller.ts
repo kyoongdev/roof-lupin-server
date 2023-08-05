@@ -114,6 +114,28 @@ export class HostQnAController {
     });
   }
 
+  @Get('/space/:spaceId/not-answered')
+  @RequestApi({
+    summary: {
+      description: '미답변 QnA  조회',
+      summary: '미답변 QnA  조회',
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+    isArray: true,
+  })
+  async getNotAnsweredQnAs(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
+    return await this.qnaService.findQnAs({
+      where: {
+        spaceId,
+        space: {
+          hostId: user.id,
+        },
+      },
+    });
+  }
+
   @Post('/answer')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({

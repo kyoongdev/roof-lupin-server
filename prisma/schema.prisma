@@ -514,7 +514,8 @@ model SpaceReviewAnswer {
   id      String @id @default(uuid())
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   hostId   String
   host     Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
