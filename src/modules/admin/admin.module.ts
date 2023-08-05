@@ -22,6 +22,7 @@ import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { SearchRepository } from '../search/search.repository';
+import { ServiceRepository } from '../service/service.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
@@ -62,6 +63,8 @@ import { AdminReviewController } from './review/review.controller';
 import { AdminReviewService } from './review/review.service';
 import { AdminSearchController } from './search/search.controller';
 import { AdminSearchService } from './search/search.service';
+import { AdminServiceController } from './service/service.controller';
+import { AdminServiceService } from './service/service.service';
 import { AdminSettlementController } from './settlement/settlement.controller';
 import { AdminSettlementService } from './settlement/settlement.service';
 import { AdminSpaceController } from './space/space.controller';
@@ -123,6 +126,8 @@ import { AdminUserService } from './user/user.service';
     AdminCurationService,
     CurationRepository,
     AdminTermsService,
+    AdminServiceService,
+    ServiceRepository,
   ],
 
   controllers: [
@@ -147,6 +152,7 @@ import { AdminUserService } from './user/user.service';
     AdminFaqController,
     AdminCurationController,
     AdminTermsController,
+    AdminServiceController,
   ],
 })
 export class AdminModule {}

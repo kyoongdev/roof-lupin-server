@@ -7,7 +7,6 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
-import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashTagDTO, HashTagDTO } from './dto/hashTag';
 import { RefundPolicyDTO } from './dto/refund';
@@ -328,7 +327,6 @@ export class SpaceRepository {
     const id = await this.database.$transaction(async (prisma) => {
       const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
 
-      const categories = await this.findOrCreateCategories(prisma, categoryProps);
       const hashTags = await this.findOrCreateHashTags(prisma, hashTagProps);
 
       const space = await prisma.space.create({
@@ -363,12 +361,12 @@ export class SpaceRepository {
           },
           services: {
             create: servicesProps.map((service) => ({
-              serviceId: service.id,
+              serviceId: service,
             })),
           },
           categories: {
-            create: categories.map((category) => ({
-              categoryId: category.id,
+            create: categoryProps.map((category) => ({
+              categoryId: category,
             })),
           },
           hashTags: {
@@ -435,44 +433,26 @@ export class SpaceRepository {
 
     await this.database.$transaction(async (prisma) => {
       if (holidays) {
-        await prisma.spaceHoliday.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
         updateArgs.data = {
           ...updateArgs.data,
           holidays: {
             create: holidays.map((holiday) => holiday),
+            deleteMany: {},
           },
         };
       }
 
       if (openHours) {
-        await prisma.openHour.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
         updateArgs.data = {
           ...updateArgs.data,
           openHours: {
             create: openHours.map((openHour) => openHour),
+            deleteMany: {},
           },
         };
       }
 
       if (images) {
-        await prisma.image.deleteMany({
-          where: {
-            spaceImages: {
-              some: {
-                spaceId,
-              },
-            },
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           images: {
@@ -483,36 +463,27 @@ export class SpaceRepository {
                 },
               },
             })),
+            deleteMany: {},
           },
         };
       }
 
       if (refundPolicies) {
-        await prisma.refundPolicy.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           refundPolicies: {
             create: refundPolicies.map((refundPolicy) => refundPolicy),
+            deleteMany: {},
           },
         };
       }
 
       if (cautions) {
-        await prisma.spaceCaution.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           cautions: {
             create: cautions.map((caution) => caution),
+            deleteMany: {},
           },
         };
       }
@@ -528,28 +499,17 @@ export class SpaceRepository {
       }
 
       if (locationProps) {
-        await prisma.spaceLocation.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           location: {
             create: {
               ...locationProps,
             },
+            delete: true,
           },
         };
       }
       if (buildingProps) {
-        await prisma.spaceBuilding.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
 
         updateArgs.data = {
@@ -558,53 +518,36 @@ export class SpaceRepository {
             create: buildings.map((building) => ({
               buildingId: building.id,
             })),
+            deleteMany: {},
           },
         };
       }
 
       if (servicesProps) {
-        await prisma.spaceService.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           services: {
             create: servicesProps.map((service) => ({
-              serviceId: service.id,
+              serviceId: service,
             })),
+            deleteMany: {},
           },
         };
       }
 
       if (categoryProps) {
-        await prisma.spaceCategory.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
-        const categories = await this.findOrCreateCategories(prisma, categoryProps);
-
         updateArgs.data = {
           ...updateArgs.data,
           categories: {
-            create: categories.map((category) => ({
-              categoryId: category.id,
+            create: categoryProps.map((category) => ({
+              categoryId: category,
             })),
+            deleteMany: {},
           },
         };
       }
 
       if (hashTagProps) {
-        await prisma.spaceHashTag.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         const hashTags = await this.findOrCreateHashTags(prisma, hashTagProps);
 
         updateArgs.data = {
@@ -613,36 +556,27 @@ export class SpaceRepository {
             create: hashTags.map((hashTag) => ({
               hashTagId: hashTag.id,
             })),
+            deleteMany: {},
           },
         };
       }
 
       if (publicTransportations) {
-        await prisma.publicTransportation.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           publicTransportations: {
             create: publicTransportations.map((publicTransportation) => publicTransportation),
+            deleteMany: {},
           },
         };
       }
 
       if (sizes) {
-        await prisma.spaceSize.deleteMany({
-          where: {
-            spaceId,
-          },
-        });
-
         updateArgs.data = {
           ...updateArgs.data,
           sizes: {
             create: sizes.map((size) => size),
+            deleteMany: {},
           },
         };
       }
@@ -762,25 +696,6 @@ export class SpaceRepository {
           data: building,
         });
         return new BuildingDTO(newBuilding);
-      })
-    );
-  }
-
-  async findOrCreateCategories(prisma: TransactionPrisma, data: CreateSpaceCategoryDTO[]) {
-    return await Promise.all(
-      data.map(async (category) => {
-        const isExist = await prisma.category.findFirst({
-          where: {
-            name: category.name,
-          },
-        });
-        if (isExist) {
-          return new SpaceCategoryDTO(isExist);
-        }
-        const newCategory = await prisma.category.create({
-          data: category,
-        });
-        return new SpaceCategoryDTO(newCategory);
       })
     );
   }

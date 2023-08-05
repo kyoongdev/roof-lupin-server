@@ -8,13 +8,11 @@ import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
-import { CreateSpaceCategoryDTO, type CreateSpaceCategoryDTOProps } from './category';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
-import { CreateSpaceServiceDTO, CreateSpaceServiceDTOProps } from './service';
 import { CreateSizeDTO, type CreateSizeDTOProps } from './size';
 import { CreateTransportationDTO, type CreateTransportationDTOProps } from './transportaion';
 
@@ -36,8 +34,8 @@ export interface CreateSpaceDTOProps {
   rentalTypes: CreateRentalTypeDTOProps[];
   location: CreateLocationDTOProps;
   buildings: CreateBuildingDTOProps[];
-  services: CreateSpaceServiceDTOProps[];
-  categories: CreateSpaceCategoryDTOProps[];
+  services: string[];
+  categories: string[];
   hashTags: CreateHashTagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
@@ -97,11 +95,11 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateBuildingDTO, description: '시설' } })
   buildings: CreateBuildingDTO[];
 
-  @Property({ apiProperty: { type: CreateSpaceServiceDTO, description: '서비스' } })
-  services: CreateSpaceServiceDTO[];
+  @Property({ apiProperty: { type: 'string', isArray: true, description: '서비스 id 들' } })
+  services: string[];
 
-  @Property({ apiProperty: { type: CreateSpaceCategoryDTO, isArray: true, description: '카테고리' } })
-  categories: CreateSpaceCategoryDTO[];
+  @Property({ apiProperty: { type: 'string', isArray: true, description: '카테고리 ids' } })
+  categories: string[];
 
   @Property({ apiProperty: { type: CreateHashTagDTO, isArray: true, description: '해시태그' } })
   hashTags: CreateHashTagDTO[];
@@ -137,8 +135,8 @@ export class CreateSpaceDTO {
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
-      this.services = props.services.map((service) => new CreateSpaceServiceDTO(service));
-      this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
+      this.services = props.services;
+      this.categories = props.categories;
       this.hashTags = props.hashTags.map((hashTag) => new CreateHashTagDTO(hashTag));
       this.publicTransportations = props.publicTransportations.map(
         (transportation) => new CreateTransportationDTO(transportation)
