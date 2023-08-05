@@ -792,12 +792,22 @@ model Building {
   spaceBuildings SpaceBuilding[]
 }
 
+model ServiceTitle {
+  id   String @id @default(uuid())
+  name String @db.VarChar(20)
+
+  services Service[]
+}
+
 //INFO: 이용 가능한 서비스
 model Service {
-  id            String         @id @default(uuid())
-  iconPath      String
-  name          String
-  spaceServices SpaceService[]
+  id       String @id @default(uuid())
+  iconPath String
+  name     String @db.VarChar(20)
+
+  spaceServices  SpaceService[]
+  serviceTitle   ServiceTitle?  @relation(fields: [serviceTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  serviceTitleId String?
 }
 
 //INFO: 활용 가능한 카테고리 (ex. 회의실, 스터디룸, 세미나실, 오픈스페이스 등)
