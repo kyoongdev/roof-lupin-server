@@ -34,8 +34,6 @@ import {
   PAYMENT_ERROR_CODE,
   PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
   PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
-  PAYMENT_INTERNAL_SERVER_ERROR,
-  PAYMENT_MERCHANT_UID_BAD_REQUEST,
   PAYMENT_MUTATION_FORBIDDEN,
   PAYMENT_NOT_APPROVED,
   PAYMENT_NOT_COMPLETED,
@@ -252,7 +250,7 @@ export class PaymentService {
       })
     );
 
-    await this.reservationRepository.deleteReservation(reservation.id);
+    await this.reservationRepository.hardDeleteReservation(reservation.id);
   }
 
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
