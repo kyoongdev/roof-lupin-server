@@ -74,7 +74,7 @@ export class FileService {
     }
   }
 
-  async uploadFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
+  async uploadResizedFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
     try {
       const originalname = file.originalname.split('.').shift();
 
@@ -93,6 +93,32 @@ export class FileService {
       }).putObject({
         Key: `${this.configService.get('NODE_ENV')}/${key}`,
         Body: resizedFile,
+        Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
+        ContentType: contentType,
+      });
+
+      const url = `${this.configService.get('AWS_CLOUD_FRONT_URL')}/${key}`;
+
+      return new UploadedFileDTO(url);
+    } catch (error) {
+      throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
+    }
+  }
+  async uploadFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
+    try {
+      const originalname = file.originalname.split('.').shift();
+
+      const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
+
+      await new AWS.S3({
+        region: this.configService.get('AWS_REGION'),
+        credentials: {
+          accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
+          secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
+        },
+      }).putObject({
+        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Body: file.buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
       });

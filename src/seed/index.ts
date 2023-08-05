@@ -26,6 +26,7 @@ export const seedDatabase = async (database: PrismaClient) => {
   await database.ranking.deleteMany({});
   await database.fAQ.deleteMany({});
   await database.spaceHoliday.deleteMany({});
+  await database.exhibition.deleteMany({});
 
   await seedHosts(database);
   await seedHoliday(database);
