@@ -15,7 +15,7 @@ import { CreateBuildingDTO } from './facility';
 import { UpdateHashTagDTO } from './hashTag';
 import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO } from './refund';
-import { CreateServiceDTO } from './service';
+import { CreateSpaceServiceDTO } from './service';
 import { CreateSizeDTO } from './size';
 import { CreateTransportationDTO } from './transportaion';
 
@@ -83,8 +83,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateBuildingDTO, nullable: true, isArray: true, description: '시설' } })
   buildings?: CreateBuildingDTO[];
 
-  @Property({ apiProperty: { type: CreateServiceDTO, nullable: true, isArray: true, description: '서비스' } })
-  services?: CreateServiceDTO[];
+  @Property({ apiProperty: { type: CreateSpaceServiceDTO, nullable: true, isArray: true, description: '서비스' } })
+  services?: CreateSpaceServiceDTO[];
 
   @Property({ apiProperty: { type: CreateSpaceCategoryDTO, nullable: true, isArray: true, description: '카테고리' } })
   categories?: CreateSpaceCategoryDTO[];
@@ -125,7 +125,7 @@ export class UpdateSpaceDTO {
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
-      this.services = props.services.map((service) => new CreateServiceDTO(service));
+      this.services = props.services.map((service) => new CreateSpaceServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
       this.hashTags = props.hashTags.map((hashtag) => new UpdateHashTagDTO(hashtag));
       this.publicTransportations = props.publicTransportations.map(
