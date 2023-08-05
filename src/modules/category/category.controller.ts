@@ -8,11 +8,26 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CategoryService } from './category.service';
-import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
+import { CategoryDTO, ContentCategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
 
 @ApiController('categories', '카테고리')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
+
+  @Get('/contents/:categoryId')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 목록 불러오기',
+      summary: '콘텐츠 카테고리 (가로 스크롤) 목록 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: ContentCategoryDTO,
+    isPaging: true,
+  })
+  async getContentCategory(@Param('categoryId') id: string) {
+    return await this.categoryService.findContentCategory(id);
+  }
 
   @Get(':categoryId/detail')
   @RequestApi({

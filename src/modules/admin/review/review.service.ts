@@ -30,10 +30,21 @@ export class AdminReviewService {
   }
 
   async setIsBestReview(id: string, isBest: boolean) {
-    await this.findReview(id);
-    await this.reviewRepository.updateReview(id, {
-      isBest,
+    const review = await this.findReview(id);
+
+    const reviews = await this.reviewRepository.findReviews({
+      where: {
+        isBest: true,
+      },
     });
+    const bestCount = reviews.reduce<number>((acc, cur) => {
+      return acc + cur.images.length;
+    }, 0);
+
+    if (bestCount)
+      await this.reviewRepository.updateReview(id, {
+        isBest,
+      });
   }
 
   async findPagingReviewReports(paging: PagingDTO, args = {} as Prisma.SpaceReviewReportFindManyArgs) {
