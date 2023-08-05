@@ -10,6 +10,7 @@ import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
+import { ServiceRepository } from '../service/service.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { TaxReturnRepository } from '../tax-return/tax-return.repository';
 
@@ -27,6 +28,8 @@ import { HostReservationController } from './reservation/reservation.controller'
 import { HostReservationService } from './reservation/reservation.service';
 import { HostReviewController } from './review/review.controller';
 import { HostReviewService } from './review/review.service';
+import { HostServiceController } from './service/service.controller';
+import { HostServiceService } from './service/service.service';
 import { SettlementController } from './settlement/settlement.controller';
 import { SettlementRepository } from './settlement/settlement.repository';
 import { SettlementService } from './settlement/settlement.service';
@@ -61,6 +64,8 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     HostReservationService,
     ReservationRepository,
     FCMEvent,
+    HostServiceService,
+    ServiceRepository,
   ],
   controllers: [
     HostController,
@@ -72,6 +77,7 @@ import { HostTaxReturnService } from './tax-return/tax-return.service';
     SettlementController,
     BlockedTimeController,
     HostReservationController,
+    HostServiceController,
   ],
 })
 export class HostModule {}
