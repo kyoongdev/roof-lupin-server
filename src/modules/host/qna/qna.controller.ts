@@ -9,6 +9,8 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { QnACountDTO } from '../dto/qna';
+
 import { HostQnAService } from './qna.service';
 
 @ApiController('qnas', '[호스트] QnA 관리')
@@ -36,7 +38,7 @@ export class HostQnAController {
     return await this.qnaService.findQnA(qnaId);
   }
 
-  @Get(':spaceId')
+  @Get('/spaces/:spaceId')
   @RequestApi({
     summary: {
       description: 'QnA 목록 조회',
@@ -84,6 +86,27 @@ export class HostQnAController {
   async getQnAs(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
     return await this.qnaService.findPagingQnAs(paging, {
       where: {
+        space: {
+          hostId: user.id,
+        },
+      },
+    });
+  }
+
+  @Get('/space/:spaceId/not-answered/count')
+  @RequestApi({
+    summary: {
+      description: '미답변 QnA 개수 조회',
+      summary: '미답변 QnA 개수 조회',
+    },
+  })
+  @ResponseApi({
+    type: QnACountDTO,
+  })
+  async getNotAnsweredQnACount(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
+    return await this.qnaService.countQnA({
+      where: {
+        spaceId,
         space: {
           hostId: user.id,
         },

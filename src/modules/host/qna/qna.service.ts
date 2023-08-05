@@ -8,6 +8,7 @@ import { FCMEvent } from '@/event/fcm';
 import { CreateQnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO } from '@/modules/qna/dto';
 import { QnARepository } from '@/modules/qna/qna.repository';
 
+import { QnACountDTO } from '../dto/qna';
 import { HOST_ERROR_CODE, QNA_ANSWER_MUTATION_FORBIDDEN } from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
@@ -21,6 +22,11 @@ export class HostQnAService {
 
   async findQnA(id: string) {
     return await this.qnaRepository.findQnA(id);
+  }
+
+  async countQnA(args = {} as Prisma.SpaceQnACountArgs) {
+    const count = await this.qnaRepository.countQna(args);
+    return new QnACountDTO({ count });
   }
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
