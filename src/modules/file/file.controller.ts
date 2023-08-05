@@ -99,6 +99,49 @@ export class FileController {
     return this.fileService.uploadFile(file);
   }
 
+  @Post('/image/resize')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter(req, file, callback) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|heic)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+      limits: { fileSize: 1024 * 1024 * 10 },
+    })
+  )
+  @RequestApi({
+    summary: {
+      description: '이미지 업로드',
+      summary: '이미지 업로드',
+    },
+    body: {
+      schema: {
+        type: 'object',
+        properties: {
+          image: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
+  @ResponseApi(
+    {
+      type: UploadedFileDTO,
+    },
+    201
+  )
+  async uploadResizedImage(
+    @UploadedFile()
+    file: Express.Multer.File
+  ) {
+    return this.fileService.uploadResizedFile(file);
+  }
+
   // @Auth([JwtAuthGuard])
   @Post('/images')
   @ApiConsumes('multipart/form-data')
@@ -145,6 +188,55 @@ export class FileController {
     files: Express.Multer.File[]
   ) {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadFile(file)));
+
+    return images;
+  }
+
+  @Post('/images/resize')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FilesInterceptor('images', undefined, {
+      fileFilter(req, file, callback) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|heic)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+      limits: { fileSize: 1024 * 1024 * 10 },
+    })
+  )
+  @RequestApi({
+    summary: {
+      description: '이미지 업로드',
+      summary: '이미지 업로드',
+    },
+    body: {
+      schema: {
+        type: 'object',
+        properties: {
+          images: {
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'binary',
+            },
+          },
+        },
+      },
+    },
+  })
+  @ResponseApi(
+    {
+      type: UploadedFileDTO,
+      isArray: true,
+    },
+    201
+  )
+  async uploadResizedImages(
+    @UploadedFiles()
+    files: Express.Multer.File[]
+  ) {
+    const images = await Promise.all(files.map(async (file) => await this.fileService.uploadResizedFile(file)));
 
     return images;
   }

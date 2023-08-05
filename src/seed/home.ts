@@ -10,18 +10,24 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
 
   const exhibition = await database.exhibition.create({
     data: {
-      title: '특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!',
-      description: '특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!',
+      title: '도심 속 일탈 가능한 글램핑 루프탑',
+      description: '도심 속 일탈 가능한 글램핑 루프탑',
       content: `
-      특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!
-      특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!
-      특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!
-      특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!
-      특별한 VIEW - 특별한 경치를 자랑하는 옥상 공간 모음!
+      <p>도심 속 일탈 가능한 글램핑 루프탑</p>
       `,
       startAt: new Date(),
       endAt: new Date(),
       thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
+      spaces: {
+        create: spaces.map((space, index) => ({
+          space: {
+            connect: {
+              id: space.id,
+            },
+          },
+          orderNo: index + 1,
+        })),
+      },
     },
   });
 
@@ -113,6 +119,17 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
       ranking: {
         connect: {
           id: ranking.id,
+        },
+      },
+    },
+  });
+
+  await database.homeContents.create({
+    data: {
+      orderNo: 3,
+      exhibition: {
+        connect: {
+          id: exhibition.id,
         },
       },
     },
