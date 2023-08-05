@@ -8,6 +8,7 @@ import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
 import { seedHoliday } from './holiday';
 import { seedHome } from './home';
 import { seedHosts } from './host';
+import { seedService } from './service';
 import { seedSpace } from './space';
 
 export const seedDatabase = async (database: PrismaClient) => {
@@ -30,6 +31,7 @@ export const seedDatabase = async (database: PrismaClient) => {
 
   await seedHosts(database);
   await seedHoliday(database);
+  await seedService(database);
 
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();

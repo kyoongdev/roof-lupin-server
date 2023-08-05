@@ -29,6 +29,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
     },
   });
 
+  const serviceTitles = await database.serviceTitle.findMany({
+    include: {
+      services: true,
+    },
+  });
+
   const category1 = await database.category.create({
     data: {
       name: `바베큐`,
@@ -442,49 +448,43 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           create: [
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '바베큐',
+                connect: {
+                  id: serviceTitles[0].services[0].id,
                 },
               },
             },
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '반려동물 동반가능',
+                connect: {
+                  id: serviceTitles[1].services[0].id,
                 },
               },
             },
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '전기',
+                connect: {
+                  id: serviceTitles[2].services[0].id,
                 },
               },
             },
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '금연',
+                connect: {
+                  id: serviceTitles[3].services[0].id,
                 },
               },
             },
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '인터넷/WIFI',
+                connect: {
+                  id: serviceTitles[4].services[0].id,
                 },
               },
             },
             {
               service: {
-                create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                  name: '장비대여',
+                connect: {
+                  id: serviceTitles[5].services[0].id,
                 },
               },
             },
@@ -897,49 +897,43 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '바베큐',
+              connect: {
+                id: serviceTitles[0].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '반려동물 동반가능',
+              connect: {
+                id: serviceTitles[1].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '전기',
+              connect: {
+                id: serviceTitles[2].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '금연',
+              connect: {
+                id: serviceTitles[3].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '인터넷/WIFI',
+              connect: {
+                id: serviceTitles[4].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '장비대여',
+              connect: {
+                id: serviceTitles[5].services[1].id,
               },
             },
           },
@@ -1211,49 +1205,43 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '바베큐',
+              connect: {
+                id: serviceTitles[0].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '반려동물 동반가능',
+              connect: {
+                id: serviceTitles[1].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '전기',
+              connect: {
+                id: serviceTitles[2].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '금연',
+              connect: {
+                id: serviceTitles[3].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '인터넷/WIFI',
+              connect: {
+                id: serviceTitles[4].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '장비대여',
+              connect: {
+                id: serviceTitles[5].services[2].id,
               },
             },
           },
@@ -1502,49 +1490,43 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '바베큐',
+              connect: {
+                id: serviceTitles[0].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '반려동물 동반가능',
+              connect: {
+                id: serviceTitles[1].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '전기',
+              connect: {
+                id: serviceTitles[2].services[0].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '금연',
+              connect: {
+                id: serviceTitles[3].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '인터넷/WIFI',
+              connect: {
+                id: serviceTitles[4].services[0].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '장비대여',
+              connect: {
+                id: serviceTitles[5].services[2].id,
               },
             },
           },
@@ -1796,49 +1778,43 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: [
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '바베큐',
+              connect: {
+                id: serviceTitles[0].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '반려동물 동반가능',
+              connect: {
+                id: serviceTitles[1].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '전기',
+              connect: {
+                id: serviceTitles[2].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '금연',
+              connect: {
+                id: serviceTitles[3].services[2].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '인터넷/WIFI',
+              connect: {
+                id: serviceTitles[4].services[1].id,
               },
             },
           },
           {
             service: {
-              create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
-                name: '장비대여',
+              connect: {
+                id: serviceTitles[5].services[1].id,
               },
             },
           },
