@@ -5,6 +5,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
+import { ContentModule } from './content/content.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CurationModule } from './curation/curation.module';
 import { ExhibitionModule } from './exhibition/exhibition.module';
@@ -54,6 +55,7 @@ export const Modules = [
   RankingModule,
   FrequentQuestionModule,
   TermsModule,
+  ContentModule,
 ];
 @Module({
   imports: [...Modules],

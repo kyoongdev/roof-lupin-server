@@ -20,10 +20,6 @@ export class CategoryService {
     return await this.categoryRepository.findCategories(args);
   }
 
-  async findContentCategory(id: string) {
-    return await this.categoryRepository.findContentCategory(id);
-  }
-
   async findPagingCategories(paging: PagingDTO, args = {} as Prisma.CategoryFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.categoryRepository.countCategories({
