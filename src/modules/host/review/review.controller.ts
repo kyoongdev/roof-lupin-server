@@ -4,7 +4,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
-import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
+import { CreateReviewAnswerDTO, ReviewDetailDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -31,7 +31,7 @@ export class HostReviewController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
+    type: ReviewDetailDTO,
   })
   async getReview(@Param('reviewId') reviewId: string) {
     return await this.reviewService.findReview(reviewId);
