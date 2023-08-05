@@ -4,11 +4,11 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { FileService } from '@/modules/file/file.service';
+import { UpdateRentalTypeDTO } from '@/modules/rental-type/dto';
+import { RentalTypeRepository } from '@/modules/rental-type/rental-type.repository';
 import { SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
-import { UpdateRentalTypeDTO } from '@/modules/space/dto/rental-type';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
-import { RentalTypeRepository } from '@/modules/space/rental-type/rental-type.repository';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
 import {

@@ -3,6 +3,7 @@ import { range } from 'lodash';
 
 import { UpdateOpenHourDTO } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO } from '@/modules/location/dto';
+import { CreateRentalTypeDTO } from '@/modules/rental-type/dto';
 
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -14,7 +15,6 @@ import { CreateBuildingDTO } from './facility';
 import { UpdateHashTagDTO } from './hashTag';
 import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO } from './refund';
-import { CreateRentalTypeDTO } from './rental-type';
 import { CreateServiceDTO } from './service';
 import { CreateSizeDTO } from './size';
 import { CreateTransportationDTO } from './transportaion';

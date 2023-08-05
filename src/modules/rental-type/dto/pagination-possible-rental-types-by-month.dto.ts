@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { PossibleRentalTypePagingDTOProps } from '../query/possible-rental-type-paging.dto';
+import { PossibleRentalTypePagingDTOProps } from '@/modules/space/dto/query/possible-rental-type-paging.dto';
 
 import { PossibleRentalTypePaginationDTO } from './possible-rental-type-pagination.dto';
 import {

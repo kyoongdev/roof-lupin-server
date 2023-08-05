@@ -4,9 +4,9 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
+import { RentalTypeDTO, UpdateRentalTypeDTO } from '@/modules/rental-type/dto';
 import { SpaceDetailDTO, SpaceDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
-import { RentalTypeDTO, UpdateRentalTypeDTO } from '@/modules/space/dto/rental-type';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { RevalidateApi } from '@/utils/aop/revalidate';
@@ -153,9 +153,6 @@ export class HostSpaceController {
     summary: {
       description: '공간 대여 정보 수정',
       summary: '공간 대여정보 수정 수정 - 호스트만 사용가능합니다.',
-    },
-    body: {
-      type: UpdateRentalTypeDTO,
     },
   })
   @ResponseApi(

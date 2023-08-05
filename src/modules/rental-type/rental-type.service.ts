@@ -14,9 +14,12 @@ import { SpaceHolidayRepository } from '@/modules/host/space-holiday/space-holid
 import { ReservationDTO } from '@/modules/reservation/dto';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
-import { SpaceHolidayDTO } from '../dto/holiday';
-import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
-import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
+import { SpaceHolidayDTO } from '../space/dto/holiday';
+import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../space/dto/query';
+import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-type-paging.dto';
+import { PossibleTimeCostInfoDTOProps } from '../space/dto/timeCostInfo/possible-time-cost-info.dto';
+import { SpaceRepository } from '../space/space.repository';
+
 import {
   PossiblePackageDTO,
   PossibleRentalTypeByMonthDTOProps,
@@ -25,12 +28,9 @@ import {
   PossibleRentalTypesDTO,
   PossibleRentalTypesDTOProps,
   RentalTypeWithReservationDTO,
-} from '../dto/rental-type';
-import { PaginationPossibleRentalTypesByMonthDTO } from '../dto/rental-type/pagination-possible-rental-types-by-month.dto';
-import { PossibleTimeCostInfoDTOProps } from '../dto/timeCostInfo/possible-time-cost-info.dto';
-import { RENTAL_TYPE_ENUM } from '../dto/validation/rental-type.validation';
-import { SpaceRepository } from '../space.repository';
-
+} from './dto';
+import { PaginationPossibleRentalTypesByMonthDTO } from './dto/pagination-possible-rental-types-by-month.dto';
+import { RENTAL_TYPE_ENUM } from './dto/validation/rental-type.validation';
 import { RentalTypeRepository } from './rental-type.repository';
 
 @Injectable()
@@ -75,6 +75,8 @@ export class RentalTypeService {
         where: {
           year: Number(query.year),
           month: Number(query.month),
+          isCanceled: false,
+          deletedAt: null,
         },
       }
     );
@@ -129,6 +131,8 @@ export class RentalTypeService {
             where: {
               year: currentYear,
               month: currentMonth,
+              isCanceled: false,
+              deletedAt: null,
             },
           }
         );
@@ -185,6 +189,8 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           day: Number(query.day),
+          isCanceled: false,
+          deletedAt: null,
         },
       }
     );
@@ -218,6 +224,8 @@ export class RentalTypeService {
         year: Number(query.year),
         month: Number(query.month),
         day: Number(query.day),
+        isCanceled: false,
+        deletedAt: null,
       },
     });
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
@@ -265,6 +273,8 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           day: Number(query.day),
+          isCanceled: false,
+          deletedAt: null,
         },
       }
     );

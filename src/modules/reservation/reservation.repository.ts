@@ -244,4 +244,12 @@ export class ReservationRepository {
       },
     });
   }
+
+  async hardDeleteReservation(id: string) {
+    await this.database.reservation.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

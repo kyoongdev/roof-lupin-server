@@ -17,11 +17,11 @@ import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { RankingRepository } from '../ranking/ranking.repository';
+import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { SearchRepository } from '../search/search.repository';
-import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 

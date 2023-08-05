@@ -10,15 +10,15 @@ import { FinanceProvider, TossPayProvider } from '@/utils';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
+import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../rental-type/dto';
+import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
+import { RentalTypeRepository } from '../rental-type/rental-type.repository';
+import { RentalTypeService } from '../rental-type/rental-type.service';
 import { CreatePaymentDTO, CreateReservationDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDetailDTO } from '../space/dto';
-import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../space/dto/rental-type';
-import { RENTAL_TYPE_ENUM } from '../space/dto/validation/rental-type.validation';
-import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
-import { RentalTypeService } from '../space/rental-type/rental-type.service';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
@@ -34,8 +34,6 @@ import {
   PAYMENT_ERROR_CODE,
   PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
   PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
-  PAYMENT_INTERNAL_SERVER_ERROR,
-  PAYMENT_MERCHANT_UID_BAD_REQUEST,
   PAYMENT_MUTATION_FORBIDDEN,
   PAYMENT_NOT_APPROVED,
   PAYMENT_NOT_COMPLETED,
@@ -252,7 +250,7 @@ export class PaymentService {
       })
     );
 
-    await this.reservationRepository.deleteReservation(reservation.id);
+    await this.reservationRepository.hardDeleteReservation(reservation.id);
   }
 
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {

@@ -5,6 +5,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
+import { ContentModule } from './content/content.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CurationModule } from './curation/curation.module';
 import { ExhibitionModule } from './exhibition/exhibition.module';
@@ -18,6 +19,7 @@ import { MainModule } from './main/main.module';
 import { PaymentModule } from './payment/payment.module';
 import { QnaModule } from './qna/qna.module';
 import { RankingModule } from './ranking/ranking.module';
+import { RentalTypeModule } from './rental-type/rental-type.module';
 import { ReportModule } from './report/report.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ReviewModule } from './review/review.module';
@@ -54,6 +56,8 @@ export const Modules = [
   RankingModule,
   FrequentQuestionModule,
   TermsModule,
+  ContentModule,
+  RentalTypeModule,
 ];
 @Module({
   imports: [...Modules],

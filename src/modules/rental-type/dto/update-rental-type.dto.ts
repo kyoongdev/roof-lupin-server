@@ -1,15 +1,9 @@
 import { Property } from 'cumuco-nestjs';
 
+import { RentalTypeReqDecorator } from '@/modules/rental-type/dto/validation/rental-type.validation';
+import { UpdateAdditionalServiceDTO, UpdateAdditionalServiceDTOProps } from '@/modules/space/dto/additional-service';
+import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '@/modules/space/dto/timeCostInfo';
 import { DayReqDecorator } from '@/utils/validation/day.validation';
-
-import {
-  AdditionalServiceDTO,
-  AdditionalServiceDTOProps,
-  UpdateAdditionalServiceDTO,
-  UpdateAdditionalServiceDTOProps,
-} from '../additional-service';
-import { UpdateTimeCostInfoDTO, UpdateTimeCostInfoDTOProps } from '../timeCostInfo';
-import { RentalTypeReqDecorator } from '../validation/rental-type.validation';
 
 export interface UpdateRentalTypeDTOProps {
   name?: string;

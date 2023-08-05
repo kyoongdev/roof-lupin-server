@@ -9,9 +9,9 @@ import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.reposit
 import { OpenHourRepository } from '../host/open-hour/open-hour.repository';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
 import { SpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
+import { RentalTypeRepository } from '../rental-type/rental-type.repository';
+import { RentalTypeService } from '../rental-type/rental-type.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
-import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
-import { RentalTypeService } from '../space/rental-type/rental-type.service';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
@@ -21,7 +21,6 @@ import { PaymentService } from './payment.service';
 @Module({
   providers: [
     TossPayProvider,
-
     PaymentService,
     ReservationRepository,
     RentalTypeRepository,
