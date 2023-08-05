@@ -53,6 +53,7 @@ export class SearchController {
   }
 
   @Delete('records/:searchRecordId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '검색어 삭제',
@@ -76,6 +77,7 @@ export class SearchController {
   }
 
   @Delete('records')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '검색어 전체 삭제',

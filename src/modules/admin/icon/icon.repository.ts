@@ -69,7 +69,7 @@ export class IconRepository {
       },
     });
 
-    return icon.id;
+    return icon;
   }
 
   async deleteIcon(id: string) {
