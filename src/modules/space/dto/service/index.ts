@@ -1,3 +1,3 @@
-export * from './create-service.dto';
+export * from './create-space-service.dto';
 export * from './service.dto';
-export * from './update-service.dto';
+export * from './update-space-service.dto';

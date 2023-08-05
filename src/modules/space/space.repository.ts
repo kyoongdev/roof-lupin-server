@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { flatMap } from 'lodash';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
@@ -12,7 +11,6 @@ import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
 import { CreateHashTagDTO, HashTagDTO } from './dto/hashTag';
 import { RefundPolicyDTO } from './dto/refund';
-import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 
@@ -329,7 +327,7 @@ export class SpaceRepository {
 
     const id = await this.database.$transaction(async (prisma) => {
       const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
-      const services = await this.findOrCreateServices(prisma, servicesProps);
+
       const categories = await this.findOrCreateCategories(prisma, categoryProps);
       const hashTags = await this.findOrCreateHashTags(prisma, hashTagProps);
 
@@ -364,7 +362,7 @@ export class SpaceRepository {
             })),
           },
           services: {
-            create: services.map((service) => ({
+            create: servicesProps.map((service) => ({
               serviceId: service.id,
             })),
           },
@@ -571,12 +569,10 @@ export class SpaceRepository {
           },
         });
 
-        const services = await this.findOrCreateServices(prisma, servicesProps);
-
         updateArgs.data = {
           ...updateArgs.data,
           services: {
-            create: services.map((service) => ({
+            create: servicesProps.map((service) => ({
               serviceId: service.id,
             })),
           },
@@ -766,25 +762,6 @@ export class SpaceRepository {
           data: building,
         });
         return new BuildingDTO(newBuilding);
-      })
-    );
-  }
-
-  async findOrCreateServices(prisma: TransactionPrisma, data: CreateServiceDTO[]) {
-    return await Promise.all(
-      data.map(async (service) => {
-        const isExist = await prisma.service.findFirst({
-          where: {
-            name: service.name,
-          },
-        });
-        if (isExist) {
-          return new ServiceDTO(isExist);
-        }
-        const newService = await prisma.service.create({
-          data: service,
-        });
-        return new ServiceDTO(newService);
       })
     );
   }

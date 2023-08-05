@@ -14,7 +14,7 @@ import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
-import { CreateServiceDTO, type CreateServiceDTOProps } from './service';
+import { CreateSpaceServiceDTO, CreateSpaceServiceDTOProps } from './service';
 import { CreateSizeDTO, type CreateSizeDTOProps } from './size';
 import { CreateTransportationDTO, type CreateTransportationDTOProps } from './transportaion';
 
@@ -36,7 +36,7 @@ export interface CreateSpaceDTOProps {
   rentalTypes: CreateRentalTypeDTOProps[];
   location: CreateLocationDTOProps;
   buildings: CreateBuildingDTOProps[];
-  services: CreateServiceDTOProps[];
+  services: CreateSpaceServiceDTOProps[];
   categories: CreateSpaceCategoryDTOProps[];
   hashTags: CreateHashTagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
@@ -97,8 +97,8 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateBuildingDTO, description: '시설' } })
   buildings: CreateBuildingDTO[];
 
-  @Property({ apiProperty: { type: CreateServiceDTO, description: '서비스' } })
-  services: CreateServiceDTO[];
+  @Property({ apiProperty: { type: CreateSpaceServiceDTO, description: '서비스' } })
+  services: CreateSpaceServiceDTO[];
 
   @Property({ apiProperty: { type: CreateSpaceCategoryDTO, isArray: true, description: '카테고리' } })
   categories: CreateSpaceCategoryDTO[];
@@ -137,7 +137,7 @@ export class CreateSpaceDTO {
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
-      this.services = props.services.map((service) => new CreateServiceDTO(service));
+      this.services = props.services.map((service) => new CreateSpaceServiceDTO(service));
       this.categories = props.categories.map((category) => new CreateSpaceCategoryDTO(category));
       this.hashTags = props.hashTags.map((hashTag) => new CreateHashTagDTO(hashTag));
       this.publicTransportations = props.publicTransportations.map(
