@@ -62,7 +62,8 @@
     "s3-streamlogger": "^1.9.0",
     "sharp": "^0.32.1",
     "winston": "^3.8.2",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston-daily-rotate-file": "^4.7.1",
+    "@nestjs/cli": "^9.0.0"
   },
   "lint-staged": {
     "src/**/*.**.{js,ts}": [
@@ -78,7 +79,6 @@
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
     "@mermaid-js/mermaid-cli": "^10.1.0",
-    "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
     "@prisma/generator-helper": "^4.14.1",
