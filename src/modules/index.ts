@@ -19,6 +19,7 @@ import { MainModule } from './main/main.module';
 import { PaymentModule } from './payment/payment.module';
 import { QnaModule } from './qna/qna.module';
 import { RankingModule } from './ranking/ranking.module';
+import { RentalTypeModule } from './rental-type/rental-type.module';
 import { ReportModule } from './report/report.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ReviewModule } from './review/review.module';
@@ -56,6 +57,7 @@ export const Modules = [
   FrequentQuestionModule,
   TermsModule,
   ContentModule,
+  RentalTypeModule,
 ];
 @Module({
   imports: [...Modules],

@@ -6,10 +6,10 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../dto/query';
-import { PossibleRentalTypePagingDTO } from '../dto/query/possible-rental-type-paging.dto';
-import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from '../dto/rental-type';
+import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../space/dto/query';
+import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-type-paging.dto';
 
+import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto';
 import { RentalTypeService } from './rental-type.service';
 
 @ApiController('rental-types', '대여 타입')

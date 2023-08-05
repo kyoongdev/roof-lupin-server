@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { TimeCostInfoDTOProps } from '../timeCostInfo';
+import { TimeCostInfoDTOProps } from '@/modules/space/dto/timeCostInfo';
 
 export interface TimeRentalTypeDTOProps {
   id: string;

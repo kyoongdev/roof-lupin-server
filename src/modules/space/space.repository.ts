@@ -5,6 +5,8 @@ import { flatMap } from 'lodash';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
+import { RentalTypeRepository } from '../rental-type/rental-type.repository';
+
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { CreateSpaceCategoryDTO, SpaceCategoryDTO } from './dto/category';
 import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
@@ -13,7 +15,6 @@ import { RefundPolicyDTO } from './dto/refund';
 import { CreateServiceDTO, ServiceDTO } from './dto/service';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
-import { RentalTypeRepository } from './rental-type/rental-type.repository';
 
 @Injectable()
 export class SpaceRepository {

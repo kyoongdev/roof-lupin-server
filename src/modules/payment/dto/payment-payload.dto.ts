@@ -2,9 +2,9 @@ import { ConfigService } from '@nestjs/config';
 
 import { Property } from 'cumuco-nestjs';
 
+import { RentalTypeDTO } from '@/modules/rental-type/dto';
 import { CreatePaymentDTO } from '@/modules/reservation/dto';
 import { SpaceDetailDTO } from '@/modules/space/dto';
-import { RentalTypeDTO } from '@/modules/space/dto/rental-type';
 
 import { EscrowProductDTO, EscrowProductDTOProps } from './escrow-product.dto';
 import { ProductDTO, ProductDTOProps } from './product.dto';

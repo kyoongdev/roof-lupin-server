@@ -3,6 +3,7 @@ import { range } from 'lodash';
 
 import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
+import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
 
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -13,7 +14,6 @@ import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
-import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from './rental-type';
 import { CreateServiceDTO, type CreateServiceDTOProps } from './service';
 import { CreateSizeDTO, type CreateSizeDTOProps } from './size';
 import { CreateTransportationDTO, type CreateTransportationDTOProps } from './transportaion';

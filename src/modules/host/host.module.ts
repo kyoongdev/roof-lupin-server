@@ -6,10 +6,10 @@ import { FCMEvent } from '@/event/fcm';
 import { FileService } from '../file/file.service';
 import { LocationRepository } from '../location/location.repository';
 import { QnARepository } from '../qna/qna.repository';
+import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { ReportRepository } from '../report/report.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
-import { RentalTypeRepository } from '../space/rental-type/rental-type.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { TaxReturnRepository } from '../tax-return/tax-return.repository';
 

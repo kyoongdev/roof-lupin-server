@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { RentalTypeDTO, type RentalTypeDTOProps } from '@/modules/space/dto/rental-type';
+import { RentalTypeDTO, RentalTypeDTOProps } from '@/modules/rental-type/dto';
 
 import { TimeValidation } from './validation';
 

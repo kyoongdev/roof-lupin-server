@@ -1,10 +1,13 @@
 import { Property } from 'cumuco-nestjs';
 
+import {
+  RENTAL_TYPE_ENUM,
+  RENTAL_TYPE_KEYS,
+  RentalTypeResTransForm,
+} from '@/modules/rental-type/dto/validation/rental-type.validation';
+import { AdditionalServiceDTO, AdditionalServiceDTOProps } from '@/modules/space/dto/additional-service';
+import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '@/modules/space/dto/timeCostInfo';
 import { DayResDecorator } from '@/utils/validation/day.validation';
-
-import { AdditionalServiceDTO, AdditionalServiceDTOProps } from '../additional-service';
-import { TimeCostInfoDTO, TimeCostInfoDTOProps } from '../timeCostInfo';
-import { RENTAL_TYPE_ENUM, RENTAL_TYPE_KEYS, RentalTypeResTransForm } from '../validation/rental-type.validation';
 
 export interface RentalTypeDTOProps {
   id: string;

@@ -4,20 +4,21 @@ import { Prisma } from '@prisma/client';
 
 import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import type { CommonReservationRentalType, CommonReservationWithRentalType } from '@/interface/reservation.interface';
+import type { CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
-import { SpaceDTO } from '../dto';
-import { AdditionalServiceDTO } from '../dto/additional-service';
+import { SpaceDTO } from '../space/dto';
+import { AdditionalServiceDTO } from '../space/dto/additional-service';
+import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../space/exception/errorCode';
+import { SpaceException } from '../space/exception/space.exception';
+
 import {
   CreateRentalTypeDTO,
   RentalTypeDTO,
   RentalTypeWithReservationDTO,
   SpaceRentalTypeDTO,
   UpdateRentalTypeDTO,
-} from '../dto/rental-type';
-import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../exception/errorCode';
-import { SpaceException } from '../exception/space.exception';
+} from './dto';
 
 @Injectable()
 export class RentalTypeRepository {

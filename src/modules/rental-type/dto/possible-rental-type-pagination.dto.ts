@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { PossibleRentalTypePagingDTOProps } from '../query/possible-rental-type-paging.dto';
+import { PossibleRentalTypePagingDTOProps } from '@/modules/space/dto/query/possible-rental-type-paging.dto';
 
 export class PossibleRentalTypePaginationDTO {
   @Property({ apiProperty: { type: 'number' } })
