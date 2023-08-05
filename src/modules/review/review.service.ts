@@ -7,7 +7,6 @@ import { getDateDiff, getTimeDiff } from '@/common/date';
 
 import { FileService } from '../file/file.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
-import { SpaceRepository } from '../space/space.repository';
 
 import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
@@ -31,7 +30,7 @@ import { ReviewRepository } from './review.repository';
 export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
-    private readonly spaceRepository: SpaceRepository,
+
     private readonly reservationRepository: ReservationRepository,
     private readonly fileService: FileService
   ) {}
@@ -89,7 +88,7 @@ export class ReviewService {
   async createReview(props: CreateReviewDTO, userId: string) {
     const reservation = await this.reservationRepository.findReservation(props.reservationId);
 
-    const { score, spaceId } = props;
+    const { score } = props;
     const reservationDate = new Date(
       Number(reservation.year),
       Number(reservation.month) - 1,
@@ -118,7 +117,6 @@ export class ReviewService {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_IMAGE_LENGTH_EXCEEDED));
     }
 
-    await this.spaceRepository.findSpace(spaceId);
     return await this.reviewRepository.createReview(props, userId);
   }
 

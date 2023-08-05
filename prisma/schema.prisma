@@ -514,7 +514,8 @@ model SpaceReviewAnswer {
   id      String @id @default(uuid())
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   hostId   String
   host     Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -629,6 +630,7 @@ model HostAccount {
   bankCode                   String  @db.Char(3)
   ownerName                  String  @db.VarChar(20)
   businessRegistrationNumber String? @db.Char(10)
+  businessRegistrationFile   String?
   account                    String  @db.VarChar(40)
   accountOwner               String  @db.VarChar(20)
 

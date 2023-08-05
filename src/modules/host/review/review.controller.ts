@@ -1,11 +1,12 @@
-import { Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO } from '@/common';
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
+import { CreateReviewAnswerDTO, ReviewDetailDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
-import { ApiController, ReqUser } from '@/utils';
+import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -30,13 +31,13 @@ export class HostReviewController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
+    type: ReviewDetailDTO,
   })
   async getReview(@Param('reviewId') reviewId: string) {
-    await this.reviewService.findReview(reviewId);
+    return await this.reviewService.findReview(reviewId);
   }
 
-  @Get(':spaceId')
+  @Get('spaces/:spaceId')
   @RequestApi({
     summary: {
       description: '리뷰 목록 조회',
@@ -66,6 +67,31 @@ export class HostReviewController {
         spaceId,
         space: {
           hostId: user.id,
+        },
+      },
+    });
+  }
+
+  @Get('spaces/:spaceId/not-answered')
+  @RequestApi({
+    summary: {
+      description: '미답변 리뷰 목록 조회',
+      summary: '미답변 리뷰 목록 조회',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isArray: true,
+  })
+  async getNotAnsweredReviewsBySpaceID(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
+    return await this.reviewService.findReviews({
+      where: {
+        spaceId,
+        space: {
+          hostId: user.id,
+        },
+        answers: {
+          none: {},
         },
       },
     });
@@ -121,16 +147,71 @@ export class HostReviewController {
       description: '[호스트] 리뷰 베스트 제외',
       summary: '리뷰를 베스트에서 제외합니다. 호스트만 사용 가능합니다.',
     },
-    params: {
-      name: 'reviewId',
-      description: '리뷰 id',
-      type: 'string',
-    },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
   async deleteBestReview(@Param('reviewId') reviewId: string) {
     await this.reviewService.setIsBestReview(reviewId, false);
+  }
+
+  @Post(':reviewId/answer')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: ' 리뷰 답변',
+      summary: '리뷰에 답변합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createReviewAnswer(
+    @Param('reviewId') reviewId: string,
+    @ReqUser() user: RequestHost,
+    @Body() data: CreateReviewAnswerDTO
+  ) {
+    return await this.reviewService.createReviewAnswer(reviewId, user.id, data);
+  }
+
+  @Patch('answers/:reviewAnswerId')
+  @RequestApi({
+    summary: {
+      description: ' 리뷰 답변 수정',
+      summary: '리뷰에 답변 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateReviewAnswer(
+    @Param('reviewId') reviewId: string,
+    @ReqUser() user: RequestHost,
+    @Body() data: UpdateReviewAnswerDTO
+  ) {
+    return await this.reviewService.updateReviewAnswer(reviewId, user.id, data);
+  }
+
+  @Delete('answers/:reviewAnswerId')
+  @RequestApi({
+    summary: {
+      description: ' 리뷰 답변 수정',
+      summary: '리뷰에 답변 수정',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteReviewAnswer(@Param('reviewId') reviewId: string, @ReqUser() user: RequestHost) {
+    return await this.reviewService.deleteReviewAnswer(reviewId, user.id);
   }
 }

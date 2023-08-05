@@ -31,11 +31,11 @@ import { TermsModule } from './terms/terms.module';
 import { UserModule } from './user/user.module';
 
 export const Modules = [
+  ReviewModule,
   SpaceModule,
   UserModule,
   TaxReturnModule,
   ReportModule,
-  ReviewModule,
   QnaModule,
   AuthModule,
   CouponModule,

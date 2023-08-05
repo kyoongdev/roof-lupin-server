@@ -8,7 +8,13 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
+import {
+  CreateReviewReportDTO,
+  ReviewDetailDTO,
+  ReviewsSummaryDTO,
+  UpdateReviewDTO,
+  UpdateReviewReportDTO,
+} from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewDTO } from './dto/review.dto';
@@ -163,7 +169,7 @@ export class ReviewController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
+    type: ReviewDetailDTO,
   })
   async getReview(@Param('reviewId') reviewId: string) {
     return await this.reviewService.findReview(reviewId);

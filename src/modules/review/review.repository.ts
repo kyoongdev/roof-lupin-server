@@ -4,16 +4,22 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { SpaceDTO } from '../space/dto';
+
 import {
   BestPhotoDTO,
+  CreateReviewAnswerDTO,
   CreateReviewDTO,
   CreateReviewReportDTO,
+  ReviewAnswerDTO,
+  ReviewDetailDTO,
   ReviewReportDTO,
+  UpdateReviewAnswerDTO,
   UpdateReviewDTO,
   UpdateReviewReportDTO,
 } from './dto';
 import { ReviewDTO } from './dto/review.dto';
-import { REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
+import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -38,9 +44,15 @@ export class ReviewRepository {
           },
         },
         answers: {
+          where: {
+            deletedAt: null,
+          },
           include: {
             host: true,
           },
+        },
+        space: {
+          include: SpaceDTO.getSpacesIncludeOption(),
         },
       },
     });
@@ -49,7 +61,10 @@ export class ReviewRepository {
       throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
     }
 
-    return new ReviewDTO(review);
+    return new ReviewDetailDTO({
+      ...review,
+      space: SpaceDTO.generateSpaceDTO(review.space),
+    });
   }
 
   async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
@@ -87,6 +102,9 @@ export class ReviewRepository {
           },
         },
         answers: {
+          where: {
+            deletedAt: null,
+          },
           include: {
             host: true,
           },
@@ -296,6 +314,81 @@ export class ReviewRepository {
     await this.database.spaceReview.delete({
       where: {
         id,
+      },
+    });
+  }
+  async findReviewAnswer(id: string) {
+    const reviewAnswer = await this.database.spaceReviewAnswer.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        host: true,
+      },
+    });
+
+    if (!reviewAnswer) {
+      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(REVIEW_ANSWER_NOT_FOUND));
+    }
+
+    return new ReviewAnswerDTO(reviewAnswer);
+  }
+  async checkReviewAnswer(reviewId: string, hostId: string) {
+    const reviewAnswer = await this.database.spaceReviewAnswer.findFirst({
+      where: {
+        reviewId,
+        hostId,
+      },
+      include: {
+        host: true,
+      },
+    });
+
+    if (!reviewAnswer) {
+      return null;
+    }
+
+    return new ReviewAnswerDTO(reviewAnswer);
+  }
+
+  async createReviewAnswer(reviewId: string, hostId: string, data: CreateReviewAnswerDTO) {
+    const { content } = data;
+
+    const reviewAnswer = await this.database.spaceReviewAnswer.create({
+      data: {
+        content,
+        review: {
+          connect: {
+            id: reviewId,
+          },
+        },
+        host: {
+          connect: {
+            id: hostId,
+          },
+        },
+      },
+    });
+
+    return reviewAnswer.id;
+  }
+
+  async updateReviewAnswer(reviewAnswerId: string, data: UpdateReviewAnswerDTO) {
+    await this.database.spaceReviewAnswer.update({
+      where: {
+        id: reviewAnswerId,
+      },
+      data,
+    });
+  }
+
+  async deleteReviewAnswer(reviewAnswerId: string) {
+    await this.database.spaceReviewAnswer.update({
+      where: {
+        id: reviewAnswerId,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }
