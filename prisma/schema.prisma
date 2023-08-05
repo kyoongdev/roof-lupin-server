@@ -629,6 +629,7 @@ model HostAccount {
   bankCode                   String  @db.Char(3)
   ownerName                  String  @db.VarChar(20)
   businessRegistrationNumber String? @db.Char(10)
+  businessRegistrationFile   String?
   account                    String  @db.VarChar(40)
   accountOwner               String  @db.VarChar(20)
 

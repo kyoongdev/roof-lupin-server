@@ -1,4 +1,4 @@
-import { Get, Param, Post } from '@nestjs/common';
+import { Get, Param, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -8,6 +8,8 @@ import { ReservationDetailDTO, ReservationDTO } from '@/modules/reservation/dto'
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { HostFindReservationsQuery } from '../dto/query/reservation';
 
 import { HostReservationService } from './reservation.service';
 
@@ -36,16 +38,46 @@ export class HostReservationController {
       summary: '예약 목록 조회하기',
       description: '예약 목록 조회하기',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: ReservationDTO,
     isPaging: true,
   })
-  async getReservationList(@ReqUser() user: RequestHost, @Paging() paging: PagingDTO) {
-    return await this.reservationService.findPagingReservations(paging, user.id);
+  async getReservationList(
+    @ReqUser() user: RequestHost,
+    @Paging() paging: PagingDTO,
+    @Query() query: HostFindReservationsQuery
+  ) {
+    return await this.reservationService.findPagingReservations(paging, user.id, query.generateQuery());
+  }
+
+  @Get('pending')
+  @RequestApi({
+    summary: {
+      summary: '예약 승인 대기 목록 조회하기',
+      description: '예약 승인 대기 목록 조회하기',
+    },
+  })
+  @ResponseApi({
+    type: ReservationDTO,
+    isArray: true,
+  })
+  async getPendingReservationList(@ReqUser() user: RequestHost) {
+    return await this.reservationService.findReservations({
+      where: {
+        rentalTypes: {
+          some: {
+            rentalType: {
+              space: {
+                hostId: user.id,
+                isImmediateReservation: false,
+              },
+            },
+          },
+        },
+        isApproved: false,
+      },
+    });
   }
 
   @Post(':reservationId/approve')
