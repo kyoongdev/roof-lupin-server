@@ -18,16 +18,6 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
       startAt: new Date(),
       endAt: new Date(),
       thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
-      spaces: {
-        create: spaces.map((space, index) => ({
-          space: {
-            connect: {
-              id: space.id,
-            },
-          },
-          orderNo: index + 1,
-        })),
-      },
     },
   });
 
