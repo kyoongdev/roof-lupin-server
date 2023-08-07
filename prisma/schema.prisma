@@ -519,8 +519,8 @@ model SpaceReviewAnswer {
 
   hostId   String
   host     Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  review   SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reviewId String
+  review   SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 관심있는 공간 (마이페이지에서 확인 가능)
