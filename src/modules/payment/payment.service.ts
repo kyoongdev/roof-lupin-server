@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
+import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 import { logger } from '@/log';
@@ -14,7 +15,7 @@ import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../rental-type/dto';
 import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
-import { CreatePaymentDTO, CreateReservationDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
+import { CreatePaymentDTO, CreateReservationDTO, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -38,7 +39,6 @@ import {
   PAYMENT_NOT_APPROVED,
   PAYMENT_NOT_COMPLETED,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
-  PAYMENT_PAY_METHOD_BAD_REQUEST,
   PAYMENT_REFUND_DUE_DATE_PASSED,
   PAYMENT_REFUND_FORBIDDEN,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
@@ -148,16 +148,12 @@ export class PaymentService {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
       }
 
-      if (reservation.payMethod !== PayMethod.TOSS_PAY) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-      }
       await this.database.$transaction(async (database) => {
-        const response = await this.tossPay.confirmPayment({
+        await this.tossPay.confirmPayment({
           amount: reservation.totalCost,
           orderId: reservation.orderId,
           paymentKey: data.paymentKey,
         });
-        response.method;
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderResultId: data.paymentKey,
@@ -205,8 +201,6 @@ export class PaymentService {
 
     const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
 
-    const taxCost = Math.floor(refundCost / 1.1);
-
     if (reservation.user.id !== userId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
     }
@@ -228,6 +222,30 @@ export class PaymentService {
     await this.reservationRepository.updatePayment(reservation.id, {
       refundCost,
     });
+
+    const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
+
+    const oldTotalCost = reservation.totalCost;
+    const oldLupinCost = oldTotalCost * 0.1;
+    const oldLupinVatCost = getVatCost(oldLupinCost);
+    const oldSettlementCost = oldTotalCost - oldLupinCost;
+    const oldVatCost = getVatCost(oldSettlementCost);
+
+    const newTotalCost = reservation.totalCost - refundCost;
+    const newLupinCost = newTotalCost * 0.1;
+    const newLupinVatCost = getVatCost(newLupinCost);
+    const newSettlementCost = newTotalCost - newLupinCost;
+    const newVatCost = getVatCost(newSettlementCost);
+
+    await this.settlementRepository.updateSettlement(settlement.id, {
+      lupinCost: settlement.lupinCost - oldLupinCost + newLupinCost,
+      settlementCost: settlement.settlementCost - oldSettlementCost + newSettlementCost,
+      vatCost: settlement.vatCost - oldVatCost + newVatCost,
+      lupinVatCost: settlement.lupinVatCost - oldLupinVatCost + newLupinVatCost,
+      originalCost: settlement.originalCost - refundCost,
+      totalCost: settlement.totalCost - oldTotalCost + newTotalCost,
+    });
+
     return reservation.id;
   }
 
@@ -269,6 +287,8 @@ export class PaymentService {
         settlementCost: isExist.settlementCost + settlementCost,
         totalCost: isExist.totalCost + data.totalCost,
         vatCost: isExist.vatCost + data.vatCost,
+        lupinCost: isExist.lupinCost + lupinCost,
+        lupinVatCost: isExist.lupinVatCost + getVatCost(lupinCost),
         reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
       });
     } else {
@@ -280,6 +300,8 @@ export class PaymentService {
         settlementCost,
         totalCost: data.totalCost,
         vatCost: data.vatCost,
+        lupinCost,
+        lupinVatCost: getVatCost(lupinCost),
         discountCost: data.discountCost,
         originalCost: data.originalCost,
         reservationIds: [data.id],
@@ -400,46 +422,8 @@ export class PaymentService {
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
-    let discountCost = 0;
+    const discountCost = await this.getDiscountCost(data, cost);
     let additionalCost = 0;
-
-    if (data['userCouponIds']) {
-      const userCoupons = await this.couponRepository.findUserCoupons({
-        where: {
-          OR: (data as CreatePaymentDTO).userCouponIds.map((id) => ({ id })),
-        },
-      });
-      await Promise.all(
-        (data as CreatePaymentDTO).userCouponIds?.map(async (couponId) => {
-          const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
-          if (isExist) {
-            const usageDateStart = isExist.usageDateStartAt.getTime();
-            const usageDateEnd = isExist.usageDateEndAt.getTime();
-            const currentDate = new Date();
-            currentDate.setUTCHours(0, 0, 0, 0);
-
-            //INFO: 즉시 예약일 때만 쿠폰 검증
-            if (!data.reservationId) {
-              if (usageDateStart > currentDate.getTime()) {
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
-              }
-
-              if (usageDateEnd < currentDate.getTime()) {
-                await this.couponRepository.deleteUserCoupon(isExist.id);
-
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
-              }
-            }
-
-            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-              discountCost += cost * (isExist.coupon.discountValue / 100);
-            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
-              discountCost += isExist.coupon.discountValue;
-            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
-          }
-        })
-      );
-    }
 
     if (data['discountCost'] && data['discountCost'] !== discountCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
@@ -477,5 +461,48 @@ export class PaymentService {
       totalCost: cost - discountCost + additionalCost,
       originalCost: cost + additionalCost,
     };
+  }
+
+  async getDiscountCost(data: CreatePaymentDTO, cost: number) {
+    let discountCost = 0;
+    if (data.userCouponIds && data.userCouponIds.length > 0) {
+      const userCoupons = await this.couponRepository.findUserCoupons({
+        where: {
+          OR: data.userCouponIds.map((id) => ({ id })),
+        },
+      });
+      await Promise.all(
+        data.userCouponIds.map(async (couponId) => {
+          const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
+          if (isExist) {
+            const usageDateStart = isExist.usageDateStartAt.getTime();
+            const usageDateEnd = isExist.usageDateEndAt.getTime();
+            const currentDate = new Date();
+            currentDate.setUTCHours(0, 0, 0, 0);
+
+            //INFO: 즉시 예약일 때만 쿠폰 검증
+            if (!data.reservationId) {
+              if (usageDateStart > currentDate.getTime()) {
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
+              }
+
+              if (usageDateEnd < currentDate.getTime()) {
+                await this.couponRepository.deleteUserCoupon(isExist.id);
+
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+              }
+            }
+
+            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
+              discountCost += cost * (isExist.coupon.discountValue / 100);
+            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
+              discountCost += isExist.coupon.discountValue;
+            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+          }
+        })
+      );
+    }
+
+    return discountCost;
   }
 }

@@ -120,17 +120,80 @@ export class HostQnAController {
       description: '미답변 QnA  조회',
       summary: '미답변 QnA  조회',
     },
+    query: {
+      type: PagingDTO,
+    },
   })
   @ResponseApi({
     type: QnADTO,
-    isArray: true,
+    isPaging: true,
   })
-  async getNotAnsweredQnAs(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
-    return await this.qnaService.findQnAs({
+  async getNotAnsweredQnAs(
+    @ReqUser() user: RequestHost,
+    @Param('spaceId') spaceId: string,
+    @Paging() paging: PagingDTO
+  ) {
+    return await this.qnaService.findPagingQnAs(paging, {
       where: {
         spaceId,
         space: {
           hostId: user.id,
+        },
+      },
+    });
+  }
+
+  @Get('/space/:spaceId/answered')
+  @RequestApi({
+    summary: {
+      description: '답변 QnA  조회',
+      summary: '답변 QnA  조회',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+    isPaging: true,
+  })
+  async getAnsweredQnAs(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string, @Paging() paging: PagingDTO) {
+    return await this.qnaService.findPagingQnAs(paging, {
+      where: {
+        spaceId,
+        space: {
+          hostId: user.id,
+        },
+        answers: {
+          some: {},
+        },
+      },
+    });
+  }
+
+  @Get('/space/:spaceId/answered/count')
+  @RequestApi({
+    summary: {
+      description: '답변 QnA 개수 조회',
+      summary: '답변 QnA 개수  조회',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+    isPaging: true,
+  })
+  async getAnsweredQnAsCount(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
+    return await this.qnaService.countQnA({
+      where: {
+        spaceId,
+        space: {
+          hostId: user.id,
+        },
+        answers: {
+          some: {},
         },
       },
     });

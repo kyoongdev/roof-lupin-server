@@ -43,12 +43,6 @@ export class HostReviewController {
       description: '리뷰 목록 조회',
       summary: '공간 리뷰 목록 조회 - 호스트만 사용 가능합니다.',
     },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      required: true,
-      description: '공간 아이디',
-    },
     query: {
       type: PagingDTO,
     },
@@ -78,13 +72,20 @@ export class HostReviewController {
       description: '미답변 리뷰 목록 조회',
       summary: '미답변 리뷰 목록 조회',
     },
+    query: {
+      type: PagingDTO,
+    },
   })
   @ResponseApi({
     type: ReviewDTO,
-    isArray: true,
+    isPaging: true,
   })
-  async getNotAnsweredReviewsBySpaceID(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
-    return await this.reviewService.findReviews({
+  async getNotAnsweredReviewsBySpaceID(
+    @Param('spaceId') spaceId: string,
+    @ReqUser() user: RequestHost,
+    @Paging() paging: PagingDTO
+  ) {
+    return await this.reviewService.findPagingReviews(paging, {
       where: {
         spaceId,
         space: {

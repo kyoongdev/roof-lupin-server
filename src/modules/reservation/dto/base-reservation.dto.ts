@@ -12,6 +12,8 @@ export interface BaseReservationDTOProps {
   discountCost: number;
   originalCost: number;
   isCanceled: boolean;
+  userName: string;
+  userPhoneNumber: string;
   payedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +62,12 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '결제 날짜' } })
   payedAt?: Date;
 
+  @Property({ apiProperty: { type: 'string', description: '유저 이름' } })
+  userName: string;
+
+  @Property({ apiProperty: { type: 'string', description: '유저 전화번호' } })
+  userPhoneNumber: string;
+
   constructor(props: BaseReservationDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -75,5 +83,7 @@ export class BaseReservationDTO {
     this.userCount = props.userCount;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+    this.userName = props.userName;
+    this.userPhoneNumber = props.userPhoneNumber;
   }
 }

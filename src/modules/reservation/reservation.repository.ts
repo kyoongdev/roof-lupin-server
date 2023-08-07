@@ -5,6 +5,7 @@ import { flatMap } from 'lodash';
 
 import { getRandom } from '@/common';
 import { reservationInclude } from '@/common/constants/query';
+import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservation } from '@/interface/reservation.interface';
 
@@ -96,7 +97,7 @@ export class ReservationRepository {
   //TODO: 결제 시스템까지 도입
   async createPayment(userId: string, data: CreatePaymentDTO, isApproved?: boolean) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
-    const vatCost = Math.floor(rest.totalCost * (1 / 11));
+    const vatCost = getVatCost(rest.totalCost);
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await this.database.reservation.create({
@@ -148,7 +149,7 @@ export class ReservationRepository {
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
-    const vatCost = Math.floor(rest.totalCost * (1 / 11));
+    const vatCost = getVatCost(rest.totalCost);
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await database.reservation.create({

@@ -10,6 +10,8 @@ import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../spac
 import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-type-paging.dto';
 
 import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto';
+import { PaginationPossibleRentalTypesByMonthDTO } from './dto/pagination-possible-rental-types-by-month.dto';
+import { PossibleRentalTypePaginationDTO } from './dto/possible-rental-type-pagination.dto';
 import { RentalTypeService } from './rental-type.service';
 
 @ApiController('rental-types', '대여 타입')
@@ -105,7 +107,7 @@ export class RentalTypeController {
     },
   })
   @ResponseApi({
-    type: PossibleRentalTypesDTO,
+    type: PaginationPossibleRentalTypesByMonthDTO,
   })
   async getPagingPossibleSpaceRentalTypesByMoth(
     @Param('spaceId') spaceId: string,

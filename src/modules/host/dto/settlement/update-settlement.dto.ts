@@ -9,6 +9,8 @@ export interface UpdateSettlementDTOProps {
   vatCost?: number;
   discountCost?: number;
   originalCost?: number;
+  lupinCost?: number;
+  lupinVatCost?: number;
   reservationIds?: string[];
 }
 
@@ -37,6 +39,12 @@ export class UpdateSettlementDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '총액 - 할인가가 적용되지 않은 금액' } })
   originalCost?: number;
 
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '루프루팡 수수료' } })
+  lupinCost?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '루프루팡 수수료 vat' } })
+  lupinVatCost?: number;
+
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '예약 ids' } })
   reservationIds?: string[];
 
@@ -51,6 +59,8 @@ export class UpdateSettlementDTO {
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.reservationIds = props.reservationIds;
+      this.lupinCost = props.lupinCost;
+      this.lupinVatCost = props.lupinVatCost;
     }
   }
 }

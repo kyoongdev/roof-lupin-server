@@ -9,18 +9,11 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreatePaymentDTO } from '../reservation/dto';
-
 import {
-  ApproveKakaoPaymentDTO,
   BankCodeDTO,
-  CompletePortOnePaymentDTO,
   ConfirmTossPaymentDTO,
   CreatePaymentPayloadDTO,
-  CreateTossPaymentDTO,
   PaymentPayloadDTO,
-  PortOnePreparePaymentDTO,
-  PrepareKakaoPaymentDTO,
   RefundPaymentDTO,
 } from './dto';
 import { PaymentService } from './payment.service';
