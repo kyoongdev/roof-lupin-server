@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 import { UserRepository } from '@/modules/user/user.repository';

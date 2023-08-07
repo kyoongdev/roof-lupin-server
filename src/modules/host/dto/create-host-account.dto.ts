@@ -10,7 +10,7 @@ export interface CreateHostAccountProps {
   accountOwner: string;
   accountType: number;
 }
-
+console.log({ BankCodeReqDecorator });
 export class CreateHostAccountDTO {
   @Property({ apiProperty: { type: 'number', description: '사업자 유형' } })
   accountType: number;
