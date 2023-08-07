@@ -37,7 +37,7 @@ jobs:
 
       # Clean Folder
       - name: Build
-        run: rm -rf ./src ./test
+        run: rm -rf  ./test
 
       # zip 파일 생성
       - name: zip create
