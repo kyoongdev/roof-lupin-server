@@ -14,7 +14,7 @@ import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../rental-type/dto';
 import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
-import { CreatePaymentDTO, CreateReservationDTO, PayMethod, ReservationDetailDTO } from '../reservation/dto';
+import { CreatePaymentDTO, CreateReservationDTO, ReservationDetailDTO } from '../reservation/dto';
 import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -38,7 +38,6 @@ import {
   PAYMENT_NOT_APPROVED,
   PAYMENT_NOT_COMPLETED,
   PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
-  PAYMENT_PAY_METHOD_BAD_REQUEST,
   PAYMENT_REFUND_DUE_DATE_PASSED,
   PAYMENT_REFUND_FORBIDDEN,
   PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
@@ -148,16 +147,12 @@ export class PaymentService {
         throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
       }
 
-      if (reservation.payMethod !== PayMethod.TOSS_PAY) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_PAY_METHOD_BAD_REQUEST));
-      }
       await this.database.$transaction(async (database) => {
-        const response = await this.tossPay.confirmPayment({
+        await this.tossPay.confirmPayment({
           amount: reservation.totalCost,
           orderId: reservation.orderId,
           paymentKey: data.paymentKey,
         });
-        response.method;
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderResultId: data.paymentKey,
