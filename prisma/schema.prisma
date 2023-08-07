@@ -378,6 +378,8 @@ model Settlement {
   vatCost        Int @db.MediumInt //INFO: VAT 금액
   discountCost   Int @default(0) @db.MediumInt //INFO: 할인금액 -> 업주랑 같이 부담하는 할인 금액 (우리가 제공하는 할인은 제외)
   originalCost   Int @db.MediumInt //INFO: 총액 -> 할인가가 적용되지 않은 금액
+  lupinCost      Int @default(0) @db.MediumInt //INFO: 루팡 수수료
+  lupinVatCost   Int @default(0) @db.MediumInt //INFO: 루팡 수수료 VAT
 
   isPayed Boolean @default(false)
 

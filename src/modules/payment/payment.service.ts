@@ -200,8 +200,6 @@ export class PaymentService {
 
     const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
 
-    const taxCost = Math.floor(refundCost / 1.1);
-
     if (reservation.user.id !== userId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
     }
@@ -223,6 +221,20 @@ export class PaymentService {
     await this.reservationRepository.updatePayment(reservation.id, {
       refundCost,
     });
+
+    const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
+
+    const newTotalCost = reservation.totalCost - refundCost;
+    const newLupinCost = (reservation.totalCost - refundCost) * 0.1;
+    const newSettlementCost = reservation.totalCost - refundCost - newLupinCost;
+    const newSupplyValue = Math.floor(newSettlementCost / 1.1);
+
+    await this.settlementRepository.updateSettlement(settlement.id, {
+      lupinCost: settlement.lupinCost - settlement.lupinCost + newLupinCost,
+      settlementCost: settlement.settlementCost - settlement.settlementCost + newSettlementCost,
+      // vatCost : settlement.vatCost - ()
+    });
+
     return reservation.id;
   }
 
@@ -264,6 +276,7 @@ export class PaymentService {
         settlementCost: isExist.settlementCost + settlementCost,
         totalCost: isExist.totalCost + data.totalCost,
         vatCost: isExist.vatCost + data.vatCost,
+        lupinCost: isExist.lupinCost + lupinCost,
         reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
       });
     } else {
@@ -275,6 +288,7 @@ export class PaymentService {
         settlementCost,
         totalCost: data.totalCost,
         vatCost: data.vatCost,
+        lupinCost,
         discountCost: data.discountCost,
         originalCost: data.originalCost,
         reservationIds: [data.id],
@@ -395,46 +409,8 @@ export class PaymentService {
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
-    let discountCost = 0;
+    const discountCost = await this.getDiscountCost(data, cost);
     let additionalCost = 0;
-
-    if (data['userCouponIds']) {
-      const userCoupons = await this.couponRepository.findUserCoupons({
-        where: {
-          OR: (data as CreatePaymentDTO).userCouponIds.map((id) => ({ id })),
-        },
-      });
-      await Promise.all(
-        (data as CreatePaymentDTO).userCouponIds?.map(async (couponId) => {
-          const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
-          if (isExist) {
-            const usageDateStart = isExist.usageDateStartAt.getTime();
-            const usageDateEnd = isExist.usageDateEndAt.getTime();
-            const currentDate = new Date();
-            currentDate.setUTCHours(0, 0, 0, 0);
-
-            //INFO: 즉시 예약일 때만 쿠폰 검증
-            if (!data.reservationId) {
-              if (usageDateStart > currentDate.getTime()) {
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
-              }
-
-              if (usageDateEnd < currentDate.getTime()) {
-                await this.couponRepository.deleteUserCoupon(isExist.id);
-
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
-              }
-            }
-
-            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-              discountCost += cost * (isExist.coupon.discountValue / 100);
-            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
-              discountCost += isExist.coupon.discountValue;
-            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
-          }
-        })
-      );
-    }
 
     if (data['discountCost'] && data['discountCost'] !== discountCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
@@ -472,5 +448,48 @@ export class PaymentService {
       totalCost: cost - discountCost + additionalCost,
       originalCost: cost + additionalCost,
     };
+  }
+
+  async getDiscountCost(data: CreatePaymentDTO, cost: number) {
+    let discountCost = 0;
+    if (data.userCouponIds && data.userCouponIds.length > 0) {
+      const userCoupons = await this.couponRepository.findUserCoupons({
+        where: {
+          OR: data.userCouponIds.map((id) => ({ id })),
+        },
+      });
+      await Promise.all(
+        data.userCouponIds.map(async (couponId) => {
+          const isExist = userCoupons.find((userCoupon) => userCoupon.id === couponId);
+          if (isExist) {
+            const usageDateStart = isExist.usageDateStartAt.getTime();
+            const usageDateEnd = isExist.usageDateEndAt.getTime();
+            const currentDate = new Date();
+            currentDate.setUTCHours(0, 0, 0, 0);
+
+            //INFO: 즉시 예약일 때만 쿠폰 검증
+            if (!data.reservationId) {
+              if (usageDateStart > currentDate.getTime()) {
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
+              }
+
+              if (usageDateEnd < currentDate.getTime()) {
+                await this.couponRepository.deleteUserCoupon(isExist.id);
+
+                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+              }
+            }
+
+            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
+              discountCost += cost * (isExist.coupon.discountValue / 100);
+            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
+              discountCost += isExist.coupon.discountValue;
+            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+          }
+        })
+      );
+    }
+
+    return discountCost;
   }
 }
