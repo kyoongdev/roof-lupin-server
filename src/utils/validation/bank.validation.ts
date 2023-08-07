@@ -9,7 +9,6 @@ import { BANK_CODE } from '@/common/constants';
 import { BaseValidator } from './base-validator';
 
 export const BANK_CODES = Object.keys(BANK_CODE);
-
 export const BANK_NAMES = Object.values(BANK_CODE);
 
 @ValidatorConstraint()

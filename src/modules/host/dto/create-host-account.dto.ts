@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { BankCodeReqDecorator } from '@/utils/validation';
+import { BankCodeReqDecorator } from '@/utils/validation/bank.validation';
 
 export interface CreateHostAccountProps {
   ownerName: string;
