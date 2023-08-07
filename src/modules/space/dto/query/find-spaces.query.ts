@@ -173,7 +173,7 @@ export class FindSpacesQuery extends PagingDTO {
   }
 
   generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
-    const userCountWhere = this.userCount ? Prisma.sql`minUser <= ${this.userCount}` : Prisma.empty;
+    const userCountWhere = this.userCount ? Prisma.sql`AND minUser <= ${this.userCount}` : Prisma.empty;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
           this.locationName
