@@ -18,6 +18,7 @@ import {
   UpdateReviewDTO,
   UpdateReviewReportDTO,
 } from './dto';
+import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewDTO } from './dto/review.dto';
 import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
@@ -404,5 +405,27 @@ export class ReviewRepository {
         deletedAt: new Date(),
       },
     });
+  }
+
+  async findBestReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
+    const images = await this.database.spaceReviewImage.findMany({
+      ...args,
+      where: {
+        ...args.where,
+        isBest: true,
+      },
+      include: {
+        image: true,
+      },
+    });
+
+    return images.map(
+      (image) =>
+        new ReviewImageDTO({
+          imageId: image.imageId,
+          isBest: image.isBest,
+          url: image.image.url,
+        })
+    );
   }
 }
