@@ -1,10 +1,11 @@
 import { Property } from 'cumuco-nestjs';
 
-import { HolidayPagingDTO, HolidayPagingDTOProps } from './holiday-paging.dto';
+import { HolidayPagingDTO } from './holiday-paging.dto';
 import { PagingHolidayDTO, PagingHolidayDTOProps } from './paging-holiday.dto';
+import { HolidayPagingQueryProps } from './query';
 
 export interface PaginationHolidayDTOProps {
-  paging: HolidayPagingDTOProps;
+  paging: HolidayPagingQueryProps;
   data: PagingHolidayDTOProps[];
 }
 
@@ -16,7 +17,7 @@ export class PaginationHolidayDTO {
   data: PagingHolidayDTO[];
 
   constructor(props: PaginationHolidayDTOProps) {
-    this.paging = props.paging;
+    this.paging = new HolidayPagingDTO(props.paging);
     this.data = props.data.map((item) => new PagingHolidayDTO(item));
   }
 }

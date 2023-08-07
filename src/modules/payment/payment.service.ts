@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
+import { LUPIN_CHARGE } from '@/common/constants';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
@@ -58,7 +59,6 @@ export class PaymentService {
     private readonly tossPay: TossPayProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
-    private readonly userRepository: UserRepository,
     private readonly settlementRepository: SettlementRepository,
     private readonly financeProvider: FinanceProvider
   ) {}
@@ -226,13 +226,13 @@ export class PaymentService {
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
 
     const oldTotalCost = reservation.totalCost;
-    const oldLupinCost = oldTotalCost * 0.1;
+    const oldLupinCost = oldTotalCost * LUPIN_CHARGE;
     const oldLupinVatCost = getVatCost(oldLupinCost);
     const oldSettlementCost = oldTotalCost - oldLupinCost;
     const oldVatCost = getVatCost(oldSettlementCost);
 
     const newTotalCost = reservation.totalCost - refundCost;
-    const newLupinCost = newTotalCost * 0.1;
+    const newLupinCost = newTotalCost * LUPIN_CHARGE;
     const newLupinVatCost = getVatCost(newLupinCost);
     const newSettlementCost = newTotalCost - newLupinCost;
     const newVatCost = getVatCost(newSettlementCost);
@@ -264,7 +264,7 @@ export class PaymentService {
     });
     await Promise.all(
       coupons.map(async (coupon) => {
-        await this.couponRepository.deleteCoupon(coupon.id);
+        await this.couponRepository.restoreUserCoupon(coupon.id);
       })
     );
 
@@ -278,7 +278,7 @@ export class PaymentService {
       data.day,
       data.space.hostId
     );
-    const lupinCost = data.totalCost * 0.1;
+    const lupinCost = data.totalCost * LUPIN_CHARGE;
     const settlementCost = data.totalCost - lupinCost;
     if (isExist) {
       await this.settlementRepository.updateSettlementWithTransaction(database, isExist.id, {
