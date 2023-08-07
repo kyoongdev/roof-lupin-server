@@ -12,7 +12,6 @@
     "stage": "yarn config:stage && nest start --watch",
     "dev": "yarn config:dev &&  nest start --watch",
     "start:prod": "node dist/main",
-    "test:dev": "jest",
     "deploy:docker": "yarn prisma db push && node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier:fix": "prettier **/*.ts   --write",
