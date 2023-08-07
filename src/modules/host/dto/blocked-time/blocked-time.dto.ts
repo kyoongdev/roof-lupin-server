@@ -8,6 +8,7 @@ export interface BlockedTimeDTOProps {
   startAt: number;
   endAt: number;
   spaceId: string;
+  name: string;
 }
 
 export class BlockedTimeDTO {
@@ -32,6 +33,9 @@ export class BlockedTimeDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 id' } })
   spaceId: string;
 
+  @Property({ apiProperty: { type: 'string', description: '차단된 시간 이름' } })
+  name: string;
+
   constructor(props: BlockedTimeDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -40,5 +44,6 @@ export class BlockedTimeDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.spaceId = props.spaceId;
+    this.name = props.name;
   }
 }
