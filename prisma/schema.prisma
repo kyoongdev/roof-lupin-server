@@ -492,6 +492,7 @@ model SpaceReviewImage {
   spaceReview   SpaceReview @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   imageId       String
   image         Image       @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  isBest        Boolean     @default(false)
 
   @@id([spaceReviewId, imageId])
 }

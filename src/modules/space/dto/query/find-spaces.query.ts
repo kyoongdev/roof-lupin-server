@@ -63,102 +63,6 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, enum: SPACE_SORT_OPTION_VALUES } })
   sort?: keyof typeof SPACE_SORT_OPTION;
 
-  findSpacesFindManyClause(userId?: string): Prisma.SpaceFindManyArgs {
-    return {
-      where: {
-        ...(this.keyword && {
-          OR: [
-            {
-              title: {
-                contains: this.keyword,
-              },
-            },
-            {
-              location: {
-                jibunAddress: {
-                  contains: this.keyword,
-                },
-                roadAddress: {
-                  contains: this.keyword,
-                },
-              },
-            },
-            {
-              publicTransportations: {
-                some: {
-                  name: {
-                    contains: this.keyword,
-                  },
-                },
-              },
-            },
-            {
-              hashTags: {
-                some: {
-                  hashTag: {
-                    name: {
-                      contains: this.keyword,
-                    },
-                  },
-                },
-              },
-            },
-          ],
-        }),
-        ...(this.userCount && {
-          minUser: {
-            lte: this.userCount,
-          },
-        }),
-        ...(this.category && {
-          categories: {
-            some: {
-              category: {
-                name: {
-                  contains: this.category,
-                },
-              },
-            },
-          },
-        }),
-        ...(this.categoryIds && {
-          categories: {
-            some: {
-              OR: this.categoryIds.split(',').map((categoryId) => ({ categoryId })),
-            },
-          },
-        }),
-        ...(this.locationName && {
-          location: {
-            OR: [
-              {
-                jibunAddress: {
-                  contains: this.locationName,
-                },
-              },
-              {
-                roadAddress: {
-                  contains: this.locationName,
-                },
-              },
-            ],
-          },
-        }),
-        ...(userId && {
-          NOT: [
-            {
-              reports: {
-                some: {
-                  userId,
-                },
-              },
-            },
-          ],
-        }),
-      },
-    };
-  }
-
   getFindByDateQuery(): FindByDateQuery {
     if (!this.year || !this.month || !this.day) {
       return null;
@@ -227,8 +131,6 @@ export class FindSpacesQuery extends PagingDTO {
           )}`
         : Prisma.empty;
 
-    const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${sizeWhere} ${immediateReservationWhere} ${serviceWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
-
-    return where;
+    return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${sizeWhere} ${immediateReservationWhere} ${serviceWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
   }
 }

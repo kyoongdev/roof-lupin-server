@@ -10,7 +10,9 @@ export const REVIEW_ANSWER_NOT_FOUND = '리뷰 답변을 찾을 수 없습니다
 export const REVIEW_ANSWER_UPDATE_DUE_DATE = '리뷰 수정은 작성 후 72시간까지만 가능합니다.' as const;
 
 export const REVIEW_ALREADY_EXISTS = '이미 리뷰를 작성하였습니다.' as const;
+export const REVIEW_IMAGE_NOT_FOUND = '리뷰 이미지를 찾을 수 없습니다.' as const;
 export const BEST_PHOTO_NOT_FOUND = '베스트 포토를 찾을 수 없습니다.' as const;
+export const BEST_PHOTO_LENGTH_EXCEEDED = '베스트 포토는 최대 10개까지만 등록 가능합니다.' as const;
 export const REVIEW_REPORT_NOT_FOUND = '리뷰 신고를 찾을 수 없습니다.' as const;
 export const REVIEW_REPORT_ALREADY_EXISTS = '이미 신고한 리뷰입니다.' as const;
 export const REVIEW_REPORT_MUTATION_FORBIDDEN = '본인의 신고만 수정/삭제 가능합니다.' as const;

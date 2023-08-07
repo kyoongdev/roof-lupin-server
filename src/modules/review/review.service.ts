@@ -59,6 +59,16 @@ export class ReviewService {
     });
   }
 
+  async findBestReviewImages(spaceId: string) {
+    return await this.reviewRepository.findBestReviewImages({
+      where: {
+        spaceReview: {
+          spaceId,
+        },
+      },
+    });
+  }
+
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
 

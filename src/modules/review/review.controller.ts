@@ -17,6 +17,7 @@ import {
 } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
+import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewDTO } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
@@ -96,26 +97,16 @@ export class ReviewController {
   @Get(':spaceId/best')
   @RequestApi({
     summary: {
-      description: '공강의 베스트 리뷰 목록',
-      summary: '공간의 베스트 리뷰 목록을 불러옵니다.',
-    },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      description: '공간 아이디',
+      description: '공강의 베스트 포토 목록',
+      summary: '공간의 베스트 포토 목록을 불러옵니다.',
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
+    type: ReviewImageDTO,
     isArray: true,
   })
   async getSpaceBestReviews(@Param('spaceId') spaceId: string) {
-    return await this.reviewService.findReviews({
-      where: {
-        spaceId,
-        isBest: true,
-      },
-    });
+    return await this.reviewService.findBestReviewImages(spaceId);
   }
 
   @Get('me/list')
