@@ -97,13 +97,8 @@ export class ReviewController {
   @Get(':spaceId/best')
   @RequestApi({
     summary: {
-      description: '공강의 베스트 리뷰 목록',
-      summary: '공간의 베스트 리뷰 목록을 불러옵니다.',
-    },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      description: '공간 아이디',
+      description: '공강의 베스트 포토 목록',
+      summary: '공간의 베스트 포토 목록을 불러옵니다.',
     },
   })
   @ResponseApi({
