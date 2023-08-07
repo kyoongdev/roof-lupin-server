@@ -144,7 +144,7 @@ export class HostReviewController {
   @Delete(':reviewId/best')
   @RequestApi({
     summary: {
-      description: '[호스트] 리뷰 베스트 제외',
+      description: ' 리뷰 베스트 제외',
       summary: '리뷰를 베스트에서 제외합니다. 호스트만 사용 가능합니다.',
     },
   })
