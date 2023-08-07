@@ -12,6 +12,7 @@ export interface SettlementDTOProps {
   totalCost: number;
   vatCost: number;
   lupinCost: number;
+  lupinVatCost: number;
   discountCost: number;
   originalCost: number;
   isPayed: boolean;
@@ -51,6 +52,9 @@ export class SettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '루프루팡 수수료' } })
   lupinCost: number;
 
+  @Property({ apiProperty: { type: 'number', description: '루프루팡 수수료 vat' } })
+  lupinVatCost: number;
+
   constructor(props: SettlementDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -63,6 +67,7 @@ export class SettlementDTO {
     this.originalCost = props.originalCost;
     this.isPayed = props.isPayed;
     this.lupinCost = props.lupinCost;
+    this.lupinVatCost = props.lupinVatCost;
   }
 
   static generateQuery(query: FindSettlementsQuery): Prisma.SettlementFindManyArgs {

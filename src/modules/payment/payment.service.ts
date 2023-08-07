@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { nanoid } from 'nanoid';
 
+import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 import { logger } from '@/log';
@@ -224,15 +225,25 @@ export class PaymentService {
 
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
 
+    const oldTotalCost = reservation.totalCost;
+    const oldLupinCost = oldTotalCost * 0.1;
+    const oldLupinVatCost = getVatCost(oldLupinCost);
+    const oldSettlementCost = oldTotalCost - oldLupinCost;
+    const oldVatCost = getVatCost(oldSettlementCost);
+
     const newTotalCost = reservation.totalCost - refundCost;
-    const newLupinCost = (reservation.totalCost - refundCost) * 0.1;
-    const newSettlementCost = reservation.totalCost - refundCost - newLupinCost;
-    const newSupplyValue = Math.floor(newSettlementCost / 1.1);
+    const newLupinCost = newTotalCost * 0.1;
+    const newLupinVatCost = getVatCost(newLupinCost);
+    const newSettlementCost = newTotalCost - newLupinCost;
+    const newVatCost = getVatCost(newSettlementCost);
 
     await this.settlementRepository.updateSettlement(settlement.id, {
-      lupinCost: settlement.lupinCost - settlement.lupinCost + newLupinCost,
-      settlementCost: settlement.settlementCost - settlement.settlementCost + newSettlementCost,
-      // vatCost : settlement.vatCost - ()
+      lupinCost: settlement.lupinCost - oldLupinCost + newLupinCost,
+      settlementCost: settlement.settlementCost - oldSettlementCost + newSettlementCost,
+      vatCost: settlement.vatCost - oldVatCost + newVatCost,
+      lupinVatCost: settlement.lupinVatCost - oldLupinVatCost + newLupinVatCost,
+      originalCost: settlement.originalCost - refundCost,
+      totalCost: settlement.totalCost - oldTotalCost + newTotalCost,
     });
 
     return reservation.id;
@@ -277,6 +288,7 @@ export class PaymentService {
         totalCost: isExist.totalCost + data.totalCost,
         vatCost: isExist.vatCost + data.vatCost,
         lupinCost: isExist.lupinCost + lupinCost,
+        lupinVatCost: isExist.lupinVatCost + getVatCost(lupinCost),
         reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
       });
     } else {
@@ -289,6 +301,7 @@ export class PaymentService {
         totalCost: data.totalCost,
         vatCost: data.vatCost,
         lupinCost,
+        lupinVatCost: getVatCost(lupinCost),
         discountCost: data.discountCost,
         originalCost: data.originalCost,
         reservationIds: [data.id],

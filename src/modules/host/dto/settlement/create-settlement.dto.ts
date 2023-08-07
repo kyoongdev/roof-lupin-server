@@ -11,6 +11,7 @@ export interface CreateSettlementDTOProps {
   discountCost: number;
   originalCost: number;
   lupinCost: number;
+  lupinVatCost: number;
   reservationIds?: string[];
 }
 
@@ -45,6 +46,9 @@ export class CreateSettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '루프루팡 수수료' } })
   lupinCost: number;
 
+  @Property({ apiProperty: { type: 'number', description: '루프루팡 수수료 vat' } })
+  lupinVatCost: number;
+
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '예약 ids' } })
   reservationIds?: string[];
 
@@ -58,6 +62,7 @@ export class CreateSettlementDTO {
       this.totalCost = props.totalCost;
       this.vatCost = props.vatCost;
       this.lupinCost = props.lupinCost;
+      this.lupinVatCost = props.lupinVatCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.reservationIds = props.reservationIds;
