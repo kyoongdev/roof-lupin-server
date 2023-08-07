@@ -59,10 +59,11 @@ export class CreateSettlementDTO {
       this.day = props.day;
       this.hostId = props.hostId;
       this.settlementCost = props.settlementCost;
+      this.lupinVatCost = props.lupinVatCost;
+
       this.totalCost = props.totalCost;
       this.vatCost = props.vatCost;
       this.lupinCost = props.lupinCost;
-      this.lupinVatCost = props.lupinVatCost;
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.reservationIds = props.reservationIds;

@@ -150,6 +150,7 @@ export class ReservationRepository {
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {
     const { rentalTypes, spaceId, userCouponIds, ...rest } = data;
     const vatCost = getVatCost(rest.totalCost);
+
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
     const reservation = await database.reservation.create({

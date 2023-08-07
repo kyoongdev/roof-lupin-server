@@ -13,6 +13,7 @@ export interface SettlementDTOProps {
   vatCost: number;
   lupinCost: number;
   lupinVatCost: number;
+
   discountCost: number;
   originalCost: number;
   isPayed: boolean;

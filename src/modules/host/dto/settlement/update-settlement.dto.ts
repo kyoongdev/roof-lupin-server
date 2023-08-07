@@ -11,6 +11,7 @@ export interface UpdateSettlementDTOProps {
   originalCost?: number;
   lupinCost?: number;
   lupinVatCost?: number;
+
   reservationIds?: string[];
 }
 
