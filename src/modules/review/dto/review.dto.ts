@@ -7,10 +7,11 @@ import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
 import { ReviewAnswerDTO, ReviewAnswerDTOProps } from './review-answer.dto';
+import { ReviewImageDTO, ReviewImageDTOProps } from './review-image.dto';
 
 export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
-  images: { image: Image }[];
+  images: ReviewImageDTOProps[];
   answers: ReviewAnswerDTOProps[];
 }
 
@@ -26,11 +27,8 @@ export class ReviewDTO {
   })
   score: number;
 
-  @Property({ apiProperty: { type: 'string', isArray: true } })
-  images: ImageDTO[];
-
-  @Property({ apiProperty: { type: 'boolean' } })
-  isBest: boolean;
+  @Property({ apiProperty: { type: ReviewImageDTO, isArray: true } })
+  images: ReviewImageDTO[];
 
   @Property({ apiProperty: { type: CommonUserDTO } })
   user: CommonUserDTO;
@@ -52,39 +50,19 @@ export class ReviewDTO {
     this.content = props.content;
     this.score = props.score;
     this.user = new CommonUserDTO(props.user);
-    this.images = props.images.map(({ image }) => new ImageDTO(image));
-    this.isBest = props.isBest;
+    this.images = props.images.map((image) => new ReviewImageDTO(image));
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.reviewAnswers = props.answers.map((answer) => new ReviewAnswerDTO(answer));
   }
 
   static async generateQuery(query: FindReviewsQuery, spaceId?: string): Promise<Prisma.SpaceReviewFindManyArgs> {
-    const includeIds: string[] = [];
-    if (query.hasPhoto && spaceId) {
-      const database = new PrismaClient();
-      const images = await database.spaceReviewImage.groupBy({
-        by: ['spaceReviewId'],
-        where: {
-          spaceReview: {
-            spaceId,
-          },
-        },
-      });
-
-      images.forEach(({ spaceReviewId }) => {
-        if (!includeIds.includes(spaceReviewId)) {
-          includeIds.push(spaceReviewId);
-        }
-      });
-    }
-
     return {
       where: {
         ...(query.hasPhoto && {
-          OR: includeIds.map((id) => ({
-            id,
-          })),
+          images: {
+            some: {},
+          },
         }),
       },
       ...(query.sort && {

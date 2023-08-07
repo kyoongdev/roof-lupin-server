@@ -41,6 +41,7 @@ export class ReviewRepository {
                 url: true,
               },
             },
+            isBest: true,
           },
         },
         answers: {
@@ -63,6 +64,7 @@ export class ReviewRepository {
 
     return new ReviewDetailDTO({
       ...review,
+      images: review.images.map((image) => ({ imageId: image.image.id, url: image.image.url, isBest: image.isBest })),
       space: SpaceDTO.generateSpaceDTO(review.space),
     });
   }
@@ -99,6 +101,7 @@ export class ReviewRepository {
                 url: true,
               },
             },
+            isBest: true,
           },
         },
         answers: {
@@ -118,7 +121,17 @@ export class ReviewRepository {
       take: args.take,
     });
 
-    return reviews.map((review) => new ReviewDTO(review));
+    return reviews.map(
+      (review) =>
+        new ReviewDTO({
+          ...review,
+          images: review.images.map((image) => ({
+            imageId: image.image.id,
+            url: image.image.url,
+            isBest: image.isBest,
+          })),
+        })
+    );
   }
 
   async findBestPhotoReviews(spaceId: string) {

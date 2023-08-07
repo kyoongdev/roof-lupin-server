@@ -105,6 +105,7 @@ export class SpaceRepository {
                 image: true,
               },
             },
+
             user: true,
           },
           skip: 0,
@@ -170,6 +171,7 @@ export class SpaceRepository {
       refundPolicies,
       openHours,
       holidays,
+      reviews,
     } = space;
     const bestPhotos = await this.database.spaceReviewImage.findMany({
       where: {
@@ -203,6 +205,14 @@ export class SpaceRepository {
       })),
       openHours,
       holidays,
+      reviews: reviews.map((review) => ({
+        ...review,
+        images: review.images.map((image) => ({
+          imageId: image.image.id,
+          url: image.image.url,
+          isBest: image.isBest,
+        })),
+      })),
     });
   }
 
