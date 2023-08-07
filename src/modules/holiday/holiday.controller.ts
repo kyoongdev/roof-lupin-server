@@ -5,6 +5,7 @@ import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 import { ApiController } from '@/utils';
 
 import { FindHolidayDTO, HolidayDTO, HolidayPagingQuery } from './dto';
+import { PaginationHolidayDTO } from './dto/pagination-holiday.dto';
 import { HolidayService } from './holiday.service';
 
 @ApiController('holidays', '휴일')
@@ -34,8 +35,7 @@ export class HolidayController {
     },
   })
   @ResponseApi({
-    type: HolidayDTO,
-    isArray: true,
+    type: PaginationHolidayDTO,
   })
   async getPagingHolidays(@Query() query: HolidayPagingQuery) {
     return await this.holidayService.findPagingHoliday(query);

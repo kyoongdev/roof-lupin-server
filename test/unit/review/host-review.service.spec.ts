@@ -2,6 +2,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { HostReviewService } from '@/modules/host/review/review.service';
 import { ReviewRepository } from '@/modules/review/review.repository';
 import { ReviewService } from '@/modules/review/review.service';
+import { SpaceDTO } from '@/modules/space/dto';
 import { seedDatabase } from '@/seed';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';

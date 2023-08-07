@@ -7,8 +7,10 @@ module.exports = {
   },
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
+    '@/utils/validation': '<rootDir>/src/utils/validation',
     'test/(.*)': '<rootDir>/test/$1',
   },
+
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
