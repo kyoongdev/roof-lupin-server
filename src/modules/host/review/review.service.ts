@@ -7,6 +7,7 @@ import { getDateDiff, getTimeDiff } from '@/common/date';
 import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import {
+  BEST_PHOTO_LENGTH_EXCEEDED,
   REVIEW_ANSWER_ALREADY_WRITTEN,
   REVIEW_ANSWER_MUTATION_FORBIDDEN,
   REVIEW_ANSWER_UPDATE_DUE_DATE,
@@ -49,13 +50,6 @@ export class HostReviewService {
     return new PaginationDTO<ReviewDTO>(reviews, { count, paging });
   }
 
-  async setIsBestReview(id: string, isBest: boolean) {
-    await this.findReview(id);
-    await this.reviewRepository.updateReview(id, {
-      isBest,
-    });
-  }
-
   async createReviewAnswer(reviewId: string, hostId: string, data: CreateReviewAnswerDTO) {
     const review = await this.findReview(reviewId);
     const reviewAnswer = await this.reviewRepository.checkReviewAnswer(reviewId, hostId);
@@ -94,5 +88,40 @@ export class HostReviewService {
     }
 
     await this.reviewRepository.deleteReviewAnswer(reviewAnswerId);
+  }
+
+  async createBestImage(reviewId: string, imageId: string, hostId: string) {
+    const review = await this.findReview(reviewId);
+
+    if (review.space.hostId !== hostId) {
+      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
+    }
+
+    await this.reviewRepository.findReviewImage(reviewId, imageId);
+
+    const bestPhotos = await this.reviewRepository.findBestReviewImages({
+      where: {
+        spaceReview: {
+          spaceId: review.space.id,
+        },
+      },
+    });
+
+    if (bestPhotos.length >= 10) {
+      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
+    }
+
+    await this.reviewRepository.updateReviewImage(reviewId, imageId, true);
+  }
+
+  async deleteBestImage(reviewId: string, imageId: string, hostId: string) {
+    const review = await this.findReview(reviewId);
+
+    if (review.space.hostId !== hostId) {
+      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
+    }
+    await this.reviewRepository.findReviewImage(reviewId, imageId);
+
+    await this.reviewRepository.updateReviewImage(reviewId, imageId, false);
   }
 }

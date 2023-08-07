@@ -69,23 +69,18 @@ export class AdminReviewController {
     return await this.reviewService.findPagingReviewReports(paging);
   }
 
-  @Post(':reviewId/best')
+  @Post(':reviewId/image/:imageId/best')
   @RequestApi({
     summary: {
-      description: '[관리자]리뷰 베스트 설정',
-      summary: '리뷰를 베스트로 설정합니다. 관리자만 사용 가능합니다.',
-    },
-    params: {
-      name: 'reviewId',
-      description: '리뷰 id',
-      type: 'string',
+      description: '리뷰 이미지 베스트 설정',
+      summary: '리뷰 이미지를 베스트로 설정합니다.',
     },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async setBestReview(@Param('reviewId') reviewId: string) {
-    await this.reviewService.setIsBestReview(reviewId, true);
+  async setBestReview(@Param('reviewId') reviewId: string, @Param('imageId') imageId: string) {
+    await this.reviewService.createBestImage(reviewId, imageId);
   }
 
   @Post('reports/:reportId/process')
@@ -116,23 +111,18 @@ export class AdminReviewController {
     await this.reviewService.updateReviewReportIsProcessed(reportId, false);
   }
 
-  @Delete(':reviewId/best')
+  @Delete(':reviewId/image/:imageId/best')
   @RequestApi({
     summary: {
-      description: '[관리자] 리뷰 베스트 제외',
-      summary: '리뷰를 베스트에서 제외합니다. 관리자만 사용 가능합니다.',
-    },
-    params: {
-      name: 'reviewId',
-      description: '리뷰 id',
-      type: 'string',
+      description: '베스트 포토 삭제',
+      summary: '배스트 포토 삭제',
     },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async deleteBestReview(@Param('reviewId') reviewId: string) {
-    await this.reviewService.setIsBestReview(reviewId, false);
+  async deleteBestReview(@Param('reviewId') reviewId: string, @Param('imageId') imageId: string) {
+    await this.reviewService.deleteBestImage(reviewId, imageId);
   }
 
   @Delete(':id')

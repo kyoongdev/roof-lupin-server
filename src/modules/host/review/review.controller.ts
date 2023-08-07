@@ -173,37 +173,40 @@ export class HostReviewController {
     });
   }
 
-  @Post(':reviewId/best')
+  @Post(':reviewId/image/:imageId/best')
   @RequestApi({
     summary: {
-      description: '[호스트]리뷰 베스트 설정',
-      summary: '리뷰를 베스트로 설정합니다. 호스트만 사용 가능합니다.',
-    },
-    params: {
-      name: 'reviewId',
-      description: '리뷰 id',
-      type: 'string',
+      description: '베스트 포토 생성',
+      summary: '베스트 포토 생성',
     },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async setBestReview(@Param('reviewId') reviewId: string) {
-    await this.reviewService.setIsBestReview(reviewId, true);
+  async setBestReview(
+    @Param('reviewId') reviewId: string,
+    @Param('imageId') imageId: string,
+    @ReqUser() user: RequestHost
+  ) {
+    await this.reviewService.createBestImage(reviewId, imageId, user.id);
   }
 
-  @Delete(':reviewId/best')
+  @Delete(':reviewId/image/:imageId/best')
   @RequestApi({
     summary: {
-      description: ' 리뷰 베스트 제외',
-      summary: '리뷰를 베스트에서 제외합니다. 호스트만 사용 가능합니다.',
+      description: '베스트 포토 삭제',
+      summary: '베스트 포토 삭제',
     },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async deleteBestReview(@Param('reviewId') reviewId: string) {
-    await this.reviewService.setIsBestReview(reviewId, false);
+  async deleteBestReview(
+    @Param('reviewId') reviewId: string,
+    @Param('imageId') imageId: string,
+    @ReqUser() user: RequestHost
+  ) {
+    await this.reviewService.deleteBestImage(reviewId, imageId, user.id);
   }
 
   @Post(':reviewId/answer')

@@ -20,7 +20,12 @@ import {
 } from './dto';
 import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewDTO } from './dto/review.dto';
-import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_REPORT_NOT_FOUND } from './exception/errorCode';
+import {
+  REVIEW_ANSWER_NOT_FOUND,
+  REVIEW_ERROR_CODE,
+  REVIEW_IMAGE_NOT_FOUND,
+  REVIEW_REPORT_NOT_FOUND,
+} from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -407,6 +412,29 @@ export class ReviewRepository {
     });
   }
 
+  async findReviewImage(reviewId: string, imageId: string) {
+    const image = await this.database.spaceReviewImage.findUnique({
+      where: {
+        spaceReviewId_imageId: {
+          imageId,
+          spaceReviewId: reviewId,
+        },
+      },
+      include: {
+        image: true,
+      },
+    });
+    if (!image) {
+      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(REVIEW_IMAGE_NOT_FOUND));
+    }
+
+    return new ReviewImageDTO({
+      imageId,
+      isBest: image.isBest,
+      url: image.image.url,
+    });
+  }
+
   async findBestReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
     const images = await this.database.spaceReviewImage.findMany({
       ...args,
@@ -427,5 +455,19 @@ export class ReviewRepository {
           url: image.image.url,
         })
     );
+  }
+
+  async updateReviewImage(reviewId: string, imageId: string, isBest: boolean) {
+    await this.database.spaceReviewImage.update({
+      where: {
+        spaceReviewId_imageId: {
+          imageId,
+          spaceReviewId: reviewId,
+        },
+      },
+      data: {
+        isBest,
+      },
+    });
   }
 }
