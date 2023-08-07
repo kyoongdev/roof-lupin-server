@@ -27,7 +27,7 @@ export const BASE_SPACE_JOIN = Prisma.sql`
   LEFT JOIN HashTag ht ON sh.hashTagId = ht.id
   LEFT JOIN RentalType rt ON sp.id = rt.spaceId
   LEFT JOIN SpaceReport srp ON sp.id = srp.spaceId
-  
+  LEFT JOIN SpaceService ss ON sp.id = ss.spaceId
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql) => Prisma.sql`

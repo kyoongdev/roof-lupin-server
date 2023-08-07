@@ -97,6 +97,57 @@ export class HostReviewController {
     });
   }
 
+  @Get('/not-answered/count')
+  @RequestApi({
+    summary: {
+      description: '미답변 리뷰 개수 조회',
+      summary: '미답변 리뷰 개수 조회',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isArray: true,
+  })
+  async getNotAnsweredReviewsCount(@ReqUser() user: RequestHost) {
+    return await this.reviewService.countReviews({
+      where: {
+        space: {
+          hostId: user.id,
+        },
+        answers: {
+          none: {},
+        },
+      },
+    });
+  }
+
+  @Get('/not-answered')
+  @RequestApi({
+    summary: {
+      description: '미답변 리뷰 목록 조회',
+      summary: '미답변 리뷰 목록 조회',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isPaging: true,
+  })
+  async getNotAnsweredReviews(@ReqUser() user: RequestHost, @Paging() paging: PagingDTO) {
+    return await this.reviewService.findPagingReviews(paging, {
+      where: {
+        space: {
+          hostId: user.id,
+        },
+        answers: {
+          none: {},
+        },
+      },
+    });
+  }
+
   @Get()
   @RequestApi({
     summary: {

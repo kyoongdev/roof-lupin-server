@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { PagingDTO, Property } from 'cumuco-nestjs';
+import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
 import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
 
@@ -18,6 +18,19 @@ export class FindSpacesQuery extends PagingDTO {
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '카테고리 id들 (,를 통해 구분합니다.)' } })
   categoryIds?: string;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '최소 평수' } })
+  minSize?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 평수' } })
+  maxSize?: number;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '서비스 id들 (,를 통해 구분합니다.)' } })
+  serviceIds?: string;
+
+  @ToBoolean()
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '결제 유형' } })
+  isImmediateReservation?: boolean;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '위도' } })
   lat?: string;
@@ -174,6 +187,17 @@ export class FindSpacesQuery extends PagingDTO {
 
   generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
     const userCountWhere = this.userCount ? Prisma.sql`AND minUser <= ${this.userCount}` : Prisma.empty;
+    const sizeWhere =
+      this.minSize && this.maxSize
+        ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
+        : Prisma.empty;
+    const serviceWhere = this.serviceIds
+      ? Prisma.sql`AND ss.id IN (${Prisma.join(this.serviceIds.split(','), ',')})`
+      : Prisma.empty;
+    const immediateReservationWhere =
+      typeof this.isImmediateReservation === 'boolean'
+        ? Prisma.sql`AND sp.isImmediateReservation = ${this.isImmediateReservation ? 1 : 0}`
+        : Prisma.empty;
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
           this.locationName
@@ -203,7 +227,7 @@ export class FindSpacesQuery extends PagingDTO {
           )}`
         : Prisma.empty;
 
-    const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
+    const where = Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${sizeWhere} ${immediateReservationWhere} ${serviceWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
 
     return where;
   }
