@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from 'cumuco-nestjs';
 
+export const PAYMENT_FORBIDDEN = '올바르지 않은 결제 요청입니다.' as const;
 export const PAYMENT_TOTAL_COST_BAD_REQUEST = '결제 비용을 다시 확인해주세요.' as const;
 export const PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR = '대여하려는 상품에 문제가 있습니다.' as const;
 export const PAYMENT_INTERNAL_SERVER_ERROR = '결제에 문제가 생겼습니다.' as const;
