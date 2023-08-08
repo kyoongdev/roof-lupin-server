@@ -3,17 +3,17 @@ import { Property } from 'cumuco-nestjs';
 import { DayReqDecorator, DayResDecorator } from '@/utils/validation';
 
 export interface CreateOpenHourDTOProps {
-  startAt: string;
-  endAt: string;
+  startAt: number;
+  endAt: number;
   day: number;
 }
 
 export class CreateOpenHourDTO {
-  @Property({ apiProperty: { type: 'string', description: '운영 시작시간' } })
-  startAt: string;
+  @Property({ apiProperty: { type: 'number', description: '운영 시작시간' } })
+  startAt: number;
 
-  @Property({ apiProperty: { type: 'string', description: '운영 종료시간' } })
-  endAt: string;
+  @Property({ apiProperty: { type: 'number', description: '운영 종료시간' } })
+  endAt: number;
 
   @DayReqDecorator()
   day: number;

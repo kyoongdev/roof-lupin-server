@@ -5,6 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { range } from 'lodash';
 
 import { getWeek } from '@/common/date';
+import { PrismaService } from '@/database/prisma.service';
 import { DAY_ENUM } from '@/utils/validation';
 
 import { HolidayService } from '../holiday/holiday.service';
@@ -33,7 +34,8 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly holidayService: HolidayService,
-    private readonly searchRepository: SearchRepository
+    private readonly searchRepository: SearchRepository,
+    private readonly database: PrismaService
   ) {}
 
   async findSpaceIds() {
@@ -77,7 +79,7 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = this.getExcludeSpaces(query);
+    const excludeQuery = await this.getExcludeSpaces(query);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
@@ -129,19 +131,20 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  getExcludeSpaces(query?: FindSpacesQuery) {
+  async getExcludeSpaces(query?: FindSpacesQuery) {
     const date = query.getFindByDateQuery();
     const queries: Prisma.Sql[] = [];
     if (date) {
+      const endAtIf = Prisma.sql`IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt )`;
       const timeQuery =
         date?.startAt && date?.endAt
-          ? Prisma.sql`AND (IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${
-              date.startAt
-            } AND  ${date.endAt <= date.startAt ? date.endAt + 24 : date.endAt} >= ReservationRentalType.startAt    )`
+          ? Prisma.sql`AND (IF(RentalType.rentalType = 1, ${endAtIf} + 1, ${endAtIf}) >= ${date.startAt} AND ${
+              date.endAt <= date.startAt ? date.endAt + 24 : date.endAt
+            } >= ReservationRentalType.startAt)`
           : Prisma.sql`AND (      
             ${Prisma.join(
               range(9, 33).map((value) => {
-                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt ) >= ${value}  )`;
+                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ${endAtIf})`;
               }),
               ` AND `
             )}
@@ -153,11 +156,11 @@ export class SpaceService {
       const day = targetDate.getDay();
 
       const dateQuery = date
-        ? Prisma.sql`(Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
+        ? Prisma.sql`(Reservation.isCanceled = 0 AND Reservation.deletedAt IS NULL AND Reservation.payedAt IS NOT NULL AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
         : Prisma.empty;
 
       const query = Prisma.sql`
-        SELECT isp.id
+        SELECT isp.title
         FROM Reservation
         LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
         LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
@@ -167,10 +170,12 @@ export class SpaceService {
         WHERE  ${dateQuery}
         GROUP BY isp.id
       `;
+      const result = await this.database.$queryRaw(query);
+      console.log({ result });
 
       const openHourTimeQuery =
         date.startAt && date.endAt
-          ? Prisma.sql`AND oh.endAt <= ${date.startAt} OR oh.startAt >= ${date.endAt}`
+          ? Prisma.sql`AND (oh.startAt > ${date.endAt} OR IF(oh.endAt < oh.startAt , oh.endAt + 24, oh.endAt) < ${date.startAt}) `
           : Prisma.empty;
 
       const holidayQuery = Prisma.sql`
@@ -178,12 +183,16 @@ export class SpaceService {
         FROM Space sp
         LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
         LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
-        WHERE sh.day = ${day} AND sh.interval = ${week}
-        OR (oh.day != ${day}  ${openHourTimeQuery})
+        WHERE (sh.day = ${day} AND sh.interval = ${week})
+        OR (oh.day = ${day}  ${openHourTimeQuery})
         GROUP BY sp.id
       `;
 
-      queries.push(query, holidayQuery);
+      const result2 = await this.database.$queryRaw(holidayQuery);
+      console.log({ result2, week, day, startAt: date.startAt, endAt: date.endAt });
+
+      queries.push(query);
+      queries.push(holidayQuery);
     }
     return queries;
   }

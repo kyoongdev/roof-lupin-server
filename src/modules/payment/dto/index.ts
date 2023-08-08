@@ -10,3 +10,4 @@ export * from './naver-pay-reserve-parameter.dto';
 export * from './naver-product-item.dto';
 export * from './payment-payload.dto';
 export * from './create-payment-payload.dto';
+export * from './validated-payment.dto';

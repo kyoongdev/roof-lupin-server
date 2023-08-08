@@ -10,3 +10,4 @@ export * from './rental-type-with-reservations.dto';
 export * from './possible-package.dto';
 export * from './possible-rental-type-by-month.dto';
 export * from './possible-rental-types-by-month.dto';
+export * from './validated-rental-type.dto';
