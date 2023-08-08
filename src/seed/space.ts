@@ -187,7 +187,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                   cost: 10000,
                 },
               },
-              timeCostInfo: {
+              timeCostInfos: {
                 create: [
                   {
                     cost: 5000,
@@ -737,7 +737,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 cost: 10000,
               },
             },
-            timeCostInfo: {
+            timeCostInfos: {
               create: [
                 {
                   cost: 1000,
@@ -788,7 +788,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 cost: 10000,
               },
             },
-            timeCostInfo: {
+            timeCostInfos: {
               create: [
                 {
                   cost: 1000,
@@ -1095,7 +1095,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 cost: 10000,
               },
             },
-            timeCostInfo: {
+            timeCostInfos: {
               create: [
                 {
                   cost: 1000,
@@ -1380,7 +1380,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 cost: 10000,
               },
             },
-            timeCostInfo: {
+            timeCostInfos: {
               create: [
                 {
                   cost: 1000,
@@ -1668,7 +1668,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 cost: 10000,
               },
             },
-            timeCostInfo: {
+            timeCostInfos: {
               create: [
                 {
                   cost: 1000,

@@ -127,7 +127,7 @@ export class PaymentService {
 
         if (data.userCouponIds)
           await Promise.all(
-            data.userCouponIds.map(async (couponId) => {
+            data.userCouponIds?.map(async (couponId) => {
               await this.couponRepository.findUserCoupon(couponId);
               await this.couponRepository.deleteUserCoupon(couponId);
             })

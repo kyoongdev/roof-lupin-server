@@ -147,4 +147,8 @@ export class UpdateSpaceDTO {
       }
     });
   }
+
+  setIsApproved(isApproved: boolean) {
+    this.isApproved = isApproved;
+  }
 }

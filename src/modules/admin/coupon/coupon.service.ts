@@ -58,6 +58,10 @@ export class AdminCouponService {
     return new PaginationDTO<UserAdminCouponDTO>(coupons, { count, paging });
   }
 
+  async getCouponCode() {
+    return await this.couponRepository.checkCouponCode();
+  }
+
   async createCoupon(data: CreateCouponDTO) {
     if (data.categoryIds) {
       await Promise.all(data.categoryIds.map(async (id) => await this.categoryRepository.findCategory(id)));

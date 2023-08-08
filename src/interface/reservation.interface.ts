@@ -17,7 +17,7 @@ export interface CommonReservation extends Reservation {
 }
 
 export interface CommonRentalType extends RentalType {
-  timeCostInfo: TimeCostInfo[];
+  timeCostInfos: TimeCostInfo[];
   additionalServices: AdditionalService[];
   space: CommonSpace;
 }
