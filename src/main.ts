@@ -7,7 +7,6 @@ import AppConfig from '@/appConfig';
 import { logger } from '@/log';
 
 import { AppModule } from './app.module';
-
 (async function () {
   const app = await NestFactory.create(AppModule, {
     logger,

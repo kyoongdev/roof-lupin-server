@@ -192,9 +192,9 @@ model Space {
 model OpenHour {
   id String @id @default(uuid())
 
-  startAt String @db.Char(2)
-  endAt   String @db.Char(2)
-  day     Int    @db.TinyInt
+  startAt Int @db.TinyInt
+  endAt   Int @db.TinyInt
+  day     Int @db.TinyInt
 
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)

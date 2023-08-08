@@ -73,7 +73,7 @@ export class FindSpacesQuery extends PagingDTO {
       month: this.month,
       day: this.day,
       startAt: this.startAt,
-      endAt: this.endAt,
+      endAt: this.endAt < this.startAt ? this.endAt + 24 : this.endAt,
     };
   }
 

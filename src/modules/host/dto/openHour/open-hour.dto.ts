@@ -4,8 +4,8 @@ import { DayResDecorator } from '@/utils/validation';
 
 export interface OpenHourDTOProps {
   id: string;
-  startAt: string;
-  endAt: string;
+  startAt: number;
+  endAt: number;
   day: number;
 }
 
@@ -13,11 +13,11 @@ export class OpenHourDTO {
   @Property({ apiProperty: { type: 'string', description: '아이디' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '운영 시작시간' } })
-  startAt: string;
+  @Property({ apiProperty: { type: 'number', description: '운영 시작시간' } })
+  startAt: number;
 
-  @Property({ apiProperty: { type: 'string', description: '운영 종료시간' } })
-  endAt: string;
+  @Property({ apiProperty: { type: 'number', description: '운영 종료시간' } })
+  endAt: number;
 
   @DayResDecorator()
   day: number;

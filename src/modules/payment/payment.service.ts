@@ -12,7 +12,7 @@ import { FinanceProvider, TossPayProvider } from '@/utils';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
 import { SettlementRepository } from '../host/settlement/settlement.repository';
-import { PossiblePackageDTO, PossibleRentalTypeDTO } from '../rental-type/dto';
+import { PossiblePackageDTO, PossibleRentalTypeDTO, ValidatedRentalTypeDTO } from '../rental-type/dto';
 import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
@@ -23,7 +23,13 @@ import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDetailDTO } from '../space/dto';
 import { SpaceRepository } from '../space/space.repository';
 
-import { ConfirmTossPaymentDTO, CreatePaymentPayloadDTO, PaymentPayloadDTO, RefundPaymentDTO } from './dto';
+import {
+  ConfirmTossPaymentDTO,
+  CreatePaymentPayloadDTO,
+  PaymentPayloadDTO,
+  RefundPaymentDTO,
+  ValidatedPaymentDTO,
+} from './dto';
 import {
   PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT,
   PAYMENT_ALREADY_REFUNDED,
@@ -110,7 +116,7 @@ export class PaymentService {
       const reservation = await this.getReservation(paymentData, space);
 
       try {
-        const rentalTypes = await this.validatePayment(paymentData, space);
+        const { rentalTypes } = await this.validatePayment(paymentData, space);
         const orderId = this.createOrderId();
 
         if (reservation) {
@@ -357,7 +363,11 @@ export class PaymentService {
   }
 
   async validatePayment(data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
-    return await Promise.all(
+    const validatedRentalTypes = new ValidatedRentalTypeDTO({
+      cost: 0,
+      rentalTypes: [],
+    });
+    await Promise.all(
       data.rentalTypes.map(async (item) => {
         const rentalType = await this.rentalTypeRepository.findRentalType(item.rentalTypeId);
 
@@ -405,13 +415,7 @@ export class PaymentService {
             }
             return acc;
           }, 0);
-
-          const { totalCost, originalCost } = await this.getRealCost(cost, data, space);
-
-          //INFO: 가격 정보가 올바르지 않을 때
-          if (totalCost !== data.totalCost || originalCost !== data.originalCost) {
-            throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
-          }
+          validatedRentalTypes.increaseCost(cost);
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           //INFO: 대여하려는 시간이 잘못 입력됐을 때
           if (item.startAt !== possibleRentalType.startAt || item.endAt !== possibleRentalType.endAt) {
@@ -421,23 +425,37 @@ export class PaymentService {
           if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }
-          const { originalCost, totalCost } = await this.getRealCost(rentalType.baseCost, data, space);
-          //INFO: 가격 정보가 올바르지 않을 때
-          if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
-            throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
-          }
+          validatedRentalTypes.increaseCost(rentalType.baseCost);
         } else
           throw new PaymentException(
             PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
           );
 
-        return rentalType;
+        validatedRentalTypes.appendRentalType(rentalType);
       })
     );
+    const { discountCost, lupinDiscountCost, originalCost, totalCost } = await this.getRealCost(
+      validatedRentalTypes.cost,
+      data,
+      space
+    );
+
+    //INFO: 가격 정보가 올바르지 않을 때
+    if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
+    }
+
+    return new ValidatedPaymentDTO({
+      rentalTypes: validatedRentalTypes.rentalTypes,
+      discountCost,
+      lupinDiscountCost,
+      originalCost,
+      totalCost,
+    });
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
-    const discountCost = await this.getDiscountCost(data, cost);
+    const { discountCost, lupinDiscountCost } = await this.getDiscountCost(data, cost);
     let additionalCost = 0;
 
     if (data['discountCost'] && data['discountCost'] !== discountCost) {
@@ -475,11 +493,14 @@ export class PaymentService {
     return {
       totalCost: cost - discountCost + additionalCost,
       originalCost: cost + additionalCost,
+      discountCost,
+      lupinDiscountCost,
     };
   }
 
   async getDiscountCost(data: CreatePaymentDTO, cost: number) {
     let discountCost = 0;
+    let lupinDiscountCost = 0;
     if (data.userCouponIds && data.userCouponIds.length > 0) {
       const userCoupons = await this.couponRepository.findUserCoupons({
         where: {
@@ -509,15 +530,22 @@ export class PaymentService {
             }
 
             if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-              discountCost += cost * (isExist.coupon.discountValue / 100);
+              const discount = cost * (isExist.coupon.discountValue / 100);
+              discountCost += discount;
+              if (isExist.coupon.isLupinPay) {
+                lupinDiscountCost += discount;
+              }
             } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
               discountCost += isExist.coupon.discountValue;
+              if (isExist.coupon.isLupinPay) {
+                lupinDiscountCost += isExist.coupon.discountValue;
+              }
             } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
           }
         })
       );
     }
 
-    return discountCost;
+    return { discountCost, lupinDiscountCost };
   }
 }
