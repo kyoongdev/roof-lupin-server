@@ -23,7 +23,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '쿠폰 상세 조회',
-      summary: '쿠폰 상세 조회 - 관리자만 사용 가능',
+      summary: '쿠폰 상세 조회 ',
     },
   })
   @ResponseApi({
@@ -37,7 +37,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '쿠폰 목록 조회',
-      summary: '쿠폰 목록 조회 - 관리자만 사용 가능',
+      summary: '쿠폰 목록 조회 ',
     },
   })
   @ResponseApi({
@@ -48,11 +48,22 @@ export class AdminCouponController {
     return await this.couponService.findPagingCoupons(paging, query.generateQuery());
   }
 
+  @Get('codes/random')
+  @RequestApi({
+    summary: {
+      description: '쿠폰 코드 발급',
+      summary: '쿠폰 코드 발급 ',
+    },
+  })
+  async getRandomCouponCode() {
+    await this.couponService.getCouponCode();
+  }
+
   @Get('users/:userCouponId/detail')
   @RequestApi({
     summary: {
       description: '사용자 쿠폰 조회',
-      summary: '사용자 쿠폰 조회 - 관리자만 사용 가능',
+      summary: '사용자 쿠폰 조회 ',
     },
   })
   @ResponseApi({
@@ -66,7 +77,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '사용자 쿠폰 목록 조회',
-      summary: '사용자 쿠폰 목록 조회 - 관리자만 사용 가능',
+      summary: '사용자 쿠폰 목록 조회 ',
     },
   })
   @ResponseApi({
@@ -82,7 +93,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '쿠폰 생성',
-      summary: '쿠폰 생성 - 관리자만 사용 가능',
+      summary: '쿠폰 생성 ',
     },
   })
   @ResponseApi(
@@ -100,7 +111,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '유저 쿠폰 생성',
-      summary: '유저 쿠폰 생성 - 관리자만 사용 가능',
+      summary: '유저 쿠폰 생성 ',
     },
   })
   @ResponseApi(
@@ -117,7 +128,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '쿠폰 수정',
-      summary: '쿠폰 수정 - 관리자만 사용 가능',
+      summary: '쿠폰 수정 ',
     },
   })
   @ResponseApi(
@@ -134,7 +145,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '유저 쿠폰 수정',
-      summary: '유저 쿠폰 수정 - 관리자만 사용 가능',
+      summary: '유저 쿠폰 수정 ',
     },
   })
   @ResponseApi(
@@ -151,7 +162,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '쿠폰 수정',
-      summary: '쿠폰 수정 - 관리자만 사용 가능',
+      summary: '쿠폰 수정 ',
     },
   })
   @ResponseApi(
@@ -168,7 +179,7 @@ export class AdminCouponController {
   @RequestApi({
     summary: {
       description: '유저 쿠폰 수정',
-      summary: '유저 쿠폰 수정 - 관리자만 사용 가능',
+      summary: '유저 쿠폰 수정 ',
     },
   })
   @ResponseApi(

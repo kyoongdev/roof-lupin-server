@@ -364,7 +364,7 @@ export class CouponRepository {
   async checkCouponCode() {
     let isExist = true;
     while (isExist) {
-      const code = nanoid(10);
+      const code = `${nanoid(10).toUpperCase()}`;
       const coupon = await this.database.coupon.findUnique({
         where: {
           code,

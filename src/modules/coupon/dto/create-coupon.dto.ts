@@ -19,7 +19,7 @@ export class CreateCouponDTO {
   @Property({ apiProperty: { type: 'string', description: '쿠폰 이름' } })
   name: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '쿠폰 코드' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 10, maxLength: 10, description: '쿠폰 코드' } })
   code?: string;
 
   @DiscountTypeReqDecorator()
