@@ -19,7 +19,7 @@ export interface RentalTypeDTOProps {
   startAt?: number;
   endAt?: number;
   spaceId: string;
-  timeCostInfo?: TimeCostInfoDTOProps[];
+  timeCostInfos?: TimeCostInfoDTOProps[];
   additionalServices: AdditionalServiceDTOProps[];
 }
 
@@ -59,6 +59,7 @@ export class RentalTypeDTO {
   additionalServices: AdditionalServiceDTO[];
 
   constructor(props: RentalTypeDTOProps) {
+    console.log(props);
     this.id = props.id;
     this.name = props.name;
     this.baseCost = props.baseCost;
@@ -71,6 +72,6 @@ export class RentalTypeDTO {
     this.additionalServices =
       props.additionalServices?.map((additionalService) => new AdditionalServiceDTO(additionalService)) ?? [];
     if (props.rentalType === RENTAL_TYPE_ENUM.TIME)
-      this.timeCostInfos = props.timeCostInfo.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
+      this.timeCostInfos = props.timeCostInfos.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
   }
 }

@@ -8,7 +8,7 @@ export const reservationInclude: Prisma.ReservationInclude = {
     include: {
       rentalType: {
         include: {
-          timeCostInfo: true,
+          timeCostInfos: true,
           space: {
             include: SpaceDTO.getSpacesIncludeOption(),
           },

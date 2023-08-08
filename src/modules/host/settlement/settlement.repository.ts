@@ -53,7 +53,7 @@ export class SettlementRepository {
               include: {
                 rentalType: {
                   include: {
-                    timeCostInfo: true,
+                    timeCostInfos: true,
                     space: {
                       include: {
                         reviews: true,
@@ -100,7 +100,7 @@ export class SettlementRepository {
               include: {
                 rentalType: {
                   include: {
-                    timeCostInfo: true,
+                    timeCostInfos: true,
                     space: {
                       include: {
                         reviews: true,
@@ -147,7 +147,7 @@ export class SettlementRepository {
               include: {
                 rentalType: {
                   include: {
-                    timeCostInfo: true,
+                    timeCostInfos: true,
                     space: {
                       include: {
                         reviews: true,

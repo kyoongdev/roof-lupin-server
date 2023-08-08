@@ -47,7 +47,7 @@ export class RentalTypeRepository {
         id,
       },
       include: {
-        timeCostInfo: {
+        timeCostInfos: {
           orderBy: {
             time: 'asc',
           },
@@ -70,7 +70,7 @@ export class RentalTypeRepository {
         ...args.where,
       },
       include: {
-        timeCostInfo: {
+        timeCostInfos: {
           orderBy: {
             time: 'asc',
           },
@@ -92,7 +92,7 @@ export class RentalTypeRepository {
         ...args.where,
       },
       include: {
-        timeCostInfo: {
+        timeCostInfos: {
           orderBy: {
             time: 'asc',
           },
@@ -120,7 +120,7 @@ export class RentalTypeRepository {
           baseCost: rentalType.baseCost,
           name: rentalType.name,
           rentalType: rentalType.rentalType,
-          timeCostInfo: rentalType.timeCostInfo,
+          timeCostInfos: rentalType.timeCostInfos,
           reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
             return ReservationDTO.generateReservationDTO(reservation);
           }),
@@ -141,7 +141,7 @@ export class RentalTypeRepository {
       },
       include: {
         additionalServices: true,
-        timeCostInfo: {
+        timeCostInfos: {
           orderBy: {
             time: 'asc',
           },
@@ -160,7 +160,7 @@ export class RentalTypeRepository {
                   include: {
                     rentalType: {
                       include: {
-                        timeCostInfo: true,
+                        timeCostInfos: true,
                         space: {
                           include: {
                             reviews: true,
@@ -197,7 +197,7 @@ export class RentalTypeRepository {
       baseCost: rentalType.baseCost,
       name: rentalType.name,
       rentalType: rentalType.rentalType,
-      timeCostInfo: rentalType.timeCostInfo,
+      timeCostInfos: rentalType.timeCostInfos,
       reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
         const { rentalTypes, ...rest } = reservation;
         const { space } = rentalTypes[0].rentalType;
@@ -227,7 +227,7 @@ export class RentalTypeRepository {
         spaceId,
       },
       include: {
-        timeCostInfo: {
+        timeCostInfos: {
           orderBy: {
             time: 'asc',
           },
@@ -259,7 +259,7 @@ export class RentalTypeRepository {
         if (rest.rentalType === 1) {
           createArgs.data = {
             ...createArgs.data,
-            timeCostInfo: {
+            timeCostInfos: {
               create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
             },
           };
@@ -296,7 +296,7 @@ export class RentalTypeRepository {
     if (timeCostInfos) {
       updateArgs.data = {
         ...updateArgs.data,
-        timeCostInfo: {
+        timeCostInfos: {
           deleteMany: {
             rentalTypeId,
           },
