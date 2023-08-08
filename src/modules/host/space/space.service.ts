@@ -114,6 +114,7 @@ export class HostSpaceService {
         })
       );
     }
+    data.setIsApproved(false);
     await this.spaceRepository.updateSpace(id, data);
   }
 
