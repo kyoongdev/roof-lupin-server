@@ -22,7 +22,6 @@ import { ReservationException } from '../reservation/exception/reservation.excep
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDetailDTO } from '../space/dto';
 import { SpaceRepository } from '../space/space.repository';
-import { UserRepository } from '../user/user.repository';
 
 import { ConfirmTossPaymentDTO, CreatePaymentPayloadDTO, PaymentPayloadDTO, RefundPaymentDTO } from './dto';
 import {
@@ -34,6 +33,7 @@ import {
   PAYMENT_DATE_BAD_REQUEST,
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
+  PAYMENT_FORBIDDEN,
   PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
   PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
   PAYMENT_MUTATION_FORBIDDEN,
@@ -67,7 +67,8 @@ export class PaymentService {
     return await this.financeProvider.getToken();
   }
 
-  async getReservation(database: TransactionPrisma, userId: string, data: CreatePaymentDTO, space: SpaceDetailDTO) {
+  //database: TransactionPrisma, userId: string,
+  async getReservation(data: CreatePaymentDTO, space: SpaceDetailDTO): Promise<undefined | ReservationDetailDTO> {
     if (data.reservationId) {
       const reservation = await this.reservationRepository.findReservation(data.reservationId);
 
@@ -78,13 +79,8 @@ export class PaymentService {
       }
 
       return reservation;
-    } else {
-      if (!space.isImmediateReservation) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN));
-      }
-
-      return await this.reservationRepository.createReservationWithTransaction(database, userId, data);
     }
+    return undefined;
   }
 
   async requestPayment(userId: string, data: CreateReservationDTO) {
@@ -111,20 +107,22 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(paymentData.spaceId);
-      const reservation = await this.getReservation(database, userId, paymentData, space);
+      const reservation = await this.getReservation(paymentData, space);
 
       try {
         const rentalTypes = await this.validatePayment(paymentData, space);
         const orderId = this.createOrderId();
 
-        await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-          orderId,
-        });
+        if (reservation) {
+          await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+            orderId,
+          });
+        }
 
         if (data.userCouponIds)
           await Promise.all(
             data.userCouponIds.map(async (couponId) => {
-              const coupon = await this.couponRepository.findUserCoupon(couponId);
+              await this.couponRepository.findUserCoupon(couponId);
               await this.couponRepository.deleteUserCoupon(couponId);
             })
           );
@@ -140,8 +138,8 @@ export class PaymentService {
   }
 
   async confirmTossPayment(data: ConfirmTossPaymentDTO) {
-    const { orderId } = data;
-    const reservation = await this.reservationRepository.findReservationByOrderId(orderId);
+    const { orderId, paymentInfo } = data;
+    const reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
 
     try {
       if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
@@ -149,21 +147,37 @@ export class PaymentService {
       }
 
       await this.database.$transaction(async (database) => {
+        const space = await this.spaceRepository.findSpace(paymentInfo.spaceId);
+        await this.validatePayment(paymentInfo, space);
+
+        const tossPayment = await this.tossPay.getPaymentByOrderId(orderId);
+
+        if (tossPayment.totalAmount !== paymentInfo.totalCost || tossPayment.paymentKey !== data.paymentKey) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_FORBIDDEN));
+        }
+
         await this.tossPay.confirmPayment({
-          amount: reservation.totalCost,
-          orderId: reservation.orderId,
+          amount: paymentInfo.totalCost,
+          orderId: orderId,
           paymentKey: data.paymentKey,
         });
+
+        if (!reservation) {
+          const payload = new CreatePaymentDTO(paymentInfo);
+          await this.reservationRepository.createReservationWithTransaction(database, reservation.id, payload);
+        }
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderResultId: data.paymentKey,
           payedAt: new Date(),
         });
+
         await this.createSettlement(database, reservation);
       });
 
       await this.sendMessage(reservation);
     } catch (err) {
+      logger.error(err);
       const coupons = await this.couponRepository.findUserCoupons({
         where: {
           userId: reservation.user.id,
@@ -175,6 +189,7 @@ export class PaymentService {
           await this.couponRepository.restoreUserCoupon(coupon.id);
         })
       );
+
       reservation && (await this.reservationRepository.deleteReservation(reservation.id));
       throw err;
     }

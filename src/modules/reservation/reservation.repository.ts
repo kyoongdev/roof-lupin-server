@@ -58,6 +58,20 @@ export class ReservationRepository {
 
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
+  async checkReservationByOrderId(orderId: string) {
+    const reservation = (await this.database.reservation.findUnique({
+      where: {
+        orderId,
+      },
+      include: reservationInclude,
+    })) as CommonReservation | undefined;
+
+    if (!reservation) {
+      return null;
+    }
+
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
+  }
 
   async findReservationByOrderResultId(orderResultId: string) {
     const reservation = (await this.database.reservation.findUnique({
