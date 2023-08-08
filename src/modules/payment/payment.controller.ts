@@ -97,8 +97,8 @@ export class PaymentController {
   @ResponseApi({
     type: ResponseWithIdDTO,
   })
-  async completeTossPayment(@Body() data: ConfirmTossPaymentDTO) {
-    return await this.paymentService.confirmTossPayment(data);
+  async completeTossPayment(@Body() data: ConfirmTossPaymentDTO, @ReqUser() user: RequestUser) {
+    return await this.paymentService.confirmTossPayment(data, user.id);
   }
 
   @Post('/refund')

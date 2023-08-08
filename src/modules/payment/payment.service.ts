@@ -137,7 +137,7 @@ export class PaymentService {
     return result;
   }
 
-  async confirmTossPayment(data: ConfirmTossPaymentDTO) {
+  async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
     const { orderId, paymentInfo } = data;
     const reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
 
@@ -164,7 +164,7 @@ export class PaymentService {
 
         if (!reservation) {
           const payload = new CreatePaymentDTO(paymentInfo);
-          await this.reservationRepository.createReservationWithTransaction(database, reservation.id, payload);
+          await this.reservationRepository.createReservationWithTransaction(database, userId, payload);
         }
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
