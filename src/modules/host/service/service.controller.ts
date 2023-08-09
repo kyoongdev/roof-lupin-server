@@ -9,7 +9,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { HostServiceService } from './service.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
-@ApiController('services', '[관리자] 서비스 관리자')
+@ApiController('services', '[호스트] 서비스')
 export class HostServiceController {
   constructor(private readonly serviceService: HostServiceService) {}
 

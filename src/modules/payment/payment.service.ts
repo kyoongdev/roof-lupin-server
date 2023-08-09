@@ -196,7 +196,6 @@ export class PaymentService {
         })
       );
 
-      reservation && (await this.reservationRepository.deleteReservation(reservation.id));
       throw err;
     }
 
