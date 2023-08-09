@@ -15,19 +15,21 @@ import { HostSettlementModule } from './settlement/settlement.module';
 import { HostSpaceModule } from './space/space.module';
 import { HostTaxReturnModule } from './tax-return/tax-return.module';
 
+export const HostModules = [
+  HostBlockedTimeModule,
+  HostQnAModule,
+  HostReportModule,
+  HostReservationModule,
+  HostReviewModule,
+  HostServiceModule,
+  HostSettlementModule,
+  HostSpaceModule,
+  HostTaxReturnModule,
+];
+
 @Module({
   providers: [HostService, HostRepository, EncryptProvider],
   controllers: [HostController],
-  imports: [
-    HostBlockedTimeModule,
-    HostQnAModule,
-    HostReportModule,
-    HostReservationModule,
-    HostReviewModule,
-    HostServiceModule,
-    HostSettlementModule,
-    HostSpaceModule,
-    HostTaxReturnModule,
-  ],
+  imports: [...HostModules],
 })
 export class HostModule {}

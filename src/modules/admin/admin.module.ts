@@ -27,31 +27,33 @@ import { AdminSpaceModule } from './space/space.module';
 import { AdminTermsModule } from './terms/terms.module';
 import { AdminUserModule } from './user/user.module';
 
+export const AdminModules = [
+  AdminAlarmModule,
+  AdminCategoryModule,
+  AdminCouponModule,
+  AdminCurationModule,
+  AdminExhibitionModule,
+  AdminFaqModule,
+  AdminFrequentQuestionModule,
+  AdminHomeModule,
+  AdminHostModule,
+  AdminIconModule,
+  AdminQnAModule,
+  AdminRankingModule,
+  AdminReportModule,
+  AdminReservationModule,
+  AdminReviewModule,
+  AdminSearchModule,
+  AdminServiceModule,
+  AdminSettlementModule,
+  AdminSpaceModule,
+  AdminTermsModule,
+  AdminUserModule,
+];
+
 @Module({
   providers: [AdminService, AdminRepository, EncryptProvider],
   controllers: [AdminController],
-  imports: [
-    AdminAlarmModule,
-    AdminCategoryModule,
-    AdminCouponModule,
-    AdminCurationModule,
-    AdminExhibitionModule,
-    AdminFaqModule,
-    AdminFrequentQuestionModule,
-    AdminHomeModule,
-    AdminHostModule,
-    AdminIconModule,
-    AdminQnAModule,
-    AdminRankingModule,
-    AdminReportModule,
-    AdminReservationModule,
-    AdminReviewModule,
-    AdminSearchModule,
-    AdminServiceModule,
-    AdminSettlementModule,
-    AdminSpaceModule,
-    AdminTermsModule,
-    AdminUserModule,
-  ],
+  imports: [...AdminModules],
 })
 export class AdminModule {}

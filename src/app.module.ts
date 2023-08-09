@@ -1,8 +1,10 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module, type Provider, Type } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DiscoveryService, MetadataScanner, RouterModule, Routes } from '@nestjs/core';
+import { DiscoveryService, MetadataScanner, Routes } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+
+import { RouterModule } from 'nest-router';
 
 import { Modules, V1Module } from '@/modules';
 import { Filters, Interceptors } from '@/utils';
@@ -11,9 +13,10 @@ import { AppController } from './app.controller';
 import { EventProviders } from './event';
 import { FCMEvent } from './event/fcm';
 import { SchedulerEvent } from './event/scheduler';
-import { AdminModule } from './modules/admin/admin.module';
+import { AdminModule, AdminModules } from './modules/admin/admin.module';
+import { AdminUserModule } from './modules/admin/user/user.module';
 import { GlobalModule } from './modules/global';
-import { HostModule } from './modules/host/host.module';
+import { HostModule, HostModules } from './modules/host/host.module';
 import { AOPProvider } from './utils/aop';
 import { FCMProvider } from './utils/fcm';
 import { DynamicLinkProvider } from './utils/link';
@@ -46,11 +49,24 @@ const providers: Provider[] = [
     V1Module,
     AdminModule,
     HostModule,
-    RouterModule.register([
+
+    RouterModule.forRoutes([
       {
         path: '/api/v1',
         module: V1Module,
-        children: [...Modules, { path: '/admins', module: AdminModule }, { path: '/hosts', module: HostModule }],
+        children: [
+          ...Modules,
+          {
+            path: '/admins',
+            module: AdminModule,
+            children: AdminModules,
+          },
+          {
+            path: '/hosts',
+            module: HostModule,
+            children: HostModules,
+          },
+        ],
       },
     ] as Routes),
   ],
