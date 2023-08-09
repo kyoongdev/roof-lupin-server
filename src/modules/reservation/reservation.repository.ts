@@ -167,7 +167,7 @@ export class ReservationRepository {
 
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
-    const reservation = await database.reservation.create({
+    const reservation = (await database.reservation.create({
       data: {
         ...rest,
         year: Number(rest.year),
@@ -209,8 +209,9 @@ export class ReservationRepository {
         }),
         vatCost,
       },
-    });
-    return reservation;
+      include: reservationInclude,
+    })) as CommonReservation;
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async updateReservation(id: string, data: UpdateReservationDTO) {

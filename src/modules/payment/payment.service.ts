@@ -145,12 +145,13 @@ export class PaymentService {
 
   async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
     const { orderId, paymentInfo } = data;
-    const reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
-
+    let reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
+    console.log({ reservation });
     try {
-      if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
-      }
+      if (reservation)
+        if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+        }
 
       await this.database.$transaction(async (database) => {
         const space = await this.spaceRepository.findSpace(paymentInfo.spaceId);
@@ -170,7 +171,7 @@ export class PaymentService {
 
         if (!reservation) {
           const payload = new CreatePaymentDTO(paymentInfo);
-          await this.reservationRepository.createReservationWithTransaction(database, userId, payload);
+          reservation = await this.reservationRepository.createReservationWithTransaction(database, userId, payload);
         }
 
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
@@ -184,17 +185,19 @@ export class PaymentService {
       await this.sendMessage(reservation);
     } catch (err) {
       logger.error(err);
-      const coupons = await this.couponRepository.findUserCoupons({
-        where: {
-          userId: reservation.user.id,
-          reservationId: reservation.id,
-        },
-      });
-      await Promise.all(
-        coupons.map(async (coupon) => {
-          await this.couponRepository.restoreUserCoupon(coupon.id);
-        })
-      );
+      if (reservation && reservation.id) {
+        const coupons = await this.couponRepository.findUserCoupons({
+          where: {
+            userId: reservation.user.id,
+            reservationId: reservation.id,
+          },
+        });
+        await Promise.all(
+          coupons.map(async (coupon) => {
+            await this.couponRepository.restoreUserCoupon(coupon.id);
+          })
+        );
+      }
 
       throw err;
     }
