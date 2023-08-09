@@ -5,6 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 import { EmptyResponseDTO } from '@/common';
 import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { ApiController } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -76,6 +77,12 @@ export class AdminSpaceController {
     return await this.spaceService.findSpace(id);
   }
 
+  @RevalidateApi([
+    {
+      key: '/spaces/:spaceId/detail',
+      index: 0,
+    },
+  ])
   @Patch(':spaceId')
   @RequestApi({
     summary: {
@@ -93,6 +100,12 @@ export class AdminSpaceController {
     await this.spaceService.updateSpace(id, body);
   }
 
+  @RevalidateApi([
+    {
+      key: '/spaces/:spaceId/detail',
+      index: 0,
+    },
+  ])
   @Patch(':spaceId/order')
   @RequestApi({
     summary: {
@@ -110,6 +123,14 @@ export class AdminSpaceController {
     await this.spaceService.updateSpaceOrder(id, body);
   }
 
+  @RevalidateApi([
+    {
+      key: 'spaces',
+    },
+    {
+      key: 'home',
+    },
+  ])
   @Delete(':spaceId/order')
   @RequestApi({
     summary: {
@@ -127,6 +148,14 @@ export class AdminSpaceController {
     await this.spaceService.deleteSpaceOrder(id);
   }
 
+  @RevalidateApi([
+    {
+      key: 'spaces',
+    },
+    {
+      key: 'home',
+    },
+  ])
   @Delete(':spaceId')
   @RequestApi({
     summary: {
