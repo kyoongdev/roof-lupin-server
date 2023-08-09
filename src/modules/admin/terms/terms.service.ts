@@ -4,10 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { GUEST_TERMS, HOST_TERMS } from '@/common/constants/terms';
 import { FileService } from '@/modules/file/file.service';
 import { TermDTO } from '@/modules/terms/dto';
-import { TERM_ALREADY_EXISTS, TERM_ERROR_CODE, TERM_NOT_FOUND } from '@/modules/terms/exception/errorCode';
+import { TERM_ERROR_CODE, TERM_NOT_FOUND } from '@/modules/terms/exception/errorCode';
 import { TermException } from '@/modules/terms/exception/term.exception';
 
-import { CreateTermDTO, UpdateTermDTO } from '../dto/terms';
+import { UpdateTermDTO } from '../dto/terms';
 
 @Injectable()
 export class AdminTermsService {
