@@ -59,7 +59,6 @@ export class RentalTypeDTO {
   additionalServices: AdditionalServiceDTO[];
 
   constructor(props: RentalTypeDTOProps) {
-    console.log(props);
     this.id = props.id;
     this.name = props.name;
     this.baseCost = props.baseCost;

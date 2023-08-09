@@ -171,7 +171,6 @@ export class SpaceService {
         GROUP BY isp.id
       `;
       const result = await this.database.$queryRaw(query);
-      console.log({ result });
 
       const openHourTimeQuery =
         date.startAt && date.endAt
@@ -189,7 +188,6 @@ export class SpaceService {
       `;
 
       const result2 = await this.database.$queryRaw(holidayQuery);
-      console.log({ result2, week, day, startAt: date.startAt, endAt: date.endAt });
 
       queries.push(query);
       queries.push(holidayQuery);
