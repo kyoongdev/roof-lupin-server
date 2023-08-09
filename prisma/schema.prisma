@@ -152,7 +152,7 @@ model Space {
 
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)
-  isApproved             Boolean @default(false)
+  isApproved             Boolean @default(true)
   orderNo                Int?    @db.TinyInt
 
   createdAt DateTime  @default(now())
