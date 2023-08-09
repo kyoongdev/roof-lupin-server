@@ -15,6 +15,7 @@ import {
 } from '@/modules/category/dto';
 import { FindCategoriesQuery, FindContentCategoryQuery } from '@/modules/category/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi, RevalidateApiDecorator } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -154,6 +155,7 @@ export class AdminCategoryController {
     await this.categoryService.updateCategory(id, body);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Patch('/contents/:contentCategoryId')
   @RequestApi({
     summary: {
@@ -171,6 +173,7 @@ export class AdminCategoryController {
     await this.categoryService.updateContentCategory(id, data);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Patch('/contents/:contentCategoryId/spaces')
   @RequestApi({
     summary: {
@@ -208,6 +211,7 @@ export class AdminCategoryController {
     await this.categoryService.deleteCategory(id);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Delete('/contents/:contentCategoryId')
   @RequestApi({
     summary: {
@@ -225,6 +229,7 @@ export class AdminCategoryController {
     await this.categoryService.deleteContentCategory(id);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Delete('/contents/:contentCategoryId/spaces/:spaceId')
   @RequestApi({
     summary: {
