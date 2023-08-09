@@ -126,8 +126,9 @@ export class AdminHomeService {
 
   async updateHomeContent(id: string, data: UpdateHomeContentsDTO) {
     const isExist = await this.findHomeContent(id);
-    this.validateMutatingHomeContent(data);
-    await this.database.$transaction(async (prisma) => {
+    await this.validateMutatingHomeContent(data);
+
+    const result = await this.database.$transaction(async (prisma) => {
       await prisma.homeContents.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
@@ -172,7 +173,6 @@ export class AdminHomeService {
           },
         },
       });
-
       await prisma.homeContents.update({
         where: {
           id,
@@ -227,12 +227,6 @@ export class AdminHomeService {
   }
 
   async validateMutatingHomeContent(data: CreateHomeContentsDTO | UpdateHomeContentsDTO) {
-    const targets = [data.contentCategoryId, data.exhibitionId, data.rankingId];
-
-    if (targets.filter(Boolean).length !== 1) {
-      throw new HomeException(HOME_ERROR_CODE.BAD_REQUEST(HOME_AT_LEAST_ONE_TARGET));
-    }
-
     if (data.contentCategoryId) {
       await this.categoryRepository.findContentCategory(data.contentCategoryId);
     }

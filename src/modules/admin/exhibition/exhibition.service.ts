@@ -29,6 +29,10 @@ export class AdminExhibitionService {
     return await this.exhibitionRepository.findExhibition(id);
   }
 
+  async findExhibitions() {
+    return await this.exhibitionRepository.findExhibitions();
+  }
+
   async findPagingExhibitions(paging: PagingDTO, args = {} as Prisma.ExhibitionFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.exhibitionRepository.countExhibitions({

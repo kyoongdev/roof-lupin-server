@@ -1,15 +1,17 @@
 import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';
-import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { ApiController, JwtAuthGuard, ResponseWithIdInterceptor } from '@/utils';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminHomeContentDTO } from '../dto/home';
 
 import { AdminHomeService } from './home.service';
 
+@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('home', '[관리자] 홈 화면 관리')
 export class AdminHomeController {
   constructor(private readonly homeService: AdminHomeService) {}
@@ -61,6 +63,7 @@ export class AdminHomeController {
     204
   )
   async updateHomeContent(@Param('homeContentId') id: string, @Body() body: UpdateHomeContentsDTO) {
+    console.log({ body });
     await this.homeService.updateHomeContent(id, body);
   }
 
