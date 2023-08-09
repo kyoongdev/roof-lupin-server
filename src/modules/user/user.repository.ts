@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
-
 import { PrismaService } from '@/database/prisma.service';
 
-import { CommonUserDTO, CreateSocialUserDTO, CreateUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
-import { HARD_DELETE_FAILED, SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
+import { CommonUserDTO, CreateSocialUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
 @Injectable()

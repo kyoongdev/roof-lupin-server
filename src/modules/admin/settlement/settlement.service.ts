@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CreateSettlementDTO, SettlementDTO, UpdateSettlementDTO } from '@/modules/host/dto/settlement';
-import { SettlementRepository } from '@/modules/host/settlement/settlement.repository';
+import { HostSettlementRepository } from '@/modules/host/settlement/settlement.repository';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
 import { AdminException } from '../exception/admin.exception';
@@ -13,7 +13,7 @@ import { ADMIN_ERROR_CODE, ADMIN_SETTLEMENT_ALREADY_EXISTS } from '../exception/
 @Injectable()
 export class AdminSettlementService {
   constructor(
-    private readonly settlementRepository: SettlementRepository,
+    private readonly settlementRepository: HostSettlementRepository,
     private readonly reservationRepository: ReservationRepository
   ) {}
 

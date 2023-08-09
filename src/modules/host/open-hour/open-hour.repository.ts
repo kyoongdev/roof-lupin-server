@@ -7,7 +7,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { CreateOpenHourDTO, OpenHourDTO, UpdateOpenHourDTO } from '../dto/openHour';
 
 @Injectable()
-export class OpenHourRepository {
+export class HostOpenHourRepository {
   constructor(private readonly database: PrismaService) {}
 
   async countOpenHours(args = {} as Prisma.OpenHourCountArgs) {

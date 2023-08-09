@@ -11,7 +11,7 @@ import { SETTLEMENT_ERROR_CODE, SETTLEMENT_NOT_FOUND } from './exception/errorCo
 import { SettlementException } from './exception/settlement.exception';
 
 @Injectable()
-export class SettlementRepository {
+export class HostSettlementRepository {
   constructor(private readonly database: PrismaService) {}
 
   async checkSettlementByHostAndDate(year: string, month: string, day: string, hostId: string) {

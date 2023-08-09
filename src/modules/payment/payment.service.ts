@@ -11,7 +11,7 @@ import { FinanceProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
-import { SettlementRepository } from '../host/settlement/settlement.repository';
+import { HostSettlementRepository } from '../host/settlement/settlement.repository';
 import { PossiblePackageDTO, PossibleRentalTypeDTO, ValidatedRentalTypeDTO } from '../rental-type/dto';
 import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
@@ -65,7 +65,7 @@ export class PaymentService {
     private readonly tossPay: TossPayProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
-    private readonly settlementRepository: SettlementRepository,
+    private readonly settlementRepository: HostSettlementRepository,
     private readonly financeProvider: FinanceProvider
   ) {}
 

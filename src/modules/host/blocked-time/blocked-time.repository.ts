@@ -10,7 +10,7 @@ import { BlockedTimeException } from './exception/blocked-time';
 import { BLOCKED_TIME_ERROR_CODE, BLOCKED_TIME_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
-export class BlockedTimeRepository {
+export class HostBlockedTimeRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findBlockedTime(id: string) {

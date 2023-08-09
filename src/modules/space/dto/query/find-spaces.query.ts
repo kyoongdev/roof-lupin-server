@@ -25,6 +25,12 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 평수' } })
   maxSize?: number;
 
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '최소 가격' } })
+  minPrice?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 가격' } })
+  maxPrice?: number;
+
   @Property({ apiProperty: { type: 'string', nullable: true, description: '서비스 id들 (,를 통해 구분합니다.)' } })
   serviceIds?: string;
 
@@ -91,6 +97,10 @@ export class FindSpacesQuery extends PagingDTO {
 
   generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
     const userCountWhere = this.userCount ? Prisma.sql`AND minUser <= ${this.userCount}` : Prisma.empty;
+    const maxPriceWhere =
+      this.maxPrice && this.maxPrice > 0 ? Prisma.sql`AND baseCost <= ${this.maxPrice}` : Prisma.empty;
+    const costWhere =
+      this.maxPrice || this.minPrice ? Prisma.sql`AND (baseCost >= ${this.minPrice} ${maxPriceWhere})` : Prisma.empty;
     const sizeWhere =
       this.minSize && this.maxSize
         ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
@@ -131,6 +141,17 @@ export class FindSpacesQuery extends PagingDTO {
           )}`
         : Prisma.empty;
 
-    return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 ${userCountWhere} ${sizeWhere} ${immediateReservationWhere} ${serviceWhere} ${categoryWhere} ${categoryIdWhere} ${locationWhere} ${excludeIds} ${reportWhere} ${keywordWhere} `;
+    return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 
+                      ${userCountWhere} 
+                      ${sizeWhere} 
+                      ${immediateReservationWhere} 
+                      ${serviceWhere} 
+                      ${categoryWhere} 
+                      ${categoryIdWhere} 
+                      ${locationWhere} 
+                      ${excludeIds} 
+                      ${reportWhere} 
+                      ${keywordWhere} 
+                      ${costWhere} `;
   }
 }
