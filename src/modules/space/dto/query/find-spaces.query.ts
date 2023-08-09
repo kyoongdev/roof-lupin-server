@@ -100,7 +100,7 @@ export class FindSpacesQuery extends PagingDTO {
     const maxPriceWhere =
       this.maxPrice && this.maxPrice > 0 ? Prisma.sql`AND baseCost <= ${this.maxPrice}` : Prisma.empty;
     const costWhere =
-      this.maxPrice && this.minPrice ? Prisma.sql`AND (baseCost >= ${this.minPrice} ${maxPriceWhere})` : Prisma.empty;
+      this.maxPrice || this.minPrice ? Prisma.sql`AND (baseCost >= ${this.minPrice} ${maxPriceWhere})` : Prisma.empty;
     const sizeWhere =
       this.minSize && this.maxSize
         ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
