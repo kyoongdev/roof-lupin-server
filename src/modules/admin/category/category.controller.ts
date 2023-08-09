@@ -62,8 +62,23 @@ export class AdminCategoryController {
     type: ContentCategoryDTO,
     isPaging: true,
   })
-  async getContentCategory(@Paging() paging: PagingDTO, @Query() query: FindContentCategoryQuery) {
+  async getPagingContentCategory(@Paging() paging: PagingDTO, @Query() query: FindContentCategoryQuery) {
     return await this.categoryService.findPagingContentCategories(paging, query.generateQuery());
+  }
+
+  @Get('/contents/all')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 전체 불러오기',
+      summary: '콘텐츠 카테고리 (가로 스크롤) 전체 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: ContentCategoryDTO,
+    isArray: true,
+  })
+  async getContentCategories() {
+    return await this.categoryService.findContentCategories();
   }
 
   @Post()

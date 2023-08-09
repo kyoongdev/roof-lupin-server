@@ -37,6 +37,10 @@ export class AdminCategoryService {
     return new PaginationDTO<CategoryDTO>(categories, { count, paging });
   }
 
+  async findContentCategories() {
+    return await this.categoryRepository.findContentCategories();
+  }
+
   async findPagingContentCategories(
     paging: PagingDTO,
     args = {} as Prisma.ContentCategoryFindManyArgs,

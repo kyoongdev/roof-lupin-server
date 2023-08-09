@@ -53,7 +53,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.findPagingExhibitions(paging, query.generateQuery());
   }
 
-  @Get()
+  @Get('/all')
   @RequestApi({
     summary: {
       description: '기획전 전체 조회하기',
