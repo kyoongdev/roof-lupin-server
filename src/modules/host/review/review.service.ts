@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { getDateDiff, getTimeDiff } from '@/common/date';
+import { getTimeDiff } from '@/common/date';
 import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import {

@@ -9,7 +9,7 @@ import { HOST_ERROR_CODE, HOST_SPACE_HOLIDAY_NOT_FOUND } from '../exception/erro
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
-export class SpaceHolidayRepository {
+export class HostSpaceHolidayRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findSpaceHoliday(id: string) {

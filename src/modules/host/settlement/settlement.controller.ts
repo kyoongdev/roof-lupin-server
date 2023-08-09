@@ -10,12 +10,12 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { SettlementDetailDTO, SettlementDTO } from '../dto/settlement';
 import { FindSettlementsQuery } from '../dto/settlement/query';
 
-import { SettlementService } from './settlement.service';
+import { HostSettlementService } from './settlement.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
 @ApiController('settlements', '[호스트] 정산')
-export class SettlementController {
-  constructor(private readonly settlementService: SettlementService) {}
+export class HostSettlementController {
+  constructor(private readonly settlementService: HostSettlementService) {}
 
   @Get(':settlementId')
   @RequestApi({

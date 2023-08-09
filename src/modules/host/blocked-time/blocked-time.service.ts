@@ -9,7 +9,7 @@ import { SpaceRepository } from '@/modules/space/space.repository';
 
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
 
-import { BlockedTimeRepository } from './blocked-time.repository';
+import { HostBlockedTimeRepository } from './blocked-time.repository';
 import { BlockedTimeException } from './exception/blocked-time';
 import {
   BLOCKED_TIME_ERROR_CODE,
@@ -18,9 +18,9 @@ import {
 } from './exception/errorCode';
 
 @Injectable()
-export class BlockedTimeService {
+export class HostBlockedTimeService {
   constructor(
-    private readonly blockedTimeRepository: BlockedTimeRepository,
+    private readonly blockedTimeRepository: HostBlockedTimeRepository,
     private readonly reservationRepository: ReservationRepository,
     private readonly spaceRepository: SpaceRepository
   ) {}

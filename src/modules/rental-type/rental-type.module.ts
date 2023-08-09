@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
 import { HolidayService } from '../holiday/holiday.service';
-import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
-import { OpenHourRepository } from '../host/open-hour/open-hour.repository';
-import { SpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
+import { HostBlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
+import { HostOpenHourRepository } from '../host/open-hour/open-hour.repository';
+import { HostSpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { RentalTypeController } from './rental-type.controller';
@@ -15,10 +15,10 @@ import { RentalTypeService } from './rental-type.service';
     RentalTypeRepository,
     RentalTypeService,
     SpaceRepository,
-    BlockedTimeRepository,
+    HostBlockedTimeRepository,
     HolidayService,
-    SpaceHolidayRepository,
-    OpenHourRepository,
+    HostSpaceHolidayRepository,
+    HostOpenHourRepository,
   ],
   controllers: [RentalTypeController],
 })

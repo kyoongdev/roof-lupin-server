@@ -5,10 +5,10 @@ import { FinanceProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HolidayService } from '../holiday/holiday.service';
-import { BlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
-import { OpenHourRepository } from '../host/open-hour/open-hour.repository';
-import { SettlementRepository } from '../host/settlement/settlement.repository';
-import { SpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
+import { HostBlockedTimeRepository } from '../host/blocked-time/blocked-time.repository';
+import { HostOpenHourRepository } from '../host/open-hour/open-hour.repository';
+import { HostSettlementRepository } from '../host/settlement/settlement.repository';
+import { HostSpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
@@ -25,15 +25,15 @@ import { PaymentService } from './payment.service';
     ReservationRepository,
     RentalTypeRepository,
     CouponRepository,
-    BlockedTimeRepository,
+    HostBlockedTimeRepository,
     RentalTypeService,
     SpaceRepository,
     HolidayService,
     FCMEvent,
-    SettlementRepository,
+    HostSettlementRepository,
     FinanceProvider,
-    OpenHourRepository,
-    SpaceHolidayRepository,
+    HostOpenHourRepository,
+    HostSpaceHolidayRepository,
   ],
   controllers: [PaymentController],
   exports: [
@@ -41,12 +41,12 @@ import { PaymentService } from './payment.service';
     PaymentService,
     RentalTypeRepository,
     CouponRepository,
-    BlockedTimeRepository,
+    HostBlockedTimeRepository,
     RentalTypeService,
     SpaceRepository,
     HolidayService,
     FCMEvent,
-    SettlementRepository,
+    HostSettlementRepository,
   ],
 })
 export class PaymentModule {}

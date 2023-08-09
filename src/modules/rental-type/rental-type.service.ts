@@ -6,11 +6,11 @@ import { flatten, range } from 'lodash';
 import { getWeek } from '@/common/date';
 import { INTERVAL_WEEK } from '@/interface/token.interface';
 import { HolidayService } from '@/modules/holiday/holiday.service';
-import { BlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
+import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
 import { OpenHourDTO } from '@/modules/host/dto/openHour';
-import { OpenHourRepository } from '@/modules/host/open-hour/open-hour.repository';
-import { SpaceHolidayRepository } from '@/modules/host/space-holiday/space-holiday.repository';
+import { HostOpenHourRepository } from '@/modules/host/open-hour/open-hour.repository';
+import { HostSpaceHolidayRepository } from '@/modules/host/space-holiday/space-holiday.repository';
 import { ReservationDTO } from '@/modules/reservation/dto';
 import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
 
@@ -38,10 +38,10 @@ export class RentalTypeService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly rentalTypeRepository: RentalTypeRepository,
-    private readonly blockedTimeRepository: BlockedTimeRepository,
+    private readonly blockedTimeRepository: HostBlockedTimeRepository,
     private readonly holidayService: HolidayService,
-    private readonly spaceHolidayRepository: SpaceHolidayRepository,
-    private readonly openHourRepository: OpenHourRepository
+    private readonly spaceHolidayRepository: HostSpaceHolidayRepository,
+    private readonly openHourRepository: HostOpenHourRepository
   ) {}
 
   async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {

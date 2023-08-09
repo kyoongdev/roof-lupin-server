@@ -5,11 +5,11 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { SettlementDTO } from '../dto/settlement';
 
-import { SettlementRepository } from './settlement.repository';
+import { HostSettlementRepository } from './settlement.repository';
 
 @Injectable()
-export class SettlementService {
-  constructor(private readonly settlementRepository: SettlementRepository) {}
+export class HostSettlementService {
+  constructor(private readonly settlementRepository: HostSettlementRepository) {}
 
   async findSettlement(id: string) {
     return this.settlementRepository.findSettlement(id);

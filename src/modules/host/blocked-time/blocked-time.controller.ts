@@ -11,12 +11,12 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
 import { FindBlockedTimesQuery } from '../dto/blocked-time/query';
 
-import { BlockedTimeService } from './blocked-time.service';
+import { HostBlockedTimeService } from './blocked-time.service';
 
 @Auth([JwtAuthGuard, RoleGuard('HOST')])
 @ApiController('blocked-times', '[호스트] 시간 차단')
-export class BlockedTimeController {
-  constructor(private readonly blockedTimeService: BlockedTimeService) {}
+export class HostBlockedTimeController {
+  constructor(private readonly blockedTimeService: HostBlockedTimeService) {}
 
   @Get(':blockedTimeId/detail')
   @RequestApi({
