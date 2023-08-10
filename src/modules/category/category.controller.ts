@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CategoryService } from './category.service';
-import { CategoryDTO, ContentCategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
+import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
 
 @ApiController('categories', '카테고리')
 export class CategoryController {
