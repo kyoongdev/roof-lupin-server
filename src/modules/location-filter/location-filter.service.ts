@@ -15,6 +15,6 @@ export class LocationFilterService {
       },
     });
 
-    return locationFilters.at(-1);
+    return locationFilters;
   }
 }

@@ -20,6 +20,7 @@ export class LocationFilterController {
   })
   @ResponseApi({
     type: LocationFilterDTO,
+    isArray: true,
   })
   async findLocationFilter() {
     return await this.locationFilterService.findLocationFilter();

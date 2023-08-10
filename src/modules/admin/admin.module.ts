@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 
 import { EncryptProvider } from '@/common/encrypt';
-import { JwtAuthGuard } from '@/utils';
 
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
