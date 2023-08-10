@@ -3,9 +3,16 @@ import { ConfigService } from '@nestjs/config';
 
 import type { SignOptions, VerifyOptions } from 'jsonwebtoken';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import { nanoid } from 'nanoid';
+
+import { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
+import { TokenDTO } from '@/modules/auth/dto';
 
 @Injectable()
 export class Jsonwebtoken {
+  private readonly accessTokenExpiresIn = '2h' as const;
+  private readonly refreshTokenExpiresIn = '14d' as const;
+
   constructor(private readonly configService: ConfigService) {}
 
   signJwt<T extends object>(value: T, options?: SignOptions): string | any {
@@ -26,5 +33,20 @@ export class Jsonwebtoken {
     } catch (error) {
       return new JsonWebTokenError('sign Failed');
     }
+  }
+
+  async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
+    const key = nanoid();
+
+    const accessToken = this.signJwt<TokenPayload>(
+      { ...value, key },
+      { ...options, expiresIn: this.accessTokenExpiresIn }
+    );
+    const refreshToken = this.signJwt<TokenPayload>(
+      { ...value, key },
+      { ...options, expiresIn: this.refreshTokenExpiresIn }
+    );
+
+    return new TokenDTO({ accessToken, refreshToken });
   }
 }

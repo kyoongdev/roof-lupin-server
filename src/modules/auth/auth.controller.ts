@@ -6,11 +6,10 @@ import { nanoid } from 'nanoid';
 
 import { ApiController } from '@/utils';
 
-import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
 import { CreateHostDTO } from '../host/dto';
 
 import { AuthService } from './auth.service';
-import { AdminAuthDTO, AppleLoginCallbackDTO, HostAuthDTO, TokenDTO } from './dto';
+import { AppleLoginCallbackDTO, HostAuthDTO, TokenDTO } from './dto';
 import { KakaoSocialUserQuery } from './dto/query';
 
 @ApiController('auth', '로그인/회원가입')
@@ -118,73 +117,6 @@ export class AuthController {
   })
   async refresh(@Body() body: TokenDTO) {
     return await this.authService.refresh(body);
-  }
-
-  @Post('admin/login')
-  @RequestApi({
-    summary: {
-      description: '관리자 로그인',
-      summary: '관리자 로그인을 합니다.',
-    },
-    body: {
-      type: AdminAuthDTO,
-    },
-  })
-  @ResponseApi({
-    type: TokenDTO,
-  })
-  async adminLogin(@Body() body: AdminAuthDTO) {
-    return await this.authService.adminLogin(body);
-  }
-
-  @Post('admin/register')
-  @RequestApi({
-    summary: {
-      description: '관리자 회원가입',
-      summary: '관리자 회원가입을 합니다.',
-    },
-    body: {
-      type: CreateAdminDTO,
-    },
-  })
-  @ResponseApi({
-    type: TokenDTO,
-  })
-  async adminRegister(@Body() body: CreateAdminDTO) {
-    return await this.authService.adminRegister(body);
-  }
-  @Post('host/login')
-  @RequestApi({
-    summary: {
-      description: '호스트 로그인',
-      summary: '호스트 로그인을 합니다.',
-    },
-    body: {
-      type: HostAuthDTO,
-    },
-  })
-  @ResponseApi({
-    type: TokenDTO,
-  })
-  async hostLogin(@Body() body: HostAuthDTO) {
-    return await this.authService.hostLogin(body);
-  }
-
-  @Post('host/register')
-  @RequestApi({
-    summary: {
-      description: '호스트 회원가입',
-      summary: '호스트 회원가입을 합니다.',
-    },
-    body: {
-      type: CreateHostDTO,
-    },
-  })
-  @ResponseApi({
-    type: TokenDTO,
-  })
-  async hostRegister(@Body() body: CreateHostDTO) {
-    return await this.authService.hostRegister(body);
   }
 
   @Post('refresh')
