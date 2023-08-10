@@ -7,6 +7,7 @@ import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
 import { AdminAlarmModule } from './alarm/alarm.module';
 import { AdminCategoryModule } from './category/category.module';
+import { AdminContentModule } from './content/content.module';
 import { AdminCouponModule } from './coupon/coupon.module';
 import { AdminCurationModule } from './curation/curation.module';
 import { AdminExhibitionModule } from './exhibition/exhibition.module';
@@ -51,6 +52,7 @@ export const AdminModules = [
   AdminTermsModule,
   AdminUserModule,
   AdminLocationFilterModule,
+  AdminContentModule,
 ];
 
 @Module({
