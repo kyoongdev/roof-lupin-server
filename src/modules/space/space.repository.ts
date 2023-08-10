@@ -35,7 +35,6 @@ export class SpaceRepository {
 
     const data = await Promise.all(
       spaces.map(async (space) => {
-        console.log(space);
         const publicTransportations = await this.database.publicTransportation.findMany({
           where: {
             spaceId: space.id,
