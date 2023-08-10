@@ -136,7 +136,7 @@ export class FindSpacesQuery extends PagingDTO {
     const excludeIds =
       excludeQueries.length > 0
         ? Prisma.sql`${Prisma.join(
-            excludeQueries.map((query) => Prisma.sql`AND sp.id NOT in (${query})`),
+            excludeQueries.map((query) => Prisma.sql`AND NOT EXISTS (${query})`),
             ''
           )}`
         : Prisma.empty;

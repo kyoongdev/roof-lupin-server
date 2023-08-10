@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
+import { SqlSpace } from '@/interface/space.interface';
 
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 
@@ -30,10 +31,11 @@ export class SpaceRepository {
   }
 
   async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
-    const spaces: any[] = await this.database.$queryRaw(sql);
+    const spaces: SqlSpace[] = await this.database.$queryRaw(sql);
 
     const data = await Promise.all(
       spaces.map(async (space) => {
+        console.log(space);
         const publicTransportations = await this.database.publicTransportation.findMany({
           where: {
             spaceId: space.id,
@@ -54,16 +56,13 @@ export class SpaceRepository {
           },
         });
 
-        const interests = await this.database.spaceInterest.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-
         return new SpaceDTO({
           ...space,
-          isInterested: interests.some((interest) => interest.userId === userId),
-          interestCount: interests.length,
+          isApproved: space.isApproved === 1,
+          isPublic: space.isPublic === 1,
+          isImmediateReservation: space.isImmediateReservation === 1,
+          isInterested: space.isInterest && Number(space.isInterest) === 1,
+          interestCount: space.interestCount,
           location: {
             id: space.slId,
             lat: space.lat,

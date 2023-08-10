@@ -15,6 +15,6 @@ export class LocationFilterDTO {
 
   constructor(props: LocationFilterDTOProps) {
     this.id = props.id;
-    this.name = props.topics.map((topic) => topic.name).join(' ');
+    this.name = props.topics.map((topic) => topic.name).join(', ');
   }
 }

@@ -39,6 +39,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       await this.$connect();
       this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
       this.$on<any>('query', (event: Prisma.QueryEvent) => {
+        console.log(event);
         this.logger.log('Query: ' + event.query);
         this.logger.log('Duration: ' + event.duration + 'ms');
       });
@@ -61,7 +62,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return res;
       } else if (minimatch(params.action, '+(query*)')) {
         const res: any[] = await this.slaveDatabase.$queryRaw(params.args[0]);
-
         return res.map((responseItem) => {
           const result: Record<string, any> = {};
           for (const [key, value] of Object.entries(responseItem)) {
