@@ -1,10 +1,8 @@
 import { Controller, Get, Response } from '@nestjs/common';
 
 import type { Response as ResponseType } from 'express';
-import { SolapiMessageService } from 'solapi';
 
 import { PrismaService } from './database/prisma.service';
-import { seedDatabase } from './seed';
 @Controller()
 export class AppController {
   constructor(private readonly database: PrismaService) {}
