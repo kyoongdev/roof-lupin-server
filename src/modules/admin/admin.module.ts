@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { JwtAuthGuard } from '@/utils';
 
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
@@ -15,6 +17,7 @@ import { AdminFrequentQuestionModule } from './frequent-question/frequent-questi
 import { AdminHomeModule } from './home/home.module';
 import { AdminHostModule } from './host/host.module';
 import { AdminIconModule } from './icon/icon.module';
+import { AdminLocationFilterModule } from './location-filter/location-filter.module';
 import { AdminQnAModule } from './qna/qna.module';
 import { AdminRankingModule } from './ranking/ranking.module';
 import { AdminReportModule } from './report/report.module';
@@ -49,6 +52,7 @@ export const AdminModules = [
   AdminSpaceModule,
   AdminTermsModule,
   AdminUserModule,
+  AdminLocationFilterModule,
 ];
 
 @Module({
