@@ -97,6 +97,7 @@ export class AdminCategoryService {
 
   async deleteContentCategory(id: string) {
     await this.categoryRepository.findContentCategory(id);
+
     await this.categoryRepository.deleteContentCategory(id);
   }
 

@@ -162,6 +162,13 @@ export class AdminCategoryController {
       description: '콘텐츠 카테고리 수정',
       summary: '콘텐츠 카테고리 수정',
     },
+    params: {
+      name: 'contentCategoryId',
+      type: 'string',
+    },
+    body: {
+      type: UpdateContentCategoryDTO,
+    },
   })
   @ResponseApi(
     {
@@ -169,7 +176,7 @@ export class AdminCategoryController {
     },
     204
   )
-  async updateContentCategory(@Param('contentCategoryId') id: string, @Body() data: UpdateContentCategoryDTO) {
+  async updateContentCategory(@Body() data: UpdateContentCategoryDTO, @Param('contentCategoryId') id: string) {
     await this.categoryService.updateContentCategory(id, data);
   }
 
@@ -179,6 +186,13 @@ export class AdminCategoryController {
     summary: {
       description: '콘텐츠 카테고리 공간 수정',
       summary: '콘텐츠 카테고리 공간 수정',
+    },
+    params: {
+      name: 'contentCategoryId',
+      type: 'string',
+    },
+    body: {
+      type: UpdateContentCategorySpaceDTO,
     },
   })
   @ResponseApi(

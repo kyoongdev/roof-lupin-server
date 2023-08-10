@@ -1,4 +1,5 @@
 import { Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
