@@ -8,6 +8,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model LocationFilterGroup {
+  id              String           @id @default(uuid())
+  name            String           @db.VarChar(20)
+  locationFilters LocationFilter[]
+}
+
+model LocationFilter {
+  id String @id @default(uuid())
+
+  group   LocationFilterGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  groupId String
+  topics  LocationFilterTopic[]
+}
+
+model LocationFilterTopic {
+  id   String @id @default(uuid())
+  name String @db.VarChar(20)
+
+  locationFilterId String
+  locationFilter   LocationFilter @relation(fields: [locationFilterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
 model Icon {
   id   String @id @default(uuid())
   name String @db.VarChar(120)

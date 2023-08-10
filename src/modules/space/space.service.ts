@@ -83,11 +83,11 @@ export class SpaceService {
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
-    let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere);
+    let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere, userId);
     if (!query.sort || query.sort === 'POPULARITY') {
-      sqlQuery = getFindSpacesWithPopularitySQL(sqlPaging, baseWhere);
+      sqlQuery = getFindSpacesWithPopularitySQL(sqlPaging, baseWhere, userId);
     } else if (isDistance) {
-      sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere);
+      sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere, userId);
     }
     const count = await this.spaceRepository.countSpacesWithSQL(
       isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
@@ -160,17 +160,16 @@ export class SpaceService {
         : Prisma.empty;
 
       const query = Prisma.sql`
-        SELECT isp.title
+        SELECT isp.id
         FROM Reservation
         LEFT JOIN ReservationRentalType ON Reservation.id = ReservationRentalType.reservationId
         LEFT JOIN RentalType ON ReservationRentalType.rentalTypeId = RentalType.id
         LEFT JOIN Space isp ON RentalType.spaceId = isp.id
         LEFT JOIN SpaceHoliday sh ON isp.id = sh.spaceId
         LEFT JOIN OpenHour oh ON isp.id = oh.spaceId
-        WHERE  ${dateQuery}
+        WHERE  ${dateQuery}  AND isp.id = sp.id
         GROUP BY isp.id
       `;
-      const result = await this.database.$queryRaw(query);
 
       const openHourTimeQuery =
         date.startAt && date.endAt
@@ -178,19 +177,16 @@ export class SpaceService {
           : Prisma.empty;
 
       const holidayQuery = Prisma.sql`
-        SELECT sp.id
-        FROM Space sp
-        LEFT JOIN SpaceHoliday sh ON sp.id = sh.spaceId
-        LEFT JOIN OpenHour oh ON sp.id = oh.spaceId
-        WHERE (sh.day = ${day} AND sh.interval = ${week})
-        OR (oh.day = ${day}  ${openHourTimeQuery})
-        GROUP BY sp.id
+        SELECT hsp.id
+        FROM Space hsp
+        LEFT JOIN SpaceHoliday sh ON hsp.id = sh.spaceId
+        LEFT JOIN OpenHour oh ON hsp.id = oh.spaceId
+        WHERE sp.id = hsp.id AND (sh.day = ${day} AND sh.interval = ${week})
+        OR (oh.day = ${day} ${openHourTimeQuery})
+        GROUP BY hsp.id
       `;
 
-      const result2 = await this.database.$queryRaw(holidayQuery);
-
-      queries.push(query);
-      queries.push(holidayQuery);
+      queries.push(query, holidayQuery);
     }
     return queries;
   }

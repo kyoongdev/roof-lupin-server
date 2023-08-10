@@ -6,7 +6,9 @@ export type RevalidateApiKey =
   | `/spaces/:spaceId/detail`
   | `/rental-types/:spaceId/detail`
   | 'spaces'
-  | '/main';
+  | '/main'
+  | 'rankings'
+  | '/rankings/:rankingId/detail';
 
 export interface RevalidateClientApi {
   key: RevalidateApiKey;

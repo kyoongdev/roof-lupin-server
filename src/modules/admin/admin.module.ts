@@ -15,6 +15,7 @@ import { AdminFrequentQuestionModule } from './frequent-question/frequent-questi
 import { AdminHomeModule } from './home/home.module';
 import { AdminHostModule } from './host/host.module';
 import { AdminIconModule } from './icon/icon.module';
+import { AdminLocationFilterModule } from './location-filter/location-filter.module';
 import { AdminQnAModule } from './qna/qna.module';
 import { AdminRankingModule } from './ranking/ranking.module';
 import { AdminReportModule } from './report/report.module';
@@ -49,6 +50,7 @@ export const AdminModules = [
   AdminSpaceModule,
   AdminTermsModule,
   AdminUserModule,
+  AdminLocationFilterModule,
 ];
 
 @Module({

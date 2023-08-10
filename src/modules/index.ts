@@ -18,6 +18,7 @@ import { HolidayModule } from './holiday/holiday.module';
 import { HomeModule } from './home/home.module';
 import { HostModules } from './host/host.module';
 import { LocationModule } from './location/location.module';
+import { LocationFilterModule } from './location-filter/location-filter.module';
 import { MainModule } from './main/main.module';
 import { PaymentModule } from './payment/payment.module';
 import { QnaModule } from './qna/qna.module';
@@ -63,6 +64,7 @@ export const Modules = [
   ContentModule,
   RentalTypeModule,
   ServiceModule,
+  LocationFilterModule,
 ];
 @Module({
   imports: [...Modules],

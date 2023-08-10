@@ -72,11 +72,11 @@ export class ExhibitionRepository {
     });
   }
 
-  async countExhibitions(args: Prisma.ExhibitionCountArgs) {
+  async countExhibitions(args = {} as Prisma.ExhibitionCountArgs) {
     return this.database.exhibition.count(args);
   }
 
-  async findExhibitions(args: Prisma.ExhibitionFindManyArgs) {
+  async findExhibitions(args = {} as Prisma.ExhibitionFindManyArgs) {
     const exhibitions = await this.database.exhibition.findMany({
       ...args,
       where: args.where,

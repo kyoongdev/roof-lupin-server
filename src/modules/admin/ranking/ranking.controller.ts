@@ -12,6 +12,7 @@ import {
 } from '@/modules/ranking/dto';
 import { FindRankingsQuery } from '@/modules/ranking/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 
 import { AdminRankingService } from './ranking.service';
 
@@ -48,6 +49,7 @@ export class AdminRankingController {
     return await this.rankingService.findPagingRankings(paging, query.generateQuery());
   }
 
+  @RevalidateApi([{ key: 'rankings' }])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -66,6 +68,7 @@ export class AdminRankingController {
     return await this.rankingService.createRanking(body);
   }
 
+  @RevalidateApi([{ key: '/rankings/:rankingId/detail', index: 0 }])
   @Post(':rankingId/spaces')
   @RequestApi({
     summary: {
@@ -83,6 +86,7 @@ export class AdminRankingController {
     await this.rankingService.createRankingSpace(id, body);
   }
 
+  @RevalidateApi([{ key: '/rankings/:rankingId/detail', index: 0 }])
   @Patch(':rankingId')
   @RequestApi({
     summary: {
@@ -100,6 +104,7 @@ export class AdminRankingController {
     await this.rankingService.updateRanking(id, body);
   }
 
+  @RevalidateApi([{ key: '/rankings/:rankingId/detail', index: 0 }])
   @Patch(':rankingId/spaces')
   @RequestApi({
     summary: {
@@ -117,6 +122,7 @@ export class AdminRankingController {
     await this.rankingService.updateRankingSpace(id, body);
   }
 
+  @RevalidateApi([{ key: 'rankings' }])
   @Delete(':rankingId')
   @RequestApi({
     summary: {
@@ -134,6 +140,7 @@ export class AdminRankingController {
     await this.rankingService.deleteRanking(id);
   }
 
+  @RevalidateApi([{ key: 'rankings' }])
   @Delete(':rankingId/spaces/:spaceId')
   @RequestApi({
     summary: {

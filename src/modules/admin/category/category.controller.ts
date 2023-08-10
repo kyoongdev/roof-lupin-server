@@ -15,6 +15,7 @@ import {
 } from '@/modules/category/dto';
 import { FindCategoriesQuery, FindContentCategoryQuery } from '@/modules/category/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi, RevalidateApiDecorator } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -62,8 +63,23 @@ export class AdminCategoryController {
     type: ContentCategoryDTO,
     isPaging: true,
   })
-  async getContentCategory(@Paging() paging: PagingDTO, @Query() query: FindContentCategoryQuery) {
+  async getPagingContentCategory(@Paging() paging: PagingDTO, @Query() query: FindContentCategoryQuery) {
     return await this.categoryService.findPagingContentCategories(paging, query.generateQuery());
+  }
+
+  @Get('/contents/all')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 전체 불러오기',
+      summary: '콘텐츠 카테고리 (가로 스크롤) 전체 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: ContentCategoryDTO,
+    isArray: true,
+  })
+  async getContentCategories() {
+    return await this.categoryService.findContentCategories();
   }
 
   @Post()
@@ -139,6 +155,7 @@ export class AdminCategoryController {
     await this.categoryService.updateCategory(id, body);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Patch('/contents/:contentCategoryId')
   @RequestApi({
     summary: {
@@ -156,6 +173,7 @@ export class AdminCategoryController {
     await this.categoryService.updateContentCategory(id, data);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Patch('/contents/:contentCategoryId/spaces')
   @RequestApi({
     summary: {
@@ -193,6 +211,7 @@ export class AdminCategoryController {
     await this.categoryService.deleteCategory(id);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Delete('/contents/:contentCategoryId')
   @RequestApi({
     summary: {
@@ -210,6 +229,7 @@ export class AdminCategoryController {
     await this.categoryService.deleteContentCategory(id);
   }
 
+  @RevalidateApi([{ key: '/home/contents' }])
   @Delete('/contents/:contentCategoryId/spaces/:spaceId')
   @RequestApi({
     summary: {
