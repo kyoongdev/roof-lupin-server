@@ -3,21 +3,18 @@ import { ConfigService } from '@nestjs/config';
 
 import { AppleLogin, KakaoLogin, NaverLogin } from 'cumuco-nestjs';
 import type { Response } from 'express';
-import type { SignOptions } from 'jsonwebtoken';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { FCMEvent } from '@/event/fcm';
-import type { TokenPayload, TokenPayloadProps } from '@/interface/token.interface';
+import type { TokenPayload } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
 import { logger } from '@/log';
-import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
-import { CreateAdminDTO } from '../admin/dto/create-admin.dto';
 import { COUPON_CODE } from '../coupon/constants';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { CreateHostDTO } from '../host/dto';
@@ -25,13 +22,11 @@ import { CreateSocialUserDTO } from '../user/dto';
 import { USER_BLOCKED, USER_ERROR_CODE } from '../user/exception/errorCode';
 import { UserException } from '../user/exception/user.exception';
 
-import { AdminAuthDTO, HostAuthDTO, TokenDTO } from './dto';
+import { HostAuthDTO, TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
 import {
-  ALREADY_EXIST_ADMIN,
   ALREADY_EXIST_HOST,
   AUTH_ERROR_CODE,
-  NOT_ACCEPTED_ADMIN,
   WRONG_ACCESS_TOKEN,
   WRONG_ID,
   WRONG_KEY,
@@ -41,27 +36,24 @@ import {
 
 @Injectable()
 export class AuthService {
-  private readonly accessTokenExpiresIn = '2h' as const;
-  private readonly refreshTokenExpiresIn = '14d' as const;
-
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly adminRepository: AdminRepository,
+
     private readonly hostRepository: HostRepository,
-    private readonly couponRepository: CouponRepository,
     private readonly jwt: Jsonwebtoken,
+    private readonly encrypt: EncryptProvider,
+    private readonly couponRepository: CouponRepository,
     private readonly kakaoService: KakaoLogin,
     private readonly naverService: NaverLogin,
     private readonly appleService: AppleLogin,
     private readonly configService: ConfigService,
-    private readonly encrypt: EncryptProvider,
     private readonly fcmEvent: FCMEvent
   ) {}
 
   async testUserLogin() {
     const user = await this.userRepository.findUserByNickname('user2');
 
-    const tokens = await this.createTokens({ id: user.id, role: 'USER' });
+    const tokens = await this.jwt.createTokens({ id: user.id, role: 'USER' });
     return tokens;
   }
 
@@ -73,7 +65,7 @@ export class AuthService {
     current.setUTCHours(0, 0, 0, 0);
     const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
     const user = await this.userRepository.findUser(userId);
-    await this.fcmEvent.createCouponDurationAlarm({
+    this.fcmEvent.createCouponDurationAlarm({
       dueDate: usageDateEndAt,
       userId,
       jobId: nanoid(),
@@ -103,7 +95,7 @@ export class AuthService {
       throw new UserException(USER_ERROR_CODE.FORBIDDEN(USER_BLOCKED));
     }
 
-    const tokens = await this.createTokens({ id: user.id, role: 'USER' });
+    const tokens = await this.jwt.createTokens({ id: user.id, role: 'USER' });
 
     const query = queryString.stringify({
       status: 200,
@@ -137,14 +129,14 @@ export class AuthService {
 
     const isExistUser = await this.userRepository.checkUserBySocialId(`${Number(socialUser.id)}`);
     if (isExistUser) {
-      const tokens = await this.createTokens({ id: isExistUser.id, role: 'USER' });
+      const tokens = await this.jwt.createTokens({ id: isExistUser.id, role: 'USER' });
       return tokens;
     }
 
     const newUserId = await this.userRepository.createSocialUser(new CreateSocialUserDTO().setKakaoUser(socialUser));
     await this.registerNewUserCoupon(newUserId);
 
-    return await this.createTokens({ id: newUserId, role: 'USER' });
+    return await this.jwt.createTokens({ id: newUserId, role: 'USER' });
   }
 
   async kakaoLoginCallback(code: string, res: Response) {
@@ -183,59 +175,6 @@ export class AuthService {
     );
   }
 
-  async adminLogin(props: AdminAuthDTO) {
-    const admin = await this.adminRepository.findAdminByUserId(props.userId);
-
-    const isMatch = this.encrypt.comparePassword(admin.salt, props.password, admin.password);
-    if (!isMatch) {
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
-    }
-
-    if (!admin.isAccepted) {
-      throw new AuthException(AUTH_ERROR_CODE.UNAUTHORIZED(NOT_ACCEPTED_ADMIN));
-    }
-
-    const token = await this.createTokens({ id: admin.id, role: 'ADMIN' });
-    return token;
-  }
-
-  async adminRegister(props: CreateAdminDTO) {
-    const isExist = await this.adminRepository.checkAdminByUserId(props.userId);
-    if (isExist) {
-      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_ADMIN));
-    }
-
-    const admin = await this.adminRepository.createAdmin(props);
-    const token = await this.createTokens({ id: admin, role: 'ADMIN' });
-    return token;
-  }
-
-  async hostLogin(props: HostAuthDTO) {
-    const host = await this.hostRepository.findHostByEmail(props.email);
-
-    const isMatch = this.encrypt.comparePassword(host.salt, props.password, host.password);
-    if (!isMatch) {
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
-    }
-
-    const token = await this.createTokens({ id: host.id, role: 'HOST' });
-    return token;
-  }
-
-  async hostRegister(props: CreateHostDTO) {
-    const isExist = await this.hostRepository.checkHostByEmail(props.email);
-
-    if (isExist) {
-      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_HOST));
-    }
-
-    const host = await this.hostRepository.createHost(props);
-    const token = await this.createTokens({ id: host, role: 'HOST' });
-    return token;
-  }
-  sleep(ms: number) {
-    return new Promise((r) => setTimeout(r, ms));
-  }
   async refresh(tokens: TokenDTO) {
     const { accessToken, refreshToken } = tokens;
     const accessTokenPayload = this.jwt.verifyJwt<TokenPayload>(accessToken, {
@@ -251,21 +190,6 @@ export class AuthService {
     if (accessTokenPayload.id !== refreshTokenPayload.id)
       throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
 
-    return this.createTokens({ id: refreshTokenPayload.id, role: refreshTokenPayload.role });
-  }
-
-  async createTokens<T extends TokenPayloadProps>(value: T, options?: SignOptions) {
-    const key = nanoid();
-
-    const accessToken = this.jwt.signJwt<TokenPayload>(
-      { ...value, key },
-      { ...options, expiresIn: this.accessTokenExpiresIn }
-    );
-    const refreshToken = this.jwt.signJwt<TokenPayload>(
-      { ...value, key },
-      { ...options, expiresIn: this.refreshTokenExpiresIn }
-    );
-
-    return new TokenDTO({ accessToken, refreshToken });
+    return this.jwt.createTokens({ id: refreshTokenPayload.id, role: refreshTokenPayload.role });
   }
 }

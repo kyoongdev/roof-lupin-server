@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
 
+import { HostAuthModule } from './auth/auth.module';
 import { HostBlockedTimeModule } from './blocked-time/blocked-time.module';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
@@ -16,6 +17,7 @@ import { HostSpaceModule } from './space/space.module';
 import { HostTaxReturnModule } from './tax-return/tax-return.module';
 
 export const HostModules = [
+  HostAuthModule,
   HostBlockedTimeModule,
   HostQnAModule,
   HostReportModule,

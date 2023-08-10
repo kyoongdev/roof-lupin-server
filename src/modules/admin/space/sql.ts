@@ -25,7 +25,7 @@ export const getAdminFindSpacesSQL = (query: AdminFindSpacesQuery, paging: Pagin
   }
 
   return Prisma.sql`
-  SELECT ${BASE_SPACE_SELECT}
+  SELECT ${BASE_SPACE_SELECT()}
   FROM Space sp
   ${BASE_SPACE_JOIN}
   ${where}
