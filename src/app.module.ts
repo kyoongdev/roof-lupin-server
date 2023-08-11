@@ -1,5 +1,5 @@
 import { CacheModule } from '@nestjs/cache-manager';
-import { Module, type Provider, Type } from '@nestjs/common';
+import { Module, type Provider } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DiscoveryService, MetadataScanner, Routes } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -11,10 +11,7 @@ import { Filters, Interceptors } from '@/utils';
 
 import { AppController } from './app.controller';
 import { EventProviders } from './event';
-import { FCMEvent } from './event/fcm';
-import { SchedulerEvent } from './event/scheduler';
 import { AdminModule, AdminModules } from './modules/admin/admin.module';
-import { AdminUserModule } from './modules/admin/user/user.module';
 import { GlobalModule } from './modules/global';
 import { HostModule, HostModules } from './modules/host/host.module';
 import { AOPProvider } from './utils/aop';
@@ -29,8 +26,6 @@ const providers: Provider[] = [
   MetadataScanner,
   AOPProvider,
   FCMProvider,
-  SchedulerEvent,
-  FCMEvent,
   DynamicLinkProvider,
 ];
 

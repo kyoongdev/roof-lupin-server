@@ -318,6 +318,21 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 },
               },
             },
+            {
+              baseCost: 150000,
+              name: '올나잇 패키지',
+              startAt: 19,
+              endAt: 9,
+              day: 5,
+              rentalType: 2,
+              baseHour: 5,
+              additionalServices: {
+                create: {
+                  name: '바베큐',
+                  cost: 10000,
+                },
+              },
+            },
           ],
         },
 
@@ -720,7 +735,45 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           },
         ],
       },
-
+      openHours: {
+        create: [
+          {
+            day: 1,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 2,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 3,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 4,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 5,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 6,
+            startAt: 10,
+            endAt: 10,
+          },
+          {
+            day: 7,
+            startAt: 10,
+            endAt: 2,
+          },
+        ],
+      },
       rentalType: {
         create: [
           {
@@ -729,7 +782,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             endAt: 22,
             name: '시간대여',
             rentalType: 1,
-            day: 1,
+            day: 3,
             baseHour: 2,
             additionalServices: {
               create: {
@@ -774,6 +827,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               ],
             },
           },
+
           {
             baseCost: 1000,
             startAt: 14,
@@ -1000,6 +1054,45 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isPublic: true,
       isApproved: true,
       isImmediateReservation: true,
+      openHours: {
+        create: [
+          {
+            day: 1,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 2,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 3,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 4,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 5,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 6,
+            startAt: 10,
+            endAt: 10,
+          },
+          {
+            day: 7,
+            startAt: 10,
+            endAt: 2,
+          },
+        ],
+      },
       holidays: {
         create: [
           {
@@ -1087,7 +1180,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             endAt: 22,
             name: '시간대여',
             rentalType: 1,
-            day: 1,
+            day: 3,
             baseHour: 2,
             additionalServices: {
               create: {
@@ -1140,7 +1233,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             name: '패키지 대여',
             rentalType: 2,
             baseHour: 6,
-            day: 1,
+            day: 2,
             additionalServices: {
               create: {
                 name: '바베큐',
@@ -1293,6 +1386,45 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isPublic: true,
       isApproved: true,
       isImmediateReservation: true,
+      openHours: {
+        create: [
+          {
+            day: 1,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 2,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 3,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 4,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 5,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 6,
+            startAt: 10,
+            endAt: 10,
+          },
+          {
+            day: 7,
+            startAt: 10,
+            endAt: 2,
+          },
+        ],
+      },
       sizes: {
         create: [
           {
@@ -1372,7 +1504,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             endAt: 22,
             name: '시간대여',
             rentalType: 1,
-            day: 1,
+            day: 3,
             baseHour: 2,
             additionalServices: {
               create: {
@@ -1425,7 +1557,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             name: '패키지 대여',
             rentalType: 2,
             baseHour: 6,
-            day: 1,
+            day: 3,
             additionalServices: {
               create: {
                 name: '바베큐',
@@ -1574,6 +1706,45 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isPublic: true,
       isApproved: true,
       isImmediateReservation: true,
+      openHours: {
+        create: [
+          {
+            day: 1,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 2,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 3,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 4,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 5,
+            startAt: 10,
+            endAt: 2,
+          },
+          {
+            day: 6,
+            startAt: 10,
+            endAt: 10,
+          },
+          {
+            day: 7,
+            startAt: 10,
+            endAt: 2,
+          },
+        ],
+      },
       sizes: {
         create: [
           {
@@ -1660,7 +1831,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             endAt: 22,
             name: '시간대여',
             rentalType: 1,
-            day: 1,
+            day: 3,
             baseHour: 2,
             additionalServices: {
               create: {
@@ -1713,7 +1884,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             name: '패키지 대여',
             rentalType: 2,
             baseHour: 6,
-            day: 1,
+            day: 3,
             additionalServices: {
               create: {
                 name: '바베큐',
@@ -1738,6 +1909,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           },
         ],
       },
+
       location: {
         create: {
           roadAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
@@ -1746,6 +1918,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           lat: '37.5215',
         },
       },
+
       buildings: {
         create: [
           {

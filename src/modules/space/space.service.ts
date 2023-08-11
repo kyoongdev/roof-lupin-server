@@ -6,7 +6,10 @@ import { range } from 'lodash';
 
 import { getWeek } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
+import { DAY_ENUM } from '@/utils';
 
+import { HolidayService } from '../holiday/holiday.service';
+import { HostSpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -32,7 +35,8 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly searchRepository: SearchRepository,
-    private readonly database: PrismaService
+    private readonly database: PrismaService,
+    private readonly holidayService: HolidayService
   ) {}
 
   async findSpaceIds() {
@@ -76,8 +80,8 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = this.getExcludeSpaces(query);
-    const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
+    const { excludeQueries, includeQueries } = await this.getExcludeSpaces(query);
+    const baseWhere = query.generateSqlWhereClause(excludeQueries, includeQueries, userId);
 
     const sqlPaging = paging.getSqlPaging();
     let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere, userId);
@@ -126,16 +130,23 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  getExcludeSpaces(query?: FindSpacesQuery) {
+  async getExcludeSpaces(query?: FindSpacesQuery) {
     const date = query.getFindByDateQuery();
-    const queries: Prisma.Sql[] = [];
+    const excludeQueries: Prisma.Sql[] = [];
+    const includeQueries: Prisma.Sql[] = [];
+
     if (date) {
       const endAtIf = Prisma.sql`IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt )`;
       const timeQuery =
         date?.startAt && date?.endAt
-          ? Prisma.sql`AND (IF(RentalType.rentalType = 1, ${endAtIf} + 1, ${endAtIf}) >= ${date.startAt} AND ${
-              date.endAt <= date.startAt ? date.endAt + 24 : date.endAt
-            } >= ReservationRentalType.startAt)`
+          ? Prisma.sql`AND (      
+            ${Prisma.join(
+              range(date.startAt, (date.endAt < date.startAt ? date.endAt + 24 : date.endAt) + 1).map((value) => {
+                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ${endAtIf})`;
+              }),
+              ` AND `
+            )}
+          ) `
           : Prisma.sql`AND (      
             ${Prisma.join(
               range(9, 33).map((value) => {
@@ -148,7 +159,8 @@ export class SpaceService {
       const targetDate = new Date(Number(date.year), Number(date.month) - 1, Number(date.day));
 
       const week = getWeek(new Date(Number(date.year), Number(date.month) - 1, Number(date.day)));
-      const day = targetDate.getDay();
+      const holiday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
+      const day = holiday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
 
       const dateQuery = date
         ? Prisma.sql`(Reservation.isCanceled = 0 AND Reservation.deletedAt IS NULL AND Reservation.payedAt IS NOT NULL AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
@@ -168,21 +180,47 @@ export class SpaceService {
 
       const openHourTimeQuery =
         date.startAt && date.endAt
-          ? Prisma.sql`AND (oh.startAt > ${date.endAt} OR IF(oh.endAt < oh.startAt , oh.endAt + 24, oh.endAt) < ${date.startAt}) `
+          ? Prisma.sql`AND (oh.startAt <= ${date.endAt} 
+            AND IF(oh.endAt < oh.startAt , oh.endAt + 24, oh.endAt) >= ${date.startAt}) `
+          : Prisma.empty;
+
+      const blockedTimeQuery =
+        date.startAt && date.endAt
+          ? Prisma.sql`OR (bt.year = ${date.year} 
+                            AND bt.month = ${date.month} 
+                            AND bt.day = ${date.day}
+                            AND (${date.startAt} < bt.endAt AND bt.startAt < ${date.endAt})
+                          )`
           : Prisma.empty;
 
       const holidayQuery = Prisma.sql`
         SELECT hsp.id
         FROM Space hsp
         LEFT JOIN SpaceHoliday sh ON hsp.id = sh.spaceId
-        LEFT JOIN OpenHour oh ON hsp.id = oh.spaceId
-        WHERE sp.id = hsp.id AND (sh.day = ${day} AND sh.interval = ${week})
-        OR (oh.day = ${day} ${openHourTimeQuery})
+        LEFT JOIN BlockedTime bt ON hsp.id = bt.spaceId
+        WHERE sp.id = hsp.id 
+        AND ((sh.day = ${day} AND sh.interval = ${week})
+        ${blockedTimeQuery})
         GROUP BY hsp.id
       `;
 
-      queries.push(query, holidayQuery);
+      const openHourQuery = Prisma.sql`
+        SELECT osp.id
+        FROM Space osp
+        LEFT JOIN OpenHour oh ON osp.id = oh.spaceId
+        WHERE sp.id = osp.id AND oh.day = ${day} ${openHourTimeQuery}
+      `;
+
+      const rentalTypeQuery = Prisma.sql`
+        SELECT rsp.id
+        FROM Space rsp
+        LEFT JOIN RentalType rt ON rsp.id = rt.spaceId
+        WHERE sp.id = rsp.id AND rt.day = ${day}
+      `;
+
+      excludeQueries.push(query, holidayQuery);
+      includeQueries.push(openHourQuery, rentalTypeQuery);
     }
-    return queries;
+    return { excludeQueries, includeQueries };
   }
 }

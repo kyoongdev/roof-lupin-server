@@ -1,11 +1,13 @@
 import { Controller, Get, Response } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import type { Response as ResponseType } from 'express';
+import { SolapiMessageService } from 'solapi';
 
 import { PrismaService } from './database/prisma.service';
 @Controller()
 export class AppController {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly database: PrismaService, private readonly configService: ConfigService) {}
 
   @Get('/health')
   healthCheck(@Response() response: ResponseType) {

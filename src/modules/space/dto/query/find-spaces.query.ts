@@ -83,8 +83,8 @@ export class FindSpacesQuery extends PagingDTO {
       year: this.year,
       month: this.month,
       day: this.day,
-      startAt: this.startAt,
-      endAt: this.endAt < this.startAt ? this.endAt + 24 : this.endAt,
+      startAt: this.startAt ?? undefined,
+      endAt: this.endAt ? (this.endAt < this.startAt ? this.endAt + 24 : this.endAt) : undefined,
     };
   }
 
@@ -100,7 +100,7 @@ export class FindSpacesQuery extends PagingDTO {
     };
   }
 
-  generateSqlWhereClause(excludeQueries: Prisma.Sql[], userId?: string) {
+  generateSqlWhereClause(excludeQueries: Prisma.Sql[], includeQueries: Prisma.Sql[], userId?: string) {
     const locationFilterWhere = this.locationFilterTopicIds
       ? Prisma.sql`
       AND (${Prisma.join(
@@ -126,6 +126,7 @@ export class FindSpacesQuery extends PagingDTO {
       this.minSize && this.maxSize
         ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
         : Prisma.empty;
+
     const serviceWhere = this.serviceIds
       ? Prisma.sql`AND (${Prisma.join(
           this.serviceIds.split(',').map(
@@ -171,6 +172,13 @@ export class FindSpacesQuery extends PagingDTO {
             ''
           )}`
         : Prisma.empty;
+    const includeIds =
+      includeQueries.length > 0
+        ? Prisma.sql`${Prisma.join(
+            includeQueries.map((query) => Prisma.sql`AND EXISTS (${query})`),
+            ''
+          )}`
+        : Prisma.empty;
 
     return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 
                       ${locationFilterWhere}
@@ -182,6 +190,7 @@ export class FindSpacesQuery extends PagingDTO {
                       ${categoryIdWhere} 
                       ${locationWhere} 
                       ${excludeIds} 
+                      ${includeIds}
                       ${reportWhere} 
                       ${keywordWhere} 
                       ${costWhere} `;
