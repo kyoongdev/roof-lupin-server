@@ -20,7 +20,21 @@ import { AdminContentService } from './content.service';
 export class AdminContentController {
   constructor(private readonly contentService: AdminContentService) {}
 
-  @Get('/contents')
+  @Get(':contentCategoryId/detail')
+  @RequestApi({
+    summary: {
+      description: '콘텐츠 카테고리 단건 불러오기',
+      summary: '콘텐츠 카테고리 (가로 스크롤) 단건 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: ContentCategoryDTO,
+  })
+  async getContentCategory(@Param('contentCategoryId') id: string) {
+    return await this.contentService.findContentCategory(id);
+  }
+
+  @Get('')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 목록 불러오기',
@@ -35,7 +49,7 @@ export class AdminContentController {
     return await this.contentService.findPagingContentCategories(paging, query.generateQuery());
   }
 
-  @Get('/contents/all')
+  @Get('all')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 전체 불러오기',
@@ -49,7 +63,7 @@ export class AdminContentController {
   async getContentCategories() {
     return await this.contentService.findContentCategories();
   }
-  @Post('/contents')
+  @Post('')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -67,7 +81,7 @@ export class AdminContentController {
     return await this.contentService.createContentCategory(body);
   }
 
-  @Post('/contents/:contentCategoryId/spaces')
+  @Post(':contentCategoryId/spaces')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 공간 추가하기',
@@ -87,8 +101,8 @@ export class AdminContentController {
     return await this.contentService.createContentCategorySpace(id, body);
   }
 
-  @RevalidateApi([{ key: '/home/contents' }])
-  @Patch('/contents/:contentCategoryId')
+  @RevalidateApi([{ key: '/home' }])
+  @Patch(':contentCategoryId')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 수정',
@@ -112,8 +126,8 @@ export class AdminContentController {
     await this.contentService.updateContentCategory(id, data);
   }
 
-  @RevalidateApi([{ key: '/home/contents' }])
-  @Patch('/contents/:contentCategoryId/spaces')
+  @RevalidateApi([{ key: '/home' }])
+  @Patch(':contentCategoryId/spaces')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 공간 수정',
@@ -140,8 +154,8 @@ export class AdminContentController {
     await this.contentService.updateContentCategorySpace(id, data);
   }
 
-  @RevalidateApi([{ key: '/home/contents' }])
-  @Delete('/contents/:contentCategoryId')
+  @RevalidateApi([{ key: '/home' }])
+  @Delete(':contentCategoryId')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 수정',
@@ -158,8 +172,8 @@ export class AdminContentController {
     await this.contentService.deleteContentCategory(id);
   }
 
-  @RevalidateApi([{ key: '/home/contents' }])
-  @Delete('/contents/:contentCategoryId/spaces/:spaceId')
+  @RevalidateApi([{ key: '/home' }])
+  @Delete(':contentCategoryId/spaces/:spaceId')
   @RequestApi({
     summary: {
       description: '콘텐츠 카테고리 수정',

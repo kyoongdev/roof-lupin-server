@@ -6,9 +6,7 @@ import { range } from 'lodash';
 
 import { getWeek } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import { DAY_ENUM } from '@/utils/validation';
 
-import { HolidayService } from '../holiday/holiday.service';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -33,7 +31,6 @@ import {
 export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
-    private readonly holidayService: HolidayService,
     private readonly searchRepository: SearchRepository,
     private readonly database: PrismaService
   ) {}
@@ -79,20 +76,18 @@ export class SpaceService {
       });
     }
 
-    const excludeQuery = await this.getExcludeSpaces(query);
+    const excludeQuery = this.getExcludeSpaces(query);
     const baseWhere = query.generateSqlWhereClause(excludeQuery, userId);
 
     const sqlPaging = paging.getSqlPaging();
     let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere, userId);
-    if (!query.sort || query.sort === 'POPULARITY') {
+    if (query.sort === 'POPULARITY') {
       sqlQuery = getFindSpacesWithPopularitySQL(sqlPaging, baseWhere, userId);
     } else if (isDistance) {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere, userId);
     }
-    const count = await this.spaceRepository.countSpacesWithSQL(
-      isDistance ? getCountDistanceSpacesSQL(location, baseWhere) : getCountSpacesSQL(baseWhere)
-    );
-    const spaces = await this.spaceRepository.findSpacesWithSQL(sqlQuery, userId);
+
+    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(sqlQuery, userId);
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
@@ -131,7 +126,7 @@ export class SpaceService {
     await this.spaceRepository.deleteInterest(userId, spaceId);
   }
 
-  async getExcludeSpaces(query?: FindSpacesQuery) {
+  getExcludeSpaces(query?: FindSpacesQuery) {
     const date = query.getFindByDateQuery();
     const queries: Prisma.Sql[] = [];
     if (date) {

@@ -39,11 +39,9 @@ export class AdminSpaceService {
       where = Prisma.sql`WHERE sp.isPublic = ${query.isPublic}`;
     }
     const sqlPaging = paging.getSqlPaging();
-    const countSql = getAdminCountSpacesSQL(where);
     const findSql = getAdminFindSpacesSQL(query, sqlPaging, where);
 
-    const count = await this.spaceRepository.countSpacesWithSQL(countSql);
-    const spaces = await this.spaceRepository.findSpacesWithSQL(findSql);
+    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(findSql);
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

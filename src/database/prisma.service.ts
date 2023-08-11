@@ -19,7 +19,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
       },
     });
-  private readonly logger = new Logger();
 
   constructor(private readonly configService: ConfigService) {
     super({
@@ -39,9 +38,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       await this.$connect();
       this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
       this.$on<any>('query', (event: Prisma.QueryEvent) => {
-        console.log(event);
-        this.logger.log('Query: ' + event.query);
-        this.logger.log('Duration: ' + event.duration + 'ms');
+        logger.log('Query: ' + event.query);
+        logger.log('Duration: ' + event.duration + 'ms');
       });
     } catch (err) {
       logger.error(err);
