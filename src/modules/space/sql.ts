@@ -70,7 +70,7 @@ export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, wher
       : query.sort === 'PRICE_LOW'
       ? Prisma.sql`baseCost ASC`
       : Prisma.sql`sp.createdAt DESC`;
-  console.log({ orderBy });
+
   return Prisma.sql`
   SELECT ${BASE_SPACE_SELECT(userId)}
   FROM Space sp
