@@ -75,7 +75,7 @@ export class FindSpacesQuery extends PagingDTO {
   sort?: keyof typeof SPACE_SORT_OPTION;
 
   getFindByDateQuery(): FindByDateQuery {
-    if (!this.year || !this.month || !this.day) {
+    if (!this.year || !this.month || !this.day || !this.startAt || !this.endAt) {
       return null;
     }
 

@@ -40,8 +40,8 @@ import {
   PAYMENT_DISCOUNT_COST_BAD_REQUEST,
   PAYMENT_ERROR_CODE,
   PAYMENT_FORBIDDEN,
-  PAYMENT_IMMEDIATE_PAYMENT_FORBIDDEN,
   PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
+  PAYMENT_MAX_RESERVATION_DATE,
   PAYMENT_MUTATION_FORBIDDEN,
   PAYMENT_NOT_APPROVED,
   PAYMENT_NOT_COMPLETED,
@@ -53,7 +53,7 @@ import {
   PAYMENT_TOTAL_COST_BAD_REQUEST,
 } from './exception/errorCode';
 import { PaymentException } from './exception/payment.exception';
-//TODO: 환불 로직 추가
+
 @Injectable()
 export class PaymentService {
   constructor(
@@ -73,7 +73,6 @@ export class PaymentService {
     return await this.financeProvider.getToken();
   }
 
-  //database: TransactionPrisma, userId: string,
   async getReservation(data: CreatePaymentDTO, space: SpaceDetailDTO): Promise<undefined | ReservationDetailDTO> {
     if (data.reservationId) {
       const reservation = await this.reservationRepository.findReservation(data.reservationId);
@@ -97,6 +96,7 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_REQUIRED));
     }
     //TODO: Host 알림 추가
+    //TODO:
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
     return reservation;
@@ -371,6 +371,19 @@ export class PaymentService {
     });
     await Promise.all(
       data.rentalTypes.map(async (item) => {
+        const reservationDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), item.startAt);
+        const currentDate = new Date();
+        if (
+          reservationDate.getFullYear() === currentDate.getFullYear() &&
+          reservationDate.getMonth() === currentDate.getMonth() &&
+          reservationDate.getDate() === currentDate.getDate()
+        ) {
+          const diff = currentDate.getHours() - reservationDate.getHours();
+          if (diff <= 2) {
+            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MAX_RESERVATION_DATE));
+          }
+        }
+
         const rentalType = await this.rentalTypeRepository.findRentalType(item.rentalTypeId);
 
         if (rentalType.spaceId !== data.spaceId) {
