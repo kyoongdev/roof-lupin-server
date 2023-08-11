@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
+import { Category, Prisma, PublicTransportation, RentalType } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { SqlSpace } from '@/interface/space.interface';
@@ -32,28 +32,29 @@ export class SpaceRepository {
 
   async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
     const spaces: SqlSpace[] = await this.database.$queryRaw(sql);
+    const count: {
+      'FOUND_ROWS()': number;
+    }[] = await this.database.$queryRaw(Prisma.sql`SELECT FOUND_ROWS()`);
 
     const data = await Promise.all(
       spaces.map(async (space) => {
-        const publicTransportations = await this.database.publicTransportation.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        const rentalType = await this.database.rentalType.findMany({
-          where: {
-            spaceId: space.id,
-          },
-        });
-        const categories = await this.database.category.findMany({
-          where: {
-            spaceUsageCategories: {
-              some: {
-                spaceId: space.id,
-              },
-            },
-          },
-        });
+        const publicTransportations: PublicTransportation[] = await this.database.$queryRaw(Prisma.sql`
+          SELECT *
+          FROM PublicTransportation pt
+          WHERE pt.spaceId = ${space.id}
+        `);
+        const rentalType: RentalType[] = await this.database.$queryRaw(Prisma.sql`
+          SELECT *
+          FROM RentalType rt
+          WHERE rt.spaceId = ${space.id}
+        `);
+
+        const categories: Category[] = await this.database.$queryRaw(Prisma.sql`
+          SELECT *
+          FROM Category c
+          LEFT JOIN SpaceCategory sc ON sc.categoryId = c.id
+          WHERE sc.spaceId = ${space.id}
+        `);
 
         return new SpaceDTO({
           ...space,
@@ -76,7 +77,10 @@ export class SpaceRepository {
       })
     );
 
-    return data;
+    return {
+      spaces: data,
+      count: count[0]['FOUND_ROWS()'],
+    };
   }
 
   async findSpace(id: string, userId?: string) {

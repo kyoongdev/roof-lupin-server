@@ -11,6 +11,7 @@ export const BASE_SPACE_SELECT = (userId?: string) => {
     : Prisma.empty;
 
   return Prisma.sql`
+  SQL_CALC_FOUND_ROWS
   sp.id as id, sp.title as title, sp.description as description, sp.buildingType as buildingType, sp.thumbnail as thumbnail, 
   sp.minUser as minUser , sp.maxUser as maxUser , sp.overflowUserCost as overflowUserCost, sp.overflowUserCount as overflowUserCount,
   sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.createdAt as createdAt, 
@@ -83,7 +84,7 @@ export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, wher
 };
 
 export const getCountDistanceSpacesSQL = (location: LatLngDTO, where: Prisma.Sql) => Prisma.sql`
-  SELECT *
+  SELECT id
   FROM
   (
     SELECT sp.id
