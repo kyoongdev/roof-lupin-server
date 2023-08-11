@@ -127,9 +127,18 @@ export class FindSpacesQuery extends PagingDTO {
         ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
         : Prisma.empty;
     const serviceWhere = this.serviceIds
-      ? Prisma.sql`AND ss.id IN (${Prisma.join(this.serviceIds.split(','), ',')})`
+      ? Prisma.sql`AND (${Prisma.join(
+          this.serviceIds.split(',').map(
+            (serviceId) => Prisma.sql`
+              EXISTS (
+                SELECT *
+                FROM SpaceService as iss
+                WHERE iss.spaceId = sp.id AND iss.serviceId = ${serviceId}
+              )`
+          ),
+          ' OR '
+        )})`
       : Prisma.empty;
-
     const immediateReservationWhere =
       typeof this.isImmediateReservation === 'boolean'
         ? Prisma.sql`AND sp.isImmediateReservation = ${this.isImmediateReservation ? 1 : 0}`

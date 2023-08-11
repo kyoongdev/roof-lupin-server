@@ -31,6 +31,7 @@ export class SpaceRepository {
   }
 
   async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
+    console.log(sql);
     const spaces: SqlSpace[] = await this.database.$queryRaw(sql);
     const count: {
       'FOUND_ROWS()': number;

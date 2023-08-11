@@ -33,8 +33,7 @@ export const BASE_SPACE_JOIN = Prisma.sql`
   LEFT JOIN HashTag ht ON sh.hashTagId = ht.id
   LEFT JOIN RentalType rt ON sp.id = rt.spaceId
   LEFT JOIN SpaceReport srp ON sp.id = srp.spaceId
-  LEFT JOIN SpaceService ss ON sp.id = ss.spaceId
-  
+
 `;
 
 export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.Sql, userId?: string) => Prisma.sql`
@@ -43,7 +42,7 @@ export const getFindSpacesWithPopularitySQL = (paging: PagingDTO, where: Prisma.
   ${BASE_SPACE_JOIN}
   ${where}
   GROUP BY sp.id
-  ORDER BY sp.orderNo DESC, userInterests DESC, averageScore DESC, reviewCount DESC
+  ORDER BY sp.orderNo DESC, interestCount DESC, averageScore DESC, reviewCount DESC
   LIMIT ${paging.page},${paging.limit ?? 10}
 `;
 
@@ -71,7 +70,7 @@ export const getFindSpacesSQL = (query: FindSpacesQuery, paging: PagingDTO, wher
       : query.sort === 'PRICE_LOW'
       ? Prisma.sql`baseCost ASC`
       : Prisma.sql`sp.createdAt DESC`;
-
+  console.log({ orderBy });
   return Prisma.sql`
   SELECT ${BASE_SPACE_SELECT(userId)}
   FROM Space sp

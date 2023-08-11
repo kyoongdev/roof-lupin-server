@@ -81,7 +81,7 @@ export class SpaceService {
 
     const sqlPaging = paging.getSqlPaging();
     let sqlQuery = getFindSpacesSQL(query, sqlPaging, baseWhere, userId);
-    if (!query.sort || query.sort === 'POPULARITY') {
+    if (query.sort === 'POPULARITY') {
       sqlQuery = getFindSpacesWithPopularitySQL(sqlPaging, baseWhere, userId);
     } else if (isDistance) {
       sqlQuery = getFindSpacesWithDistanceSQL(location, sqlPaging, baseWhere, userId);
