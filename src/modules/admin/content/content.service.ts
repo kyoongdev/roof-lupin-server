@@ -17,6 +17,10 @@ import {
 export class AdminContentService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
+  async findContentCategory(id: string) {
+    return await this.categoryRepository.findContentCategory(id);
+  }
+
   async findContentCategories() {
     return await this.categoryRepository.findContentCategories();
   }
