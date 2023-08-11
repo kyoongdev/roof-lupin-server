@@ -63,7 +63,6 @@ export class AdminHomeController {
     204
   )
   async updateHomeContent(@Param('homeContentId') id: string, @Body() body: UpdateHomeContentsDTO) {
-    console.log({ body });
     await this.homeService.updateHomeContent(id, body);
   }
 
