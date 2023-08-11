@@ -146,7 +146,7 @@ export class PaymentService {
   async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
     const { orderId, paymentInfo } = data;
     let reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
-    console.log({ reservation });
+
     try {
       if (reservation)
         if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {

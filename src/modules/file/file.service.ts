@@ -6,6 +6,7 @@ import convert from 'heic-convert';
 import sharp from 'sharp';
 
 import { PrismaService } from '@/database/prisma.service';
+import { logger } from '@/log';
 
 import { ImageDTO, S3ImageDTO, UploadedFileDTO } from './dto';
 
@@ -179,7 +180,7 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
