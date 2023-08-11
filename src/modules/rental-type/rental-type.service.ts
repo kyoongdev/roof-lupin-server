@@ -77,9 +77,6 @@ export class RentalTypeService {
           month: Number(query.month),
           isCanceled: false,
           deletedAt: null,
-          payedAt: {
-            not: null,
-          },
         },
       }
     );
@@ -136,9 +133,6 @@ export class RentalTypeService {
               month: currentMonth,
               isCanceled: false,
               deletedAt: null,
-              payedAt: {
-                not: null,
-              },
             },
           }
         );
@@ -197,9 +191,6 @@ export class RentalTypeService {
           day: Number(query.day),
           isCanceled: false,
           deletedAt: null,
-          payedAt: {
-            not: null,
-          },
         },
       }
     );
@@ -235,9 +226,6 @@ export class RentalTypeService {
         day: Number(query.day),
         isCanceled: false,
         deletedAt: null,
-        payedAt: {
-          not: null,
-        },
       },
     });
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
@@ -287,9 +275,6 @@ export class RentalTypeService {
           day: Number(query.day),
           isCanceled: false,
           deletedAt: null,
-          payedAt: {
-            not: null,
-          },
         },
       }
     );
