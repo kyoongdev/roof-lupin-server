@@ -9,6 +9,8 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { ReservationDetailDTO } from '../reservation/dto';
+
 import {
   BankCodeDTO,
   ConfirmTossPaymentDTO,
@@ -87,7 +89,6 @@ export class PaymentController {
 
   @Post('/complete')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       summary: '결제 완료하기 ',
@@ -95,7 +96,7 @@ export class PaymentController {
     },
   })
   @ResponseApi({
-    type: ResponseWithIdDTO,
+    type: ReservationDetailDTO,
   })
   async completeTossPayment(@Body() data: ConfirmTossPaymentDTO, @ReqUser() user: RequestUser) {
     return await this.paymentService.confirmTossPayment(data, user.id);

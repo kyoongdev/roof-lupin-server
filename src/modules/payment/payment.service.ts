@@ -177,6 +177,7 @@ export class PaymentService {
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderResultId: data.paymentKey,
           payedAt: new Date(),
+          receiptUrl: tossPayment.receipt?.url,
         });
 
         await this.createSettlement(database, reservation);
@@ -202,7 +203,7 @@ export class PaymentService {
       throw err;
     }
 
-    return reservation.id;
+    return reservation;
   }
 
   async refundPayment(userId: string, data: RefundPaymentDTO) {

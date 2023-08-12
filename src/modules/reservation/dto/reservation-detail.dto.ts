@@ -13,6 +13,7 @@ export interface ReservationDetailDTOProps extends ReservationDTOProps {
   isApproved: boolean;
   approvedAt?: Date;
   settlementId: string;
+  receiptUrl?: string;
 }
 
 export class ReservationDetailDTO extends ReservationDTO {
@@ -37,6 +38,9 @@ export class ReservationDetailDTO extends ReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '정산 아이디' } })
   settlementId: string;
 
+  @Property({ apiProperty: { type: 'string', description: '영수증 url' } })
+  receiptUrl?: string;
+
   constructor(props: ReservationDetailDTOProps) {
     super(props);
     this.orderId = props.orderId;
@@ -46,6 +50,7 @@ export class ReservationDetailDTO extends ReservationDTO {
     this.isApproved = props.isApproved;
     this.approvedAt = props.approvedAt;
     this.settlementId = props.settlementId;
+    this.receiptUrl = props.receiptUrl;
   }
 
   static generateReservationDetailDTO(reservation: CommonReservation): ReservationDetailDTOProps {
