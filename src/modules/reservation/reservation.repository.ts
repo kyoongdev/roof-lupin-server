@@ -230,12 +230,37 @@ export class ReservationRepository {
   }
 
   async updatePayment(id: string, data: UpdatePaymentDTO) {
+    const { refund, ...rest } = data;
     await this.database.reservation.update({
       where: {
         id,
       },
       data: {
-        ...data,
+        ...rest,
+        ...(refund && {
+          refunds: {
+            create: [
+              {
+                reason: refund.reason,
+                refundCost: refund.refundCost,
+                ...(refund.hostId && {
+                  host: {
+                    connect: {
+                      id: refund.hostId,
+                    },
+                  },
+                }),
+                ...(refund.userId && {
+                  user: {
+                    connect: {
+                      id: refund.userId,
+                    },
+                  },
+                }),
+              },
+            ],
+          },
+        }),
       },
     });
   }

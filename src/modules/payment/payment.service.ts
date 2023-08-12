@@ -244,7 +244,11 @@ export class PaymentService {
     });
 
     await this.reservationRepository.updatePayment(reservation.id, {
-      refundCost,
+      refund: {
+        refundCost,
+        reason: '사용자 환불 요청',
+        userId,
+      },
     });
 
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);

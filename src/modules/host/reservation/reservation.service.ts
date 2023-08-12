@@ -93,7 +93,11 @@ export class HostReservationService {
       isApproved: false,
       isCanceled: true,
       ...(isRefund && {
-        refundCost: reservation.totalCost,
+        refund: {
+          refundCost: reservation.totalCost,
+          reason: '호스트 예약 취소',
+          hostId,
+        },
       }),
     });
   }
