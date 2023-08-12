@@ -19,18 +19,6 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '카테고리 id들 (,를 통해 구분합니다.)' } })
   categoryIds?: string;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '최소 평수' } })
-  minSize?: number;
-
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 평수' } })
-  maxSize?: number;
-
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '최소 가격' } })
-  minPrice?: number;
-
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 가격' } })
-  maxPrice?: number;
-
   @Property({ apiProperty: { type: 'string', nullable: true, description: '서비스 id들 (,를 통해 구분합니다.)' } })
   serviceIds?: string;
 
@@ -118,14 +106,6 @@ export class FindSpacesQuery extends PagingDTO {
       : Prisma.empty;
 
     const userCountWhere = this.userCount ? Prisma.sql`AND minUser <= ${this.userCount}` : Prisma.empty;
-    const maxPriceWhere =
-      this.maxPrice && this.maxPrice > 0 ? Prisma.sql`AND baseCost <= ${this.maxPrice}` : Prisma.empty;
-    const costWhere =
-      this.maxPrice || this.minPrice ? Prisma.sql`AND (baseCost >= ${this.minPrice} ${maxPriceWhere})` : Prisma.empty;
-    const sizeWhere =
-      this.minSize && this.maxSize
-        ? Prisma.sql`AND (minSize >= ${this.minSize} AND minSize <= ${this.maxSize})`
-        : Prisma.empty;
 
     const serviceWhere = this.serviceIds
       ? Prisma.sql`AND (${Prisma.join(
@@ -140,22 +120,28 @@ export class FindSpacesQuery extends PagingDTO {
           ' OR '
         )})`
       : Prisma.empty;
+
     const immediateReservationWhere =
       typeof this.isImmediateReservation === 'boolean'
         ? Prisma.sql`AND sp.isImmediateReservation = ${this.isImmediateReservation ? 1 : 0}`
         : Prisma.empty;
+
     const locationWhere = this.locationName
       ? Prisma.sql`AND (sl.jibunAddress LIKE '%${Prisma.raw(this.locationName)}%' OR sl.roadAddress LIKE '%${Prisma.raw(
           this.locationName
         )}%')`
       : Prisma.empty;
+
     const reportWhere = userId
       ? Prisma.sql`AND NOT EXISTS (SELECT spaceId FROM SpaceReport as sre WHERE sre.userId = ${userId} AND sre.spaceId = sp.id)`
       : Prisma.empty;
+
     const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.empty;
+
     const categoryIdWhere = this.categoryIds
       ? Prisma.sql`AND ca.id IN (${Prisma.join(this.categoryIds.split(','), ',')})`
       : Prisma.empty;
+
     const keywordWhere = this.keyword
       ? Prisma.sql`
           AND (sp.title LIKE '%${Prisma.raw(this.keyword)}%'
@@ -172,6 +158,7 @@ export class FindSpacesQuery extends PagingDTO {
             ''
           )}`
         : Prisma.empty;
+
     const includeIds =
       includeQueries.length > 0
         ? Prisma.sql`${Prisma.join(
@@ -183,7 +170,6 @@ export class FindSpacesQuery extends PagingDTO {
     return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 
                       ${locationFilterWhere}
                       ${userCountWhere} 
-                      ${sizeWhere} 
                       ${immediateReservationWhere} 
                       ${serviceWhere} 
                       ${categoryWhere} 
@@ -193,6 +179,6 @@ export class FindSpacesQuery extends PagingDTO {
                       ${includeIds}
                       ${reportWhere} 
                       ${keywordWhere} 
-                      ${costWhere} `;
+                      `;
   }
 }

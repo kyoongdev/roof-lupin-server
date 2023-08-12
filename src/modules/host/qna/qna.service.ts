@@ -5,8 +5,10 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
+import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateQnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO } from '@/modules/qna/dto';
 import { QnARepository } from '@/modules/qna/qna.repository';
+import { UserRepository } from '@/modules/user/user.repository';
 
 import { QnACountDTO } from '../dto/qna';
 import { HOST_ERROR_CODE, QNA_ANSWER_MUTATION_FORBIDDEN } from '../exception/errorCode';
@@ -17,7 +19,9 @@ export class HostQnAService {
   constructor(
     private readonly qnaRepository: QnARepository,
     private readonly fcmEvent: FCMEvent,
-    private readonly database: PrismaService
+    private readonly database: PrismaService,
+    private readonly historyRepository: HistoryRepository,
+    private readonly userRepository: UserRepository
   ) {}
 
   async findQnA(id: string) {
@@ -58,18 +62,7 @@ export class HostQnAService {
     const qna = await this.findQnA(data.qnaId);
     const qnaAnswerId = await this.qnaRepository.createQnAAnswer(hostId, data);
 
-    const user = await this.database.user.findUnique({
-      where: {
-        id: qna.user.id,
-      },
-      select: {
-        id: true,
-        pushToken: true,
-        isAlarmAccepted: true,
-        name: true,
-        nickname: true,
-      },
-    });
+    const user = await this.userRepository.findUserPushToken(qna.user.id);
 
     this.fcmEvent.createQnAAnswerAlarm({
       userId: user.id,
@@ -89,6 +82,11 @@ export class HostQnAService {
       throw new HostException(HOST_ERROR_CODE.FORBIDDEN(QNA_ANSWER_MUTATION_FORBIDDEN));
     }
 
+    await this.historyRepository.createHistory({
+      content: answer.content,
+      writtenAt: answer.createdAt,
+      spaceQnAAnswerId: qnaAnswerId,
+    });
     await this.qnaRepository.updateQnAAnswer(qnaAnswerId, data);
   }
 

@@ -330,12 +330,24 @@ export class ReviewRepository {
   }
 
   async deleteReview(id: string) {
+    await this.database.spaceReview.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteReview(id: string) {
     await this.database.spaceReview.delete({
       where: {
         id,
       },
     });
   }
+
   async findReviewAnswer(id: string) {
     const reviewAnswer = await this.database.spaceReviewAnswer.findUnique({
       where: {

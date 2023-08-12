@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Routes } from '@nestjs/core';
 
-import { AdminModules } from './admin/admin.module';
 import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AppInfoModule } from './app-info/app-info.module';
@@ -16,7 +14,6 @@ import { FileModule } from './file/file.module';
 import { FrequentQuestionModule } from './frequent-question/frequent-question.module';
 import { HolidayModule } from './holiday/holiday.module';
 import { HomeModule } from './home/home.module';
-import { HostModules } from './host/host.module';
 import { LocationModule } from './location/location.module';
 import { LocationFilterModule } from './location-filter/location-filter.module';
 import { MainModule } from './main/main.module';

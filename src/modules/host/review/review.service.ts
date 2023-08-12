@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
+import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import {
@@ -19,7 +20,10 @@ import { ReviewRepository } from '@/modules/review/review.repository';
 
 @Injectable()
 export class HostReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository) {}
+  constructor(
+    private readonly reviewRepository: ReviewRepository,
+    private readonly historyRepository: HistoryRepository
+  ) {}
 
   async findReview(id: string) {
     return await this.reviewRepository.findReview(id);
@@ -77,6 +81,13 @@ export class HostReviewService {
     if (timeDiff > 72) {
       throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_UPDATE_DUE_DATE));
     }
+
+    await this.historyRepository.createHistory({
+      content: reviewAnswer.content,
+      writtenAt: reviewAnswer.createdAt,
+      spaceReviewAnswerId: reviewAnswer.id,
+    });
+
     await this.reviewRepository.updateReviewAnswer(reviewAnswerId, data);
   }
 

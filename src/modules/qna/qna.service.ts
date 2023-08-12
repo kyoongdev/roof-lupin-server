@@ -5,6 +5,8 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { FCMEvent } from '@/event/fcm';
 
+import { HistoryRepository } from '../history/history.repository';
+
 import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
@@ -12,7 +14,7 @@ import { QnARepository } from './qna.repository';
 
 @Injectable()
 export class QnAService {
-  constructor(private readonly qnaRepository: QnARepository) {}
+  constructor(private readonly qnaRepository: QnARepository, private readonly historyRepository: HistoryRepository) {}
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
@@ -48,22 +50,26 @@ export class QnAService {
   }
 
   async updateQnA(qnaId: string, userId: string, data: UpdateQnADTO) {
-    await this.qnaRepository.findQnA(qnaId);
-    await this.checkIsUserValid(qnaId, userId);
+    const qna = await this.qnaRepository.findQnA(qnaId);
 
+    this.checkIsUserValid(qna, userId);
+
+    await this.historyRepository.createHistory({
+      content: qna.content,
+      writtenAt: qna.createdAt,
+      spaceQnAId: qna.id,
+    });
     await this.qnaRepository.updateQnA(qnaId, data);
   }
 
   async deleteQnA(qnaId: string, userId: string) {
-    await this.qnaRepository.findQnA(qnaId);
-    await this.checkIsUserValid(qnaId, userId);
+    const qna = await this.qnaRepository.findQnA(qnaId);
+    this.checkIsUserValid(qna, userId);
 
     await this.qnaRepository.deleteQnA(qnaId);
   }
 
-  async checkIsUserValid(qnaId: string, userId: string) {
-    const qna = await this.qnaRepository.findQnA(qnaId);
-
+  checkIsUserValid(qna: QnADTO, userId: string) {
     if (qna.user.id !== userId) {
       throw new QnAException(QNA_ERROR_CODE.FORBIDDEN(QNA_MUTATION_FORBIDDEN));
     }

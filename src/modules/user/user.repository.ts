@@ -30,6 +30,10 @@ export class UserRepository {
         id,
       },
       select: {
+        id: true,
+        nickname: true,
+        name: true,
+        isAlarmAccepted: true,
         pushToken: true,
       },
     });
@@ -38,7 +42,7 @@ export class UserRepository {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
     }
 
-    return new PushTokenDTO({ pushToken: user.pushToken });
+    return new PushTokenDTO(user);
   }
 
   async findUserByEmail(email: string) {
