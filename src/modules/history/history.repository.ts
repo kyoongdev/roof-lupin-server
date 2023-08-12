@@ -17,8 +17,40 @@ export class HistoryRepository {
   }
 
   async createHistory(data: CreateHistoryDTO) {
+    const { content, writtenAt, spaceQnAAnswerId, spaceQnAId, spaceReviewAnswerId, spaceReviewId } = data;
     const history = await this.database.history.create({
-      data,
+      data: {
+        content,
+        writtenAt,
+        ...(spaceQnAAnswerId && {
+          spaceQnAAnswer: {
+            connect: {
+              id: spaceQnAAnswerId,
+            },
+          },
+        }),
+        ...(spaceQnAId && {
+          spaceQnA: {
+            connect: {
+              id: spaceQnAId,
+            },
+          },
+        }),
+        ...(spaceReviewAnswerId && {
+          spaceReviewAnswer: {
+            connect: {
+              id: spaceReviewAnswerId,
+            },
+          },
+        }),
+        ...(spaceReviewId && {
+          spaceReview: {
+            connect: {
+              id: spaceReviewId,
+            },
+          },
+        }),
+      },
     });
     return history.id;
   }

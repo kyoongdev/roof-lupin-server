@@ -6,6 +6,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { getDateDiff, getTimeDiff } from '@/common/date';
 
 import { FileService } from '../file/file.service';
+import { HistoryRepository } from '../history/history.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 
 import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
@@ -30,9 +31,9 @@ import { ReviewRepository } from './review.repository';
 export class ReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
-
     private readonly reservationRepository: ReservationRepository,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
+    private readonly historyRepository: HistoryRepository
   ) {}
 
   async getReviewSummary(spaceId: string) {
@@ -149,6 +150,13 @@ export class ReviewService {
         })
       );
     }
+
+    await this.historyRepository.createHistory({
+      content: review.content,
+      writtenAt: review.createdAt,
+      spaceReviewId: review.id,
+    });
+
     await this.reviewRepository.updateReview(reviewId, props);
   }
 
