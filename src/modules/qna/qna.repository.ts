@@ -112,6 +112,17 @@ export class QnARepository {
   }
 
   async deleteQnA(id: string) {
+    await this.database.spaceQnA.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteQnA(id: string) {
     await this.database.spaceQnA.delete({
       where: {
         id,
