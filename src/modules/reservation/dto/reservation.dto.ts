@@ -38,7 +38,6 @@ export class ReservationDTO extends BaseReservationDTO {
   static generateReservationDTO(reservation: CommonReservation): ReservationDTOProps {
     const { rentalTypes, ...rest } = reservation;
     const { space } = rentalTypes[0].rentalType;
-    const averageScore = space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length;
 
     return {
       ...rest,
