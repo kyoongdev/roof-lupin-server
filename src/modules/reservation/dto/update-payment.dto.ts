@@ -17,6 +17,8 @@ export interface UpdatePaymentDTOProps {
   payedAt?: Date;
   refundCost?: number;
   receiptUrl?: string;
+  isApproved?: boolean;
+  isCanceled?: boolean;
 }
 
 export class UpdatePaymentDTO {
@@ -50,6 +52,12 @@ export class UpdatePaymentDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '영수증 URL' } })
   receiptUrl?: string;
 
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
+  isApproved?: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '취소 여부' } })
+  isCanceled?: boolean;
+
   constructor(props?: UpdatePaymentDTOProps) {
     if (props) {
       this.totalCost = props.totalCost;
@@ -62,6 +70,8 @@ export class UpdatePaymentDTO {
       this.payedAt = props.payedAt;
       this.refundCost = props.refundCost;
       this.receiptUrl = props.receiptUrl;
+      this.isApproved = props.isApproved;
+      this.isCanceled = props.isCanceled;
     }
   }
 }

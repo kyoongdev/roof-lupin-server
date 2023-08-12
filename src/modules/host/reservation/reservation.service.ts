@@ -12,10 +12,14 @@ import {
 } from '@/modules/reservation/exception/errorCode';
 import { ReservationException } from '@/modules/reservation/exception/reservation.exception';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
+import { TossPayProvider } from '@/utils';
 
 @Injectable()
 export class HostReservationService {
-  constructor(private readonly reservationRepository: ReservationRepository) {}
+  constructor(
+    private readonly reservationRepository: ReservationRepository,
+    private readonly tossPay: TossPayProvider
+  ) {}
 
   async findReservation(id: string, hostId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
@@ -72,16 +76,25 @@ export class HostReservationService {
   async cancelReservation(id: string, hostId: string) {
     const reservation = await this.findReservation(id, hostId);
 
+    const isRefund = Boolean(reservation.payedAt) && reservation.orderResultId;
+
     if (!reservation.space.isImmediateReservation) {
       throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
     }
-    if (reservation.isApproved) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_ALREADY_APPROVED));
+
+    if (isRefund) {
+      await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
+        cancelAmount: reservation.totalCost,
+        cancelReason: '호스트 예약 취소',
+      });
     }
 
-    await this.reservationRepository.updateReservation(id, {
+    await this.reservationRepository.updatePayment(id, {
       isApproved: false,
       isCanceled: true,
+      ...(isRefund && {
+        refundCost: reservation.totalCost,
+      }),
     });
   }
 }

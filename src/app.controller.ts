@@ -2,7 +2,6 @@ import { Controller, Get, Response } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import type { Response as ResponseType } from 'express';
-import { SolapiMessageService } from 'solapi';
 
 import { PrismaService } from './database/prisma.service';
 @Controller()
