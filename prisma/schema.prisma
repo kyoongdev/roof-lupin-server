@@ -465,10 +465,12 @@ model SpaceQnA {
   userId  String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  answers SpaceQnAAnswer[]
+  answers   SpaceQnAAnswer[]
+  histories History[]
 }
 
 //INFO: QnA 답변은 host(공간주인)가 다는건지 Admin(통합관리자)이 다는건지
@@ -481,9 +483,10 @@ model SpaceQnAAnswer {
   deletedAt DateTime?
 
   spaceQnAId String
-  spaceQnA   SpaceQnA @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnA   SpaceQnA  @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hostId     String
-  host       Host     @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  host       Host      @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  histories  History[]
 }
 
 //INFO: 공간 리뷰
@@ -497,15 +500,17 @@ model SpaceReview {
   score   Int     @db.TinyInt
   isBest  Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   reservationId String
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  images  SpaceReviewImage[]
-  answers SpaceReviewAnswer[]
-  reports SpaceReviewReport[]
+  images    SpaceReviewImage[]
+  answers   SpaceReviewAnswer[]
+  reports   SpaceReviewReport[]
+  histories History[]
 }
 
 //INFO: 공간 리뷰 이미지
@@ -540,10 +545,28 @@ model SpaceReviewAnswer {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
-  hostId   String
-  host     Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  reviewId String
-  review   SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hostId    String
+  host      Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reviewId  String
+  review    SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  histories History[]
+}
+
+model History {
+  id String @id @default(uuid())
+
+  content String @db.MediumText
+
+  writtenAt DateTime
+
+  spaceReviewAnswerId String?
+  spaceReviewAnswer   SpaceReviewAnswer? @relation(fields: [spaceReviewAnswerId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  spaceQnAAnswerId    String?
+  spaceQnAAnswer      SpaceQnAAnswer?    @relation(fields: [spaceQnAAnswerId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  spaceQnAId          String?
+  spaceQnA            SpaceQnA?          @relation(fields: [spaceQnAId], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  spaceReviewId       String?
+  spaceReview         SpaceReview?       @relation(fields: [spaceReviewId], references: [id], onDelete: SetNull, onUpdate: SetNull)
 }
 
 //INFO: 관심있는 공간 (마이페이지에서 확인 가능)
