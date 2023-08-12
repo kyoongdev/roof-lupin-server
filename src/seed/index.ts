@@ -41,6 +41,33 @@ export const seedDatabase = async (database: PrismaClient) => {
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
   const users: User[] = [];
+
+  await database.searchRecommend.create({
+    data: {
+      content: '루프탑',
+    },
+  });
+  await database.searchRecommend.create({
+    data: {
+      content: '글램핑',
+    },
+  });
+  await database.searchRecommend.create({
+    data: {
+      content: '광진구',
+    },
+  });
+  await database.searchRecommend.create({
+    data: {
+      content: '파티룸',
+    },
+  });
+  await database.searchRecommend.create({
+    data: {
+      content: '옥상',
+    },
+  });
+
   await Promise.all(
     range(1, 50).map(async (i) => {
       const user = await database.user.create({
