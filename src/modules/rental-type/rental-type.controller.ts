@@ -11,7 +11,6 @@ import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-
 
 import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto';
 import { PaginationPossibleRentalTypesByMonthDTO } from './dto/pagination-possible-rental-types-by-month.dto';
-import { PossibleRentalTypePaginationDTO } from './dto/possible-rental-type-pagination.dto';
 import { RentalTypeService } from './rental-type.service';
 
 @ApiController('rental-types', '대여 타입')
@@ -60,11 +59,10 @@ export class RentalTypeController {
   }
 
   @Get(':spaceId/possible')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '공간 및 날짜별 가능한 대여 타입  조회하기',
-      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 -유저만 사용 가능',
+      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 ',
     },
     params: {
       name: 'spaceId',
