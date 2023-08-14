@@ -997,8 +997,6 @@ model Exhibition {
 
   content String @db.MediumText
 
-  orderNo Int? @db.TinyInt
-
   startAt DateTime @db.DateTime
   endAt   DateTime @db.DateTime
 

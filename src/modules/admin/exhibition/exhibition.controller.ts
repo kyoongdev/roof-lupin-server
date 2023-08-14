@@ -120,23 +120,6 @@ export class AdminExhibitionController {
     return await this.exhibitionService.updateExhibition(id, body);
   }
 
-  @Patch(':exhibitionId/order')
-  @RequestApi({
-    summary: {
-      description: '기획전 순서 수정하기',
-      summary: '기획전 순서 수정하기 ',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async updateExhibitionOrder(@Param('exhibitionId') id: string, @Body() body: UpdateExhibitionOrderDTO) {
-    return await this.exhibitionService.updateExhibitionOrder(id, body);
-  }
-
   @Patch(':exhibitionId/spaces')
   @RequestApi({
     summary: {
@@ -169,23 +152,6 @@ export class AdminExhibitionController {
   )
   async deleteExhibition(@Param('exhibitionId') id: string) {
     return await this.exhibitionService.deleteExhibition(id);
-  }
-
-  @Delete(':exhibitionId/order')
-  @RequestApi({
-    summary: {
-      description: '기획전 순서 삭제하기',
-      summary: '기획전 순서 삭제하기',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async deleteExhibitionOrder(@Param('exhibitionId') id: string) {
-    await this.exhibitionService.deleteExhibitionOrder(id);
   }
 
   @Delete(':exhibitionId/spaces/:spaceId')

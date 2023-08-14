@@ -37,7 +37,7 @@ export class CreateExhibitionDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '기획전 노출 여부' } })
   isShow?: boolean;
 
-  @Property({ apiProperty: { type: 'string', description: '기획전 이미지 url들' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 이미지 url들' } })
   images: string[];
 
   @Property({ apiProperty: { type: CreateExhibitionSpaceDTO, isArray: true, description: '기획전 연관 공간 id들' } })

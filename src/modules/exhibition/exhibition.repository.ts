@@ -80,9 +80,6 @@ export class ExhibitionRepository {
     const exhibitions = await this.database.exhibition.findMany({
       ...args,
       where: args.where,
-      orderBy: {
-        orderNo: 'asc',
-      },
     });
 
     return exhibitions.map((exhibition) => new ExhibitionDTO(exhibition));
@@ -209,71 +206,6 @@ export class ExhibitionRepository {
       },
     });
   }
-  async updateExhibitionOrder(id: string, data: UpdateExhibitionOrderDTO) {
-    await this.database.$transaction(async (prisma) => {
-      const isExist = await prisma.exhibition.findUnique({
-        where: {
-          id,
-        },
-      });
-      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
-
-      if (isExist.orderNo) {
-        await prisma.exhibition.updateMany({
-          where: {
-            ...(isExist.orderNo > data.orderNo
-              ? {
-                  AND: [
-                    {
-                      orderNo: {
-                        lt: isExist.orderNo,
-                      },
-                    },
-                    {
-                      orderNo: {
-                        gte: data.orderNo,
-                      },
-                    },
-                  ],
-                }
-              : {
-                  AND: [
-                    {
-                      orderNo: {
-                        lte: data.orderNo,
-                      },
-                    },
-                    {
-                      orderNo: {
-                        gt: isExist.orderNo,
-                      },
-                    },
-                  ],
-                }),
-          },
-          data: {
-            orderNo: {
-              ...(isExist.orderNo > data.orderNo
-                ? {
-                    increment: 1,
-                  }
-                : {
-                    decrement: 1,
-                  }),
-            },
-          },
-        });
-      }
-      await prisma.exhibition.update({
-        where: {
-          id,
-        },
-        data: {
-          orderNo: data.orderNo,
-        },
-      });
-    });
-  }
 
   async updateExhibitionSpace(id: string, data: UpdateExhibitionSpaceDTO) {
     await this.database.$transaction(async (prisma) => {
@@ -358,38 +290,6 @@ export class ExhibitionRepository {
       where: {
         id,
       },
-    });
-  }
-  async deleteExhibitionOrder(id: string) {
-    await this.database.$transaction(async (prisma) => {
-      const isExist = await prisma.exhibition.findUnique({
-        where: {
-          id,
-        },
-      });
-
-      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
-
-      await prisma.exhibition.updateMany({
-        where: {
-          orderNo: {
-            gt: isExist.orderNo,
-          },
-        },
-        data: {
-          orderNo: {
-            decrement: 1,
-          },
-        },
-      });
-      await this.database.exhibition.update({
-        where: {
-          id,
-        },
-        data: {
-          orderNo: null,
-        },
-      });
     });
   }
 
