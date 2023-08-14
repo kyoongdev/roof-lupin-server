@@ -66,7 +66,7 @@ export class FileService {
         },
       }).getObject({
         Bucket: `${this.configService.get('AWS_S3_BUCKET_NAME')}`,
-        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
       });
 
       return file.Body ? file.Body : null;

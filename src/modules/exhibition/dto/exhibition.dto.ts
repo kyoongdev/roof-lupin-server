@@ -9,6 +9,7 @@ export interface ExhibitionDTOProps {
   startAt: Date;
   endAt: Date;
   createdAt: Date;
+  isShow?: boolean;
 }
 
 export class ExhibitionDTO {
@@ -36,6 +37,9 @@ export class ExhibitionDTO {
   @Property({ apiProperty: { type: 'string', description: '기획전 생성일' } })
   createdAt: Date;
 
+  @Property({ apiProperty: { type: 'boolean', description: '노출 여부' } })
+  isShow: boolean;
+
   constructor(props: ExhibitionDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -45,5 +49,6 @@ export class ExhibitionDTO {
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.createdAt = props.createdAt;
+    this.isShow = props.isShow;
   }
 }
