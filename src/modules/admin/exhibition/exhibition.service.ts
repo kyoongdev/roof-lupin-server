@@ -100,11 +100,6 @@ export class AdminExhibitionService {
     await this.exhibitionRepository.updateExhibition(id, data);
   }
 
-  async updateExhibitionOrder(id: string, data: UpdateExhibitionOrderDTO) {
-    await this.findExhibition(id);
-    await this.exhibitionRepository.updateExhibitionOrder(id, data);
-  }
-
   async updateExhibitionSpace(id: string, data: UpdateExhibitionSpaceDTO) {
     await this.findExhibition(id);
     await this.exhibitionRepository.updateExhibitionSpace(id, data);
@@ -113,10 +108,6 @@ export class AdminExhibitionService {
   async deleteExhibition(id: string) {
     await this.findExhibition(id);
     await this.exhibitionRepository.deleteExhibition(id);
-  }
-
-  async deleteExhibitionOrder(id: string) {
-    await this.exhibitionRepository.deleteExhibitionOrder(id);
   }
 
   async deleteExhibitionSpace(id: string, spaceId: string) {
