@@ -13,6 +13,7 @@ import { AdminCouponModule } from './coupon/coupon.module';
 import { AdminCurationModule } from './curation/curation.module';
 import { AdminExhibitionModule } from './exhibition/exhibition.module';
 import { AdminFaqModule } from './faq/faq.module';
+import { AdminFileModule } from './file/file.module';
 import { AdminFrequentQuestionModule } from './frequent-question/frequent-question.module';
 import { AdminHomeModule } from './home/home.module';
 import { AdminHostModule } from './host/host.module';
@@ -55,6 +56,7 @@ export const AdminModules = [
   AdminUserModule,
   AdminLocationFilterModule,
   AdminContentModule,
+  AdminFileModule,
 ];
 
 @Module({

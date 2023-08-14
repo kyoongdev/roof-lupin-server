@@ -40,15 +40,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       name: `바베큐`,
       iconPath: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
       isHome: true,
-      isRecommended: false,
-    },
-  });
-
-  const category2 = await database.category.create({
-    data: {
-      name: `영화`,
-      iconPath: 'https://dev-image.rooflupin.com/1690960214691Video.svg',
-      isHome: true,
       isRecommended: true,
     },
   });
@@ -79,7 +70,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isRecommended: false,
     },
   });
-  const mainCategories = [category1, category2, category3, category4, category5];
+  const mainCategories = [category1, category3, category4, category5];
 
   const spaces: any[] = [];
   for (let i = 0; i < 1; i++) {
@@ -536,7 +527,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               category: {
                 connect: {
-                  id: mainCategories[i % 5].id,
+                  id: mainCategories[i % 4].id,
                 },
               },
             },

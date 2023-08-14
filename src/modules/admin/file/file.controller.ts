@@ -1,30 +1,34 @@
-import {
-  Body,
-  Delete,
-  FileTypeValidator,
-  Get,
-  ParseFilePipe,
-  Post,
-  UploadedFile,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Delete, Get, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
+import { DeleteFileDTO, UploadedFileDTO } from '@/modules/file/dto';
+import { FileService } from '@/modules/file/file.service';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { DeleteFileDTO, UploadedFileDTO } from './dto';
-import { FileService } from './file.service';
-
-@ApiController('file', '파일')
-export class FileController {
+@Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+@ApiController('file', '[관리자] 파일')
+export class AdminFileController {
   constructor(private readonly fileService: FileService) {}
+
+  @Delete('/all')
+  @RequestApi({
+    summary: {
+      description: '모든 파일 삭제',
+      summary: '모든 S3 파일 삭제 - 관리자만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: EmptyResponseDTO,
+  })
+  async deleteAll() {
+    await this.fileService.deleteAll();
+  }
 
   @Get()
   @RequestApi({
@@ -224,5 +228,22 @@ export class FileController {
     const images = await Promise.all(files.map(async (file) => await this.fileService.uploadResizedFile(file)));
 
     return images;
+  }
+
+  @Post('delete')
+  @RequestApi({
+    summary: {
+      description: '이미지 삭제',
+      summary: '이미지 삭제',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async deleteImage(@Body() body: DeleteFileDTO) {
+    await this.fileService.deleteFile(body.url);
   }
 }
