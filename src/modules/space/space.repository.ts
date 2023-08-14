@@ -329,6 +329,7 @@ export class SpaceRepository {
       sizes,
       openHours,
       holidays,
+
       ...rest
     } = data;
 
@@ -359,6 +360,7 @@ export class SpaceRepository {
               },
             })),
           },
+
           refundPolicies: {
             create: refundPolicies.map((refundPolicy) => refundPolicy),
           },

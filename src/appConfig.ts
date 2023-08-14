@@ -3,6 +3,7 @@ import type { CorsOptions, CorsOptionsDelegate } from '@nestjs/common/interfaces
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import axios from 'axios';
 import scheduler from 'node-schedule';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -23,8 +24,20 @@ class AppConfig {
     await this.app.listen(8000, () => {
       console.info('🔥루프루팡 서버 시작!! 8000🔥');
     });
-
+    this.revalidate();
     await this.initAlarm();
+  }
+
+  revalidate() {
+    const configService = this.app.get(ConfigService);
+
+    if (configService.get('NODE_ENV') === 'dev') {
+      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=spaces`);
+      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=home`);
+      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=rankings`);
+      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=contents`);
+      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=rental-types`);
+    }
   }
 
   async initAlarm() {
