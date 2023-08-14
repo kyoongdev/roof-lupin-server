@@ -602,6 +602,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                           url: 'https://dev-image.rooflupin.com/1688717253781IMG_5925.jpeg',
                         },
                       },
+                      isBest: true,
                     },
                     {
                       image: {
