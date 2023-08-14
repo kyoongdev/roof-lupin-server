@@ -259,6 +259,7 @@ export class RentalTypeRepository {
         if (rest.rentalType === 1) {
           createArgs.data = {
             ...createArgs.data,
+            baseCost: Math.min(...timeCostInfos.map(({ cost }) => cost)),
             timeCostInfos: {
               create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
             },

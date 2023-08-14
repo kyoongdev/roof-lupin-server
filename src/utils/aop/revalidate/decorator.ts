@@ -24,7 +24,7 @@ export class RevalidateApiDecorator implements AOPDecorator {
         await Promise.all(
           metadata.map(async (data) => {
             const path = this.parseTarget(data.key, data.index, ...args);
-            await axios.get(`${this.configService.get('CLIENT_URL')}${path}`);
+            await axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}${path}`);
           })
         );
 
