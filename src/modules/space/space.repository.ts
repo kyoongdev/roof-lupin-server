@@ -152,7 +152,11 @@ export class SpaceRepository {
         },
         userInterests: true,
         sizes: true,
-        openHours: true,
+        openHours: {
+          orderBy: {
+            day: 'asc',
+          },
+        },
         holidays: true,
       },
     });
