@@ -272,7 +272,6 @@ model PublicTransportation {
 
   name      String @db.VarChar(120)
   timeTaken Int    @db.TinyInt
-  line      String @db.VarChar(120)
 
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
