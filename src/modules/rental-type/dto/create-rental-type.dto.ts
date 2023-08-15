@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'cumuco-nestjs';
 
 import { CreateAdditionalServiceDTO, CreateAdditionalServiceDTOProps } from '@/modules/space/dto/additional-service';
@@ -55,13 +57,27 @@ export class CreateRentalTypeDTO {
       this.startAt = props.startAt;
       this.endAt = props.endAt;
       this.day = props.day;
-      this.timeCostInfos = props.timeCostInfos
-        ?.map((timeCostInfo) => new CreateTimeCostInfoDTO(timeCostInfo))
-        .sort((a, b) => a.time - b.time);
+      this.timeCostInfos = props.timeCostInfos?.map(
+        (timeCostInfo) =>
+          new CreateTimeCostInfoDTO({
+            cost: timeCostInfo.cost,
+            time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+          })
+      );
 
       this.additionalServices = props.additionalServices.map(
         (additionalService) => new CreateAdditionalServiceDTO(additionalService)
       );
+    }
+  }
+
+  validateTimeCostInfos() {
+    if (this.timeCostInfos) {
+      const times = this.timeCostInfos.map((timeCost) => timeCost.time);
+      const isDuplicate = times.some((time, index) => times.indexOf(time) !== index);
+      if (isDuplicate) {
+        throw new BadRequestException('시간은 9~32까지 하나만 입력해수제요.');
+      }
     }
   }
 }

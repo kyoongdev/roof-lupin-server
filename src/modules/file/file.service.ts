@@ -37,7 +37,7 @@ export class FileService {
       },
     }).listObjects({
       Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
-      Prefix: this.configService.get('NODE_ENV'),
+      Prefix: this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev',
     });
 
     return files.Contents
@@ -92,7 +92,7 @@ export class FileService {
           secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
         },
       }).putObject({
-        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
         Body: resizedFile,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
@@ -118,7 +118,7 @@ export class FileService {
           secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
         },
       }).putObject({
-        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
         Body: file.buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
@@ -128,6 +128,7 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
@@ -143,7 +144,7 @@ export class FileService {
           secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
         },
       }).putObject({
-        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
         Body: buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
@@ -170,7 +171,7 @@ export class FileService {
           secretAccessKey: this.configService.get('AWS_S3_PRIVATE_KEY'),
         },
       }).putObject({
-        Key: `${this.configService.get('NODE_ENV')}/${key}`,
+        Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
         Body: file.buffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: 'image/svg+xml',
