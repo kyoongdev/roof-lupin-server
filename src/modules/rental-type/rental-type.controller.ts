@@ -11,6 +11,7 @@ import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-
 
 import { PossibleRentalTypesDTO, RentalTypeDTO, SpaceRentalTypeDTO } from './dto';
 import { PaginationPossibleRentalTypesByMonthDTO } from './dto/pagination-possible-rental-types-by-month.dto';
+import { FindSpaceRentalTypeQuery } from './dto/query';
 import { RentalTypeService } from './rental-type.service';
 
 @ApiController('rental-types', '대여 타입')
@@ -54,8 +55,8 @@ export class RentalTypeController {
     type: RentalTypeDTO,
     isArray: true,
   })
-  async getSpaceRentalTypes(@Param('spaceId') spaceId: string) {
-    return await this.rentalTypeService.findSpaceRentalTypes(spaceId);
+  async getSpaceRentalTypes(@Param('spaceId') spaceId: string, @Query() query: FindSpaceRentalTypeQuery) {
+    return await this.rentalTypeService.findSpaceRentalTypes(spaceId, query.generateQuery());
   }
 
   @Get(':spaceId/possible')

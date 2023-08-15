@@ -442,7 +442,7 @@ export class RentalTypeService {
           isPossible: false,
           time: hour,
         })),
-        ...range(0, 10).map((hour: number) => ({
+        ...range(0, 9).map((hour: number) => ({
           cost: 0,
           isPossible: false,
           time: hour,
