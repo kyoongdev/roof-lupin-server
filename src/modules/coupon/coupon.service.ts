@@ -65,9 +65,7 @@ export class CouponService {
     const availableCount = await this.couponRepository.countUserCoupons({
       where: {
         userId,
-        deletedAt: {
-          not: null,
-        },
+        deletedAt: null,
         ...(spaceId && {
           coupon: {
             couponCategories: {
