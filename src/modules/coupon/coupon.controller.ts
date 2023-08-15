@@ -9,7 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CouponService } from './coupon.service';
-import { RegisterCouponByCodeDTO, UserCouponDTO } from './dto';
+import { RegisterCouponByCodeDTO, UserCouponCountDTO, UserCouponDTO } from './dto';
 
 @ApiController('coupons', '쿠폰')
 export class CouponController {
@@ -47,6 +47,21 @@ export class CouponController {
   })
   async getMyCoupons(@ReqUser() user: RequestUser, @Paging() paging: PagingDTO) {
     return await this.couponService.findPagingUserCoupons(paging, user.id);
+  }
+
+  @Get('count/spaces/:spaceId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '사용자 공간별 쿠폰 개수 조회',
+      summary: '사용자  공간편 쿠폰 개수 조회 - 유저만 사용 가능',
+    },
+  })
+  @ResponseApi({
+    type: UserCouponCountDTO,
+  })
+  async getMySpaceCouponsCount(@ReqUser() user: RequestUser, @Param('spaceId') spaceId: string) {
+    return await this.couponService.countUserCoupons(user.id, spaceId);
   }
 
   @Post('/register')

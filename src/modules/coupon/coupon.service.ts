@@ -7,7 +7,7 @@ import { FCMEvent } from '@/event/fcm';
 import { RequestUser } from '@/interface/role.interface';
 
 import { CouponRepository } from './coupon.repository';
-import { RegisterCouponByCodeDTO, UserCouponDTO } from './dto';
+import { RegisterCouponByCodeDTO, UserCouponCountDTO, UserCouponDTO } from './dto';
 
 @Injectable()
 export class CouponService {
@@ -39,6 +39,57 @@ export class CouponService {
       take,
     });
     return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
+  }
+  async countUserCoupons(userId: string, spaceId?: string) {
+    const totalCount = await this.couponRepository.countUserCoupons({
+      where: {
+        userId,
+        ...(spaceId && {
+          coupon: {
+            couponCategories: {
+              some: {
+                category: {
+                  spaceUsageCategories: {
+                    some: {
+                      spaceId,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+      },
+    });
+
+    const availableCount = await this.couponRepository.countUserCoupons({
+      where: {
+        userId,
+        deletedAt: {
+          not: null,
+        },
+        ...(spaceId && {
+          coupon: {
+            couponCategories: {
+              some: {
+                category: {
+                  spaceUsageCategories: {
+                    some: {
+                      spaceId,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }),
+      },
+    });
+
+    return new UserCouponCountDTO({
+      availableCount,
+      totalCount,
+    });
   }
 
   async registerCouponByCode(user: RequestUser, data: RegisterCouponByCodeDTO) {
