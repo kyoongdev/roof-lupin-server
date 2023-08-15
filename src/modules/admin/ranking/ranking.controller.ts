@@ -57,6 +57,9 @@ export class AdminRankingController {
       description: '랭킹 생성하기',
       summary: '랭킹 생성하기',
     },
+    body: {
+      type: CreateRankingDTO,
+    },
   })
   @ResponseApi(
     {
@@ -74,6 +77,13 @@ export class AdminRankingController {
     summary: {
       description: '랭킹 공간 추가하기',
       summary: '랭킹 공간 추가하기',
+    },
+    params: {
+      name: 'rankingId',
+      type: 'string',
+    },
+    body: {
+      type: CreateRankingSpaceDTO,
     },
   })
   @ResponseApi(
@@ -93,6 +103,13 @@ export class AdminRankingController {
       description: '랭킹 수정하기',
       summary: '랭킹 수정하기',
     },
+    params: {
+      name: 'rankingId',
+      type: 'string',
+    },
+    body: {
+      type: UpdateRankingDTO,
+    },
   })
   @ResponseApi(
     {
@@ -110,6 +127,13 @@ export class AdminRankingController {
     summary: {
       description: '랭킹 공간 수정하기',
       summary: '랭킹 공간 수정하기',
+    },
+    params: {
+      type: 'string',
+      name: 'rankingId',
+    },
+    body: {
+      type: UpdateRankingSpaceDTO,
     },
   })
   @ResponseApi(
@@ -129,6 +153,10 @@ export class AdminRankingController {
       description: '랭킹 삭제하기',
       summary: '랭킹 삭제하기',
     },
+    params: {
+      name: 'rankingId',
+      type: 'string',
+    },
   })
   @ResponseApi(
     {
@@ -147,6 +175,16 @@ export class AdminRankingController {
       description: '랭킹 공간 삭제하기',
       summary: '랭킹 공간 삭제하기',
     },
+    params: [
+      {
+        name: 'rankingId',
+        type: 'string',
+      },
+      {
+        name: 'spaceId',
+        type: 'string',
+      },
+    ],
   })
   @ResponseApi(
     {
