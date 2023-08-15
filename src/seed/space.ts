@@ -545,6 +545,35 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       if (rentalType)
         await Promise.all(
           users.map(async (user, index) => {
+            await database.spaceQnA.create({
+              data: {
+                content: '질문이 있는데요.',
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                space: {
+                  connect: {
+                    id: space.id,
+                  },
+                },
+                ...(index % 2 === 0 && {
+                  answers: {
+                    create: [
+                      {
+                        content: '답변입니다.',
+                        host: {
+                          connect: {
+                            id: realHost.id,
+                          },
+                        },
+                      },
+                    ],
+                  },
+                }),
+              },
+            });
             const reservation = await database.reservation.create({
               data: {
                 year: 2023,

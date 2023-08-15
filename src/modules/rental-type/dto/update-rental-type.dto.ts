@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'cumuco-nestjs';
 
 import { RentalTypeReqDecorator } from '@/modules/rental-type/dto/validation/rental-type.validation';
@@ -63,6 +65,16 @@ export class UpdateRentalTypeDTO {
       this.additionalServices = props.additionalServices.map(
         (additionalService) => new UpdateAdditionalServiceDTO(additionalService)
       );
+    }
+  }
+
+  validateTimeCostInfos() {
+    if (this.timeCostInfos) {
+      const times = this.timeCostInfos.map((timeCost) => timeCost.time);
+      const isDuplicate = times.some((time, index) => times.indexOf(time) !== index);
+      if (isDuplicate) {
+        throw new BadRequestException('시간은 9~32까지 하나만 입력해수제요.');
+      }
     }
   }
 }

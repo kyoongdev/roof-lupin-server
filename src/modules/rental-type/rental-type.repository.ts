@@ -257,11 +257,15 @@ export class RentalTypeRepository {
           },
         };
         if (rest.rentalType === 1) {
+          rentalType.validateTimeCostInfos();
           createArgs.data = {
             ...createArgs.data,
             baseCost: Math.min(...timeCostInfos.map(({ cost }) => cost)),
             timeCostInfos: {
-              create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
+              create: timeCostInfos.map((timeCostInfo) => ({
+                cost: timeCostInfo.cost,
+                time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+              })),
             },
           };
         }
@@ -295,13 +299,17 @@ export class RentalTypeRepository {
     }
 
     if (timeCostInfos) {
+      data.validateTimeCostInfos();
       updateArgs.data = {
         ...updateArgs.data,
         timeCostInfos: {
           deleteMany: {
             rentalTypeId,
           },
-          create: timeCostInfos.map((timeCostInfo) => timeCostInfo),
+          create: timeCostInfos.map((timeCostInfo) => ({
+            cost: timeCostInfo.cost,
+            time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+          })),
         },
       };
     }
