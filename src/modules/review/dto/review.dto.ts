@@ -80,4 +80,29 @@ export class ReviewDTO {
       }),
     };
   }
+
+  static generateInclude() {
+    return {
+      user: true,
+      images: {
+        select: {
+          image: {
+            select: {
+              id: true,
+              url: true,
+            },
+          },
+          isBest: true,
+        },
+      },
+      answers: {
+        where: {
+          deletedAt: null,
+        },
+        include: {
+          host: true,
+        },
+      },
+    };
+  }
 }
