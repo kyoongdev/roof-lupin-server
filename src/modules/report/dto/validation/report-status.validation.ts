@@ -1,5 +1,8 @@
+import { applyDecorators } from '@nestjs/common';
+
 import { Transform } from 'class-transformer';
 import { ValidatorConstraint } from 'class-validator';
+import { Property } from 'cumuco-nestjs';
 
 export enum ReportStatus {
   WAITING = 1,
@@ -20,4 +23,17 @@ export const reportStatusNumberToString = (status: number) => {
   } else return REPORT_STATUS.PROCESSED;
 };
 
-export const DayResponseTransForm = () => Transform(({ value }) => reportStatusNumberToString(value));
+export const ReportStatusResponseTransForm = () => Transform(({ value }) => reportStatusNumberToString(value));
+export const ReportStatusResDecorator = (nullable = false) =>
+  applyDecorators(
+    ReportStatusResponseTransForm(),
+    Property({
+      apiProperty: {
+        description: '요일',
+        enum: REPORT_STATUS_VALUES,
+        type: 'string',
+        example: REPORT_STATUS_VALUES.join(' | '),
+        nullable,
+      },
+    })
+  );

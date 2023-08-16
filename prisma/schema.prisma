@@ -457,9 +457,9 @@ model UserReport {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  answer    UserReportAnswer?
+  createdAt DateTime @default(now())
+
+  answer UserReportAnswer?
 }
 
 //INFO: 공간 신고 답변
