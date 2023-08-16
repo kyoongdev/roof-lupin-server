@@ -73,4 +73,15 @@ export class RentalTypeDTO {
     if (props.rentalType === RENTAL_TYPE_ENUM.TIME)
       this.timeCostInfos = props.timeCostInfos.map((timeCostInfo) => new TimeCostInfoDTO(timeCostInfo));
   }
+
+  applyNextDayToTimeCostInfos() {
+    if (!this.timeCostInfos) return;
+    this.timeCostInfos = this.timeCostInfos.map(
+      (timeCostInfo) =>
+        new TimeCostInfoDTO({
+          ...timeCostInfo,
+          time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+        })
+    );
+  }
 }

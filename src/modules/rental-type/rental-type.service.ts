@@ -62,7 +62,7 @@ export class RentalTypeService {
       };
     }
 
-    return await this.rentalTypeRepository.findRentalTypes({
+    const rentalTypes = await this.rentalTypeRepository.findRentalTypes({
       where: {
         spaceId,
         ...args.where,
@@ -71,6 +71,8 @@ export class RentalTypeService {
         rentalType: 'asc',
       },
     });
+    rentalTypes.forEach((rentalType) => rentalType.applyNextDayToTimeCostInfos());
+    return rentalTypes;
   }
 
   async findSpaceRentalTypeDetail(spaceId: string) {
@@ -453,12 +455,7 @@ export class RentalTypeService {
   ) {
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
-        ...range(9, 24).map((hour: number) => ({
-          cost: 0,
-          isPossible: false,
-          time: hour,
-        })),
-        ...range(0, 9).map((hour: number) => ({
+        ...range(9, 33).map((hour: number) => ({
           cost: 0,
           isPossible: false,
           time: hour,
@@ -518,7 +515,7 @@ export class RentalTypeService {
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
         if (holidays.length > 0) {
-          timeCostInfos.forEach((timeCostInfo, index) => {
+          timeCostInfos.forEach((_, index) => {
             timeCostInfos[index].isPossible = false;
           });
         }
@@ -539,7 +536,10 @@ export class RentalTypeService {
 
       return new PossibleRentalTypeDTO({
         ...rentalType,
-        timeCostInfos,
+        timeCostInfos: timeCostInfos.map((info) => ({
+          ...info,
+          time: info.time >= 24 ? info.time - 24 : info.time,
+        })),
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       let isPossible = true;
@@ -588,12 +588,12 @@ export class RentalTypeService {
         if (holidays.length > 0) {
           isPossible = false;
         }
-
         openHours
           .filter((openHour) => openHour.day === currentDay)
           .forEach((openHour) => {
             const openStart = Number(openHour.startAt);
             const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+
             if (rentalType.startAt > openEnd || rentalType.endAt < openStart) isPossible = false;
           });
       }

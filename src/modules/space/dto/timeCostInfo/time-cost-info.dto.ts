@@ -14,6 +14,6 @@ export class TimeCostInfoDTO {
 
   constructor(props: TimeCostInfoDTOProps) {
     this.cost = props.cost;
-    this.time = props.time >= 24 ? props.time - 24 : props.time;
+    this.time = props.time;
   }
 }
