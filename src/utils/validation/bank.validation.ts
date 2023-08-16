@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { Property } from 'cumuco-nestjs';
 
 import { BANK_CODE } from '@/common/constants';
 
@@ -40,11 +41,13 @@ export const BankCodeRequestTransForm = () => Transform(({ value }) => bankCodeT
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
     BankCodeValidation(),
-    ApiProperty({
-      description: '은행 코드',
-      type: 'string',
-      enum: BANK_CODES,
-      nullable,
-      example: BANK_CODES.join(' | '),
+    Property({
+      apiProperty: {
+        description: '은행 코드',
+        type: 'string',
+        enum: BANK_CODES,
+        nullable,
+        example: BANK_CODES.join(' | '),
+      },
     })
   );

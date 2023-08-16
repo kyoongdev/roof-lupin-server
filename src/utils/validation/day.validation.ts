@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { Property } from 'cumuco-nestjs';
 
 import { BaseValidator } from './base-validator';
 
@@ -112,23 +113,27 @@ export const DayResponseTransForm = () => Transform(({ value }) => dayNumberToSt
 export const DayResDecorator = (nullable = false) =>
   applyDecorators(
     DayResponseTransForm(),
-    ApiProperty({
-      description: '요일',
-      enum: DAY_VALUES,
-      type: 'string',
-      example: DAY_VALUES.join(' | '),
-      nullable,
+    Property({
+      apiProperty: {
+        description: '요일',
+        enum: DAY_VALUES,
+        type: 'string',
+        example: DAY_VALUES.join(' | '),
+        nullable,
+      },
     })
   );
 export const DayReqDecorator = (nullable = false) =>
   applyDecorators(
     DayRequestTransForm(),
     DayValidation(),
-    ApiProperty({
-      description: '요일',
-      enum: DAY_VALUES,
-      nullable,
-      type: 'string',
-      example: DAY_VALUES.join(' | '),
+    Property({
+      apiProperty: {
+        description: '요일',
+        enum: DAY_VALUES,
+        nullable,
+        type: 'string',
+        example: DAY_VALUES.join(' | '),
+      },
     })
   );

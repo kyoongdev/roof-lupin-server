@@ -8,6 +8,7 @@ import {
   ValidatorConstraint,
   type ValidatorConstraintInterface,
 } from 'class-validator';
+import { Property } from 'cumuco-nestjs';
 
 import { BaseValidator } from '@/utils/validation';
 
@@ -64,5 +65,5 @@ export const GenderReqDecorators = (nullable = false) =>
   applyDecorators(
     GenderReqTransForm(),
     GenderValidation(),
-    ApiProperty({ type: 'string', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' })
+    Property({ apiProperty: { type: 'string', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' } })
   );
