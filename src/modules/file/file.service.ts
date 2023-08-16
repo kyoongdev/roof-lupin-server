@@ -28,7 +28,7 @@ export class FileService {
     await Promise.all(files.map((file) => this.deleteFile(file.key)));
   }
 
-  async getAllFiles() {
+  async getAllFiles(isImage = true) {
     const files = await new AWS.S3({
       region: this.configService.get('AWS_REGION'),
       credentials: {
@@ -42,7 +42,9 @@ export class FileService {
 
     return files.Contents
       ? await Promise.all(
-          files.Contents.filter((file) => file.Size > 0).map(async (file) => {
+          files.Contents.filter(
+            (file) => file.Size > 0 && file.Key && (isImage ? file.Key.includes('jpeg') : file.Key.includes('svg'))
+          ).map(async (file) => {
             const url = ImageDTO.parseS3ImageURL(file.Key);
             const inUse = await this.checkInUse(url);
 
@@ -196,7 +198,7 @@ export class FileService {
 
   async deleteFile(url: string) {
     try {
-      await new AWS.S3({
+      const result = await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
           accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
@@ -206,7 +208,9 @@ export class FileService {
         Key: ImageDTO.parseS3ImageKey(url),
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
+      console.log(result, ImageDTO.parseS3ImageKey(url));
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
   }

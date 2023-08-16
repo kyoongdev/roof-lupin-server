@@ -23,7 +23,7 @@ export class ImageDTO {
     const configService = new ConfigService();
     const key = url.split(`${configService.get('AWS_CLOUD_FRONT_URL')}`).at(-1);
 
-    return `${configService.get('NODE_ENV')}${key}`;
+    return `${configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}${key}`;
   }
 
   static parseS3ImageURL(key: string) {

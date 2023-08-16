@@ -43,6 +43,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isRecommended: true,
     },
   });
+  await database.icon.create({
+    data: {
+      name: `바베큐`,
+      url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+    },
+  });
 
   const category3 = await database.category.create({
     data: {
