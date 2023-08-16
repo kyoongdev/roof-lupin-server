@@ -30,6 +30,7 @@ import {
   RentalTypeWithReservationDTO,
 } from './dto';
 import { PaginationPossibleRentalTypesByMonthDTO } from './dto/pagination-possible-rental-types-by-month.dto';
+import { FindSpaceRentalTypeQuery } from './dto/query';
 import { RENTAL_TYPE_ENUM } from './dto/validation/rental-type.validation';
 import { RentalTypeRepository } from './rental-type.repository';
 
@@ -44,8 +45,23 @@ export class RentalTypeService {
     private readonly openHourRepository: HostOpenHourRepository
   ) {}
 
-  async findSpaceRentalTypes(spaceId: string, args = {} as Prisma.RentalTypeFindManyArgs) {
+  async findSpaceRentalTypes(spaceId: string, query: FindSpaceRentalTypeQuery) {
     await this.spaceRepository.findSpace(spaceId);
+
+    const args: Prisma.RentalTypeFindManyArgs = {
+      where: {},
+    };
+
+    if (query.day && query.month && query.year) {
+      const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
+      const targetDate = new Date(Number(query.year), Number(query.month) - 1, Number(query.day), 14, 0, 0);
+      const day = isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+
+      args.where = {
+        day,
+      };
+    }
+
     return await this.rentalTypeRepository.findRentalTypes({
       where: {
         spaceId,

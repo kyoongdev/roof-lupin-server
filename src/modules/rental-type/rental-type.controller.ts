@@ -56,7 +56,7 @@ export class RentalTypeController {
     isArray: true,
   })
   async getSpaceRentalTypes(@Param('spaceId') spaceId: string, @Query() query: FindSpaceRentalTypeQuery) {
-    return await this.rentalTypeService.findSpaceRentalTypes(spaceId, query.generateQuery());
+    return await this.rentalTypeService.findSpaceRentalTypes(spaceId, query);
   }
 
   @Get(':spaceId/possible')
