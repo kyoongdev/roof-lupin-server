@@ -58,9 +58,7 @@ export class UpdateRentalTypeDTO {
       this.baseHour = props.baseHour;
       this.startAt = props.startAt;
       this.endAt = props.endAt;
-      this.timeCostInfos = props.timeCostInfos
-        ?.map((timeCostInfo) => new UpdateTimeCostInfoDTO(timeCostInfo))
-        .sort((a, b) => a.time - b.time);
+      this.timeCostInfos = props.timeCostInfos?.map((timeCostInfo) => new UpdateTimeCostInfoDTO(timeCostInfo));
 
       this.additionalServices = props.additionalServices.map(
         (additionalService) => new UpdateAdditionalServiceDTO(additionalService)

@@ -268,39 +268,39 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                   },
                   {
                     cost: 7000,
-                    time: 0,
+                    time: 24,
                   },
                   {
                     cost: 7000,
-                    time: 1,
+                    time: 25,
                   },
                   {
                     cost: 7000,
-                    time: 2,
+                    time: 26,
                   },
                   {
                     cost: 7000,
-                    time: 3,
+                    time: 27,
                   },
                   {
                     cost: 7000,
-                    time: 4,
+                    time: 28,
                   },
                   {
                     cost: 7000,
-                    time: 5,
+                    time: 29,
                   },
                   {
                     cost: 7000,
-                    time: 6,
+                    time: 30,
                   },
                   {
                     cost: 7000,
-                    time: 7,
+                    time: 31,
                   },
                   {
                     cost: 7000,
-                    time: 8,
+                    time: 32,
                   },
                 ],
               },

@@ -25,7 +25,7 @@ export class OpenHourDTO {
   constructor(props: OpenHourDTOProps) {
     this.id = props.id;
     this.startAt = props.startAt;
-    this.endAt = props.endAt;
+    this.endAt = props.endAt >= 24 ? props.endAt - 24 : props.endAt;
     this.day = props.day;
   }
 }

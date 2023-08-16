@@ -337,7 +337,7 @@ export class SpaceRepository {
       ...rest
     } = data;
 
-    data.validateRefundPolicies();
+    data.validateDTO();
 
     const minSize = Math.min(...sizes.map((size) => size.size));
 
@@ -439,7 +439,7 @@ export class SpaceRepository {
       ...rest
     } = data;
 
-    data.validateRefundPolicies();
+    data.validateDTO();
     const updateArgs: Prisma.SpaceUpdateArgs = {
       where: {
         id: spaceId,

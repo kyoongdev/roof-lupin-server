@@ -129,13 +129,13 @@ export class SpaceService {
     const includeQueries: Prisma.Sql[] = [];
 
     if (date) {
-      const endAtIf = Prisma.sql`IF(ReservationRentalType.endAt <= ReservationRentalType.startAt, ReservationRentalType.endAt + 24, ReservationRentalType.endAt )`;
+      const endAtIf = Prisma.sql`ReservationRentalType.endAt`;
       const timeQuery =
         date?.startAt && date?.endAt
           ? Prisma.sql`AND (      
             ${Prisma.join(
               range(date.startAt, (date.endAt < date.startAt ? date.endAt + 24 : date.endAt) + 1).map((value) => {
-                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ${endAtIf})`;
+                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ReservationRentalType.endAt)`;
               }),
               ` AND `
             )}
@@ -143,7 +143,7 @@ export class SpaceService {
           : Prisma.sql`AND (      
             ${Prisma.join(
               range(9, 33).map((value) => {
-                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ${endAtIf})`;
+                return Prisma.sql`(ReservationRentalType.startAt <= ${value} AND ${value} <= ReservationRentalType.endAt)`;
               }),
               ` AND `
             )}
@@ -174,7 +174,7 @@ export class SpaceService {
       const openHourTimeQuery =
         date.startAt && date.endAt
           ? Prisma.sql`AND (oh.startAt <= ${date.endAt} 
-            AND IF(oh.endAt < oh.startAt , oh.endAt + 24, oh.endAt) >= ${date.startAt}) `
+            AND oh.endAt >= ${date.startAt}) `
           : Prisma.empty;
 
       const blockedTimeQuery =
