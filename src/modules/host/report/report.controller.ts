@@ -1,10 +1,6 @@
-import { Get, Param } from '@nestjs/common';
+import { Auth } from 'cumuco-nestjs';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
-
-import { RequestHost } from '@/interface/role.interface';
-import { ReportDTO } from '@/modules/report/dto';
-import { ApiController, ReqUser } from '@/utils';
+import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
