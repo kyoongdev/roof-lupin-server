@@ -58,7 +58,15 @@ export class IconRepository {
   async findIcons(args = {} as Prisma.IconFindManyArgs) {
     const icons = await this.database.icon.findMany(args);
 
-    return icons.map((icon) => new IconDTO(icon));
+    return await Promise.all(
+      icons.map(
+        async (icon) =>
+          new IconDTO({
+            ...icon,
+            inUse: (await this.checkIconInUse(icon.url)).inUse,
+          })
+      )
+    );
   }
 
   async createIcon(url: string, data: CreateIconDTO) {

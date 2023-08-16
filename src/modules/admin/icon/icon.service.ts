@@ -19,16 +19,10 @@ export class AdminIconService {
     return await this.iconRepository.findIcon(id);
   }
 
-  async findPagingIcons(paging: PagingDTO, args = {} as Prisma.IconFindManyArgs) {
-    const { skip, take } = paging.getSkipTake();
-    const count = await this.iconRepository.countIcons({ where: args.where });
-    const icons = await this.iconRepository.findIcons({
-      ...args,
-      skip,
-      take,
-    });
+  async findIcons(args = {} as Prisma.IconFindManyArgs) {
+    const icons = await this.iconRepository.findIcons(args);
 
-    return new PaginationDTO<IconDTO>(icons, { count, paging });
+    return icons;
   }
 
   async createIcon(file: Express.Multer.File, name: string) {

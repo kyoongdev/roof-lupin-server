@@ -19,7 +19,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { DeleteFileDTO, ResizeFileDTO, UploadedFileDTO } from './dto';
+import { DeleteFileDTO, ResizeFileDTO, S3ImageDTO, UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')
@@ -34,7 +34,8 @@ export class FileController {
     },
   })
   @ResponseApi({
-    type: UploadedFileDTO,
+    type: S3ImageDTO,
+    isArray: true,
   })
   async getAll() {
     return await this.fileService.getAllFiles();
