@@ -75,14 +75,22 @@ export class FileService {
     }
   }
 
-  async uploadResizedFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
+  async uploadResizedFile(
+    file: Express.Multer.File,
+    originKey?: string,
+    width?: number,
+    height?: number,
+    contentType = 'image/jpeg'
+  ) {
     try {
       const originalname = file.originalname.split('.').shift();
 
       const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
 
       const resizedFile = await this.imageResize(
-        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer
+        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer,
+        width,
+        height
       );
 
       await new AWS.S3({
@@ -203,9 +211,9 @@ export class FileService {
     }
   }
 
-  private async imageResize(file: Buffer) {
+  private async imageResize(file: Buffer, width?: number, height?: number) {
     const transformer = await sharp(file)
-      .resize({ width: 780, height: 564, fit: sharp.fit.cover })
+      .resize({ width: width ?? 780, height: height ?? 564, fit: sharp.fit.cover })
       .jpeg({ mozjpeg: true })
       .toBuffer();
     return transformer;
