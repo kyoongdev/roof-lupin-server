@@ -30,6 +30,7 @@ export const seedDatabase = async (database: PrismaClient) => {
   await database.spaceHoliday.deleteMany({});
   await database.exhibition.deleteMany({});
   await database.locationFilterGroup.deleteMany({});
+  await database.icon.deleteMany({});
 
   await seedHosts(database);
   await seedHoliday(database);

@@ -9,7 +9,6 @@ import { PrismaService } from '@/database/prisma.service';
 import { DAY_ENUM } from '@/utils';
 
 import { HolidayService } from '../holiday/holiday.service';
-import { HostSpaceHolidayRepository } from '../host/space-holiday/space-holiday.repository';
 import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
@@ -22,13 +21,7 @@ import {
 } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 import { SpaceRepository } from './space.repository';
-import {
-  getCountDistanceSpacesSQL,
-  getCountSpacesSQL,
-  getFindSpacesSQL,
-  getFindSpacesWithDistanceSQL,
-  getFindSpacesWithPopularitySQL,
-} from './sql';
+import { getFindSpacesSQL, getFindSpacesWithDistanceSQL, getFindSpacesWithPopularitySQL } from './sql';
 
 @Injectable()
 export class SpaceService {

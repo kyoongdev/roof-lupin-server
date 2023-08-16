@@ -182,30 +182,4 @@ export class ReviewService {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_MUTATION_FORBIDDEN));
     }
   }
-
-  async createReviewReport(reviewId: string, userId: string, data: CreateReviewReportDTO) {
-    const isExist = await this.reviewRepository.checkReviewReport(reviewId, userId);
-
-    if (isExist) {
-      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(REVIEW_REPORT_ALREADY_EXISTS));
-    }
-
-    return await this.reviewRepository.createReviewReport(reviewId, userId, data);
-  }
-
-  async updateReviewReport(id: string, userId: string, data: UpdateReviewReportDTO) {
-    const report = await this.reviewRepository.findReviewReport(id);
-    if (report.user.id !== userId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_REPORT_MUTATION_FORBIDDEN));
-    }
-    await this.reviewRepository.updateReviewReport(id, data);
-  }
-
-  async deleteReviewReport(id: string, userId: string) {
-    const report = await this.reviewRepository.findReviewReport(id);
-    if (report.user.id !== userId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_REPORT_MUTATION_FORBIDDEN));
-    }
-    await this.reviewRepository.deleteReviewReport(id);
-  }
 }

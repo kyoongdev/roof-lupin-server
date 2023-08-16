@@ -51,24 +51,6 @@ export class AdminReviewController {
     return await this.reviewService.findPagingReviews(paging, query.generateQuery());
   }
 
-  @Get('reports')
-  @RequestApi({
-    summary: {
-      description: '[관리자] 리뷰 신고 조회',
-      summary: '리뷰 신고를 조회합니다. 관리자만 사용 가능합니다.',
-    },
-    query: {
-      type: PagingDTO,
-    },
-  })
-  @ResponseApi({
-    type: ReviewReportDTO,
-    isPaging: true,
-  })
-  async getReviewReports(@Paging() paging: PagingDTO) {
-    return await this.reviewService.findPagingReviewReports(paging);
-  }
-
   @Post(':reviewId/image/:imageId/best')
   @RequestApi({
     summary: {
@@ -81,34 +63,6 @@ export class AdminReviewController {
   })
   async setBestReview(@Param('reviewId') reviewId: string, @Param('imageId') imageId: string) {
     await this.reviewService.createBestImage(reviewId, imageId);
-  }
-
-  @Post('reports/:reportId/process')
-  @RequestApi({
-    summary: {
-      description: '[관리자] 리뷰 신고 처리',
-      summary: '리뷰 신고를 처리합니다. 관리자만 사용 가능합니다.',
-    },
-  })
-  @ResponseApi({
-    type: EmptyResponseDTO,
-  })
-  async processReviewReport(@Param('reportId') reportId: string) {
-    await this.reviewService.updateReviewReportIsProcessed(reportId, true);
-  }
-
-  @Delete('reports/:reportId/process')
-  @RequestApi({
-    summary: {
-      description: '[관리자] 리뷰 신고 미완료 처리',
-      summary: '리뷰 신고를 미완료 처리합니다. 관리자만 사용 가능합니다.',
-    },
-  })
-  @ResponseApi({
-    type: EmptyResponseDTO,
-  })
-  async unProcessReviewReport(@Param('reportId') reportId: string) {
-    await this.reviewService.updateReviewReportIsProcessed(reportId, false);
   }
 
   @Delete(':reviewId/image/:imageId/best')

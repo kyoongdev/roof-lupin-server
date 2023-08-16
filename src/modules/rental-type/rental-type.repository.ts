@@ -173,7 +173,7 @@ export class RentalTypeRepository {
                                 category: true,
                               },
                             },
-                            reports: true,
+                            //TODO: reports: true,
                           },
                         },
                       },

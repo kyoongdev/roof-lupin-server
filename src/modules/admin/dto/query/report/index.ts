@@ -1,1 +1,1 @@
-export * from './find-reports.dto';
+export {};

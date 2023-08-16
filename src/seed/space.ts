@@ -58,6 +58,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isRecommended: false,
     },
   });
+  await database.icon.create({
+    data: {
+      name: `글램핑`,
+      url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
+    },
+  });
 
   const category4 = await database.category.create({
     data: {
@@ -68,12 +74,26 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
     },
   });
 
+  await database.icon.create({
+    data: {
+      name: `파티룸`,
+      url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
+    },
+  });
+
   const category5 = await database.category.create({
     data: {
       name: `촬영`,
       iconPath: 'https://dev-image.rooflupin.com/1690960264699film.svg',
       isHome: true,
       isRecommended: false,
+    },
+  });
+
+  await database.icon.create({
+    data: {
+      name: `촬영`,
+      url: 'https://dev-image.rooflupin.com/1690960264699film.svg',
     },
   });
   const mainCategories = [category1, category3, category4, category5];
@@ -656,11 +676,9 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 },
               },
             });
-            await database.spaceReport.create({
+            await database.userReport.create({
               data: {
-                title: '신고합니다',
                 content: '신고합니다',
-                reportType: 1,
                 user: {
                   connect: {
                     id: user.id,
