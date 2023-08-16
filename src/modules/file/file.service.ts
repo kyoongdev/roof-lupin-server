@@ -110,7 +110,7 @@ export class FileService {
       const originalname = file.originalname.split('.').shift();
 
       const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
-
+      const fileBuffer = file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer;
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
@@ -119,7 +119,7 @@ export class FileService {
         },
       }).putObject({
         Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
-        Body: file.buffer,
+        Body: fileBuffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
       });
