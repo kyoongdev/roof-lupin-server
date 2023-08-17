@@ -1,8 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as AWS from '@aws-sdk/client-s3';
 import convert from 'heic-convert';
+import mime from 'mime-types';
 import sharp from 'sharp';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -115,6 +116,7 @@ export class FileService {
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
+
   async uploadFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
     try {
       const originalname = file.originalname.split('.').shift();
@@ -213,6 +215,20 @@ export class FileService {
       console.log(err);
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
+  }
+
+  private async getFileSpec(file: Express.Multer.File, originKey?: string) {
+    const originalname = file.originalname.split('.').shift();
+    const isHeic = file.originalname.includes('.heic');
+    const ext = mime.extension(file.mimetype);
+
+    if (!ext) {
+      throw new BadRequestException('파일 형식이 올바르지 않습니다.');
+    }
+
+    const key = `${Date.now() + `${originKey ?? originalname}.${isHeic ? 'heic' : ext}`}`;
+
+    const fileBuffer = file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer;
   }
 
   private async imageResize(file: Buffer, width?: number, height?: number) {

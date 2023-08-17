@@ -24,7 +24,8 @@ export class AdminIconService {
   }
 
   async createIcon(file: Express.Multer.File, name: string) {
-    const { url } = await this.fileService.uploadIcon(file);
+    const isSvg = file.mimetype === 'image/svg+xml';
+    const { url } = isSvg ? await this.fileService.uploadIcon(file) : await this.fileService.uploadFile(file);
     return await this.iconRepository.createIcon(url, { name });
   }
 

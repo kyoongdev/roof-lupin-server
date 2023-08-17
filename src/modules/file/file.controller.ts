@@ -82,7 +82,8 @@ export class FileController {
     @UploadedFile()
     file: Express.Multer.File
   ) {
-    return this.fileService.uploadFile(file);
+    console.log(file);
+    // return this.fileService.uploadFile(file);
   }
 
   @Post('/image/resize')
