@@ -8,9 +8,9 @@ import { QnADTO } from '../qna/dto';
 import { ReviewDTO } from '../review/dto';
 import { SpaceDTO } from '../space/dto';
 
-import { CreateReportAnswerDTO, CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
+import { CreateReportAnswerDTO, CreateReportDTO, ReportAnswerDTO, ReportDTO, UpdateReportDTO } from './dto';
 import { UpdateReportAnswerDTO } from './dto/update-report-answer.dto';
-import { REPORT_NOT_FOUND } from './exception/errorCode';
+import { REPORT_ANSWER_NOT_FOUND, REPORT_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
 export class ReportRepository {
@@ -168,6 +168,23 @@ export class ReportRepository {
         id,
       },
     });
+  }
+
+  async findReportAnswer(reportAnswerId: string) {
+    const reportAnswer = await this.database.userReportAnswer.findUnique({
+      where: {
+        id: reportAnswerId,
+      },
+      include: {
+        admin: true,
+      },
+    });
+
+    if (!reportAnswer) {
+      throw new NotFoundException(REPORT_ANSWER_NOT_FOUND);
+    }
+
+    return new ReportAnswerDTO(reportAnswer);
   }
 
   async createReportAnswer(reportId: string, adminId: string, data: CreateReportAnswerDTO) {
