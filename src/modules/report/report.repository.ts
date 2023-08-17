@@ -16,6 +16,10 @@ import { REPORT_NOT_FOUND } from './exception/errorCode';
 export class ReportRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async checkReport(args = {} as Prisma.UserReportFindFirstArgs) {
+    return this.database.userReport.findFirst(args);
+  }
+
   async findReport(id: string) {
     const report = await this.database.userReport.findUnique({
       where: {
@@ -62,6 +66,10 @@ export class ReportRepository {
         space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
       },
     });
+  }
+
+  async countReports(args = {} as Prisma.UserReportCountArgs) {
+    return this.database.userReport.count(args);
   }
 
   async findReports(args = {} as Prisma.UserReportFindManyArgs) {
