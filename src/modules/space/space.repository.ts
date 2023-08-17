@@ -114,6 +114,11 @@ export class SpaceRepository {
               include: {
                 image: true,
               },
+              orderBy: [
+                {
+                  isBest: 'desc',
+                },
+              ],
             },
 
             user: true,
@@ -121,9 +126,6 @@ export class SpaceRepository {
           skip: 0,
           take: 3,
           orderBy: [
-            {
-              isBest: 'desc',
-            },
             {
               createdAt: 'desc',
             },
@@ -201,9 +203,9 @@ export class SpaceRepository {
     } = space;
     const bestPhotos = await this.database.spaceReviewImage.findMany({
       where: {
+        isBest: true,
         spaceReview: {
           spaceId: id,
-          isBest: true,
         },
       },
       include: {

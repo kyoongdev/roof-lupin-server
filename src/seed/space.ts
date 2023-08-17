@@ -652,7 +652,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               data: {
                 content: '좋아요!!',
                 score: 3,
-                isBest: index === 0,
                 images: {
                   create: [
                     {

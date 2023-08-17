@@ -12,6 +12,7 @@ import {
   CreateReviewDTO,
   ReviewAnswerDTO,
   ReviewDetailDTO,
+  ReviewImageDetailDTO,
   UpdateReviewAnswerDTO,
   UpdateReviewDTO,
 } from './dto';
@@ -135,8 +136,8 @@ export class ReviewRepository {
   async findBestPhotoReviews(spaceId: string) {
     const photos = await this.database.spaceReviewImage.findMany({
       where: {
+        isBest: true,
         spaceReview: {
-          isBest: true,
           spaceId,
         },
       },
@@ -158,9 +159,41 @@ export class ReviewRepository {
     const images = await this.database.spaceReviewImage.findMany({
       ...args,
       include: {
-        spaceReview: true,
+        spaceReview: {
+          include: {
+            user: true,
+            images: {
+              include: {
+                image: true,
+              },
+            },
+            answers: {
+              where: {
+                deletedAt: null,
+              },
+              include: {
+                host: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    return images.map(
+      (image) =>
+        new ReviewImageDetailDTO({
+          ...image,
+          review: {
+            ...image.spaceReview,
+            images: image.spaceReview.images.map((image) => ({
+              imageId: image.imageId,
+              isBest: image.isBest,
+              url: image.image.url,
+            })),
+          },
+        })
+    );
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {
