@@ -38,66 +38,67 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const category1 = await database.category.create({
     data: {
       name: `바베큐`,
-      iconPath: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+
       isHome: true,
       isRecommended: true,
-    },
-  });
-  await database.icon.create({
-    data: {
-      name: `바베큐`,
-      url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+      icon: {
+        create: {
+          name: `바베큐`,
+          url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+        },
+      },
     },
   });
 
   const category3 = await database.category.create({
     data: {
       name: `글램핑`,
-      iconPath: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
       isHome: true,
       isRecommended: false,
-    },
-  });
-  await database.icon.create({
-    data: {
-      name: `글램핑`,
-      url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
+      icon: {
+        create: {
+          name: `글램핑`,
+          url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
+        },
+      },
     },
   });
 
   const category4 = await database.category.create({
     data: {
       name: `파티룸`,
-      iconPath: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
       isHome: true,
       isRecommended: false,
-    },
-  });
-
-  await database.icon.create({
-    data: {
-      name: `파티룸`,
-      url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
+      icon: {
+        create: {
+          name: `파티룸`,
+          url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
+        },
+      },
     },
   });
 
   const category5 = await database.category.create({
     data: {
       name: `촬영`,
-      iconPath: 'https://dev-image.rooflupin.com/1690960264699film.svg',
       isHome: true,
       isRecommended: false,
+      icon: {
+        create: {
+          name: `촬영`,
+          url: 'https://dev-image.rooflupin.com/1690960264699film.svg',
+        },
+      },
     },
   });
 
-  await database.icon.create({
-    data: {
-      name: `촬영`,
-      url: 'https://dev-image.rooflupin.com/1690960264699film.svg',
-    },
-  });
   const mainCategories = [category1, category3, category4, category5];
-
+  const baseIcon = await database.icon.create({
+    data: {
+      url: 'https://roof-lupin.s3.ap-northeast-2.amazonaws.com/dev/Bluetooth.svg',
+      name: '블루투스',
+    },
+  });
   const spaces: any[] = [];
   for (let i = 0; i < 1; i++) {
     const space = await database.space.create({
@@ -453,7 +454,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               building: {
                 create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  icon: {
+                    connect: {
+                      id: baseIcon.id,
+                    },
+                  },
                   name: '주차 0대',
                 },
               },
@@ -461,7 +466,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               building: {
                 create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  icon: {
+                    connect: {
+                      id: baseIcon.id,
+                    },
+                  },
                   name: '3층',
                 },
               },
@@ -469,7 +478,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               building: {
                 create: {
-                  iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                  icon: {
+                    connect: {
+                      id: baseIcon.id,
+                    },
+                  },
                   name: '엘리베이터 없음',
                 },
               },
@@ -969,7 +982,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '주차 5대',
               },
             },
@@ -977,7 +994,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '3층',
               },
             },
@@ -985,7 +1006,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '엘리베이터 없음',
               },
             },
@@ -1316,7 +1341,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '주차 5대',
               },
             },
@@ -1324,7 +1353,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '3층',
               },
             },
@@ -1332,7 +1365,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '엘리베이터 없음',
               },
             },
@@ -1640,7 +1677,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '주차 5대',
               },
             },
@@ -1648,7 +1689,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '3층',
               },
             },
@@ -1656,7 +1701,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '엘리베이터 없음',
               },
             },
@@ -1969,7 +2018,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '주차 5대',
               },
             },
@@ -1977,7 +2030,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '4층',
               },
             },
@@ -1985,7 +2042,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             building: {
               create: {
-                iconPath: 'https://www.svgrepo.com/show/460432/battery-10-line.svg',
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
                 name: '엘리베이터 없음',
               },
             },

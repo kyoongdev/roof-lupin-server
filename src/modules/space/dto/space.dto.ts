@@ -130,7 +130,11 @@ export class SpaceDTO {
       rentalType: true,
       categories: {
         include: {
-          category: true,
+          category: {
+            include: {
+              icon: true,
+            },
+          },
         },
       },
       reports: true,

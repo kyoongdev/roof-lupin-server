@@ -4,7 +4,7 @@ export interface IconDTOProps {
   id: string;
   name: string;
   url: string;
-  inUse: boolean;
+  inUse?: boolean;
 }
 
 export class IconDTO {

@@ -10,9 +10,9 @@ import { CreateRentalTypeDTO } from '@/modules/rental-type/dto';
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
+import { CreateBuildingDTO } from './building';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
-import { CreateBuildingDTO } from './facility';
 import { UpdateHashTagDTO } from './hashTag';
 import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO } from './refund';

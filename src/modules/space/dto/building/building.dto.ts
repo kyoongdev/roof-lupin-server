@@ -1,8 +1,10 @@
 import { Property } from 'cumuco-nestjs';
 
+import { IconDTOProps } from '@/modules/admin/dto/icon';
+
 export interface BuildingDTOProps {
   id: string;
-  iconPath: string;
+  icon: IconDTOProps;
   name: string;
 }
 
@@ -18,7 +20,7 @@ export class BuildingDTO {
 
   constructor(props: BuildingDTOProps) {
     this.id = props.id;
-    this.iconPath = props.iconPath;
+    this.iconPath = props.icon.url;
     this.name = props.name;
   }
 }

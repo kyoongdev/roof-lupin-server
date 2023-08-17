@@ -17,8 +17,6 @@ export const seedDatabase = async (database: PrismaClient) => {
   await database.host.deleteMany({});
   await database.user.deleteMany({});
   await database.admin.deleteMany({});
-  await database.slogan.deleteMany({});
-  await database.mainImage.deleteMany({});
   await database.location.deleteMany({});
   await database.category.deleteMany({});
 
@@ -120,19 +118,6 @@ export const seedDatabase = async (database: PrismaClient) => {
       discountValue: 10,
       isLupinPay: true,
       defaultDueDay: 7,
-    },
-  });
-
-  await database.mainImage.create({
-    data: {
-      isDefault: true,
-      url: 'https://kyoongdev-blog.sgp1.vultrobjects.com/images/rooftop-cafe.jpeg',
-    },
-  });
-  await database.slogan.create({
-    data: {
-      isDefault: true,
-      content: '도심 속 루프라이프의 시작',
     },
   });
 

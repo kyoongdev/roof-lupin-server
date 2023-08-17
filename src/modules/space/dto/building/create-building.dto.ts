@@ -1,19 +1,19 @@
 import { Property } from 'cumuco-nestjs';
 export interface CreateBuildingDTOProps {
-  iconPath: string;
+  iconId: string;
   name: string;
 }
 
 export class CreateBuildingDTO {
-  @Property({ apiProperty: { type: 'string', description: '시설 아이콘 경로' } })
-  iconPath: string;
+  @Property({ apiProperty: { type: 'string', description: '아이콘 id' } })
+  iconId: string;
 
   @Property({ apiProperty: { type: 'string', description: '시설 이름' } })
   name: string;
 
   constructor(props?: CreateBuildingDTOProps) {
     if (props) {
-      this.iconPath = props.iconPath;
+      this.iconId = props.iconId;
       this.name = props.name;
     }
   }

@@ -8,9 +8,9 @@ import { LocationDTO, LocationDTOProps } from '@/modules/location/dto';
 import { BestPhotoDTO, BestPhotoDTOProps } from '@/modules/review/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
+import { BuildingDTO, type BuildingDTOProps } from './building';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
 import { CautionDTO, type CautionDTOProps } from './caution';
-import { BuildingDTO, type BuildingDTOProps } from './facility';
 import { SpaceHolidayDTO, SpaceHolidayDTOProps } from './holiday';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';

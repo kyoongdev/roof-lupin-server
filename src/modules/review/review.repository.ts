@@ -10,22 +10,14 @@ import {
   BestPhotoDTO,
   CreateReviewAnswerDTO,
   CreateReviewDTO,
-  CreateReviewReportDTO,
   ReviewAnswerDTO,
   ReviewDetailDTO,
-  ReviewReportDTO,
   UpdateReviewAnswerDTO,
   UpdateReviewDTO,
-  UpdateReviewReportDTO,
 } from './dto';
 import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewDTO } from './dto/review.dto';
-import {
-  REVIEW_ANSWER_NOT_FOUND,
-  REVIEW_ERROR_CODE,
-  REVIEW_IMAGE_NOT_FOUND,
-  REVIEW_REPORT_NOT_FOUND,
-} from './exception/errorCode';
+import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_IMAGE_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()

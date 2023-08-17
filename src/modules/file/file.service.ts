@@ -243,23 +243,6 @@ export class FileService {
         url,
       },
     });
-    const building = await this.database.building.findFirst({
-      where: {
-        iconPath: url,
-      },
-    });
-
-    const service = await this.database.service.findFirst({
-      where: {
-        iconPath: url,
-      },
-    });
-
-    const category = await this.database.category.findFirst({
-      where: {
-        iconPath: url,
-      },
-    });
 
     const exhibition = await this.database.exhibition.findFirst({
       where: {
@@ -287,11 +270,7 @@ export class FileService {
         ],
       },
     });
-    const mainImage = await this.database.mainImage.findFirst({
-      where: {
-        url,
-      },
-    });
+
     const space = await this.database.space.findFirst({
       where: { thumbnail: url },
     });
@@ -312,12 +291,8 @@ export class FileService {
       Boolean(user) ||
       Boolean(host) ||
       Boolean(space) ||
-      Boolean(mainImage) ||
       Boolean(exhibition) ||
       Boolean(curation) ||
-      Boolean(category) ||
-      Boolean(service) ||
-      Boolean(building) ||
       Boolean(icon) ||
       Boolean(image)
     );

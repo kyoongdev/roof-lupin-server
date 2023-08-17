@@ -10,8 +10,8 @@ import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
+import { CreateBuildingDTO, type CreateBuildingDTOProps } from './building';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
-import { CreateBuildingDTO, type CreateBuildingDTOProps } from './facility';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';

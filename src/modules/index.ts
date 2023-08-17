@@ -16,7 +16,6 @@ import { HolidayModule } from './holiday/holiday.module';
 import { HomeModule } from './home/home.module';
 import { LocationModule } from './location/location.module';
 import { LocationFilterModule } from './location-filter/location-filter.module';
-import { MainModule } from './main/main.module';
 import { PaymentModule } from './payment/payment.module';
 import { QnaModule } from './qna/qna.module';
 import { RankingModule } from './ranking/ranking.module';
@@ -49,7 +48,6 @@ export const Modules = [
   LocationModule,
   ReservationModule,
   AlarmModule,
-  MainModule,
   CategoryModule,
   CurationModule,
   PaymentModule,

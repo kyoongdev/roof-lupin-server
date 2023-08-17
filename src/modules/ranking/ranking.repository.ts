@@ -40,19 +40,7 @@ export class RankingRepository {
           ...args,
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-                reports: true,
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {
@@ -91,19 +79,7 @@ export class RankingRepository {
         spaces: {
           include: {
             space: {
-              include: {
-                location: true,
-                reviews: true,
-                publicTransportations: true,
-                userInterests: true,
-                rentalType: true,
-                categories: {
-                  include: {
-                    category: true,
-                  },
-                },
-                reports: true,
-              },
+              include: SpaceDTO.getSpacesIncludeOption(),
             },
           },
           orderBy: {

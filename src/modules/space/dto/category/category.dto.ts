@@ -1,9 +1,11 @@
 import { Property } from 'cumuco-nestjs';
 
+import { IconDTOProps } from '@/modules/admin/dto/icon';
+
 export interface SpaceCategoryDTOProps {
   id: string;
   name: string;
-  iconPath: string;
+  icon: IconDTOProps;
 }
 
 export class SpaceCategoryDTO {
@@ -19,6 +21,6 @@ export class SpaceCategoryDTO {
   constructor(props: SpaceCategoryDTOProps) {
     this.id = props.id;
     this.name = props.name;
-    this.iconPath = props.iconPath;
+    this.iconPath = props.icon.url;
   }
 }

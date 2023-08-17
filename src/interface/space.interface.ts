@@ -1,5 +1,6 @@
 import {
   Category,
+  Icon,
   PublicTransportation,
   RentalType,
   Space,
@@ -41,6 +42,12 @@ export interface SqlSpace {
   hostId: string;
 }
 
+export interface SQLCategory extends Category {
+  iconId: string;
+  iconUrl: string;
+  iconName: string;
+}
+
 export interface CommonSpace extends Space {
   reviews: SpaceReview[];
   location: SpaceLocation;
@@ -48,7 +55,9 @@ export interface CommonSpace extends Space {
   rentalType: RentalType[];
   userInterests: SpaceInterest[];
   categories?: (SpaceCategory & {
-    category: Category;
+    category: Category & {
+      icon: Icon;
+    };
   })[];
 }
 
