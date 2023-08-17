@@ -3,11 +3,12 @@ import { Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { ReviewDTO, ReviewReportDTO } from '@/modules/review/dto';
+import { ReviewDTO, ReviewImageDetailDTO, ReviewReportDTO } from '@/modules/review/dto';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { AdminFindReviewImagesQuery } from '../dto/query';
 import { AdminFindReviewsQuery } from '../dto/query/review/find-reviews.query';
 
 import { AdminReviewService } from './review.service';
@@ -49,6 +50,21 @@ export class AdminReviewController {
   })
   async getReviews(@Paging() paging: PagingDTO, @Query() query: AdminFindReviewsQuery) {
     return await this.reviewService.findPagingReviews(paging, query.generateQuery());
+  }
+
+  @Get('images')
+  @RequestApi({
+    summary: {
+      description: '공간 리뷰 이미지 조회',
+      summary: '공간 리뷰 이미지를 조회합니다. 관리자만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: ReviewImageDetailDTO,
+    isPaging: true,
+  })
+  async getReviewImages(@Paging() paging: PagingDTO, @Query() query: AdminFindReviewImagesQuery) {
+    return await this.reviewService.findPagingReviewImages(paging, query.generateQuery());
   }
 
   @Post(':reviewId/image/:imageId/best')

@@ -155,6 +155,10 @@ export class ReviewRepository {
     );
   }
 
+  async countReviewImages(args = {} as Prisma.SpaceReviewImageCountArgs) {
+    return await this.database.spaceReviewImage.count(args);
+  }
+
   async findReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
     const images = await this.database.spaceReviewImage.findMany({
       ...args,
