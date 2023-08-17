@@ -10,3 +10,4 @@ export * from './create-review-report.dto';
 export * from './update-review-report.dto';
 export * from './reviews-summary.dto';
 export * from './review-detail.dto';
+export * from './review-image-detail.dto';

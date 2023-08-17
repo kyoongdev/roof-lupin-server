@@ -154,6 +154,15 @@ export class ReviewRepository {
     );
   }
 
+  async findReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
+    const images = await this.database.spaceReviewImage.findMany({
+      ...args,
+      include: {
+        spaceReview: true,
+      },
+    });
+  }
+
   async createReview(props: CreateReviewDTO, userId: string) {
     const { content, score, spaceId, images } = props;
 
