@@ -102,7 +102,7 @@ export class ReportRepository {
             ? {
                 ...report.spaceReview,
                 images: report.spaceReview.images.map((image) => ({
-                  imageId: image.image.id,
+                  imageId: image.imageId,
                   url: image.image.url,
                   isBest: image.isBest,
                 })),

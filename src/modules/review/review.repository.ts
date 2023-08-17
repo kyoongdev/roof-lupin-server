@@ -181,6 +181,7 @@ export class ReviewRepository {
             },
           },
         },
+        image: true,
       },
     });
 
@@ -188,6 +189,7 @@ export class ReviewRepository {
       (image) =>
         new ReviewImageDetailDTO({
           ...image,
+          url: image.image.url,
           review: {
             ...image.spaceReview,
             images: image.spaceReview.images.map((image) => ({

@@ -37,7 +37,7 @@ export class AdminReviewController {
     return await this.reviewService.findReview(reviewId);
   }
 
-  @Get()
+  @Get('')
   @RequestApi({
     summary: {
       description: '공간 리뷰 조회',
@@ -67,7 +67,7 @@ export class AdminReviewController {
     return await this.reviewService.findPagingReviewImages(paging, query.generateQuery());
   }
 
-  @Post(':reviewId/image/:imageId/best')
+  @Post(':reviewId/images/:imageId/best')
   @RequestApi({
     summary: {
       description: '리뷰 이미지 베스트 설정',
@@ -81,7 +81,7 @@ export class AdminReviewController {
     await this.reviewService.createBestImage(reviewId, imageId);
   }
 
-  @Delete(':reviewId/image/:imageId/best')
+  @Delete(':reviewId/images/:imageId/best')
   @RequestApi({
     summary: {
       description: '베스트 포토 삭제',

@@ -80,9 +80,6 @@ export class ReviewService {
           createdAt: 'desc',
         },
         {
-          isBest: 'asc',
-        },
-        {
           ...(args.orderBy ? (args.orderBy as Prisma.SpaceReviewOrderByWithRelationInput) : { createdAt: 'desc' }),
         },
       ],

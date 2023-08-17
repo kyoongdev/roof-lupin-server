@@ -81,7 +81,7 @@ export class ReviewDTO {
     };
   }
 
-  static generateInclude(): Prisma.SpaceReviewInclude {
+  static generateInclude() {
     return {
       user: true,
       images: {
