@@ -101,14 +101,13 @@ export class HostReviewService {
     await this.reviewRepository.deleteReviewAnswer(reviewAnswerId);
   }
 
-  async createBestImage(reviewId: string, imageId: string, hostId: string) {
-    const review = await this.findReview(reviewId);
+  async createBestImage(id: string, hostId: string) {
+    const reviewImage = await this.reviewRepository.findReviewImage(id);
+    const review = await this.findReview(reviewImage.reviewId);
 
     if (review.space.hostId !== hostId) {
       throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
     }
-
-    await this.reviewRepository.findReviewImage(reviewId, imageId);
 
     const bestPhotos = await this.reviewRepository.findBestReviewImages({
       where: {
@@ -122,17 +121,17 @@ export class HostReviewService {
       throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
     }
 
-    await this.reviewRepository.updateReviewImage(reviewId, imageId, true);
+    await this.reviewRepository.updateReviewImage(id, true);
   }
 
-  async deleteBestImage(reviewId: string, imageId: string, hostId: string) {
-    const review = await this.findReview(reviewId);
+  async deleteBestImage(id: string, hostId: string) {
+    const reviewImage = await this.reviewRepository.findReviewImage(id);
+    const review = await this.findReview(reviewImage.reviewId);
 
     if (review.space.hostId !== hostId) {
       throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
     }
-    await this.reviewRepository.findReviewImage(reviewId, imageId);
 
-    await this.reviewRepository.updateReviewImage(reviewId, imageId, false);
+    await this.reviewRepository.updateReviewImage(id, false);
   }
 }

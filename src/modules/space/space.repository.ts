@@ -236,9 +236,11 @@ export class SpaceRepository {
       reviews: reviews.map((review) => ({
         ...review,
         images: review.images.map((image) => ({
-          imageId: image.image.id,
-          url: image.image.url,
+          id: image.id,
+          imageId: image.imageId,
           isBest: image.isBest,
+          url: image.image.url,
+          reviewId: image.spaceReviewId,
         })),
       })),
     });

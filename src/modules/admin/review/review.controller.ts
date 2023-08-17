@@ -68,7 +68,7 @@ export class AdminReviewController {
     return await this.reviewService.findPagingReviewImages(paging, query.generateQuery());
   }
 
-  @Post(':reviewId/images/:imageId/best')
+  @Post('images/:reviewImageId/best')
   @RequestApi({
     summary: {
       description: '리뷰 이미지 베스트 설정',
@@ -78,15 +78,15 @@ export class AdminReviewController {
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async setBestReview(@Param('reviewId') reviewId: string, @Param('imageId') imageId: string) {
-    await this.reviewService.createBestImage(reviewId, imageId);
+  async setBestReview(@Param('reviewImageId') reviewImageId: string) {
+    await this.reviewService.createBestImage(reviewImageId);
   }
 
-  @Post(':reviewId/images/best')
+  @Post('/spaces/:spaceId/images/best')
   @RequestApi({
     summary: {
-      description: '리뷰 이미지 베스트 설정',
-      summary: '리뷰 이미지를 베스트로 설정합니다.',
+      description: '공간 내 리뷰 이미지 베스트 다수 설정',
+      summary: '공간 내 리뷰 이미지 베스트 다수 설정',
     },
   })
   @ResponseApi({
@@ -96,7 +96,7 @@ export class AdminReviewController {
     await this.reviewService.createBestImages(reviewId, data);
   }
 
-  @Delete(':reviewId/images/:imageId/best')
+  @Delete('images/:reviewImageId/best')
   @RequestApi({
     summary: {
       description: '베스트 포토 삭제',
@@ -106,22 +106,22 @@ export class AdminReviewController {
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async deleteBestReview(@Param('reviewId') reviewId: string, @Param('imageId') imageId: string) {
-    await this.reviewService.deleteBestImage(reviewId, imageId);
+  async deleteBestReview(@Param('reviewImageId') reviewImageId: string) {
+    await this.reviewService.deleteBestImage(reviewImageId);
   }
 
-  @Delete(':reviewId/images/best')
+  @Delete('spaces/:spaceId/images/best')
   @RequestApi({
     summary: {
-      description: '베스트 포토 삭제',
-      summary: '배스트 포토 삭제',
+      description: '공간 내 리뷰 이미지 베스트 다수 삭제',
+      summary: '공간 내 리뷰 이미지 베스트 다수 삭제',
     },
   })
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async deleteBestReviews(@Param('reviewId') reviewId: string, @Query() query: DeleteBestReviewImagesQuery) {
-    await this.reviewService.deleteBestImages(reviewId, query);
+  async deleteBestReviews(@Param('spaceId') spaceId: string, @Query() query: DeleteBestReviewImagesQuery) {
+    await this.reviewService.deleteBestImages(spaceId, query);
   }
 
   @Delete(':id')

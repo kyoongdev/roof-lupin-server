@@ -1,16 +1,16 @@
 import { Property } from 'cumuco-nestjs';
 
 export interface DeleteBestReviewImagesQueryProps {
-  imageIds: string;
+  ids: string;
 }
 
 export class DeleteBestReviewImagesQuery {
-  @Property({ apiProperty: { type: 'string', description: '이미지 id들' } })
-  imageIds: string;
+  @Property({ apiProperty: { type: 'string', description: '리뷰 이미지 id들' } })
+  ids: string;
 
   constructor(props?: DeleteBestReviewImagesQueryProps) {
     if (props) {
-      this.imageIds = props.imageIds;
+      this.ids = props.ids;
     }
   }
 }

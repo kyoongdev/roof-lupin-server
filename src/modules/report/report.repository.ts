@@ -54,9 +54,11 @@ export class ReportRepository {
         ? {
             ...report.spaceReview,
             images: report.spaceReview.images.map((image) => ({
-              imageId: image.image.id,
+              id: image.id,
+              imageId: image.imageId,
               url: image.image.url,
               isBest: image.isBest,
+              reviewId: image.spaceReviewId,
             })),
           }
         : undefined,
@@ -102,9 +104,11 @@ export class ReportRepository {
             ? {
                 ...report.spaceReview,
                 images: report.spaceReview.images.map((image) => ({
+                  id: image.id,
                   imageId: image.imageId,
                   url: image.image.url,
                   isBest: image.isBest,
+                  reviewId: image.spaceReviewId,
                 })),
               }
             : undefined,

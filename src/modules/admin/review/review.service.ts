@@ -49,13 +49,11 @@ export class AdminReviewService {
     return await this.reviewRepository.deleteReview(id);
   }
 
-  async createBestImages(reviewId: string, data: CreateBestReviewImagesDTO) {
-    const review = await this.findReview(reviewId);
-
+  async createBestImages(spaceId: string, data: CreateBestReviewImagesDTO) {
     const bestPhotos = await this.reviewRepository.findBestReviewImages({
       where: {
         spaceReview: {
-          spaceId: review.space.id,
+          spaceId,
         },
       },
     });
@@ -65,16 +63,16 @@ export class AdminReviewService {
     }
 
     await Promise.all(
-      data.imageIds.map(async (imageId) => {
-        await this.reviewRepository.findReviewImage(reviewId, imageId);
-        await this.reviewRepository.updateReviewImage(reviewId, imageId, true);
+      data.ids.map(async (id) => {
+        await this.reviewRepository.findReviewImage(id);
+        await this.reviewRepository.updateReviewImage(id, true);
       })
     );
   }
 
-  async createBestImage(reviewId: string, imageId: string) {
-    const review = await this.findReview(reviewId);
-    await this.reviewRepository.findReviewImage(reviewId, imageId);
+  async createBestImage(id: string) {
+    const reviewImage = await this.reviewRepository.findReviewImage(id);
+    const review = await this.findReview(reviewImage.reviewId);
 
     const bestPhotos = await this.reviewRepository.findBestReviewImages({
       where: {
@@ -88,24 +86,23 @@ export class AdminReviewService {
       throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
     }
 
-    await this.reviewRepository.updateReviewImage(reviewId, imageId, true);
+    await this.reviewRepository.updateReviewImage(id, true);
   }
 
   async deleteBestImages(reviewId: string, query: DeleteBestReviewImagesQuery) {
     await this.findReview(reviewId);
 
     await Promise.all(
-      query.imageIds.split(',').map(async (imageId) => {
-        await this.reviewRepository.findReviewImage(reviewId, imageId);
-        await this.reviewRepository.updateReviewImage(reviewId, imageId, false);
+      query.ids.split(',').map(async (id) => {
+        await this.reviewRepository.findReviewImage(id);
+        await this.reviewRepository.updateReviewImage(id, false);
       })
     );
   }
 
-  async deleteBestImage(reviewId: string, imageId: string) {
-    await this.findReview(reviewId);
-    await this.reviewRepository.findReviewImage(reviewId, imageId);
+  async deleteBestImage(id: string) {
+    await this.reviewRepository.findReviewImage(id);
 
-    await this.reviewRepository.updateReviewImage(reviewId, imageId, false);
+    await this.reviewRepository.updateReviewImage(id, false);
   }
 }

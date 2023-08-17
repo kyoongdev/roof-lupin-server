@@ -3,6 +3,7 @@ import { Property } from 'cumuco-nestjs';
 import { ReviewDTO, ReviewDTOProps } from './review.dto';
 
 export interface ReviewImageDetailDTOProps {
+  id: string;
   imageId: string;
   isBest: boolean;
   url: string;
@@ -10,6 +11,9 @@ export interface ReviewImageDetailDTOProps {
 }
 
 export class ReviewImageDetailDTO {
+  @Property({ apiProperty: { type: 'string', description: ' id' } })
+  id: string;
+
   @Property({ apiProperty: { type: 'string', description: '이미지 id' } })
   imageId: string;
 
