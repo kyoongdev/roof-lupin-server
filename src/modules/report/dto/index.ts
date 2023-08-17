@@ -6,3 +6,4 @@ export * from './create-space-report.dto';
 export * from './create-qna-report.dto';
 export * from './create-report-answer.dto';
 export * from './create-report.dto';
+export * from './update-report.dto';

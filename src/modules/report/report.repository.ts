@@ -8,7 +8,8 @@ import { QnADTO } from '../qna/dto';
 import { ReviewDTO } from '../review/dto';
 import { SpaceDTO } from '../space/dto';
 
-import { CreateReportDTO, ReportDTO } from './dto';
+import { CreateReportAnswerDTO, CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
+import { UpdateReportAnswerDTO } from './dto/update-report-answer.dto';
 import { REPORT_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
@@ -142,5 +143,59 @@ export class ReportRepository {
       },
     });
     return report.id;
+  }
+
+  async updateReport(id: string, data: UpdateReportDTO) {
+    await this.database.userReport.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
+  async deleteReport(id: string) {
+    await this.database.userReport.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async createReportAnswer(reportId: string, adminId: string, data: CreateReportAnswerDTO) {
+    const reportAnswer = await this.database.userReportAnswer.create({
+      data: {
+        ...data,
+        admin: {
+          connect: {
+            id: adminId,
+          },
+        },
+        report: {
+          connect: {
+            id: reportId,
+          },
+        },
+      },
+    });
+
+    return reportAnswer.id;
+  }
+
+  async updateReportAnswer(reportId: string, data: UpdateReportAnswerDTO) {
+    await this.database.userReportAnswer.update({
+      where: {
+        reportId,
+      },
+      data,
+    });
+  }
+
+  async deleteReportAnswer(reportAnswerId: string) {
+    await this.database.userReportAnswer.delete({
+      where: {
+        id: reportAnswerId,
+      },
+    });
   }
 }
