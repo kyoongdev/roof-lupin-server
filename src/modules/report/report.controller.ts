@@ -12,15 +12,15 @@ import { FindReportsQuery } from './dto/query';
 import { ReportService } from './report.service';
 
 @Auth([JwtAuthGuard, RoleGuard('USER')])
-@ApiController('reports', '공간 신고')
+@ApiController('reports', '신고')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
   @Get(':reportId/detail')
   @RequestApi({
     summary: {
-      description: '공간 신고 상세 조회',
-      summary: '공간 신고 상세 조회',
+      description: '신고 상세 조회',
+      summary: '신고 상세 조회',
     },
   })
   @ResponseApi({
@@ -33,8 +33,8 @@ export class ReportController {
   @Get()
   @RequestApi({
     summary: {
-      description: '공간 신고 목록 조회',
-      summary: '공간 신고 목록 조회',
+      description: '신고 목록 조회',
+      summary: '신고 목록 조회',
     },
   })
   @ResponseApi({
@@ -49,8 +49,8 @@ export class ReportController {
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      description: '공간 신고 생성',
-      summary: '공간 신고 생성',
+      description: '신고 생성',
+      summary: '신고 생성',
     },
   })
   @ResponseApi(
@@ -66,8 +66,8 @@ export class ReportController {
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      description: '공간 리뷰 신고 생성',
-      summary: '공간 리뷰 신고 생성',
+      description: '리뷰 신고 생성',
+      summary: '리뷰 신고 생성',
     },
   })
   @ResponseApi(
@@ -84,8 +84,8 @@ export class ReportController {
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      description: '공간 QnA 신고 생성',
-      summary: '공간 QnA 신고 생성',
+      description: 'QnA 신고 생성',
+      summary: 'QnA 신고 생성',
     },
   })
   @ResponseApi(
