@@ -16,7 +16,9 @@ export class AdminFindReviewImagesQuery extends PagingDTO {
           isBest: this.isBest,
         }),
         ...(this.spaceId && {
-          spaceId: this.spaceId,
+          spaceReview: {
+            spaceId: this.spaceId,
+          },
         }),
       },
     };
