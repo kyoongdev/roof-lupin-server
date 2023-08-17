@@ -26,10 +26,13 @@ export class ReportService {
     return report;
   }
 
-  async findReportPagingReports(paging: PagingDTO, args = {} as Prisma.UserReportFindManyArgs) {
+  async findReportPagingReports(paging: PagingDTO, userId: string, args = {} as Prisma.UserReportFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reportRepository.countReports({
-      where: args.where,
+      where: {
+        userId,
+        ...args.where,
+      },
     });
     const reports = await this.reportRepository.findReports({
       ...args,
