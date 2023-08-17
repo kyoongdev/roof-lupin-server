@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { DateDTO, DateProps } from '@/common';
@@ -45,5 +46,19 @@ export class QnADTO {
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.space = new SpaceDTO(props.space);
+  }
+
+  static generateInclude() {
+    return {
+      answers: {
+        include: {
+          host: true,
+        },
+      },
+      user: true,
+      space: {
+        include: SpaceDTO.getSpacesIncludeOption(),
+      },
+    };
   }
 }

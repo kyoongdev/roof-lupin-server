@@ -19,7 +19,7 @@ import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { DeleteFileDTO, UploadedFileDTO } from './dto';
+import { DeleteFileDTO, ResizeFileDTO, S3ImageDTO, UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')
@@ -34,7 +34,8 @@ export class FileController {
     },
   })
   @ResponseApi({
-    type: UploadedFileDTO,
+    type: S3ImageDTO,
+    isArray: true,
   })
   async getAll() {
     return await this.fileService.getAllFiles();
@@ -110,6 +111,14 @@ export class FileController {
             type: 'string',
             format: 'binary',
           },
+          width: {
+            type: 'number',
+            nullable: true,
+          },
+          height: {
+            type: 'number',
+            nullable: true,
+          },
         },
       },
     },
@@ -122,9 +131,10 @@ export class FileController {
   )
   async uploadResizedImage(
     @UploadedFile()
-    file: Express.Multer.File
+    file: Express.Multer.File,
+    @Body() body: ResizeFileDTO
   ) {
-    return this.fileService.uploadResizedFile(file);
+    return this.fileService.uploadResizedFile(file, undefined, body.width, body.height);
   }
 
   // @Auth([JwtAuthGuard])
@@ -206,6 +216,14 @@ export class FileController {
               format: 'binary',
             },
           },
+          width: {
+            type: 'number',
+            nullable: true,
+          },
+          height: {
+            type: 'number',
+            nullable: true,
+          },
         },
       },
     },
@@ -219,9 +237,12 @@ export class FileController {
   )
   async uploadResizedImages(
     @UploadedFiles()
-    files: Express.Multer.File[]
+    files: Express.Multer.File[],
+    @Body() body: ResizeFileDTO
   ) {
-    const images = await Promise.all(files.map(async (file) => await this.fileService.uploadResizedFile(file)));
+    const images = await Promise.all(
+      files.map(async (file) => await this.fileService.uploadResizedFile(file, undefined, body.width, body.height))
+    );
 
     return images;
   }

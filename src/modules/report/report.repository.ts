@@ -1,131 +1,151 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { QnADTO } from '../qna/dto';
+import { ReviewDTO } from '../review/dto';
 import { SpaceDTO } from '../space/dto';
 
-import {
-  CreateReportAnswerDTO,
-  CreateReportDTO,
-  ReportAnswerDTO,
-  ReportDetailDTO,
-  ReportDTO,
-  UpdateReportAnswerDTO,
-  UpdateReportDTO,
-} from './dto';
-import { REPORT_ANSWER_NOT_FOUND, REPORT_ERROR_CODE } from './exception/errorCode';
-import { ReportException } from './exception/report.exception';
+import { CreateReportAnswerDTO, CreateReportDTO, ReportAnswerDTO, ReportDTO, UpdateReportDTO } from './dto';
+import { UpdateReportAnswerDTO } from './dto/update-report-answer.dto';
+import { REPORT_ANSWER_NOT_FOUND, REPORT_NOT_FOUND } from './exception/errorCode';
 
 @Injectable()
 export class ReportRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async countReports(args = {} as Prisma.SpaceReportCountArgs) {
-    return await this.database.spaceReport.count(args);
+  async checkReport(args = {} as Prisma.UserReportFindFirstArgs) {
+    return this.database.userReport.findFirst(args);
   }
 
-  async findReports(args = {} as Prisma.SpaceReportFindManyArgs) {
-    const reports = await this.database.spaceReport.findMany({
-      where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
+  async findReport(id: string) {
+    const report = await this.database.userReport.findUnique({
+      where: {
+        id,
       },
       include: {
-        space: true,
+        answer: {
+          include: {
+            admin: true,
+          },
+        },
+        space: {
+          include: SpaceDTO.getSpacesIncludeOption(),
+        },
+        spaceReview: {
+          include: ReviewDTO.generateInclude(),
+        },
+        spaceQnA: {
+          include: QnADTO.generateInclude(),
+        },
         user: true,
-        answer: true,
       },
-      skip: args.skip,
-      take: args.take,
+    });
+
+    if (!report) {
+      throw new NotFoundException(REPORT_NOT_FOUND);
+    }
+
+    return new ReportDTO({
+      ...report,
+      spaceReview: report.spaceReview
+        ? {
+            ...report.spaceReview,
+            images: report.spaceReview.images.map((image) => ({
+              imageId: image.image.id,
+              url: image.image.url,
+              isBest: image.isBest,
+            })),
+          }
+        : undefined,
+      space: SpaceDTO.generateSpaceDTO(report.space),
+      spaceQnA: {
+        ...report.spaceQnA,
+        space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
+      },
+    });
+  }
+
+  async countReports(args = {} as Prisma.UserReportCountArgs) {
+    return this.database.userReport.count(args);
+  }
+
+  async findReports(args = {} as Prisma.UserReportFindManyArgs) {
+    const reports = await this.database.userReport.findMany({
+      ...args,
+      include: {
+        answer: {
+          include: {
+            admin: true,
+          },
+        },
+        space: {
+          include: SpaceDTO.getSpacesIncludeOption(),
+        },
+        spaceReview: {
+          include: ReviewDTO.generateInclude(),
+        },
+        spaceQnA: {
+          include: QnADTO.generateInclude(),
+        },
+        user: true,
+      },
     });
 
     return reports.map(
       (report) =>
         new ReportDTO({
           ...report,
-          isAnswered: !!report.answer,
+          spaceReview: report.spaceReview
+            ? {
+                ...report.spaceReview,
+                images: report.spaceReview.images.map((image) => ({
+                  imageId: image.image.id,
+                  url: image.image.url,
+                  isBest: image.isBest,
+                })),
+              }
+            : undefined,
+          space: SpaceDTO.generateSpaceDTO(report.space),
+          spaceQnA: {
+            ...report.spaceQnA,
+            space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
+          },
         })
     );
   }
 
-  async findReport(id: string) {
-    const report = await this.database.spaceReport.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        space: {
-          include: {
-            location: true,
-            reviews: true,
-            publicTransportations: true,
-            userInterests: true,
-            rentalType: true,
-            categories: {
-              include: {
-                category: true,
-              },
-            },
-            reports: true,
-          },
-        },
-        user: true,
-        answer: {
-          include: {
-            admin: true,
-          },
-        },
-      },
-    });
-    if (!report) {
-      throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND());
-    }
-
-    return new ReportDetailDTO({
-      ...report,
-      isAnswered: !!report.answer,
-      space: SpaceDTO.generateSpaceDTO(report.space),
-    });
-  }
-
-  async checkUserReportBySpaceId(spaceId: string, userId: string) {
-    const report = await this.database.spaceReport.findFirst({
-      where: {
-        spaceId,
-        userId,
-      },
-      include: {
-        space: true,
-        user: true,
-        answer: true,
-      },
-    });
-    if (!report) {
-      return null;
-    }
-
-    return new ReportDTO({
-      ...report,
-      isAnswered: !!report.answer,
-    });
-  }
-
   async createReport(userId: string, data: CreateReportDTO) {
-    const { spaceId, ...rest } = data;
-    const report = await this.database.spaceReport.create({
+    const { content, spaceId, spaceQnaId, spaceReviewId } = data;
+    const report = await this.database.userReport.create({
       data: {
-        ...rest,
+        content,
+        ...(spaceId && {
+          space: {
+            connect: {
+              id: spaceId,
+            },
+          },
+        }),
+        ...(spaceQnaId && {
+          spaceQnA: {
+            connect: {
+              id: spaceQnaId,
+            },
+          },
+        }),
+        ...(spaceReviewId && {
+          spaceReview: {
+            connect: {
+              id: spaceReviewId,
+            },
+          },
+        }),
         user: {
           connect: {
             id: userId,
-          },
-        },
-        space: {
-          connect: {
-            id: spaceId,
           },
         },
       },
@@ -134,7 +154,7 @@ export class ReportRepository {
   }
 
   async updateReport(id: string, data: UpdateReportDTO) {
-    await this.database.spaceReport.update({
+    await this.database.userReport.update({
       where: {
         id,
       },
@@ -142,42 +162,33 @@ export class ReportRepository {
     });
   }
 
-  async updateReportStatus(id: string, status: number) {
-    await this.database.spaceReport.update({
-      where: {
-        id,
-      },
-      data: {
-        reportStatus: status,
-      },
-    });
-  }
-
   async deleteReport(id: string) {
-    await this.database.spaceReport.delete({
+    await this.database.userReport.delete({
       where: {
         id,
       },
     });
   }
 
-  async findReportAnswer(id: string) {
-    const reportAnswer = await this.database.spaceReportAnswer.findUnique({
+  async findReportAnswer(reportAnswerId: string) {
+    const reportAnswer = await this.database.userReportAnswer.findUnique({
       where: {
-        id,
+        id: reportAnswerId,
       },
       include: {
         admin: true,
       },
     });
+
     if (!reportAnswer) {
-      throw new ReportException(REPORT_ERROR_CODE.NOT_FOUND(REPORT_ANSWER_NOT_FOUND));
+      throw new NotFoundException(REPORT_ANSWER_NOT_FOUND);
     }
+
     return new ReportAnswerDTO(reportAnswer);
   }
 
-  async createReportAnswer(adminId: string, reportId: string, data: CreateReportAnswerDTO) {
-    const report = await this.database.spaceReportAnswer.create({
+  async createReportAnswer(reportId: string, adminId: string, data: CreateReportAnswerDTO) {
+    const reportAnswer = await this.database.userReportAnswer.create({
       data: {
         ...data,
         admin: {
@@ -185,29 +196,30 @@ export class ReportRepository {
             id: adminId,
           },
         },
-        spaceReport: {
+        report: {
           connect: {
             id: reportId,
           },
         },
       },
     });
-    return report.id;
+
+    return reportAnswer.id;
   }
 
-  async updateReportAnswer(id: string, data: UpdateReportAnswerDTO) {
-    await this.database.spaceReportAnswer.update({
+  async updateReportAnswer(reportId: string, data: UpdateReportAnswerDTO) {
+    await this.database.userReportAnswer.update({
       where: {
-        id,
+        reportId,
       },
       data,
     });
   }
 
-  async deleteReportAnswer(id: string) {
-    await this.database.spaceReportAnswer.delete({
+  async deleteReportAnswer(reportAnswerId: string) {
+    await this.database.userReportAnswer.delete({
       where: {
-        id,
+        id: reportAnswerId,
       },
     });
   }

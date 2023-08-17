@@ -5,7 +5,7 @@ export interface UpdateReportAnswerDTOProps {
 }
 
 export class UpdateReportAnswerDTO {
-  @Property({ apiProperty: { type: 'string', description: '신고 답변 내용' } })
+  @Property({ apiProperty: { type: 'string', description: '답변 내용' } })
   content: string;
 
   constructor(props?: UpdateReportAnswerDTOProps) {

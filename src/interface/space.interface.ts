@@ -1,12 +1,12 @@
 import {
   Category,
+  Icon,
   PublicTransportation,
   RentalType,
   Space,
   SpaceCategory,
   SpaceInterest,
   SpaceLocation,
-  SpaceReport,
   SpaceReview,
 } from '@prisma/client';
 
@@ -42,15 +42,22 @@ export interface SqlSpace {
   hostId: string;
 }
 
+export interface SQLCategory extends Category {
+  iconId: string;
+  iconUrl: string;
+  iconName: string;
+}
+
 export interface CommonSpace extends Space {
-  reports: SpaceReport[];
   reviews: SpaceReview[];
   location: SpaceLocation;
   publicTransportations: PublicTransportation[];
   rentalType: RentalType[];
   userInterests: SpaceInterest[];
   categories?: (SpaceCategory & {
-    category: Category;
+    category: Category & {
+      icon: Icon;
+    };
   })[];
 }
 

@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { IconDetailDTO, IconDTO, IconInUseDTO } from '../dto/icon';
+import { IconDetailDTO, IconDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
 import { AdminException } from '../exception/admin.exception';
 import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
@@ -13,31 +13,19 @@ import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
 export class IconRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async checkIconInUse(iconPath: string) {
-    const building = await this.database.building.findFirst({
-      where: {
-        iconPath,
-      },
-    });
-
-    const service = await this.database.service.findFirst({
-      where: {
-        iconPath,
-      },
-    });
-    const category = await this.database.category.findFirst({
-      where: {
-        iconPath,
-      },
-    });
-
-    return new IconInUseDTO({ inUse: !!building || !!service || !!category });
-  }
-
   async findIcon(id: string) {
     const icon = await this.database.icon.findUnique({
       where: {
         id,
+      },
+      include: {
+        _count: {
+          select: {
+            building: true,
+            category: true,
+            service: true,
+          },
+        },
       },
     });
 
@@ -47,7 +35,7 @@ export class IconRepository {
 
     return new IconDetailDTO({
       ...icon,
-      inUse: (await this.checkIconInUse(icon.url)).inUse,
+      inUse: icon._count.building > 0 || icon._count.category > 0 || icon._count.service > 0,
     });
   }
 
@@ -56,9 +44,28 @@ export class IconRepository {
   }
 
   async findIcons(args = {} as Prisma.IconFindManyArgs) {
-    const icons = await this.database.icon.findMany(args);
+    const icons = await this.database.icon.findMany({
+      ...args,
+      include: {
+        _count: {
+          select: {
+            building: true,
+            category: true,
+            service: true,
+          },
+        },
+      },
+    });
 
-    return icons.map((icon) => new IconDTO(icon));
+    return await Promise.all(
+      icons.map(
+        async (icon) =>
+          new IconDTO({
+            ...icon,
+            inUse: icon._count.building > 0 || icon._count.category > 0 || icon._count.service > 0,
+          })
+      )
+    );
   }
 
   async createIcon(url: string, data: CreateIconDTO) {

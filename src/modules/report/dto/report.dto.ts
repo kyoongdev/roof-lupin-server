@@ -1,41 +1,62 @@
 import { Property } from 'cumuco-nestjs';
 
-import { DateDTO, type DateProps } from '@/common';
-import { SpaceDetailDTO, SpaceDetailDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
+import { QnADTO, QnADTOProps } from '@/modules/qna/dto';
+import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto';
+import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
+import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
-export interface ReportDTOProps extends DateProps {
+import { ReportAnswerDTO, ReportAnswerDTOProps } from './report-answer.dto';
+import { ReportStatusResDecorator } from './validation';
+
+export interface ReportDTOProps {
   id: string;
-  title: string;
+  reportStatus: number;
   content: string;
+  space?: SpaceDTOProps;
+  spaceReview?: ReviewDTOProps;
+  spaceQnA?: QnADTOProps;
   user: CommonUserProps;
-  isAnswered: boolean;
+  createdAt: Date;
+  answer: ReportAnswerDTOProps;
 }
 
-export class ReportDTO extends DateDTO {
-  @Property({ apiProperty: { type: 'string', description: '신고 ID' } })
+export class ReportDTO {
+  @Property({ apiProperty: { type: 'string', description: 'id' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '신고 제목' } })
-  title: string;
+  @ReportStatusResDecorator()
+  reportStatus: number;
 
   @Property({ apiProperty: { type: 'string', description: '신고 내용' } })
   content: string;
 
-  @Property({ apiProperty: { type: CommonUserDTO, description: '신고자' } })
+  @Property({ apiProperty: { type: SpaceDTO, nullable: true, description: '공간 정보' } })
+  space?: SpaceDTO;
+
+  @Property({ apiProperty: { type: ReviewDTO, nullable: true, description: '공간 리뷰 정보' } })
+  spaceReview?: ReviewDTO;
+
+  @Property({ apiProperty: { type: QnADTO, nullable: true, description: '공간 QnA 정보' } })
+  spaceQnA?: QnADTO;
+
+  @Property({ apiProperty: { type: CommonUserDTO, nullable: true, description: '유저 정보' } })
   user: CommonUserDTO;
 
-  @Property({ apiProperty: { type: 'boolean', description: '답변 여부' } })
-  isAnswered: boolean;
+  @Property({ apiProperty: { type: 'string', description: '신고 생성일' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: ReportAnswerDTO, nullable: true, description: '신고 답변' } })
+  answer: ReportAnswerDTO;
 
   constructor(props: ReportDTOProps) {
-    super();
     this.id = props.id;
-    this.title = props.title;
+    this.reportStatus = props.reportStatus;
     this.content = props.content;
+    this.space = props.space ? new SpaceDTO(props.space) : undefined;
+    this.spaceReview = props.spaceReview ? new ReviewDTO(props.spaceReview) : undefined;
+    this.spaceQnA = props.spaceQnA ? new QnADTO(props.spaceQnA) : undefined;
     this.user = new CommonUserDTO(props.user);
-    this.isAnswered = props.isAnswered;
     this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
+    this.answer = props.answer ? new ReportAnswerDTO(props.answer) : undefined;
   }
 }

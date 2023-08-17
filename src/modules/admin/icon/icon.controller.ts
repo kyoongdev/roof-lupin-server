@@ -1,22 +1,11 @@
-import {
-  Body,
-  Delete,
-  FileTypeValidator,
-  Get,
-  Param,
-  ParseFilePipe,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
 import { Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
-import { UploadedFileDTO } from '@/modules/file/dto';
-import { ApiController, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { EmptyResponseDTO } from '@/common';
+import { ApiController } from '@/utils';
 
 import { IconDetailDTO, IconDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
@@ -47,16 +36,13 @@ export class AdminIconController {
       description: '아이콘 리스트 불러오기',
       summary: '아이콘 리스트 불러오기',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: IconDTO,
-    isPaging: true,
+    isArray: true,
   })
-  async getIcons(@Paging() paging: PagingDTO) {
-    return await this.iconService.findPagingIcons(paging);
+  async getIcons() {
+    return await this.iconService.findIcons();
   }
 
   @Post()

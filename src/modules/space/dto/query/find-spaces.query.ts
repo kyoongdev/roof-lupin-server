@@ -133,7 +133,7 @@ export class FindSpacesQuery extends PagingDTO {
       : Prisma.empty;
 
     const reportWhere = userId
-      ? Prisma.sql`AND NOT EXISTS (SELECT spaceId FROM SpaceReport as sre WHERE sre.userId = ${userId} AND sre.spaceId = sp.id)`
+      ? Prisma.sql`AND NOT EXISTS (SELECT spaceId FROM UserReport re WHERE re.userId = ${userId} AND re.spaceId = sp.id)`
       : Prisma.empty;
 
     const categoryWhere = this.category ? Prisma.sql`AND ca.name LIKE '%${Prisma.raw(this.category)}%'` : Prisma.empty;

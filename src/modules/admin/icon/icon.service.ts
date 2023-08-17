@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { FileService } from '@/modules/file/file.service';
 
-import { IconDTO } from '../dto/icon';
 import { AdminException } from '../exception/admin.exception';
 import { ADMIN_ERROR_CODE, ADMIN_ICON_IN_USE } from '../exception/errorCode';
 
@@ -19,16 +17,10 @@ export class AdminIconService {
     return await this.iconRepository.findIcon(id);
   }
 
-  async findPagingIcons(paging: PagingDTO, args = {} as Prisma.IconFindManyArgs) {
-    const { skip, take } = paging.getSkipTake();
-    const count = await this.iconRepository.countIcons({ where: args.where });
-    const icons = await this.iconRepository.findIcons({
-      ...args,
-      skip,
-      take,
-    });
+  async findIcons(args = {} as Prisma.IconFindManyArgs) {
+    const icons = await this.iconRepository.findIcons(args);
 
-    return new PaginationDTO<IconDTO>(icons, { count, paging });
+    return icons;
   }
 
   async createIcon(file: Express.Multer.File, name: string) {
@@ -38,9 +30,8 @@ export class AdminIconService {
 
   async deleteIcon(id: string) {
     const icon = await this.findIcon(id);
-    const result = await this.iconRepository.checkIconInUse(icon.url);
 
-    if (result.inUse) {
+    if (icon.inUse) {
       throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_ICON_IN_USE));
     }
 

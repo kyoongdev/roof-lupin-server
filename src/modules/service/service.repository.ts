@@ -20,6 +20,9 @@ export class ServiceRepository {
       where: {
         id,
       },
+      include: {
+        icon: true,
+      },
     });
 
     if (!service) {
@@ -30,7 +33,12 @@ export class ServiceRepository {
   }
 
   async findServices(args = {} as Prisma.ServiceFindManyArgs) {
-    const services = await this.database.service.findMany(args);
+    const services = await this.database.service.findMany({
+      ...args,
+      include: {
+        icon: true,
+      },
+    });
     return services.map((service) => new ServiceDTO(service));
   }
 
@@ -40,7 +48,11 @@ export class ServiceRepository {
         id,
       },
       include: {
-        services: true,
+        services: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
 
@@ -55,7 +67,11 @@ export class ServiceRepository {
     const serviceTitles = await this.database.serviceTitle.findMany({
       ...args,
       include: {
-        services: true,
+        services: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
     return serviceTitles.map((serviceTitle) => new ServiceTitleDTO(serviceTitle));
@@ -68,7 +84,11 @@ export class ServiceRepository {
         services: {
           create: data.services.map((service) => ({
             name: service.name,
-            iconPath: service.iconPath,
+            icon: {
+              connect: {
+                id: service.iconId,
+              },
+            },
           })),
         },
       },
@@ -89,7 +109,11 @@ export class ServiceRepository {
             deleteMany: {},
             create: data.services.map((service) => ({
               name: service.name,
-              iconPath: service.iconPath,
+              icon: {
+                connect: {
+                  id: service.iconId,
+                },
+              },
             })),
           },
         }),

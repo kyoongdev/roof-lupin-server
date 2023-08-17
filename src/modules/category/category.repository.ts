@@ -112,8 +112,18 @@ export class CategoryRepository {
   }
 
   async createCategory(data: CreateCategoryDTO) {
+    const { iconId, ...rest } = data;
     const category = await this.database.category.create({
-      data,
+      data: {
+        ...rest,
+        ...(iconId && {
+          icon: {
+            connect: {
+              id: iconId,
+            },
+          },
+        }),
+      },
     });
 
     return category.id;
@@ -174,11 +184,22 @@ export class CategoryRepository {
   }
 
   async updateCategory(id: string, data: UpdateCategoryDTO) {
+    const { iconId, ...rest } = data;
     await this.database.category.update({
       where: {
         id,
       },
-      data,
+      data: {
+        ...rest,
+        ...(iconId && {
+          icon: {
+            delete: true,
+            connect: {
+              id: iconId,
+            },
+          },
+        }),
+      },
     });
   }
 

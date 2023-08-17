@@ -34,6 +34,10 @@ model Icon {
   id   String @id @default(uuid())
   name String @db.VarChar(120)
   url  String
+
+  building Building[]
+  service  Service[]
+  category Category[]
 }
 
 model FrequentQuestion {
@@ -120,18 +124,6 @@ model Image {
   exhibitionImages  ExhibitionImage[]
 }
 
-model MainImage {
-  id        String  @id @default(uuid())
-  url       String
-  isDefault Boolean @default(false)
-}
-
-model Slogan {
-  id        String  @id @default(uuid())
-  content   String
-  isDefault Boolean @default(false)
-}
-
 model Ranking {
   id          String @id @default(uuid())
   name        String
@@ -185,7 +177,7 @@ model Space {
   host   Host   @relation(fields: [hostId], references: [id])
 
   reviews               SpaceReview[]
-  reports               SpaceReport[]
+  reports               UserReport[]
   userInterests         SpaceInterest[]
   images                SpaceImage[]
   refundPolicies        RefundPolicy[]
@@ -440,35 +432,40 @@ model TaxReturn {
 }
 
 //INFO: 공간 신고 (신고가 있는 공간은 유저에게 보이면 안됨)
-model SpaceReport {
-  id           String @id @default(uuid())
-  reportType   Int    @db.TinyInt
-  reportStatus Int    @default(1) @db.TinyInt // 1 = 처리중, 2 = 처리완료
-  title        String @db.VarChar(120)
-  content      String @db.MediumText
+model UserReport {
+  id String @id @default(uuid())
 
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reportStatus Int @default(1) @db.TinyInt // 1 = 처리중, 2 = 처리완료
 
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  answer    SpaceReportAnswer?
+  content String @db.MediumText
+
+  spaceId       String?
+  space         Space?       @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceReviewId String?
+  spaceReview   SpaceReview? @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnAId    String?
+  spaceQnA      SpaceQnA?    @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now())
+
+  answer UserReportAnswer?
 }
 
 //INFO: 공간 신고 답변
-model SpaceReportAnswer {
+model UserReportAnswer {
   id String @id @default(uuid())
 
   content String @db.MediumText
 
   createdAt DateTime @default(now())
 
-  adminId       String
-  admin         Admin       @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  spaceReportId String      @unique
-  spaceReport   SpaceReport @relation(fields: [spaceReportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adminId  String
+  admin    Admin      @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reportId String     @unique
+  report   UserReport @relation(fields: [reportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 //INFO: 공간 QnA
@@ -488,6 +485,7 @@ model SpaceQnA {
 
   answers   SpaceQnAAnswer[]
   histories History[]
+  reports   UserReport[]
 }
 
 //INFO: QnA 답변은 host(공간주인)가 다는건지 Admin(통합관리자)이 다는건지
@@ -526,7 +524,7 @@ model SpaceReview {
 
   images    SpaceReviewImage[]
   answers   SpaceReviewAnswer[]
-  reports   SpaceReviewReport[]
+  reports   UserReport[]
   histories History[]
 }
 
@@ -539,20 +537,6 @@ model SpaceReviewImage {
   isBest        Boolean     @default(false)
 
   @@id([spaceReviewId, imageId])
-}
-
-model SpaceReviewReport {
-  id String @id @default(uuid())
-
-  content     String  @db.MediumText
-  isProcessed Boolean @default(false)
-
-  spaceReviewId String?
-  spaceReview   SpaceReview? @relation(fields: [spaceReviewId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  userId        String
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  createdAt DateTime @default(now())
 }
 
 model SpaceReviewAnswer {
@@ -711,10 +695,10 @@ model Admin {
   salt       String
   isAccepted Boolean @default(false)
 
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
   deletedAt     DateTime?
-  reportAnswers SpaceReportAnswer[]
+  reportAnswers UserReportAnswer[]
 }
 
 model User {
@@ -741,7 +725,7 @@ model User {
   loginedAt DateTime?
 
   spaceReviews       SpaceReview[]
-  spaceReports       SpaceReport[]
+  reports            UserReport[]
   spaceInterests     SpaceInterest[]
   spaceQnAs          SpaceQnA[]
   locations          UserLocation[]
@@ -752,7 +736,6 @@ model User {
   alarms             UserAlarm[]
   reservations       Reservation[]
   recentSpaces       RecentSpace[]
-  reviewReports      SpaceReviewReport[]
   faqs               FAQ[]
   reservationRefunds ReservationRefund[]
 }
@@ -853,10 +836,13 @@ model Location {
 
 //INFO: 공간 시설
 model Building {
-  id             String          @id @default(uuid())
-  iconPath       String
+  id String @id @default(uuid())
+
   name           String
   spaceBuildings SpaceBuilding[]
+
+  icon   Icon   @relation(fields: [iconId], references: [id])
+  iconId String
 }
 
 model ServiceTitle {
@@ -868,24 +854,30 @@ model ServiceTitle {
 
 //INFO: 이용 가능한 서비스
 model Service {
-  id       String @id @default(uuid())
-  iconPath String
-  name     String @db.VarChar(20)
+  id String @id @default(uuid())
+
+  name String @db.VarChar(20)
 
   spaceServices  SpaceService[]
   serviceTitle   ServiceTitle?  @relation(fields: [serviceTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   serviceTitleId String?
+
+  icon   Icon   @relation(fields: [iconId], references: [id])
+  iconId String
 }
 
 //INFO: 활용 가능한 카테고리 (ex. 회의실, 스터디룸, 세미나실, 오픈스페이스 등)
 model Category {
-  id                   String           @id @default(uuid())
-  name                 String           @db.VarChar(80)
-  isHome               Boolean          @default(false)
-  isRecommended        Boolean          @default(false)
-  iconPath             String?
+  id            String  @id @default(uuid())
+  name          String  @db.VarChar(80)
+  isHome        Boolean @default(false)
+  isRecommended Boolean @default(false)
+
   spaceUsageCategories SpaceCategory[]
   couponCategories     CouponCategory[]
+
+  icon   Icon?   @relation(fields: [iconId], references: [id])
+  iconId String?
 }
 
 model ContentCategory {

@@ -2,47 +2,42 @@ import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO, IdsDTO, ResponseWithIdDTO } from '@/common';
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestAdmin } from '@/interface/role.interface';
-import { CreateReportAnswerDTO, ReportDetailDTO, ReportDTO, UpdateReportAnswerDTO } from '@/modules/report/dto';
+import { CreateReportAnswerDTO, ReportDTO, UpdateReportDTO } from '@/modules/report/dto';
+import { UpdateReportAnswerDTO } from '@/modules/report/dto/update-report-answer.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AdminFindReportsQuery } from '../dto/query/report';
-import { AdminUpdateReportDTO } from '../dto/report';
 
 import { AdminReportService } from './report.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
 @ApiController('reports', '[관리자] 신고 관리')
 export class AdminReportController {
-  constructor(private readonly adminReportService: AdminReportService) {}
+  constructor(private readonly reportService: AdminReportService) {}
 
   @Get(':reportId/detail')
   @RequestApi({
     summary: {
-      description: '[관리자]신고 상세 조회',
+      description: '신고 상세 조회',
       summary: '신고 상세 조회',
-    },
-    params: {
-      name: 'reportId',
-      type: 'string',
-      description: '신고 아이디',
     },
   })
   @ResponseApi({
-    type: ReportDetailDTO,
+    type: ReportDTO,
   })
   async getReport(@Param('reportId') reportId: string) {
-    return await this.adminReportService.findReport(reportId);
+    return await this.reportService.findReport(reportId);
   }
 
   @Get()
   @RequestApi({
     summary: {
-      description: '[관리자]신고 조회',
-      summary: '신고 조회',
+      description: '신고 목록 조회',
+      summary: '신고 목록 조회',
     },
   })
   @ResponseApi({
@@ -50,40 +45,15 @@ export class AdminReportController {
     isPaging: true,
   })
   async getReports(@Paging() paging: PagingDTO, @Query() query: AdminFindReportsQuery) {
-    return await this.adminReportService.findPagingReports(paging, query.generateQuery());
-  }
-
-  @Patch(':reportId')
-  @RequestApi({
-    summary: {
-      description: '신고 처리',
-      summary: '신고 처리',
-    },
-    params: {
-      name: 'reportId',
-      type: 'string',
-      description: '신고 아이디',
-    },
-    body: {
-      type: AdminUpdateReportDTO,
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async updateReportStatus(@Param('reportId') reportId: string, @Body() body: AdminUpdateReportDTO) {
-    await this.adminReportService.updateReportStatus(reportId, body);
+    return await this.reportService.findPagingReport(paging, query.generateQuery());
   }
 
   @Post(':reportId/answers')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      description: '신고 답변 등록',
-      summary: '신고 답변 등록',
+      description: '신고 답변 생성',
+      summary: '신고 답변 생성',
     },
   })
   @ResponseApi(
@@ -93,11 +63,28 @@ export class AdminReportController {
     201
   )
   async createReportAnswer(
-    @ReqUser() user: RequestAdmin,
     @Param('reportId') reportId: string,
-    @Body() body: CreateReportAnswerDTO
+    @ReqUser() user: RequestAdmin,
+    @Body() data: CreateReportAnswerDTO
   ) {
-    return await this.adminReportService.createReportAnswer(user.id, reportId, body);
+    return await this.reportService.createReportAnswer(reportId, user.id, data);
+  }
+
+  @Patch(':reportId')
+  @RequestApi({
+    summary: {
+      description: '신고 처리',
+      summary: '신고 처리',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateReport(@Param('reportId') reportId: string, @Body() data: UpdateReportDTO) {
+    await this.reportService.updateReport(reportId, data);
   }
 
   @Patch('answers/:reportAnswerId')
@@ -113,12 +100,8 @@ export class AdminReportController {
     },
     204
   )
-  async updateReportAnswer(
-    @Param('reportAnswerId') id: string,
-    @ReqUser() user: RequestAdmin,
-    @Body() body: UpdateReportAnswerDTO
-  ) {
-    await this.adminReportService.updateReportAnswer(id, user.id, body);
+  async updateReportAnswer(@Param('reportAnswerId') reportAnswerId: string, @Body() data: UpdateReportAnswerDTO) {
+    await this.reportService.updateReportAnswer(reportAnswerId, data);
   }
 
   @Delete('answers/:reportAnswerId')
@@ -134,24 +117,7 @@ export class AdminReportController {
     },
     204
   )
-  async deleteReportAnswer(@Param('reportAnswerId') id: string, @ReqUser() user: RequestAdmin) {
-    await this.adminReportService.deleteReportAnswer(id, user.id);
-  }
-
-  @Delete('many')
-  @RequestApi({
-    summary: {
-      description: '신고 다수 삭제하기',
-      summary: '신고 다수 삭제하기',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async deleteReports(@Query() query: IdsDTO) {
-    await Promise.all(query.ids.split(',').map((id) => this.adminReportService.deleteReport(id)));
+  async deleteReportAnswer(@Param('reportAnswerId') reportAnswerId: string) {
+    await this.reportService.deleteReportAnswer(reportAnswerId);
   }
 }

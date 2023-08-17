@@ -3,12 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Category, Prisma, PublicTransportation, RentalType } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import { SqlSpace } from '@/interface/space.interface';
+import { SQLCategory, SqlSpace } from '@/interface/space.interface';
 
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
-import { BuildingDTO, CreateBuildingDTO } from './dto/facility';
+import { BuildingDTO, CreateBuildingDTO } from './dto/building';
 import { CreateHashTagDTO, HashTagDTO } from './dto/hashTag';
 import { RefundPolicyDTO } from './dto/refund';
 import { SPACE_ERROR_CODE } from './exception/errorCode';
@@ -49,10 +49,11 @@ export class SpaceRepository {
           WHERE rt.spaceId = ${space.id}
         `);
 
-        const categories: Category[] = await this.database.$queryRaw(Prisma.sql`
-          SELECT *
+        const categories: SQLCategory[] = await this.database.$queryRaw(Prisma.sql`
+          SELECT *, ic.id as iconId, ic.url as iconUrl, ic.name as iconName
           FROM Category c
           LEFT JOIN SpaceCategory sc ON sc.categoryId = c.id
+          LEFT JOIN Icon ic ON ic.id = c.iconId
           WHERE sc.spaceId = ${space.id}
         `);
 
@@ -72,7 +73,14 @@ export class SpaceRepository {
           },
           publicTransportations,
           rentalType,
-          categories,
+          categories: categories.map((category) => ({
+            ...category,
+            icon: {
+              id: category.iconId,
+              url: category.iconUrl,
+              name: category.iconName,
+            },
+          })),
         });
       })
     );
@@ -123,13 +131,21 @@ export class SpaceRepository {
         },
         categories: {
           include: {
-            category: true,
+            category: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
         cautions: true,
         buildings: {
           include: {
-            building: true,
+            building: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
         host: true,
@@ -147,7 +163,11 @@ export class SpaceRepository {
         },
         services: {
           include: {
-            service: true,
+            service: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
         userInterests: true,
@@ -235,7 +255,11 @@ export class SpaceRepository {
         rentalType: true,
         categories: {
           include: {
-            category: true,
+            category: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
         reports: true,
@@ -279,7 +303,11 @@ export class SpaceRepository {
         rentalType: true,
         categories: {
           include: {
-            category: true,
+            category: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
         reports: true,
@@ -337,7 +365,7 @@ export class SpaceRepository {
       ...rest
     } = data;
 
-    data.validateRefundPolicies();
+    data.validateDTO();
 
     const minSize = Math.min(...sizes.map((size) => size.size));
 
@@ -439,7 +467,7 @@ export class SpaceRepository {
       ...rest
     } = data;
 
-    data.validateRefundPolicies();
+    data.validateDTO();
     const updateArgs: Prisma.SpaceUpdateArgs = {
       where: {
         id: spaceId,
@@ -706,12 +734,25 @@ export class SpaceRepository {
           where: {
             name: building.name,
           },
+          include: {
+            icon: true,
+          },
         });
         if (isExist) {
           return new BuildingDTO(isExist);
         }
         const newBuilding = await prisma.building.create({
-          data: building,
+          data: {
+            name: building.name,
+            icon: {
+              connect: {
+                id: building.iconId,
+              },
+            },
+          },
+          include: {
+            icon: true,
+          },
         });
         return new BuildingDTO(newBuilding);
       })

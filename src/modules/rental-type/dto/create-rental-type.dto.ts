@@ -61,7 +61,7 @@ export class CreateRentalTypeDTO {
         (timeCostInfo) =>
           new CreateTimeCostInfoDTO({
             cost: timeCostInfo.cost,
-            time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+            time: timeCostInfo.time,
           })
       );
 

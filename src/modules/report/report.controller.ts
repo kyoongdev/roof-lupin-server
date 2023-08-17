@@ -1,49 +1,56 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
+import { ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
-import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
+import { ApiController, JwtAuthGuard, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
+import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
+import { FindReportsQuery } from './dto/query';
 import { ReportService } from './report.service';
 
-@ApiController('reports', '공간 신고')
+@Auth([JwtAuthGuard, RoleGuard('USER')])
+@ApiController('reports', '신고')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @Get('me/paging')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Get(':reportId/detail')
   @RequestApi({
     summary: {
-      summary: '나의 공간 신고 목록 불러오기 - 유저만 사용 가능합니다.',
-      description: '나의 공간 신고 목록',
+      description: '신고 상세 조회',
+      summary: '신고 상세 조회',
     },
-    query: {
-      type: PagingDTO,
+  })
+  @ResponseApi({
+    type: ReportDTO,
+  })
+  async getReport(@Param('reportId') reportId: string) {
+    return await this.reportService.findReport(reportId);
+  }
+
+  @Get()
+  @RequestApi({
+    summary: {
+      description: '신고 목록 조회',
+      summary: '신고 목록 조회',
     },
   })
   @ResponseApi({
     type: ReportDTO,
     isPaging: true,
   })
-  async getMyReports(@Paging() paging: PagingDTO) {
-    return await this.reportService.findPagingReport(paging);
+  async getReports(@ReqUser() user: RequestUser, @Paging() paging: PagingDTO, @Query() query: FindReportsQuery) {
+    return await this.reportService.findReportPagingReports(paging, user.id, query.generateQuery());
   }
 
-  @Post()
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Post('spaces')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      summary: '공간 신고 생성하기 - 유저만 사용 가능합니다.',
-      description: '공간 신고 생성하기',
-    },
-    body: {
-      type: CreateReportDTO,
+      description: '신고 생성',
+      summary: '신고 생성',
     },
   })
   @ResponseApi(
@@ -52,57 +59,42 @@ export class ReportController {
     },
     201
   )
-  async createReport(@ReqUser() user: RequestUser, @Body() body: CreateReportDTO) {
-    return await this.reportService.createReports(user.id, body);
+  async createSpaceReport(@ReqUser() user: RequestUser, @Body() body: CreateSpaceReportDTO) {
+    return await this.reportService.createSpaceReport(user.id, body);
   }
-
-  @Patch(':reportId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @UseInterceptors()
+  @Post('reviews')
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      summary: '나의 공간 신고 수정하기 - 나의 신고만 수정이 가능합니다.',
-      description: '나의 공간 신고 수정하기',
-    },
-    body: {
-      type: UpdateReportDTO,
-    },
-    params: {
-      name: 'reportId',
-      type: 'string',
-      description: '신고 ID',
+      description: '리뷰 신고 생성',
+      summary: '리뷰 신고 생성',
     },
   })
   @ResponseApi(
     {
-      type: EmptyResponseDTO,
+      type: ResponseWithIdDTO,
     },
-    204
+    201
   )
-  async updateReport(@Param('reportId') reportId: string, @ReqUser() user: RequestUser, @Body() body: UpdateReportDTO) {
-    await this.reportService.updateReport(reportId, user.id, body);
+  async createSpaceReviewReport(@ReqUser() user: RequestUser, @Body() body: CreateReviewReportDTO) {
+    return await this.reportService.createReviewReport(user.id, body);
   }
 
-  @Delete(':reportId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @Post('qnas')
+  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      summary: '나의 공간 신고 삭제하기  - 나의 신고만 삭제가 가능합니다.',
-      description: '나의 공간 신고 삭제하기',
-    },
-    params: {
-      name: 'reportId',
-      type: 'string',
-      description: '신고 ID',
+      description: 'QnA 신고 생성',
+      summary: 'QnA 신고 생성',
     },
   })
   @ResponseApi(
     {
-      type: EmptyResponseDTO,
+      type: ResponseWithIdDTO,
     },
-    204
+    201
   )
-  async deleteReport(@Param('reportId') reportId: string, @ReqUser() user: RequestUser) {
-    await this.reportService.deleteReport(reportId, user.id);
+  async createSpaceQnAReport(@ReqUser() user: RequestUser, @Body() body: CreateQnAReportDTO) {
+    return await this.reportService.createQnAReport(user.id, body);
   }
 }

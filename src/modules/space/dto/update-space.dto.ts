@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common';
+
 import { Property } from 'cumuco-nestjs';
 import { range } from 'lodash';
 
@@ -8,9 +10,9 @@ import { CreateRentalTypeDTO } from '@/modules/rental-type/dto';
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
+import { CreateBuildingDTO } from './building';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
-import { CreateBuildingDTO } from './facility';
 import { UpdateHashTagDTO } from './hashTag';
 import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO } from './refund';
@@ -135,6 +137,11 @@ export class UpdateSpaceDTO {
     }
   }
 
+  validateDTO() {
+    this.validateOpenHours();
+    this.validateRefundPolicies();
+  }
+
   validateRefundPolicies() {
     if (!this.refundPolicies) return;
     if (this.refundPolicies.length !== 9) {
@@ -146,6 +153,20 @@ export class UpdateSpaceDTO {
         throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_DAYS_BEFORE_TYPE));
       }
     });
+  }
+
+  validateOpenHours() {
+    if (!this.openHours) return;
+    const days = this.openHours.map((openHour) => {
+      if (openHour.startAt >= openHour.endAt) {
+        throw new BadRequestException('영업시간 시작시간은 종료시간보다 빠를 수 없습니다.');
+      }
+      return openHour.day;
+    });
+    const isDuplicate = days.some((day, index) => days.indexOf(day) !== index);
+    if (isDuplicate) {
+      throw new BadRequestException('영업시간 요일은 중복될 수 없습니다.');
+    }
   }
 
   setIsApproved(isApproved: boolean) {

@@ -19,7 +19,7 @@ export class ReportAnswerDTO {
   @Property({ apiProperty: { type: 'string', description: '신고 답변 생성일' } })
   createdAt: Date;
 
-  @Property({ apiProperty: { type: AdminDTO, description: '신고 답변자' } })
+  @Property({ apiProperty: { type: AdminDTO, description: '신고 답변 관리자' } })
   admin: AdminDTO;
 
   constructor(props: ReportAnswerDTOProps) {

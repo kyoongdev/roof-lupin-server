@@ -28,7 +28,7 @@ export class FileService {
     await Promise.all(files.map((file) => this.deleteFile(file.key)));
   }
 
-  async getAllFiles() {
+  async getAllFiles(isImage = true) {
     const files = await new AWS.S3({
       region: this.configService.get('AWS_REGION'),
       credentials: {
@@ -42,7 +42,9 @@ export class FileService {
 
     return files.Contents
       ? await Promise.all(
-          files.Contents.filter((file) => file.Size > 0).map(async (file) => {
+          files.Contents.filter(
+            (file) => file.Size > 0 && file.Key && (isImage ? file.Key.includes('jpeg') : file.Key.includes('svg'))
+          ).map(async (file) => {
             const url = ImageDTO.parseS3ImageURL(file.Key);
             const inUse = await this.checkInUse(url);
 
@@ -75,14 +77,22 @@ export class FileService {
     }
   }
 
-  async uploadResizedFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
+  async uploadResizedFile(
+    file: Express.Multer.File,
+    originKey?: string,
+    width?: number,
+    height?: number,
+    contentType = 'image/jpeg'
+  ) {
     try {
       const originalname = file.originalname.split('.').shift();
 
       const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
 
       const resizedFile = await this.imageResize(
-        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer
+        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer,
+        width,
+        height
       );
 
       await new AWS.S3({
@@ -110,7 +120,7 @@ export class FileService {
       const originalname = file.originalname.split('.').shift();
 
       const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
-
+      const fileBuffer = file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer;
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
@@ -119,7 +129,7 @@ export class FileService {
         },
       }).putObject({
         Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
-        Body: file.buffer,
+        Body: fileBuffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: contentType,
       });
@@ -188,7 +198,7 @@ export class FileService {
 
   async deleteFile(url: string) {
     try {
-      await new AWS.S3({
+      const result = await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
           accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
@@ -198,14 +208,16 @@ export class FileService {
         Key: ImageDTO.parseS3ImageKey(url),
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
+      console.log(result, ImageDTO.parseS3ImageKey(url));
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
   }
 
-  private async imageResize(file: Buffer) {
+  private async imageResize(file: Buffer, width?: number, height?: number) {
     const transformer = await sharp(file)
-      .resize({ width: 780, height: 564, fit: sharp.fit.cover })
+      .resize({ width: width ?? 780, height: height ?? 564, fit: sharp.fit.cover })
       .jpeg({ mozjpeg: true })
       .toBuffer();
     return transformer;
@@ -229,23 +241,6 @@ export class FileService {
     const icon = await this.database.icon.findFirst({
       where: {
         url,
-      },
-    });
-    const building = await this.database.building.findFirst({
-      where: {
-        iconPath: url,
-      },
-    });
-
-    const service = await this.database.service.findFirst({
-      where: {
-        iconPath: url,
-      },
-    });
-
-    const category = await this.database.category.findFirst({
-      where: {
-        iconPath: url,
       },
     });
 
@@ -275,11 +270,7 @@ export class FileService {
         ],
       },
     });
-    const mainImage = await this.database.mainImage.findFirst({
-      where: {
-        url,
-      },
-    });
+
     const space = await this.database.space.findFirst({
       where: { thumbnail: url },
     });
@@ -300,12 +291,8 @@ export class FileService {
       Boolean(user) ||
       Boolean(host) ||
       Boolean(space) ||
-      Boolean(mainImage) ||
       Boolean(exhibition) ||
       Boolean(curation) ||
-      Boolean(category) ||
-      Boolean(service) ||
-      Boolean(building) ||
       Boolean(icon) ||
       Boolean(image)
     );

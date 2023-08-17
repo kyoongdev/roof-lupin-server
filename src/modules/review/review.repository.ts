@@ -10,22 +10,14 @@ import {
   BestPhotoDTO,
   CreateReviewAnswerDTO,
   CreateReviewDTO,
-  CreateReviewReportDTO,
   ReviewAnswerDTO,
   ReviewDetailDTO,
-  ReviewReportDTO,
   UpdateReviewAnswerDTO,
   UpdateReviewDTO,
-  UpdateReviewReportDTO,
 } from './dto';
 import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewDTO } from './dto/review.dto';
-import {
-  REVIEW_ANSWER_NOT_FOUND,
-  REVIEW_ERROR_CODE,
-  REVIEW_IMAGE_NOT_FOUND,
-  REVIEW_REPORT_NOT_FOUND,
-} from './exception/errorCode';
+import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_IMAGE_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -160,103 +152,6 @@ export class ReviewRepository {
           url: photo.image.url,
         })
     );
-  }
-
-  async findReviewReport(id: string) {
-    const report = await this.database.spaceReviewReport.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        user: true,
-      },
-    });
-
-    if (!report) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(REVIEW_REPORT_NOT_FOUND));
-    }
-
-    return new ReviewReportDTO(report);
-  }
-
-  async checkReviewReport(reviewId: string, userId: string) {
-    const report = await this.database.spaceReviewReport.findFirst({
-      where: {
-        spaceReviewId: reviewId,
-        userId,
-      },
-    });
-
-    return report;
-  }
-
-  async countReviewReports(args = {} as Prisma.SpaceReviewReportCountArgs) {
-    return await this.database.spaceReviewReport.count(args);
-  }
-
-  async findReviewReports(args = {} as Prisma.SpaceReviewReportFindManyArgs) {
-    const reports = await this.database.spaceReviewReport.findMany({
-      where: {
-        ...args.where,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
-      skip: args.skip,
-      take: args.take,
-    });
-
-    return reports.map((report) => new ReviewReportDTO(report));
-  }
-
-  async createReviewReport(reviewId: string, userId: string, data: CreateReviewReportDTO) {
-    await this.database.spaceReviewReport.create({
-      data: {
-        ...data,
-        spaceReview: {
-          connect: {
-            id: reviewId,
-          },
-        },
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
-  }
-
-  async updateReviewReport(id: string, data: UpdateReviewReportDTO) {
-    await this.database.spaceReviewReport.update({
-      where: {
-        id,
-      },
-      data,
-    });
-  }
-
-  async updateReviewReportIsProcessed(id: string, isProcessed: boolean) {
-    await this.database.spaceReviewReport.update({
-      where: {
-        id,
-      },
-      data: {
-        isProcessed,
-      },
-    });
-  }
-
-  async deleteReviewReport(id: string) {
-    await this.database.spaceReviewReport.delete({
-      where: {
-        id,
-      },
-    });
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {

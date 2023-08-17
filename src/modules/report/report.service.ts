@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { REVIEW_MUTATION_FORBIDDEN } from '../review/exception/errorCode';
+import { QnARepository } from '../qna/qna.repository';
+import { ReviewRepository } from '../review/review.repository';
 import { SpaceRepository } from '../space/space.repository';
 import { UserRepository } from '../user/user.repository';
 
-import { CreateReportDTO, ReportDTO, UpdateReportDTO } from './dto';
-import { REPORT_ALREADY_EXISTS, REPORT_ERROR_CODE } from './exception/errorCode';
-import { ReportException } from './exception/report.exception';
+import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
+import { REPORT_ALREADY_EXISTS } from './exception/errorCode';
 import { ReportRepository } from './report.repository';
 
 @Injectable()
@@ -17,72 +17,77 @@ export class ReportService {
   constructor(
     private readonly reportRepository: ReportRepository,
     private readonly spaceRepository: SpaceRepository,
-    private readonly userRepository: UserRepository
+    private readonly reviewRepository: ReviewRepository,
+    private readonly qnaRepository: QnARepository
   ) {}
 
   async findReport(id: string) {
-    return await this.reportRepository.findReport(id);
+    const report = await this.reportRepository.findReport(id);
+    return report;
   }
 
-  async findPagingReport(paging: PagingDTO, args = {} as Prisma.SpaceReportFindManyArgs) {
+  async findReportPagingReports(paging: PagingDTO, userId: string, args = {} as Prisma.UserReportFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reportRepository.countReports({
-      where: args.where,
+      where: {
+        userId,
+        ...args.where,
+      },
     });
     const reports = await this.reportRepository.findReports({
-      where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
+      ...args,
       skip,
       take,
     });
-    return new PaginationDTO<ReportDTO>(reports, { paging, count });
+
+    return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
 
-  async findReports(args = {} as Prisma.SpaceReportFindManyArgs) {
-    const reports = await this.reportRepository.findReports({
-      where: args.where,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
+  async createSpaceReport(userId: string, data: CreateSpaceReportDTO) {
+    await this.spaceRepository.findSpace(data.spaceId);
+    const report = await this.reportRepository.checkReport({
+      where: {
+        userId,
+        spaceId: data.spaceId,
       },
     });
 
-    return reports;
-  }
-
-  async createReports(userId: string, data: CreateReportDTO) {
-    await this.spaceRepository.findSpace(data.spaceId);
-    const isExist = await this.reportRepository.checkUserReportBySpaceId(data.spaceId, userId);
-
-    if (isExist) {
-      throw new ReportException(REPORT_ERROR_CODE.CONFLICT(REPORT_ALREADY_EXISTS));
+    if (report) {
+      throw new ConflictException(REPORT_ALREADY_EXISTS);
     }
 
     return await this.reportRepository.createReport(userId, data);
   }
 
-  async updateReport(reportId: string, userId: string, data: UpdateReportDTO) {
-    await this.checkIsUserValid(reportId, userId);
+  async createReviewReport(userId: string, data: CreateReviewReportDTO) {
+    await this.reviewRepository.findReview(data.reviewId);
+    const report = await this.reportRepository.checkReport({
+      where: {
+        userId,
+        spaceReviewId: data.reviewId,
+      },
+    });
 
-    //TODO: 이미 처리된 신고는 수정할 수 없음. -> 정책 필요
-
-    await this.reportRepository.updateReport(reportId, data);
-  }
-
-  async deleteReport(reportId: string, userId: string) {
-    await this.checkIsUserValid(reportId, userId);
-    //TODO: 이미 처리된 신고는 신고할 수 없음. -> 정책 필요
-    await this.reportRepository.deleteReport(reportId);
-  }
-
-  async checkIsUserValid(reportId: string, userId: string) {
-    const report = await this.reportRepository.findReport(reportId);
-
-    if (report.user.id !== userId) {
-      throw new ReportException(REPORT_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
+    if (report) {
+      throw new ConflictException(REPORT_ALREADY_EXISTS);
     }
+
+    return await this.reportRepository.createReport(userId, data);
+  }
+
+  async createQnAReport(userId: string, data: CreateQnAReportDTO) {
+    await this.qnaRepository.findQnA(data.qnaId);
+    const report = await this.reportRepository.checkReport({
+      where: {
+        userId,
+        spaceQnAId: data.qnaId,
+      },
+    });
+
+    if (report) {
+      throw new ConflictException(REPORT_ALREADY_EXISTS);
+    }
+
+    return await this.reportRepository.createReport(userId, data);
   }
 }

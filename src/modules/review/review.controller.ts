@@ -188,51 +188,6 @@ export class ReviewController {
     return await this.reviewService.createReview(body, user.id);
   }
 
-  @Post(':reviewId/report')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @UseInterceptors(ResponseWithIdInterceptor)
-  @RequestApi({
-    summary: {
-      description: '공간 리뷰 신고',
-      summary: '공간 리뷰를 신고합니다. 유저만 사용이 가능합니다.',
-    },
-  })
-  @ResponseApi(
-    {
-      type: ResponseWithIdDTO,
-    },
-    201
-  )
-  async createReviewReport(
-    @Param('reviewId') id: string,
-    @ReqUser() user: RequestUser,
-    @Body() body: CreateReviewReportDTO
-  ) {
-    return await this.reviewService.createReviewReport(id, user.id, body);
-  }
-
-  @Patch('report/:reportId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      description: '공간 리뷰 신고 수정',
-      summary: '공간 리뷰 신고를 수정. 리뷰 신고자만 사용이 가능합니다.',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async updateReviewReport(
-    @Param('reportId') reportId: string,
-    @ReqUser() user: RequestUser,
-    @Body() body: UpdateReviewReportDTO
-  ) {
-    await this.reviewService.updateReviewReport(reportId, user.id, body);
-  }
-
   @Patch(':reviewId')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
@@ -270,23 +225,5 @@ export class ReviewController {
   )
   async deleteReview(@Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
     await this.reviewService.deleteReview(reviewId, user.id);
-  }
-
-  @Delete('report/:reportId')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
-  @RequestApi({
-    summary: {
-      description: '공간 리뷰 신고 삭제',
-      summary: '공간 리뷰 신고를 삭제합니다. 리뷰 신고자만 사용이 가능합니다.',
-    },
-  })
-  @ResponseApi(
-    {
-      type: EmptyResponseDTO,
-    },
-    204
-  )
-  async deleteReviewReport(@Param('reportId') reportId: string, @ReqUser() user: RequestUser) {
-    await this.reviewService.deleteReviewReport(reportId, user.id);
   }
 }

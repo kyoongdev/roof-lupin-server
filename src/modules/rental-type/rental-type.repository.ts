@@ -173,7 +173,7 @@ export class RentalTypeRepository {
                                 category: true,
                               },
                             },
-                            reports: true,
+                            //TODO: reports: true,
                           },
                         },
                       },
@@ -264,7 +264,7 @@ export class RentalTypeRepository {
             timeCostInfos: {
               create: timeCostInfos.map((timeCostInfo) => ({
                 cost: timeCostInfo.cost,
-                time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+                time: timeCostInfo.time,
               })),
             },
           };
@@ -308,7 +308,7 @@ export class RentalTypeRepository {
           },
           create: timeCostInfos.map((timeCostInfo) => ({
             cost: timeCostInfo.cost,
-            time: timeCostInfo.time >= 24 ? timeCostInfo.time - 24 : timeCostInfo.time,
+            time: timeCostInfo.time,
           })),
         },
       };

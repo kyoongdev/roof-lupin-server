@@ -116,7 +116,7 @@ export class SpaceDTO {
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories ? space.categories?.map(({ category }) => category) : [],
-      reportCount: space.reports.length,
+      reportCount: 0, //TODO: report
       interestCount: space.userInterests.length,
     };
   }
@@ -130,7 +130,11 @@ export class SpaceDTO {
       rentalType: true,
       categories: {
         include: {
-          category: true,
+          category: {
+            include: {
+              icon: true,
+            },
+          },
         },
       },
       reports: true,
