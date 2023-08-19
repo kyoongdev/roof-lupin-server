@@ -49,19 +49,19 @@ export class CouponController {
     return await this.couponService.findPagingUserCoupons(paging, user.id);
   }
 
-  @Get('count/spaces/:spaceId')
+  @Get('count')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
-      description: '사용자 공간별 쿠폰 개수 조회',
-      summary: '사용자  공간편 쿠폰 개수 조회 - 유저만 사용 가능',
+      description: '사용자 사용가능 쿠폰 개수 조회',
+      summary: '사용자 사용가능 쿠폰 개수 조회 - 유저만 사용 가능',
     },
   })
   @ResponseApi({
     type: UserCouponCountDTO,
   })
-  async getMySpaceCouponsCount(@ReqUser() user: RequestUser, @Param('spaceId') spaceId: string) {
-    return await this.couponService.countUserCoupons(user.id, spaceId);
+  async getMySpaceCouponsCount(@ReqUser() user: RequestUser) {
+    return await this.couponService.countUserCoupons(user.id);
   }
 
   @Post('/register')

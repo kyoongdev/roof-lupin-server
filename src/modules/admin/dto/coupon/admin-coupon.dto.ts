@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CategoryDTO, CategoryDTOProps } from '@/modules/category/dto';
-
 import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../../../coupon/validation/discount-value.validation';
 
 export interface AdminCouponDTOProps {
@@ -13,7 +11,6 @@ export interface AdminCouponDTOProps {
   code: string;
   isLupinPay: boolean;
   defaultDueDay: number;
-  categories: CategoryDTOProps[];
 }
 
 export class AdminCouponDTO {
@@ -42,9 +39,6 @@ export class AdminCouponDTO {
   @Property({ apiProperty: { type: 'number', description: '쿠폰 기본 유효기간' } })
   defaultDueDay: number;
 
-  @Property({ apiProperty: { type: CategoryDTO, isArray: true, nullable: true, description: '쿠폰 카테고리' } })
-  categories?: CategoryDTO[];
-
   constructor(props: AdminCouponDTOProps) {
     this.id = props.id;
     this.name = props.name;
@@ -54,6 +48,5 @@ export class AdminCouponDTO {
     this.code = props.code;
     this.defaultDueDay = props.defaultDueDay;
     this.isLupinPay = props.isLupinPay;
-    this.categories = props.categories ? props.categories.map((category) => new CategoryDTO(category)) : null;
   }
 }

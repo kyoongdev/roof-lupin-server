@@ -16,7 +16,6 @@ export interface CouponDTOProps {
   isLupinPay: boolean;
   defaultDueDateStart?: Date;
   defaultDueDay: number;
-  categories: CategoryDTOProps[];
 }
 
 export class CouponDTO {
@@ -59,6 +58,5 @@ export class CouponDTO {
     this.defaultDueDateStart = props.defaultDueDateStart || null;
     this.defaultDueDay = props.defaultDueDay;
     this.isLupinPay = props.isLupinPay;
-    this.categories = props.categories ? props.categories.map((category) => new CategoryDTO(category)) : null;
   }
 }

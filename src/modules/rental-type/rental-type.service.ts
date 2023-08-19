@@ -551,6 +551,7 @@ export class RentalTypeService {
               const endAt = reservedRentalType.endAt;
               const nextStartAt = rentalType.startAt;
               const nextEndAt = rentalType.endAt;
+
               range(startAt, endAt + 1).forEach((hour) => {
                 if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
               });

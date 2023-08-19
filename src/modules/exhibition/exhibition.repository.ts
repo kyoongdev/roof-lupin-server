@@ -35,15 +35,7 @@ export class ExhibitionRepository {
         },
         coupons: {
           include: {
-            coupon: {
-              include: {
-                couponCategories: {
-                  include: {
-                    category: true,
-                  },
-                },
-              },
-            },
+            coupon: true,
           },
         },
         spaces: {
@@ -64,10 +56,7 @@ export class ExhibitionRepository {
     return new ExhibitionDetailDTO({
       ...exhibition,
       spaces: exhibition.spaces.map(({ space }) => SpaceDTO.generateSpaceDTO(space, userId)),
-      coupons: exhibition.coupons.map(({ coupon }) => ({
-        ...coupon,
-        categories: coupon.couponCategories.map(({ category }) => category),
-      })),
+      coupons: exhibition.coupons.map(({ coupon }) => coupon),
       images: exhibition.images.map(({ image }) => image),
     });
   }

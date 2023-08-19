@@ -17,22 +17,13 @@ import { Jsonwebtoken } from '@/utils/jwt';
 
 import { COUPON_CODE } from '../coupon/constants';
 import { CouponRepository } from '../coupon/coupon.repository';
-import { CreateHostDTO } from '../host/dto';
 import { CreateSocialUserDTO } from '../user/dto';
 import { USER_BLOCKED, USER_ERROR_CODE } from '../user/exception/errorCode';
 import { UserException } from '../user/exception/user.exception';
 
-import { HostAuthDTO, TokenDTO } from './dto';
+import { TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
-import {
-  ALREADY_EXIST_HOST,
-  AUTH_ERROR_CODE,
-  WRONG_ACCESS_TOKEN,
-  WRONG_ID,
-  WRONG_KEY,
-  WRONG_PASSWORD,
-  WRONG_REFRESH_TOKEN,
-} from './exception/errorCode';
+import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
 
 @Injectable()
 export class AuthService {

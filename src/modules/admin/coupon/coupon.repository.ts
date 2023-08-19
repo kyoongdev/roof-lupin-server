@@ -17,23 +17,13 @@ export class AdminCouponRepository {
       where: {
         id,
       },
-      include: {
-        couponCategories: {
-          include: {
-            category: true,
-          },
-        },
-      },
     });
 
     if (!coupon) {
       throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
     }
-    const { couponCategories, ...rest } = coupon;
-    return new AdminCouponDTO({
-      ...rest,
-      categories: couponCategories.map(({ category }) => category),
-    });
+
+    return new AdminCouponDTO(coupon);
   }
 
   async findCouponByCode(code: string) {
@@ -41,24 +31,13 @@ export class AdminCouponRepository {
       where: {
         code,
       },
-      include: {
-        couponCategories: {
-          include: {
-            category: true,
-          },
-        },
-      },
     });
 
     if (!coupon) {
       throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
     }
 
-    const { couponCategories, ...rest } = coupon;
-    return new AdminCouponDTO({
-      ...rest,
-      categories: couponCategories.map(({ category }) => category),
-    });
+    return new AdminCouponDTO(coupon);
   }
 
   async countCoupons(args = {} as Prisma.CouponCountArgs) {
@@ -68,22 +47,9 @@ export class AdminCouponRepository {
   async findCoupons(args = {} as Prisma.CouponFindManyArgs) {
     const coupons = await this.database.coupon.findMany({
       ...args,
-      include: {
-        couponCategories: {
-          include: {
-            category: true,
-          },
-        },
-      },
     });
 
-    return coupons.map((coupon) => {
-      const { couponCategories, ...rest } = coupon;
-      return new AdminCouponDTO({
-        ...rest,
-        categories: couponCategories.map(({ category }) => category),
-      });
-    });
+    return coupons.map((coupon) => new AdminCouponDTO(coupon));
   }
 
   async checkUserCoupon(couponId: string, userId: string) {
@@ -104,15 +70,7 @@ export class AdminCouponRepository {
       },
       include: {
         user: true,
-        coupon: {
-          include: {
-            couponCategories: {
-              include: {
-                category: true,
-              },
-            },
-          },
-        },
+        coupon: true,
       },
     });
 
@@ -123,10 +81,6 @@ export class AdminCouponRepository {
     return new UserAdminCouponDTO({
       ...userCoupon,
       isUsed: !!userCoupon.reservationId,
-      coupon: {
-        ...userCoupon.coupon,
-        categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
-      },
     });
   }
 
@@ -139,15 +93,7 @@ export class AdminCouponRepository {
       },
       include: {
         user: true,
-        coupon: {
-          include: {
-            couponCategories: {
-              include: {
-                category: true,
-              },
-            },
-          },
-        },
+        coupon: true,
       },
     });
 
@@ -158,10 +104,6 @@ export class AdminCouponRepository {
     return new UserAdminCouponDTO({
       ...userCoupon,
       isUsed: !!userCoupon.reservationId,
-      coupon: {
-        ...userCoupon.coupon,
-        categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
-      },
     });
   }
 
@@ -174,13 +116,7 @@ export class AdminCouponRepository {
       ...args,
       include: {
         user: true,
-        coupon: {
-          include: {
-            couponCategories: {
-              include: { category: true },
-            },
-          },
-        },
+        coupon: true,
       },
     });
 
@@ -188,10 +124,6 @@ export class AdminCouponRepository {
       return new UserAdminCouponDTO({
         ...userCoupon,
         isUsed: !!userCoupon.reservationId,
-        coupon: {
-          ...userCoupon.coupon,
-          categories: userCoupon.coupon.couponCategories.map(({ category }) => category),
-        },
       });
     });
   }

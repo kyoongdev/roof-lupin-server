@@ -40,25 +40,10 @@ export class CouponService {
     });
     return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
   }
-  async countUserCoupons(userId: string, spaceId?: string) {
+  async countUserCoupons(userId: string) {
     const totalCount = await this.couponRepository.countUserCoupons({
       where: {
         userId,
-        ...(spaceId && {
-          coupon: {
-            couponCategories: {
-              some: {
-                category: {
-                  spaceUsageCategories: {
-                    some: {
-                      spaceId,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        }),
       },
     });
 
@@ -66,21 +51,6 @@ export class CouponService {
       where: {
         userId,
         deletedAt: null,
-        ...(spaceId && {
-          coupon: {
-            couponCategories: {
-              some: {
-                category: {
-                  spaceUsageCategories: {
-                    some: {
-                      spaceId,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        }),
       },
     });
 
