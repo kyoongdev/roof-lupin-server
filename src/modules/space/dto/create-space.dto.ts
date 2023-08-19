@@ -6,6 +6,7 @@ import { range } from 'lodash';
 import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
+import { PeriodsValidation } from '@/utils';
 
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -82,19 +83,20 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, description: '생성된 이미지 url' } })
   images: string[];
 
-  @Property({ apiProperty: { type: CreateRefundPolicyDTO, description: '환불 정책' } })
+  @Property({ apiProperty: { type: CreateRefundPolicyDTO, isArray: true, description: '환불 정책' } })
   refundPolicies: CreateRefundPolicyDTO[];
 
-  @Property({ apiProperty: { type: CreateCautionDTO, description: '주의 사항' } })
+  @Property({ apiProperty: { type: CreateCautionDTO, isArray: true, description: '주의 사항' } })
   cautions: CreateCautionDTO[];
 
-  @Property({ apiProperty: { type: CreateRentalTypeDTO, description: '대여 유형' } })
+  @PeriodsValidation()
+  @Property({ apiProperty: { type: CreateRentalTypeDTO, isArray: true, description: '대여 유형' } })
   rentalTypes: CreateRentalTypeDTO[];
 
   @Property({ apiProperty: { type: CreateLocationDTO, description: '위치' } })
   location: CreateLocationDTO;
 
-  @Property({ apiProperty: { type: CreateBuildingDTO, description: '시설' } })
+  @Property({ apiProperty: { type: CreateBuildingDTO, isArray: true, description: '시설' } })
   buildings: CreateBuildingDTO[];
 
   @Property({ apiProperty: { type: 'string', isArray: true, description: '서비스 id 들' } })
@@ -106,12 +108,13 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateHashTagDTO, isArray: true, description: '해시태그' } })
   hashTags: CreateHashTagDTO[];
 
-  @Property({ apiProperty: { type: CreateTransportationDTO, description: '대중교통' } })
+  @Property({ apiProperty: { type: CreateTransportationDTO, isArray: true, description: '대중교통' } })
   publicTransportations: CreateTransportationDTO[];
 
-  @Property({ apiProperty: { type: CreateSizeDTO, description: '면적' } })
+  @Property({ apiProperty: { type: CreateSizeDTO, isArray: true, description: '면적' } })
   sizes: CreateSizeDTO[];
 
+  @PeriodsValidation()
   @Property({ apiProperty: { type: CreateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours: CreateOpenHourDTO[];
 

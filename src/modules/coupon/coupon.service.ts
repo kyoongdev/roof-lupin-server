@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
@@ -40,53 +40,16 @@ export class CouponService {
     });
     return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
   }
-  async countUserCoupons(userId: string, spaceId?: string) {
-    const totalCount = await this.couponRepository.countUserCoupons({
-      where: {
-        userId,
-        ...(spaceId && {
-          coupon: {
-            couponCategories: {
-              some: {
-                category: {
-                  spaceUsageCategories: {
-                    some: {
-                      spaceId,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        }),
-      },
-    });
-
-    const availableCount = await this.couponRepository.countUserCoupons({
+  async countUserCoupons(userId: string) {
+    const count = await this.couponRepository.countUserCoupons({
       where: {
         userId,
         deletedAt: null,
-        ...(spaceId && {
-          coupon: {
-            couponCategories: {
-              some: {
-                category: {
-                  spaceUsageCategories: {
-                    some: {
-                      spaceId,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        }),
       },
     });
 
     return new UserCouponCountDTO({
-      availableCount,
-      totalCount,
+      count,
     });
   }
 
@@ -95,7 +58,7 @@ export class CouponService {
     const userCoupon = await this.couponRepository.findUserCouponByCode(data.code);
 
     if (userCoupon) {
-      //TODO: 이미 등록된 쿠폰입니다?
+      throw new ConflictException('이미 등록된 쿠폰입니다.');
     }
 
     const now = new Date();

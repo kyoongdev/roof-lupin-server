@@ -87,6 +87,21 @@ export class PaymentController {
     return await this.paymentService.createPaymentPayload(user.id, data);
   }
 
+  @Post('/test')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      summary: '결제 용 data 생성 ',
+      description: '결제 용 data 생성',
+    },
+  })
+  @ResponseApi({
+    type: PaymentPayloadDTO,
+  })
+  async getPaymentTest(@ReqUser() user: RequestUser, @Body() data: CreatePaymentPayloadDTO) {
+    return await this.paymentService.testPayment(data, user.id);
+  }
+
   @Post('/complete')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({

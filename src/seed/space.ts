@@ -143,37 +143,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               day: 1,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
             {
               day: 2,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
             {
               day: 3,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
             {
               day: 4,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
             {
               day: 5,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
             {
               day: 6,
               startAt: 10,
-              endAt: 10,
+              endAt: 26,
             },
             {
               day: 7,
               startAt: 10,
-              endAt: 2,
+              endAt: 26,
             },
           ],
         },
@@ -325,7 +325,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               baseCost: 150000,
               name: '올나잇 패키지',
               startAt: 19,
-              endAt: 9,
+              endAt: 33,
               day: 1,
               rentalType: 2,
               baseHour: 5,
@@ -340,7 +340,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               baseCost: 150000,
               name: '올나잇 패키지',
               startAt: 19,
-              endAt: 9,
+              endAt: 33,
               day: 5,
               rentalType: 2,
               baseHour: 5,
@@ -636,7 +636,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                   create: [
                     {
                       startAt: 12,
-                      endAt: 8,
+                      endAt: 32,
                       rentalType: {
                         connect: {
                           id: rentalType.id,
@@ -661,6 +661,13 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                         },
                       },
                       isBest: true,
+                    },
+                    {
+                      image: {
+                        create: {
+                          url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
+                        },
+                      },
                     },
                     {
                       image: {
@@ -797,37 +804,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 26,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
         ],
       },
@@ -1128,27 +1135,27 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 6,
@@ -1158,7 +1165,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 7,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
         ],
       },
@@ -1472,27 +1479,27 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 6,
@@ -1502,7 +1509,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 7,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
         ],
       },
@@ -1804,27 +1811,27 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
           {
             day: 6,
@@ -1834,7 +1841,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 7,
             startAt: 10,
-            endAt: 2,
+            endAt: 26,
           },
         ],
       },

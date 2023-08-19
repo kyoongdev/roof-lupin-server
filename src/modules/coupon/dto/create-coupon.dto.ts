@@ -9,7 +9,7 @@ export interface CreateCouponDTOProps {
   code?: string;
   description: string;
   isLupinPay: boolean;
-  categoryIds?: string[];
+
   defaultDueDateStart?: Date;
   defaultDueDay: number;
   link?: string;
@@ -42,9 +42,6 @@ export class CreateCouponDTO {
   })
   defaultDueDateStart?: Date;
 
-  @Property({ apiProperty: { type: 'string', isArray: true, nullable: true, description: '카테고리 id 배열' } })
-  categoryIds?: string[];
-
   @Property({ apiProperty: { type: 'string', nullable: true, description: '쿠폰 링크' } })
   link?: string;
 
@@ -58,7 +55,7 @@ export class CreateCouponDTO {
       this.defaultDueDay = props.defaultDueDay;
       this.defaultDueDateStart = props.defaultDueDateStart;
       this.isLupinPay = props.isLupinPay;
-      this.categoryIds = props.categoryIds;
+
       this.link = props.link;
     }
   }

@@ -43,16 +43,7 @@ const config = new ConfigService();
       },
     }),
   ],
-  providers: [
-    AuthService,
-    UserRepository,
-    AdminRepository,
-    HostRepository,
-    Jsonwebtoken,
-    CouponRepository,
-    EncryptProvider,
-    FCMEvent,
-  ],
+  providers: [AuthService, UserRepository, Jsonwebtoken, CouponRepository, FCMEvent],
   controllers: [AuthController],
 })
 export class AuthModule {}

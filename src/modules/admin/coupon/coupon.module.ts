@@ -9,8 +9,8 @@ import { AdminCouponRepository } from './coupon.repository';
 import { AdminCouponService } from './coupon.service';
 
 @Module({
-  providers: [AdminCouponService, AdminCouponRepository, CouponRepository, CategoryRepository, FCMEvent],
+  providers: [AdminCouponService, AdminCouponRepository, CouponRepository, FCMEvent],
   controllers: [AdminCouponController],
-  exports: [AdminCouponService, AdminCouponRepository, CouponRepository, CategoryRepository, FCMEvent],
+  exports: [AdminCouponService, AdminCouponRepository, CouponRepository, FCMEvent],
 })
 export class AdminCouponModule {}

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { CreateBestReviewImagesDTO, ReviewImageDetailDTO, ReviewReportDTO } from '@/modules/review/dto';
+import { CreateBestReviewImagesDTO, ReviewImageDetailDTO } from '@/modules/review/dto';
 import { DeleteBestReviewImagesQuery } from '@/modules/review/dto/query';
 import { BEST_PHOTO_LENGTH_EXCEEDED, REVIEW_ERROR_CODE } from '@/modules/review/exception/errorCode';
 import { ReviewException } from '@/modules/review/exception/review.exception';

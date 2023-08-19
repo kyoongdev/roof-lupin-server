@@ -1,4 +1,7 @@
+import { Validate } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
+
+import { DayValidation } from '@/utils';
 
 import { GenderValidation } from '../../../utils/validation/gender.validate';
 

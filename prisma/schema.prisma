@@ -839,7 +839,7 @@ model Building {
   name           String
   spaceBuildings SpaceBuilding[]
 
-  icon   Icon   @relation(fields: [iconId], references: [id])
+  icon   Icon   @relation(fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   iconId String
 }
 
@@ -860,7 +860,7 @@ model Service {
   serviceTitle   ServiceTitle?  @relation(fields: [serviceTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   serviceTitleId String?
 
-  icon   Icon   @relation(fields: [iconId], references: [id])
+  icon   Icon   @relation(fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   iconId String
 }
 
@@ -872,9 +872,8 @@ model Category {
   isRecommended Boolean @default(false)
 
   spaceUsageCategories SpaceCategory[]
-  couponCategories     CouponCategory[]
 
-  icon   Icon?   @relation(fields: [iconId], references: [id])
+  icon   Icon?   @relation(fields: [iconId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   iconId String?
 }
 
@@ -895,15 +894,6 @@ model ContentCategorySpace {
   space             Space           @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([contentCategoryId, spaceId])
-}
-
-model CouponCategory {
-  couponId   String
-  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([couponId, categoryId])
 }
 
 //INFO: 해시태그
@@ -944,9 +934,9 @@ model Coupon {
   defaultDueDay       Int       @default(0) @db.SmallInt
   link                String?
 
-  userCoupons      UserCoupon[]
-  couponCategories CouponCategory[]
-  exhibitions      ExhibitionCoupon[]
+  userCoupons UserCoupon[]
+
+  exhibitions ExhibitionCoupon[]
 }
 
 model ExhibitionImage {

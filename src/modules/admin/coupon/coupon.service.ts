@@ -20,7 +20,6 @@ export class AdminCouponService {
   constructor(
     private readonly couponRepository: CouponRepository,
     private readonly adminCouponRepository: AdminCouponRepository,
-    private readonly categoryRepository: CategoryRepository,
     private readonly fcmEvent: FCMEvent
   ) {}
 
@@ -63,9 +62,6 @@ export class AdminCouponService {
   }
 
   async createCoupon(data: CreateCouponDTO) {
-    if (data.categoryIds) {
-      await Promise.all(data.categoryIds.map(async (id) => await this.categoryRepository.findCategory(id)));
-    }
     return await this.couponRepository.createCoupon(data);
   }
 
@@ -90,9 +86,7 @@ export class AdminCouponService {
 
   async updateCoupon(id: string, data: UpdateCouponDTO) {
     await this.findCoupon(id);
-    if (data.categoryIds) {
-      await Promise.all(data.categoryIds.map(async (id) => await this.categoryRepository.findCategory(id)));
-    }
+
     await this.couponRepository.updateCoupon(id, data);
   }
 

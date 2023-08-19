@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Category, Prisma, PublicTransportation, RentalType } from '@prisma/client';
+import { Prisma, PublicTransportation, RentalType } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { SQLCategory, SqlSpace } from '@/interface/space.interface';
