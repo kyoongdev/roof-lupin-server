@@ -6,8 +6,8 @@ import { RentalTypeDTO } from '@/modules/rental-type/dto';
 import { CreatePaymentDTO } from '@/modules/reservation/dto';
 import { SpaceDetailDTO } from '@/modules/space/dto';
 
-import { EscrowProductDTO, EscrowProductDTOProps } from './escrow-product.dto';
-import { ProductDTO, ProductDTOProps } from './product.dto';
+import { EscrowProductDTO, EscrowProductDTOProps } from './escrow.dto';
+import { ProductDTO, ProductDTOProps } from './products.dto';
 
 export interface PaymentPayloadDTOProps {
   amount: number;

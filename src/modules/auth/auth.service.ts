@@ -29,10 +29,7 @@ import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
-
-    private readonly hostRepository: HostRepository,
     private readonly jwt: Jsonwebtoken,
-    private readonly encrypt: EncryptProvider,
     private readonly couponRepository: CouponRepository,
     private readonly kakaoService: KakaoLogin,
     private readonly naverService: NaverLogin,
