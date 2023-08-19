@@ -27,6 +27,7 @@ export class ReviewImageDetailDTO {
   review: ReviewDTO;
 
   constructor(props: ReviewImageDetailDTOProps) {
+    this.id = props.id;
     this.imageId = props.imageId;
     this.isBest = props.isBest;
     this.url = props.url;

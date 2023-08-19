@@ -127,13 +127,11 @@ export const DayReqDecorator = (nullable = false) =>
   applyDecorators(
     DayRequestTransForm(),
     DayValidation(),
-    Property({
-      apiProperty: {
-        description: '요일',
-        enum: DAY_VALUES,
-        nullable,
-        type: 'string',
-        example: DAY_VALUES.join(' | '),
-      },
+    ApiProperty({
+      description: '요일',
+      enum: DAY_VALUES,
+      nullable,
+      type: 'number',
+      example: DAY_VALUES.join(' | '),
     })
   );

@@ -131,7 +131,6 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
@@ -199,9 +198,7 @@ export class FileService {
         Key: ImageDTO.parseS3ImageKey(url),
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
-      console.log(result, ImageDTO.parseS3ImageKey(url));
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
   }

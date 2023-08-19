@@ -89,9 +89,7 @@ export class AdminReviewService {
     await this.reviewRepository.updateReviewImage(id, true);
   }
 
-  async deleteBestImages(reviewId: string, query: DeleteBestReviewImagesQuery) {
-    await this.findReview(reviewId);
-
+  async deleteBestImages(query: DeleteBestReviewImagesQuery) {
     await Promise.all(
       query.ids.split(',').map(async (id) => {
         await this.reviewRepository.findReviewImage(id);

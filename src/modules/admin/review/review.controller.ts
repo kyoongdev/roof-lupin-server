@@ -1,9 +1,9 @@
-import { Body, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { CreateBestReviewImagesDTO, ReviewDTO, ReviewImageDetailDTO, ReviewReportDTO } from '@/modules/review/dto';
+import { CreateBestReviewImagesDTO, ReviewDTO, ReviewImageDetailDTO } from '@/modules/review/dto';
 import { DeleteBestReviewImagesQuery } from '@/modules/review/dto/query';
 import { ApiController } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -110,7 +110,7 @@ export class AdminReviewController {
     await this.reviewService.deleteBestImage(reviewImageId);
   }
 
-  @Delete('spaces/:spaceId/images/best')
+  @Delete('images/best')
   @RequestApi({
     summary: {
       description: '공간 내 리뷰 이미지 베스트 다수 삭제',
@@ -121,7 +121,7 @@ export class AdminReviewController {
     type: EmptyResponseDTO,
   })
   async deleteBestReviews(@Param('spaceId') spaceId: string, @Query() query: DeleteBestReviewImagesQuery) {
-    await this.reviewService.deleteBestImages(spaceId, query);
+    await this.reviewService.deleteBestImages(query);
   }
 
   @Delete(':id')
