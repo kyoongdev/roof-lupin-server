@@ -41,13 +41,7 @@ export class CouponService {
     return new PaginationDTO<UserCouponDTO>(coupons, { count, paging });
   }
   async countUserCoupons(userId: string) {
-    const totalCount = await this.couponRepository.countUserCoupons({
-      where: {
-        userId,
-      },
-    });
-
-    const availableCount = await this.couponRepository.countUserCoupons({
+    const count = await this.couponRepository.countUserCoupons({
       where: {
         userId,
         deletedAt: null,
@@ -55,8 +49,7 @@ export class CouponService {
     });
 
     return new UserCouponCountDTO({
-      availableCount,
-      totalCount,
+      count,
     });
   }
 
