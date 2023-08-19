@@ -144,44 +144,22 @@ export class PaymentService {
   }
 
   async testPayment(data: CreatePaymentDTO, userId: string) {
-    const reservation = await this.reservationRepository.createPayment(userId, data, true);
+    await this.database.$transaction(async (database) => {
+      const space = await this.spaceRepository.findSpace(data.spaceId);
+      await this.validatePayment(data, space);
+      const reservation = await this.reservationRepository.createPayment(userId, data, true);
 
-    try {
-      if (reservation)
-        await this.database.$transaction(async (database) => {
-          const space = await this.spaceRepository.findSpace(data.spaceId);
-          await this.validatePayment(data, space);
+      await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+        orderResultId: nanoid(10),
+        payedAt: new Date(),
+        orderId: nanoid(10),
+      });
 
-          await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-            orderResultId: nanoid(10),
-            payedAt: new Date(),
-            orderId: nanoid(10),
-          });
-
-          await this.createSettlement(database, reservation);
-        });
-
+      await this.createSettlement(database, reservation);
       await this.sendMessage(reservation);
-    } catch (err) {
-      logger.error(err);
-      if (reservation && reservation.id) {
-        const coupons = await this.couponRepository.findUserCoupons({
-          where: {
-            userId: reservation.user.id,
-            reservationId: reservation.id,
-          },
-        });
-        await Promise.all(
-          coupons.map(async (coupon) => {
-            await this.couponRepository.restoreUserCoupon(coupon.id);
-          })
-        );
-      }
+    });
 
-      throw err;
-    }
-
-    return reservation;
+    return { message: 'success' };
   }
 
   async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
@@ -219,7 +197,7 @@ export class PaymentService {
           orderResultId: data.paymentKey,
           payedAt: new Date(),
           receiptUrl: tossPayment.receipt?.url,
-          payMethod: tossPayment.card ? '카드' : tossPayment.easyPay?.provider,
+          payMethod: tossPayment.card ? '카드' : tossPayment.easyPay?.provider ?? undefined,
         });
 
         await this.createSettlement(database, reservation);
@@ -458,10 +436,9 @@ export class PaymentService {
               PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
             );
           }
-          console.log('timeCostInfos', possibleRentalType['timeCostInfos']);
+
           //INFO: 대여하려는 시간이 예약 불가할 때
           (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
-            console.log(time);
             if (item.startAt <= time.time && time.time <= item.endAt && !time.isPossible) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
@@ -475,6 +452,7 @@ export class PaymentService {
             }
             return acc;
           }, 0);
+
           validatedRentalTypes.increaseCost(cost);
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           //INFO: 대여하려는 시간이 잘못 입력됐을 때
