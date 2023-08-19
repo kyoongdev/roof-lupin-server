@@ -669,6 +669,13 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                         },
                       },
                     },
+                    {
+                      image: {
+                        create: {
+                          url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
+                        },
+                      },
+                    },
                   ],
                 },
                 space: {

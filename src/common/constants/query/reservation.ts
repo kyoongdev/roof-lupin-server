@@ -1,7 +1,5 @@
 import { Prisma } from '@prisma/client';
 
-import { SpaceDTO } from '@/modules/space/dto';
-
 export const reservationInclude: Prisma.ReservationInclude = {
   user: true,
   rentalTypes: {
@@ -10,7 +8,23 @@ export const reservationInclude: Prisma.ReservationInclude = {
         include: {
           timeCostInfos: true,
           space: {
-            include: SpaceDTO.getSpacesIncludeOption(),
+            include: {
+              location: true,
+              reviews: true,
+              publicTransportations: true,
+              userInterests: true,
+              rentalType: true,
+              categories: {
+                include: {
+                  category: {
+                    include: {
+                      icon: true,
+                    },
+                  },
+                },
+              },
+              reports: true,
+            },
           },
           additionalServices: true,
         },
