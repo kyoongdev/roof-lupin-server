@@ -1,4 +1,29 @@
 -- CreateTable
+CREATE TABLE `LocationFilterGroup` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `LocationFilter` (
+    `id` VARCHAR(191) NOT NULL,
+    `groupId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `LocationFilterTopic` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(20) NOT NULL,
+    `locationFilterId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Icon` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(120) NOT NULL,
@@ -99,24 +124,6 @@ CREATE TABLE `Image` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `MainImage` (
-    `id` VARCHAR(191) NOT NULL,
-    `url` VARCHAR(191) NOT NULL,
-    `isDefault` BOOLEAN NOT NULL DEFAULT false,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Slogan` (
-    `id` VARCHAR(191) NOT NULL,
-    `content` VARCHAR(191) NOT NULL,
-    `isDefault` BOOLEAN NOT NULL DEFAULT false,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Ranking` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
@@ -151,7 +158,7 @@ CREATE TABLE `Space` (
     `deposit` MEDIUMINT NULL,
     `isImmediateReservation` BOOLEAN NOT NULL DEFAULT false,
     `isPublic` BOOLEAN NOT NULL DEFAULT false,
-    `isApproved` BOOLEAN NOT NULL DEFAULT false,
+    `isApproved` BOOLEAN NOT NULL DEFAULT true,
     `orderNo` TINYINT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -164,8 +171,8 @@ CREATE TABLE `Space` (
 -- CreateTable
 CREATE TABLE `OpenHour` (
     `id` VARCHAR(191) NOT NULL,
-    `startAt` CHAR(2) NOT NULL,
-    `endAt` CHAR(2) NOT NULL,
+    `startAt` TINYINT NOT NULL,
+    `endAt` TINYINT NOT NULL,
     `day` TINYINT NOT NULL,
     `spaceId` VARCHAR(191) NOT NULL,
 
@@ -282,7 +289,6 @@ CREATE TABLE `Reservation` (
     `discountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `serviceDiscountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `originalCost` MEDIUMINT NOT NULL,
-    `refundCost` MEDIUMINT NOT NULL DEFAULT 0,
     `userCount` INTEGER NOT NULL,
     `orderId` VARCHAR(191) NULL,
     `orderResultId` VARCHAR(191) NULL,
@@ -290,19 +296,35 @@ CREATE TABLE `Reservation` (
     `isApproved` BOOLEAN NOT NULL DEFAULT true,
     `approvedAt` DATETIME(3) NULL,
     `isCanceled` BOOLEAN NOT NULL DEFAULT false,
+    `receiptUrl` VARCHAR(255) NULL,
     `userName` VARCHAR(191) NULL,
     `userPhoneNumber` VARCHAR(11) NULL,
-    `userId` VARCHAR(191) NOT NULL,
-    `settlementId` VARCHAR(191) NULL,
     `payedAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `settlementId` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Reservation_id_key`(`id`),
     UNIQUE INDEX `Reservation_code_key`(`code`),
     UNIQUE INDEX `Reservation_orderId_key`(`orderId`),
     UNIQUE INDEX `Reservation_orderResultId_key`(`orderResultId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ReservationRefund` (
+    `id` VARCHAR(191) NOT NULL,
+    `refundCost` MEDIUMINT NOT NULL,
+    `reason` VARCHAR(255) NOT NULL,
+    `reservationId` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NULL,
+    `hostId` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `ReservationRefund_id_key`(`id`),
+    UNIQUE INDEX `ReservationRefund_reservationId_userId_key`(`reservationId`, `userId`),
+    UNIQUE INDEX `ReservationRefund_reservationId_hostId_key`(`reservationId`, `hostId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -314,6 +336,7 @@ CREATE TABLE `BlockedTime` (
     `day` VARCHAR(2) NOT NULL,
     `startAt` TINYINT NOT NULL,
     `endAt` TINYINT NOT NULL,
+    `name` VARCHAR(120) NOT NULL,
     `spaceId` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `BlockedTime_id_key`(`id`),
@@ -331,6 +354,8 @@ CREATE TABLE `Settlement` (
     `vatCost` MEDIUMINT NOT NULL,
     `discountCost` MEDIUMINT NOT NULL DEFAULT 0,
     `originalCost` MEDIUMINT NOT NULL,
+    `lupinCost` MEDIUMINT NOT NULL DEFAULT 0,
+    `lupinVatCost` MEDIUMINT NOT NULL DEFAULT 0,
     `isPayed` BOOLEAN NOT NULL DEFAULT false,
     `hostId` VARCHAR(191) NOT NULL,
 
@@ -351,29 +376,28 @@ CREATE TABLE `TaxReturn` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `SpaceReport` (
+CREATE TABLE `UserReport` (
     `id` VARCHAR(191) NOT NULL,
-    `reportType` TINYINT NOT NULL,
     `reportStatus` TINYINT NOT NULL DEFAULT 1,
-    `title` VARCHAR(120) NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
-    `spaceId` VARCHAR(191) NOT NULL,
+    `spaceId` VARCHAR(191) NULL,
+    `spaceReviewId` VARCHAR(191) NULL,
+    `spaceQnAId` VARCHAR(191) NULL,
     `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `SpaceReportAnswer` (
+CREATE TABLE `UserReportAnswer` (
     `id` VARCHAR(191) NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `adminId` VARCHAR(191) NOT NULL,
-    `spaceReportId` VARCHAR(191) NOT NULL,
+    `reportId` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `SpaceReportAnswer_spaceReportId_key`(`spaceReportId`),
+    UNIQUE INDEX `UserReportAnswer_reportId_key`(`reportId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -385,6 +409,7 @@ CREATE TABLE `SpaceQnA` (
     `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -409,9 +434,9 @@ CREATE TABLE `SpaceReview` (
     `spaceId` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `score` TINYINT NOT NULL,
-    `isBest` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
     `reservationId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -419,20 +444,10 @@ CREATE TABLE `SpaceReview` (
 
 -- CreateTable
 CREATE TABLE `SpaceReviewImage` (
+    `id` VARCHAR(191) NOT NULL,
     `spaceReviewId` VARCHAR(191) NOT NULL,
     `imageId` VARCHAR(191) NOT NULL,
-
-    PRIMARY KEY (`spaceReviewId`, `imageId`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `SpaceReviewReport` (
-    `id` VARCHAR(191) NOT NULL,
-    `content` MEDIUMTEXT NOT NULL,
-    `isProcessed` BOOLEAN NOT NULL DEFAULT false,
-    `spaceReviewId` VARCHAR(191) NULL,
-    `userId` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `isBest` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -442,8 +457,22 @@ CREATE TABLE `SpaceReviewAnswer` (
     `id` VARCHAR(191) NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
     `hostId` VARCHAR(191) NOT NULL,
     `reviewId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `History` (
+    `id` VARCHAR(191) NOT NULL,
+    `content` MEDIUMTEXT NOT NULL,
+    `writtenAt` DATETIME(3) NOT NULL,
+    `spaceReviewAnswerId` VARCHAR(191) NULL,
+    `spaceQnAAnswerId` VARCHAR(191) NULL,
+    `spaceQnAId` VARCHAR(191) NULL,
+    `spaceReviewId` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -540,6 +569,7 @@ CREATE TABLE `HostAccount` (
     `bankCode` CHAR(3) NOT NULL,
     `ownerName` VARCHAR(20) NOT NULL,
     `businessRegistrationNumber` CHAR(10) NULL,
+    `businessRegistrationFile` VARCHAR(191) NULL,
     `account` VARCHAR(40) NOT NULL,
     `accountOwner` VARCHAR(20) NOT NULL,
     `hostId` VARCHAR(191) NOT NULL,
@@ -689,8 +719,16 @@ CREATE TABLE `Location` (
 -- CreateTable
 CREATE TABLE `Building` (
     `id` VARCHAR(191) NOT NULL,
-    `iconPath` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `iconId` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ServiceTitle` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -698,8 +736,9 @@ CREATE TABLE `Building` (
 -- CreateTable
 CREATE TABLE `Service` (
     `id` VARCHAR(191) NOT NULL,
-    `iconPath` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(20) NOT NULL,
+    `serviceTitleId` VARCHAR(191) NULL,
+    `iconId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -710,7 +749,7 @@ CREATE TABLE `Category` (
     `name` VARCHAR(80) NOT NULL,
     `isHome` BOOLEAN NOT NULL DEFAULT false,
     `isRecommended` BOOLEAN NOT NULL DEFAULT false,
-    `iconPath` VARCHAR(191) NULL,
+    `iconId` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -757,6 +796,7 @@ CREATE TABLE `UserCoupon` (
     `usageDateStartAt` DATETIME NOT NULL,
     `usageDateEndAt` DATETIME NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
     `userId` VARCHAR(191) NOT NULL,
     `couponId` VARCHAR(191) NOT NULL,
     `reservationId` VARCHAR(191) NULL,
@@ -813,7 +853,6 @@ CREATE TABLE `Exhibition` (
     `thumbnail` VARCHAR(191) NOT NULL,
     `description` VARCHAR(120) NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
-    `orderNo` TINYINT NULL,
     `startAt` DATETIME NOT NULL,
     `endAt` DATETIME NOT NULL,
     `isShow` BOOLEAN NOT NULL DEFAULT false,
@@ -823,6 +862,12 @@ CREATE TABLE `Exhibition` (
     UNIQUE INDEX `Exhibition_homeContentsId_key`(`homeContentsId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `LocationFilter` ADD CONSTRAINT `LocationFilter_groupId_fkey` FOREIGN KEY (`groupId`) REFERENCES `LocationFilterGroup`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `LocationFilterTopic` ADD CONSTRAINT `LocationFilterTopic_locationFilterId_fkey` FOREIGN KEY (`locationFilterId`) REFERENCES `LocationFilter`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `FAQ` ADD CONSTRAINT `FAQ_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -894,6 +939,15 @@ ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_userId_fkey` FOREIGN KEY (
 ALTER TABLE `Reservation` ADD CONSTRAINT `Reservation_settlementId_fkey` FOREIGN KEY (`settlementId`) REFERENCES `Settlement`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `ReservationRefund` ADD CONSTRAINT `ReservationRefund_reservationId_fkey` FOREIGN KEY (`reservationId`) REFERENCES `Reservation`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ReservationRefund` ADD CONSTRAINT `ReservationRefund_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ReservationRefund` ADD CONSTRAINT `ReservationRefund_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `BlockedTime` ADD CONSTRAINT `BlockedTime_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -903,16 +957,22 @@ ALTER TABLE `Settlement` ADD CONSTRAINT `Settlement_hostId_fkey` FOREIGN KEY (`h
 ALTER TABLE `TaxReturn` ADD CONSTRAINT `TaxReturn_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReport` ADD CONSTRAINT `SpaceReport_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserReport` ADD CONSTRAINT `UserReport_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReport` ADD CONSTRAINT `SpaceReport_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserReport` ADD CONSTRAINT `UserReport_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReportAnswer` ADD CONSTRAINT `SpaceReportAnswer_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserReport` ADD CONSTRAINT `UserReport_spaceQnAId_fkey` FOREIGN KEY (`spaceQnAId`) REFERENCES `SpaceQnA`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReportAnswer` ADD CONSTRAINT `SpaceReportAnswer_spaceReportId_fkey` FOREIGN KEY (`spaceReportId`) REFERENCES `SpaceReport`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserReport` ADD CONSTRAINT `UserReport_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `UserReportAnswer` ADD CONSTRAINT `UserReportAnswer_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `UserReportAnswer` ADD CONSTRAINT `UserReportAnswer_reportId_fkey` FOREIGN KEY (`reportId`) REFERENCES `UserReport`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SpaceQnA` ADD CONSTRAINT `SpaceQnA_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -942,16 +1002,22 @@ ALTER TABLE `SpaceReviewImage` ADD CONSTRAINT `SpaceReviewImage_spaceReviewId_fk
 ALTER TABLE `SpaceReviewImage` ADD CONSTRAINT `SpaceReviewImage_imageId_fkey` FOREIGN KEY (`imageId`) REFERENCES `Image`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SpaceReviewReport` ADD CONSTRAINT `SpaceReviewReport_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
-
--- AddForeignKey
-ALTER TABLE `SpaceReviewReport` ADD CONSTRAINT `SpaceReviewReport_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `SpaceReviewAnswer` ADD CONSTRAINT `SpaceReviewAnswer_hostId_fkey` FOREIGN KEY (`hostId`) REFERENCES `Host`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SpaceReviewAnswer` ADD CONSTRAINT `SpaceReviewAnswer_reviewId_fkey` FOREIGN KEY (`reviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `History` ADD CONSTRAINT `History_spaceReviewAnswerId_fkey` FOREIGN KEY (`spaceReviewAnswerId`) REFERENCES `SpaceReviewAnswer`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+
+-- AddForeignKey
+ALTER TABLE `History` ADD CONSTRAINT `History_spaceQnAAnswerId_fkey` FOREIGN KEY (`spaceQnAAnswerId`) REFERENCES `SpaceQnAAnswer`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+
+-- AddForeignKey
+ALTER TABLE `History` ADD CONSTRAINT `History_spaceQnAId_fkey` FOREIGN KEY (`spaceQnAId`) REFERENCES `SpaceQnA`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+
+-- AddForeignKey
+ALTER TABLE `History` ADD CONSTRAINT `History_spaceReviewId_fkey` FOREIGN KEY (`spaceReviewId`) REFERENCES `SpaceReview`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 -- AddForeignKey
 ALTER TABLE `SpaceInterest` ADD CONSTRAINT `SpaceInterest_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1027,6 +1093,18 @@ ALTER TABLE `UserLocation` ADD CONSTRAINT `UserLocation_locationId_fkey` FOREIGN
 
 -- AddForeignKey
 ALTER TABLE `SpaceLocation` ADD CONSTRAINT `SpaceLocation_spaceId_fkey` FOREIGN KEY (`spaceId`) REFERENCES `Space`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Building` ADD CONSTRAINT `Building_iconId_fkey` FOREIGN KEY (`iconId`) REFERENCES `Icon`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Service` ADD CONSTRAINT `Service_serviceTitleId_fkey` FOREIGN KEY (`serviceTitleId`) REFERENCES `ServiceTitle`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Service` ADD CONSTRAINT `Service_iconId_fkey` FOREIGN KEY (`iconId`) REFERENCES `Icon`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Category` ADD CONSTRAINT `Category_iconId_fkey` FOREIGN KEY (`iconId`) REFERENCES `Icon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ContentCategory` ADD CONSTRAINT `ContentCategory_homeContentsId_fkey` FOREIGN KEY (`homeContentsId`) REFERENCES `HomeContents`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

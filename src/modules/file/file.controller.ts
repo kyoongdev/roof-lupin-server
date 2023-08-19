@@ -1,25 +1,12 @@
-import {
-  Body,
-  Delete,
-  FileTypeValidator,
-  Get,
-  ParseFilePipe,
-  Post,
-  UploadedFile,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Get, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 
-import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
-import { EmptyResponseDTO } from '@/common';
 import { ApiController } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
-import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { DeleteFileDTO, ResizeFileDTO, S3ImageDTO, UploadedFileDTO } from './dto';
+import { ResizeFileDTO, S3ImageDTO, UploadedFileDTO } from './dto';
 import { FileService } from './file.service';
 
 @ApiController('file', '파일')

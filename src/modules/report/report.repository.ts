@@ -50,18 +50,18 @@ export class ReportRepository {
 
     return new ReportDTO({
       ...report,
-      spaceReview: report.spaceReview
-        ? {
-            ...report.spaceReview,
-            images: report.spaceReview.images.map((image) => ({
-              imageId: image.image.id,
-              url: image.image.url,
-              isBest: image.isBest,
-            })),
-          }
-        : undefined,
-      space: SpaceDTO.generateSpaceDTO(report.space),
-      spaceQnA: {
+      spaceReview: report.spaceReview && {
+        ...report.spaceReview,
+        images: report.spaceReview.images.map((image) => ({
+          id: image.id,
+          imageId: image.imageId,
+          url: image.image.url,
+          isBest: image.isBest,
+          reviewId: image.spaceReviewId,
+        })),
+      },
+      space: report.space && SpaceDTO.generateSpaceDTO(report.space),
+      spaceQnA: report.spaceQnA && {
         ...report.spaceQnA,
         space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
       },
@@ -98,18 +98,18 @@ export class ReportRepository {
       (report) =>
         new ReportDTO({
           ...report,
-          spaceReview: report.spaceReview
-            ? {
-                ...report.spaceReview,
-                images: report.spaceReview.images.map((image) => ({
-                  imageId: image.image.id,
-                  url: image.image.url,
-                  isBest: image.isBest,
-                })),
-              }
-            : undefined,
-          space: SpaceDTO.generateSpaceDTO(report.space),
-          spaceQnA: {
+          spaceReview: report.spaceReview && {
+            ...report.spaceReview,
+            images: report.spaceReview.images.map((image) => ({
+              id: image.id,
+              imageId: image.imageId,
+              url: image.image.url,
+              isBest: image.isBest,
+              reviewId: image.spaceReviewId,
+            })),
+          },
+          space: report.space && SpaceDTO.generateSpaceDTO(report.space),
+          spaceQnA: report.spaceQnA && {
             ...report.spaceQnA,
             space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
           },

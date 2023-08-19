@@ -174,7 +174,7 @@ export class HostReviewController {
     });
   }
 
-  @Post(':reviewId/image/:imageId/best')
+  @Post('image/:reviewImageId/best')
   @RequestApi({
     summary: {
       description: '베스트 포토 생성',
@@ -185,14 +185,14 @@ export class HostReviewController {
     type: EmptyResponseDTO,
   })
   async setBestReview(
-    @Param('reviewId') reviewId: string,
-    @Param('imageId') imageId: string,
+    @Param('reviewImageId') reviewImageId: string,
+
     @ReqUser() user: RequestHost
   ) {
-    await this.reviewService.createBestImage(reviewId, imageId, user.id);
+    await this.reviewService.createBestImage(reviewImageId, user.id);
   }
 
-  @Delete(':reviewId/image/:imageId/best')
+  @Delete('image/:reviewImageId/best')
   @RequestApi({
     summary: {
       description: '베스트 포토 삭제',
@@ -202,12 +202,8 @@ export class HostReviewController {
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async deleteBestReview(
-    @Param('reviewId') reviewId: string,
-    @Param('imageId') imageId: string,
-    @ReqUser() user: RequestHost
-  ) {
-    await this.reviewService.deleteBestImage(reviewId, imageId, user.id);
+  async deleteBestReview(@Param('reviewImageId') reviewImageId: string, @ReqUser() user: RequestHost) {
+    await this.reviewService.deleteBestImage(reviewImageId, user.id);
   }
 
   @Post(':reviewId/answer')

@@ -62,6 +62,7 @@ export class ReportController {
   async createSpaceReport(@ReqUser() user: RequestUser, @Body() body: CreateSpaceReportDTO) {
     return await this.reportService.createSpaceReport(user.id, body);
   }
+
   @Post('reviews')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({

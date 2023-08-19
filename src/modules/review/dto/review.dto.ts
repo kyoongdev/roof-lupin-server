@@ -85,14 +85,8 @@ export class ReviewDTO {
     return {
       user: true,
       images: {
-        select: {
-          image: {
-            select: {
-              id: true,
-              url: true,
-            },
-          },
-          isBest: true,
+        include: {
+          image: true,
         },
       },
       answers: {

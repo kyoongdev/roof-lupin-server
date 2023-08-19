@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
@@ -22,7 +23,7 @@ export const REPORT_STATUS_KEYS = Object.keys(REPORT_STATUS);
 @ValidatorConstraint()
 export class ReportStatusConstraint implements ValidatorConstraintInterface {
   validate(value: any, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    if (!REPORT_STATUS_VALUES.includes(value)) return false;
+    if (value !== ReportStatus.PROCESSED && value !== ReportStatus.WAITING) return false;
 
     return true;
   }
@@ -30,19 +31,25 @@ export class ReportStatusConstraint implements ValidatorConstraintInterface {
 
 export const ReportStatusValidation = BaseValidator(
   ReportStatusConstraint,
-  'reportStatus 옵션은 다음 중 하나여야 합니다: ' + REPORT_STATUS_VALUES.join(', ') + '.'
+  'reportStatus 옵션은 다음 중 하나여야 합니다: ' + REPORT_STATUS_VALUES.join(', ')
 );
 
 export const reportStatusNumberToString = (status: number) => {
   if (status === ReportStatus.WAITING) {
     return REPORT_STATUS.WAITING;
-  } else return REPORT_STATUS.PROCESSED;
+  } else if (status === ReportStatus.PROCESSED) {
+    return REPORT_STATUS.PROCESSED;
+  }
+  return false;
 };
 
 export const reportStatusStringToNumber = (status: string) => {
   if (status === REPORT_STATUS.WAITING) {
     return ReportStatus.WAITING;
-  } else return ReportStatus.PROCESSED;
+  } else if (status === REPORT_STATUS.PROCESSED) {
+    return ReportStatus.PROCESSED;
+  }
+  return false;
 };
 
 export const ReportStatusResponseTransForm = () => Transform(({ value }) => reportStatusNumberToString(value));
@@ -63,14 +70,12 @@ export const ReportStatusResDecorator = (nullable = false) =>
 
 export const ReportStatusReqDecorator = (nullable = false) =>
   applyDecorators(
-    ReportStatusValidation(),
+    ApiProperty({
+      type: 'string',
+      enum: REPORT_STATUS_VALUES,
+      example: REPORT_STATUS_VALUES.join(' | '),
+      nullable,
+    }),
     ReportStatusRequestTransForm(),
-    Property({
-      apiProperty: {
-        type: 'string',
-        enum: REPORT_STATUS_VALUES,
-        example: REPORT_STATUS_VALUES.join(' | '),
-        nullable,
-      },
-    })
+    ReportStatusValidation()
   );

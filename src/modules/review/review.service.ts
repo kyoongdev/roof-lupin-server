@@ -9,7 +9,7 @@ import { FileService } from '../file/file.service';
 import { HistoryRepository } from '../history/history.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 
-import { CreateReviewReportDTO, ReviewsSummaryDTO, UpdateReviewDTO, UpdateReviewReportDTO } from './dto';
+import { ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
 import {
@@ -17,8 +17,6 @@ import {
   REVIEW_ERROR_CODE,
   REVIEW_IMAGE_LENGTH_EXCEEDED,
   REVIEW_MUTATION_FORBIDDEN,
-  REVIEW_REPORT_ALREADY_EXISTS,
-  REVIEW_REPORT_MUTATION_FORBIDDEN,
   REVIEW_SPACE_BAD_REQUEST,
   REVIEW_UPDATE_DUE_DATE,
   REVIEW_WRITE_DUE_DATE,
@@ -78,9 +76,6 @@ export class ReviewService {
       orderBy: [
         {
           createdAt: 'desc',
-        },
-        {
-          isBest: 'asc',
         },
         {
           ...(args.orderBy ? (args.orderBy as Prisma.SpaceReviewOrderByWithRelationInput) : { createdAt: 'desc' }),

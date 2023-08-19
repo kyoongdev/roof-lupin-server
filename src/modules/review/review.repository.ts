@@ -12,6 +12,7 @@ import {
   CreateReviewDTO,
   ReviewAnswerDTO,
   ReviewDetailDTO,
+  ReviewImageDetailDTO,
   UpdateReviewAnswerDTO,
   UpdateReviewDTO,
 } from './dto';
@@ -32,14 +33,8 @@ export class ReviewRepository {
       include: {
         user: true,
         images: {
-          select: {
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
-            isBest: true,
+          include: {
+            image: true,
           },
         },
         answers: {
@@ -62,7 +57,13 @@ export class ReviewRepository {
 
     return new ReviewDetailDTO({
       ...review,
-      images: review.images.map((image) => ({ imageId: image.image.id, url: image.image.url, isBest: image.isBest })),
+      images: review.images.map((image) => ({
+        id: image.id,
+        url: image.image.url,
+        isBest: image.isBest,
+        imageId: image.image.id,
+        reviewId: image.spaceReviewId,
+      })),
       space: SpaceDTO.generateSpaceDTO(review.space),
     });
   }
@@ -92,14 +93,8 @@ export class ReviewRepository {
       include: {
         user: true,
         images: {
-          select: {
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
-            isBest: true,
+          include: {
+            image: true,
           },
         },
         answers: {
@@ -124,9 +119,11 @@ export class ReviewRepository {
         new ReviewDTO({
           ...review,
           images: review.images.map((image) => ({
+            id: image.id,
             imageId: image.image.id,
-            url: image.image.url,
             isBest: image.isBest,
+            url: image.image.url,
+            reviewId: image.spaceReviewId,
           })),
         })
     );
@@ -135,8 +132,8 @@ export class ReviewRepository {
   async findBestPhotoReviews(spaceId: string) {
     const photos = await this.database.spaceReviewImage.findMany({
       where: {
+        isBest: true,
         spaceReview: {
-          isBest: true,
           spaceId,
         },
       },
@@ -150,6 +147,55 @@ export class ReviewRepository {
         new BestPhotoDTO({
           id: photo.image.id,
           url: photo.image.url,
+        })
+    );
+  }
+
+  async countReviewImages(args = {} as Prisma.SpaceReviewImageCountArgs) {
+    return await this.database.spaceReviewImage.count(args);
+  }
+
+  async findReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
+    const images = await this.database.spaceReviewImage.findMany({
+      ...args,
+      include: {
+        spaceReview: {
+          include: {
+            user: true,
+            images: {
+              include: {
+                image: true,
+              },
+            },
+            answers: {
+              where: {
+                deletedAt: null,
+              },
+              include: {
+                host: true,
+              },
+            },
+          },
+        },
+        image: true,
+      },
+    });
+
+    return images.map(
+      (image) =>
+        new ReviewImageDetailDTO({
+          ...image,
+          url: image.image.url,
+          review: {
+            ...image.spaceReview,
+            images: image.spaceReview.images.map((image) => ({
+              id: image.id,
+              imageId: image.imageId,
+              isBest: image.isBest,
+              url: image.image.url,
+              reviewId: image.spaceReviewId,
+            })),
+          },
         })
     );
   }
@@ -319,13 +365,10 @@ export class ReviewRepository {
     });
   }
 
-  async findReviewImage(reviewId: string, imageId: string) {
+  async findReviewImage(id: string) {
     const image = await this.database.spaceReviewImage.findUnique({
       where: {
-        spaceReviewId_imageId: {
-          imageId,
-          spaceReviewId: reviewId,
-        },
+        id,
       },
       include: {
         image: true,
@@ -336,9 +379,11 @@ export class ReviewRepository {
     }
 
     return new ReviewImageDTO({
-      imageId,
+      id: image.id,
+      imageId: image.imageId,
       isBest: image.isBest,
       url: image.image.url,
+      reviewId: image.spaceReviewId,
     });
   }
 
@@ -357,20 +402,19 @@ export class ReviewRepository {
     return images.map(
       (image) =>
         new ReviewImageDTO({
+          id: image.id,
           imageId: image.imageId,
           isBest: image.isBest,
           url: image.image.url,
+          reviewId: image.spaceReviewId,
         })
     );
   }
 
-  async updateReviewImage(reviewId: string, imageId: string, isBest: boolean) {
+  async updateReviewImage(id: string, isBest: boolean) {
     await this.database.spaceReviewImage.update({
       where: {
-        spaceReviewId_imageId: {
-          imageId,
-          spaceReviewId: reviewId,
-        },
+        id,
       },
       data: {
         isBest,

@@ -1,8 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as AWS from '@aws-sdk/client-s3';
 import convert from 'heic-convert';
+import mime from 'mime-types';
 import sharp from 'sharp';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -85,15 +86,9 @@ export class FileService {
     contentType = 'image/jpeg'
   ) {
     try {
-      const originalname = file.originalname.split('.').shift();
+      const { key, fileBuffer } = await this.getFileSpec(file);
 
-      const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
-
-      const resizedFile = await this.imageResize(
-        file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer,
-        width,
-        height
-      );
+      const resizedFile = await this.imageResize(fileBuffer, width, height);
 
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
@@ -115,12 +110,10 @@ export class FileService {
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
+
   async uploadFile(file: Express.Multer.File, originKey?: string, contentType = 'image/jpeg') {
     try {
-      const originalname = file.originalname.split('.').shift();
-
-      const key = originKey ?? `${Date.now() + `${originalname}.jpeg`}`;
-      const fileBuffer = file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer;
+      const { key, fileBuffer } = await this.getFileSpec(file);
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
         credentials: {
@@ -138,7 +131,6 @@ export class FileService {
 
       return new UploadedFileDTO(url);
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('이미지 저장 중 오류가 발생했습니다.');
     }
   }
@@ -170,9 +162,7 @@ export class FileService {
 
   async uploadIcon(file: Express.Multer.File) {
     try {
-      const originalname = file.originalname.split('.').shift();
-
-      const key = `${Date.now() + `${originalname}.svg`}`;
+      const { key, fileBuffer } = await this.getFileSpec(file);
 
       await new AWS.S3({
         region: this.configService.get('AWS_REGION'),
@@ -182,7 +172,7 @@ export class FileService {
         },
       }).putObject({
         Key: `${this.configService.get('NODE_ENV') === 'prod' ? 'prod' : 'dev'}/${key}`,
-        Body: file.buffer,
+        Body: fileBuffer,
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
         ContentType: 'image/svg+xml',
       });
@@ -208,11 +198,25 @@ export class FileService {
         Key: ImageDTO.parseS3ImageKey(url),
         Bucket: this.configService.get('AWS_S3_BUCKET_NAME'),
       });
-      console.log(result, ImageDTO.parseS3ImageKey(url));
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException('이미지 삭제 중 오류가 발생했습니다.');
     }
+  }
+
+  private async getFileSpec(file: Express.Multer.File, originKey?: string) {
+    const originalname = file.originalname.split('.').shift();
+    const isHeic = file.originalname.includes('.heic');
+    const ext = mime.extension(file.mimetype);
+
+    if (!ext) {
+      throw new BadRequestException('파일 형식이 올바르지 않습니다.');
+    }
+
+    const key = `${Date.now() + `${originKey ?? originalname}.${isHeic ? 'heic' : ext}`}`;
+
+    const fileBuffer = file.originalname.includes('heic') ? await this.heicConvert(file) : file.buffer;
+
+    return { key, fileBuffer };
   }
 
   private async imageResize(file: Buffer, width?: number, height?: number) {
