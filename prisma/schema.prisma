@@ -839,7 +839,7 @@ model Building {
   name           String
   spaceBuildings SpaceBuilding[]
 
-  icon   Icon   @relation(fields: [iconId], references: [id])
+  icon   Icon   @relation(fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   iconId String
 }
 
@@ -860,7 +860,7 @@ model Service {
   serviceTitle   ServiceTitle?  @relation(fields: [serviceTitleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   serviceTitleId String?
 
-  icon   Icon   @relation(fields: [iconId], references: [id])
+  icon   Icon   @relation(fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   iconId String
 }
 
@@ -874,7 +874,7 @@ model Category {
   spaceUsageCategories SpaceCategory[]
   couponCategories     CouponCategory[]
 
-  icon   Icon?   @relation(fields: [iconId], references: [id])
+  icon   Icon?   @relation(fields: [iconId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   iconId String?
 }
 

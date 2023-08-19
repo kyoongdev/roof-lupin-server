@@ -123,6 +123,7 @@ export const DayResDecorator = (nullable = false) =>
       },
     })
   );
+
 export const DayReqDecorator = (nullable = false) =>
   applyDecorators(
     DayRequestTransForm(),

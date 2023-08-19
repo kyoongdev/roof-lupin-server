@@ -477,16 +477,10 @@ export class RentalTypeService {
           targetDate.day === reservation.day
         ) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
-            const startAt =
-              reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-            const endAt =
-              reservedRentalType.startAt >= reservedRentalType.endAt
-                ? reservedRentalType.endAt + 24
-                : reservedRentalType.endAt;
+            const startAt = reservedRentalType.startAt;
+            const endAt = reservedRentalType.endAt;
             range(startAt, endAt).forEach((hour) => {
-              const index = timeCostInfos.findIndex((timeCostInfo) =>
-                hour >= 24 ? timeCostInfo.time === hour - 24 : timeCostInfo.time === hour
-              );
+              const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
 
               if (index !== -1) {
                 timeCostInfos[index].isPossible = false;
@@ -523,11 +517,11 @@ export class RentalTypeService {
         openHours
           .filter((openHour) => openHour.day === currentDay)
           .forEach((openHour) => {
-            const openStart = Number(openHour.startAt);
-            const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+            const openStart = openHour.startAt;
+            const openEnd = openHour.endAt - 1;
 
             timeCostInfos.forEach((timeCostInfo, index) => {
-              if (timeCostInfo.time < openStart || timeCostInfo.time > openEnd) {
+              if (!(timeCostInfo.time >= openStart && timeCostInfo.time <= openEnd)) {
                 timeCostInfos[index].isPossible = false;
               }
             });
@@ -536,10 +530,7 @@ export class RentalTypeService {
 
       return new PossibleRentalTypeDTO({
         ...rentalType,
-        timeCostInfos: timeCostInfos.map((info) => ({
-          ...info,
-          time: info.time >= 24 ? info.time - 24 : info.time,
-        })),
+        timeCostInfos: timeCostInfos.map((info) => info),
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       let isPossible = true;
@@ -556,14 +547,10 @@ export class RentalTypeService {
                 rentalType.startAt === reservedRentalType.startAt && rentalType.endAt === reservedRentalType.endAt
               );
             } else {
-              const startAt =
-                reservedRentalType.startAt < 9 ? reservedRentalType.startAt + 24 : reservedRentalType.startAt;
-              const endAt =
-                reservedRentalType.startAt >= reservedRentalType.endAt
-                  ? reservedRentalType.endAt + 24
-                  : reservedRentalType.endAt;
+              const startAt = reservedRentalType.startAt;
+              const endAt = reservedRentalType.endAt;
               const nextStartAt = rentalType.startAt;
-              const nextEndAt = rentalType.startAt >= rentalType.endAt ? rentalType.endAt + 24 : rentalType.endAt;
+              const nextEndAt = rentalType.endAt;
               range(startAt, endAt + 1).forEach((hour) => {
                 if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
               });
@@ -591,10 +578,10 @@ export class RentalTypeService {
         openHours
           .filter((openHour) => openHour.day === currentDay)
           .forEach((openHour) => {
-            const openStart = Number(openHour.startAt);
-            const openEnd = Number(openHour.endAt) < 9 ? Number(openHour.endAt) + 24 : Number(openHour.endAt);
+            const openStart = openHour.startAt;
+            const openEnd = openHour.endAt;
 
-            if (rentalType.startAt > openEnd || rentalType.endAt < openStart) isPossible = false;
+            if (!(rentalType.endAt <= openEnd && rentalType.startAt >= openStart)) isPossible = false;
           });
       }
 
