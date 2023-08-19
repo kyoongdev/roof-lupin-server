@@ -89,6 +89,7 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateCautionDTO, isArray: true, description: '주의 사항' } })
   cautions: CreateCautionDTO[];
 
+  @PeriodsValidation()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, isArray: true, description: '대여 유형' } })
   rentalTypes: CreateRentalTypeDTO[];
 

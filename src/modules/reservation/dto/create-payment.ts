@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 
 import { Property } from 'cumuco-nestjs';
 
-import { PhoneNumberValidation } from '@/utils/validation';
+import { PeriodsValidation, PhoneNumberValidation } from '@/utils/validation';
 
 import {
   CreateReservationRentalTypeDTO,
@@ -54,6 +54,7 @@ export class CreatePaymentDTO {
   @Property({ apiProperty: { type: 'number', description: '할인제외 예약 비용' } })
   originalCost: number;
 
+  @PeriodsValidation()
   @Property({ apiProperty: { type: CreateReservationRentalTypeDTO, isArray: true, description: '대여 타입들' } })
   rentalTypes: CreateReservationRentalTypeDTO[];
 
