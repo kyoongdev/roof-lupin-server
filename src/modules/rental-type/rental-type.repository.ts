@@ -134,10 +134,15 @@ export class RentalTypeRepository {
     );
   }
 
-  async findRentalTypeWithReservations(id: string, reservationArgs = {} as Prisma.ReservationFindManyArgs) {
-    const rentalType = await this.database.rentalType.findUnique({
+  async findRentalTypeWithReservations(
+    id: string,
+    rentalTypeArgs = {} as Prisma.RentalTypeFindFirstArgs,
+    reservationArgs = {} as Prisma.ReservationFindManyArgs
+  ) {
+    const rentalType = await this.database.rentalType.findFirst({
       where: {
         id,
+        ...rentalTypeArgs.where,
       },
       include: {
         additionalServices: true,
@@ -204,7 +209,6 @@ export class RentalTypeRepository {
       reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
         const { rentalTypes, ...rest } = reservation;
         const { space } = rentalTypes[0].rentalType;
-
         return {
           ...rest,
           year: String(rest.year),

@@ -14,6 +14,7 @@ import { BlockedTimeException } from './exception/blocked-time';
 import {
   BLOCKED_TIME_ERROR_CODE,
   BLOCKED_TIME_MUTATION_FORBIDDEN,
+  BLOCKED_TIME_PERIOD,
   BLOCKED_TIME_RESERVATION_EXISTS,
 } from './exception/errorCode';
 
@@ -117,6 +118,10 @@ export class HostBlockedTimeService {
   }
 
   validateBlockTime(startAt: number, endAt: number, reservations: ReservationDTO[]) {
+    if (startAt > endAt) {
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BAD_REQUEST(BLOCKED_TIME_PERIOD));
+    }
+
     reservations.forEach(({ rentalTypes }) => {
       rentalTypes.forEach((rentalType) => {
         if (startAt <= rentalType.endAt && rentalType.startAt <= endAt) {

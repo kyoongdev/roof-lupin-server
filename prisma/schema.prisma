@@ -336,7 +336,7 @@ model Reservation {
   userCount           Int
   orderId             String?   @unique //INFO: 주문 번호
   orderResultId       String?   @unique //INFO: 주문 결과 번호 
-  payMethod           Int?      @db.TinyInt //INFO: 결제 방식 : 1 - 포트원, 2 - 토스페이, 3 - 카카오페이
+  payMethod           String?
   isApproved          Boolean   @default(true) //INFO: 결제 승인 여부
   approvedAt          DateTime?
   isCanceled          Boolean   @default(false) //INFO: 취소 여부
@@ -357,7 +357,7 @@ model Reservation {
   userCoupon         UserCoupon[]
   additionalServices ReservedAdditionalService[]
   rentalTypes        ReservationRentalType[]
-  refunds            ReservationRefund[]
+  refunds            ReservationRefund?
 }
 
 model ReservationRefund {
@@ -366,7 +366,7 @@ model ReservationRefund {
   refundCost Int    @db.MediumInt
   reason     String @db.VarChar(255)
 
-  reservationId String
+  reservationId String      @unique
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId        String?
   user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)

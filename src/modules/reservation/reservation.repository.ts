@@ -238,28 +238,27 @@ export class ReservationRepository {
       },
       data: {
         ...rest,
+
         ...(refund && {
           refunds: {
-            create: [
-              {
-                reason: refund.reason,
-                refundCost: refund.refundCost,
-                ...(refund.hostId && {
-                  host: {
-                    connect: {
-                      id: refund.hostId,
-                    },
+            create: {
+              reason: refund.reason,
+              refundCost: refund.refundCost,
+              ...(refund.hostId && {
+                host: {
+                  connect: {
+                    id: refund.hostId,
                   },
-                }),
-                ...(refund.userId && {
-                  user: {
-                    connect: {
-                      id: refund.userId,
-                    },
+                },
+              }),
+              ...(refund.userId && {
+                user: {
+                  connect: {
+                    id: refund.userId,
                   },
-                }),
-              },
-            ],
+                },
+              }),
+            },
           },
         }),
       },

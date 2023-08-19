@@ -98,7 +98,6 @@ export class RentalTypeService {
         },
       }
     );
-    console.log({ rentalTypes });
 
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
@@ -238,15 +237,25 @@ export class RentalTypeService {
     return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
-    const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(id, {
-      where: {
-        year: Number(query.year),
-        month: Number(query.month),
-        day: Number(query.day),
-        isCanceled: false,
-        deletedAt: null,
+    const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
+    const targetDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(query.day));
+    const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(
+      id,
+      {
+        where: {
+          day: targetDay,
+        },
       },
-    });
+      {
+        where: {
+          year: Number(query.year),
+          month: Number(query.month),
+          day: Number(query.day),
+          isCanceled: false,
+          deletedAt: null,
+        },
+      }
+    );
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
         spaceId: rentalType.spaceId,
@@ -470,7 +479,7 @@ export class RentalTypeService {
           }
         });
       });
-      console.log({ reservations });
+
       reservations.forEach((reservation) => {
         if (
           targetDate.year === reservation.year &&
@@ -480,7 +489,7 @@ export class RentalTypeService {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
             const endAt = reservedRentalType.endAt;
-            console.log({ startAt, endAt });
+
             range(startAt, endAt).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
 
@@ -529,7 +538,7 @@ export class RentalTypeService {
             });
           });
       }
-      console.log({ timeCostInfos });
+
       return new PossibleRentalTypeDTO({
         ...rentalType,
         timeCostInfos: timeCostInfos.map((info) => info),

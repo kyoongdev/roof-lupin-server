@@ -8,7 +8,7 @@ import { ReservationDTO, type ReservationDTOProps } from './reservation.dto';
 export interface ReservationDetailDTOProps extends ReservationDTOProps {
   orderId?: string;
   orderResultId?: string;
-  payMethod?: number;
+  payMethod?: string;
   refundCost?: number;
   isApproved: boolean;
   approvedAt?: Date;
@@ -24,7 +24,7 @@ export class ReservationDetailDTO extends ReservationDTO {
   orderResultId?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '결제방식' } })
-  payMethod?: number;
+  payMethod?: string;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '환불 금액' } })
   refundCost?: number;

@@ -181,12 +181,17 @@ export class HostSettlementRepository {
   async findSettlements(args = {} as Prisma.SettlementFindManyArgs) {
     const settlements = await this.database.settlement.findMany({
       where: args.where,
-      orderBy: {
-        year: 'asc',
-        month: 'asc',
-        day: 'asc',
-        ...args.orderBy,
-      },
+      orderBy: [
+        {
+          year: 'asc',
+        },
+        {
+          month: 'asc',
+        },
+        {
+          day: 'asc',
+        },
+      ],
       ...args,
     });
 
