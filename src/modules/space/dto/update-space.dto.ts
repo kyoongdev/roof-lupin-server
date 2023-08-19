@@ -6,6 +6,7 @@ import { range } from 'lodash';
 import { UpdateOpenHourDTO } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO } from '@/modules/location/dto';
 import { CreateRentalTypeDTO } from '@/modules/rental-type/dto';
+import { PeriodsValidation } from '@/utils';
 
 import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -74,6 +75,7 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateCautionDTO, nullable: true, isArray: true, description: '주의 사항' } })
   cautions?: CreateCautionDTO[];
 
+  @PeriodsValidation()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, nullable: true, isArray: true, description: '대여 유형' } })
   rentalTypes?: CreateRentalTypeDTO[];
 
@@ -98,6 +100,7 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateSizeDTO, nullable: true, isArray: true, description: '면적' } })
   sizes?: CreateSizeDTO[];
 
+  @PeriodsValidation()
   @Property({ apiProperty: { type: UpdateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours?: UpdateOpenHourDTO[];
 

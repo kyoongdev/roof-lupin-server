@@ -9,19 +9,21 @@ interface Period {
 
 @ValidatorConstraint()
 export class PeriodValidateConstraint implements ValidatorConstraintInterface {
-  validate(value: Period, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    if (value.startAt > value.endAt) return false;
+  validate(value?: Period, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    if (value && value.startAt > value.endAt) return false;
     return true;
   }
 }
 
 @ValidatorConstraint()
 export class PeriodsValidateConstraint implements ValidatorConstraintInterface {
-  validate(value: Period[], validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    console.log({ value });
-    for (const period of value) {
-      if (period.startAt > period.endAt) return false;
+  validate(value?: Period[], validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    if (value) {
+      for (const period of value) {
+        if (period.startAt > period.endAt) return false;
+      }
     }
+
     return true;
   }
 }
