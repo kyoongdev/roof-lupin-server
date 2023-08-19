@@ -4,3 +4,4 @@ export * from './gender.validate';
 export * from './word-length.validation';
 
 export * from './day.validation';
+export * from './period.validation';

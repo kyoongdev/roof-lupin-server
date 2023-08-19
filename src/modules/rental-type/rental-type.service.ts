@@ -98,6 +98,7 @@ export class RentalTypeService {
         },
       }
     );
+    console.log({ rentalTypes });
 
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
       where: {
@@ -469,7 +470,7 @@ export class RentalTypeService {
           }
         });
       });
-
+      console.log({ reservations });
       reservations.forEach((reservation) => {
         if (
           targetDate.year === reservation.year &&
@@ -479,6 +480,7 @@ export class RentalTypeService {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
             const endAt = reservedRentalType.endAt;
+            console.log({ startAt, endAt });
             range(startAt, endAt).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
 
@@ -527,7 +529,7 @@ export class RentalTypeService {
             });
           });
       }
-
+      console.log({ timeCostInfos });
       return new PossibleRentalTypeDTO({
         ...rentalType,
         timeCostInfos: timeCostInfos.map((info) => info),

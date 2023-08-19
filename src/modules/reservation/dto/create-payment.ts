@@ -26,7 +26,7 @@ export interface CreatePaymentDTOProps {
 }
 
 export class CreatePaymentDTO {
-  @Property({ apiProperty: { type: 'string', description: '예약 연도' } })
+  @Property({ apiProperty: { type: 'string', maxLength: 4, minLength: 4, description: '예약 연도' } })
   year: string;
 
   @Property({ apiProperty: { type: 'string', description: '예약 월' } })

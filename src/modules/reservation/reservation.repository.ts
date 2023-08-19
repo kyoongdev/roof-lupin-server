@@ -114,7 +114,7 @@ export class ReservationRepository {
     const vatCost = getVatCost(rest.totalCost);
     const additionalServices = flatMap(rentalTypes.map((rentalType) => rentalType.additionalServices)).filter(Boolean);
 
-    const reservation = await this.database.reservation.create({
+    const reservation = (await this.database.reservation.create({
       data: {
         ...rest,
         user: {
@@ -157,8 +157,9 @@ export class ReservationRepository {
         day: Number(rest.day),
         code: `${new Date().getTime()}${getRandom(10, 99)}`,
       },
-    });
-    return reservation.id;
+      include: reservationInclude,
+    })) as CommonReservation;
+    return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async createReservationWithTransaction(database: TransactionPrisma, userId: string, data: CreatePaymentDTO) {

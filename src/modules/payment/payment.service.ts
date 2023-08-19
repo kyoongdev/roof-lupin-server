@@ -143,6 +143,47 @@ export class PaymentService {
     return result;
   }
 
+  async testPayment(data: CreatePaymentDTO, userId: string) {
+    const reservation = await this.reservationRepository.createPayment(userId, data, true);
+
+    try {
+      if (reservation)
+        await this.database.$transaction(async (database) => {
+          const space = await this.spaceRepository.findSpace(data.spaceId);
+          await this.validatePayment(data, space);
+
+          await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
+            orderResultId: nanoid(10),
+            payedAt: new Date(),
+            orderId: nanoid(10),
+          });
+
+          await this.createSettlement(database, reservation);
+        });
+
+      await this.sendMessage(reservation);
+    } catch (err) {
+      logger.error(err);
+      if (reservation && reservation.id) {
+        const coupons = await this.couponRepository.findUserCoupons({
+          where: {
+            userId: reservation.user.id,
+            reservationId: reservation.id,
+          },
+        });
+        await Promise.all(
+          coupons.map(async (coupon) => {
+            await this.couponRepository.restoreUserCoupon(coupon.id);
+          })
+        );
+      }
+
+      throw err;
+    }
+
+    return reservation;
+  }
+
   async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
     const { orderId, paymentInfo } = data;
     let reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
@@ -401,11 +442,8 @@ export class PaymentService {
           day: data.day,
         });
 
-        const possibleEndAt =
-          possibleRentalType.endAt <= possibleRentalType.startAt
-            ? possibleRentalType.endAt + 24
-            : possibleRentalType.endAt;
-        const itemEndAt = item.endAt <= item.startAt ? item.endAt + 24 : item.endAt;
+        const possibleEndAt = possibleRentalType.endAt;
+        const itemEndAt = item.endAt;
 
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
         if (item.startAt < possibleRentalType.startAt || possibleEndAt < itemEndAt) {
@@ -419,18 +457,19 @@ export class PaymentService {
               PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
             );
           }
-
+          console.log('timeCostInfos', possibleRentalType['timeCostInfos']);
           //INFO: 대여하려는 시간이 예약 불가할 때
           (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
+            console.log(time);
             if (item.startAt <= time.time && time.time <= item.endAt && !time.isPossible) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
           });
 
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
-            const targetTime = next.time < 9 ? next.time + 24 : next.time;
+            const targetTime = next.time;
 
-            if (item.startAt <= targetTime && targetTime <= itemEndAt) {
+            if (item.startAt <= targetTime && targetTime <= itemEndAt - 1) {
               acc += next.cost;
             }
             return acc;

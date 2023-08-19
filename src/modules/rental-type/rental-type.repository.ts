@@ -170,10 +170,13 @@ export class RentalTypeRepository {
                             rentalType: true,
                             categories: {
                               include: {
-                                category: true,
+                                category: {
+                                  include: {
+                                    icon: true,
+                                  },
+                                },
                               },
                             },
-                            //TODO: reports: true,
                           },
                         },
                       },

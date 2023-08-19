@@ -41,6 +41,7 @@ export const getDay = (year: number, month: number, day: number) => {
 @ValidatorConstraint()
 export class DayValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    console.log({ value });
     if (
       value !== DAY_ENUM.SUNDAY &&
       value !== DAY_ENUM.MONDAY &&

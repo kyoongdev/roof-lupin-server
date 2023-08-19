@@ -17,6 +17,5 @@ export const reservationInclude: Prisma.ReservationInclude = {
       },
     },
   },
-
   spaceReviews: true,
 };

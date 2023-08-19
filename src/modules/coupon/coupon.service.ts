@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
@@ -65,7 +65,7 @@ export class CouponService {
     const userCoupon = await this.couponRepository.findUserCouponByCode(data.code);
 
     if (userCoupon) {
-      //TODO: 이미 등록된 쿠폰입니다?
+      throw new ConflictException('이미 등록된 쿠폰입니다.');
     }
 
     const now = new Date();
