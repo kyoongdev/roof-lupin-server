@@ -15,4 +15,16 @@ export class PeriodValidateConstraint implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint()
+export class PeriodsValidateConstraint implements ValidatorConstraintInterface {
+  validate(value: Period[], validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    console.log({ value });
+    for (const period of value) {
+      if (period.startAt > period.endAt) return false;
+    }
+    return true;
+  }
+}
+
 export const PeriodValidation = BaseValidator(PeriodValidateConstraint, 'startAt는 endAt보다 작아야 합니다.');
+export const PeriodsValidation = BaseValidator(PeriodsValidateConstraint, 'startAt는 endAt보다 작아야 합니다.');
