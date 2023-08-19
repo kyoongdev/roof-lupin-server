@@ -219,6 +219,7 @@ export class PaymentService {
           orderResultId: data.paymentKey,
           payedAt: new Date(),
           receiptUrl: tossPayment.receipt?.url,
+          payMethod: tossPayment.card ? '카드' : tossPayment.easyPay?.provider,
         });
 
         await this.createSettlement(database, reservation);

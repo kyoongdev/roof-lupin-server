@@ -2,12 +2,6 @@ import { Property } from 'cumuco-nestjs';
 
 import { CreateRefundDTO, CreateRefundDTOProps } from './create-refund.dto';
 
-export enum PayMethod {
-  PORT_ONE = 1,
-  TOSS_PAY,
-  KAKAO_PAY,
-}
-
 export interface UpdatePaymentDTOProps {
   totalCost?: number;
   vatCost?: number;
@@ -15,7 +9,7 @@ export interface UpdatePaymentDTOProps {
   originalCost?: number;
   orderId?: string;
   orderResultId?: string;
-  payMethod?: PayMethod;
+  payMethod?: string;
   payedAt?: Date;
   refund?: CreateRefundDTOProps;
   receiptUrl?: string;
@@ -42,8 +36,8 @@ export class UpdatePaymentDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '주문 결과 번호' } })
   orderResultId?: string;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '결제 방식' } })
-  payMethod?: PayMethod;
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '결제 방식' } })
+  payMethod?: string;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '결제일' } })
   payedAt?: Date;
