@@ -18,7 +18,9 @@ export class QnAService {
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
-    const count = await this.qnaRepository.countQna();
+    const count = await this.qnaRepository.countQna({
+      where: args.where,
+    });
     const qnas = await this.qnaRepository.findQnAs({
       where: {
         ...args.where,
