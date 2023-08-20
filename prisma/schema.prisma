@@ -650,7 +650,6 @@ model Host {
   email        String    @unique
   profileImage String?
   phoneNumber  String    @db.Char(11)
-  gender       Int       @db.TinyInt
   password     String
   salt         String
   isBlocked    Boolean   @default(false)

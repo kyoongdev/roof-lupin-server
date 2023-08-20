@@ -1,4 +1,3 @@
-export * from './base-host.dto';
 export * from './create-host.dto';
 export * from './host.dto';
 export * from './update-host.dto';

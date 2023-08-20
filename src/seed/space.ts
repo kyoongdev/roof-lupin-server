@@ -12,7 +12,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       password: hostPassword,
       salt,
       email: '9898junjun2@gmail.com',
-      gender: 1,
       name: '박용준',
       phoneNumber: '01040597883',
 

@@ -1,19 +1,16 @@
 import { Property } from 'cumuco-nestjs';
 
-import type { DateProps } from '@/common';
-
-import { BaseHostDTO } from './base-host.dto';
+import { DateDTO, type DateProps } from '@/common';
 
 export interface HostDTOProps extends DateProps {
   id: string;
   email: string;
   name: string;
   profileImage?: string;
-  gender: number;
   phoneNumber: string;
 }
 
-export class HostDTO extends BaseHostDTO {
+export class HostDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: 'host ID' } })
   id: string;
 
@@ -29,9 +26,6 @@ export class HostDTO extends BaseHostDTO {
   @Property({ apiProperty: { type: 'string', description: '연락처' } })
   phoneNumber: string;
 
-  @Property({ apiProperty: { type: 'string', description: '남성 | 여성' } })
-  gender: string;
-
   constructor(props: HostDTOProps) {
     super();
     this.id = props.id;
@@ -39,7 +33,6 @@ export class HostDTO extends BaseHostDTO {
     this.name = props.name;
     this.profileImage = props.profileImage;
     this.phoneNumber = props.phoneNumber;
-    this.gender = this.hostGenderConverter(props.gender);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
