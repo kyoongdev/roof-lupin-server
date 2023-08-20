@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -8,6 +8,8 @@ import { HostDetailDTO } from '@/modules/host/dto/host-detail.dto';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindHostsQuery } from '../dto/query/host';
 
 import { AdminHostService } from './host.service';
 
@@ -27,8 +29,8 @@ export class AdminHostController {
     type: HostDTO,
     isPaging: true,
   })
-  async getHosts(@Paging() paging: PagingDTO) {
-    return await this.hostService.findPagingHosts(paging);
+  async getHosts(@Paging() paging: PagingDTO, @Query() query: AdminFindHostsQuery) {
+    return await this.hostService.findPagingHosts(paging, query.generateQuery());
   }
 
   @Get(':hostId/detail')
