@@ -1,13 +1,12 @@
 import { Property } from 'cumuco-nestjs';
 
-import { GenderReqDecorators, PhoneNumberValidation } from '@/utils/validation';
+import { PhoneNumberValidation } from '@/utils/validation';
 
 interface UpdateHostDTOProps {
   name?: string;
   email?: string;
   profileImage?: string;
   phoneNumber?: string;
-  gender?: number;
   password?: string;
 }
 
@@ -24,9 +23,6 @@ export class UpdateHostDTO {
   @PhoneNumberValidation()
   @Property({ apiProperty: { type: 'string', description: '유저 아이디', nullable: true } })
   phoneNumber?: string;
-
-  @GenderReqDecorators(true)
-  gender?: number;
 
   @Property({ apiProperty: { type: 'string', description: '비밀번호', nullable: true } })
   password?: string;

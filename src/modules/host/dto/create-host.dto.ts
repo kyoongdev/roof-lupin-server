@@ -7,7 +7,6 @@ interface CreateHostDTOProps {
   email: string;
   profileImage?: string;
   phoneNumber: string;
-  gender: number;
   password: string;
 }
 
@@ -22,11 +21,8 @@ export class CreateHostDTO {
   profileImage?: string;
 
   @PhoneNumberValidation()
-  @Property({ apiProperty: { type: 'string', description: '유저 아이디' } })
+  @Property({ apiProperty: { type: 'string', description: '핸드폰 번호' } })
   phoneNumber: string;
-
-  @GenderReqDecorators()
-  gender: number;
 
   @Property({ apiProperty: { type: 'string', description: '비밀번호' } })
   password: string;
