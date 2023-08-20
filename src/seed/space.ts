@@ -30,6 +30,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   });
 
   const serviceTitles = await database.serviceTitle.findMany({
+    where: {
+      services: {
+        some: {},
+      },
+    },
     include: {
       services: true,
     },

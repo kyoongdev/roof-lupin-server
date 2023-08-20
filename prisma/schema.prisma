@@ -646,13 +646,15 @@ model SpaceHashTag {
 model Host {
   id String @id @default(uuid())
 
-  name         String  @db.VarChar(20)
-  email        String  @unique
+  name         String    @db.VarChar(20)
+  email        String    @unique
   profileImage String?
-  phoneNumber  String  @db.Char(11)
-  gender       Int     @db.TinyInt
+  phoneNumber  String    @db.Char(11)
+  gender       Int       @db.TinyInt
   password     String
   salt         String
+  isBlocked    Boolean   @default(false)
+  unBlockAt    DateTime?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
