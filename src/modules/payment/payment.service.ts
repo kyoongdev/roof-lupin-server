@@ -320,14 +320,15 @@ export class PaymentService {
   }
 
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
-    const isExist = await this.settlementRepository.checkSettlementByDate(
-      data.year,
-      data.month,
-      data.day,
-      data.space.hostId
-    );
+    const currentDate = new Date();
+    const year = currentDate.getFullYear().toString();
+    const month = (currentDate.getMonth() + 1).toString();
+    const day = currentDate.getDate().toString();
+
+    const isExist = await this.settlementRepository.checkSettlementByDate(year, month, day, data.space.hostId);
     const lupinCost = data.totalCost * LUPIN_CHARGE;
     const settlementCost = data.totalCost - lupinCost;
+
     if (isExist) {
       await this.settlementRepository.updateSettlementWithTransaction(database, isExist.id, {
         discountCost: isExist.discountCost + data.discountCost,
@@ -337,13 +338,13 @@ export class PaymentService {
         vatCost: isExist.vatCost + data.vatCost,
         lupinCost: isExist.lupinCost + lupinCost,
         lupinVatCost: isExist.lupinVatCost + getVatCost(lupinCost),
-        reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
+        reservationIds: [data.id],
       });
     } else {
       await this.settlementRepository.createSettlementWithTransaction(database, {
-        year: data.year,
-        month: data.month,
-        day: data.day,
+        year,
+        month,
+        day,
         hostId: data.space.hostId,
         settlementCost,
         totalCost: data.totalCost,
