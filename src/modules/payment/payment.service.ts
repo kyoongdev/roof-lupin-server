@@ -102,7 +102,7 @@ export class PaymentService {
     return reservation;
   }
 
-  async createPaymentPayload(userId: string, data: CreatePaymentPayloadDTO) {
+  async createPaymentPayload(data: CreatePaymentPayloadDTO) {
     const paymentData = new CreatePaymentDTO(data);
 
     const totalCost = paymentData.originalCost - paymentData.discountCost;
@@ -398,12 +398,14 @@ export class PaymentService {
       data.rentalTypes.map(async (item) => {
         const reservationDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), item.startAt);
         const currentDate = new Date();
+
         if (
           reservationDate.getFullYear() === currentDate.getFullYear() &&
           reservationDate.getMonth() === currentDate.getMonth() &&
           reservationDate.getDate() === currentDate.getDate()
         ) {
-          const diff = currentDate.getHours() - reservationDate.getHours();
+          const diff = reservationDate.getHours() - currentDate.getHours();
+          console.log({ diff });
           if (diff <= 2) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MAX_RESERVATION_DATE));
           }
@@ -421,11 +423,13 @@ export class PaymentService {
           day: data.day,
         });
 
+        const possibleStartAt = possibleRentalType.startAt;
         const possibleEndAt = possibleRentalType.endAt;
+        const itemStartAt = item.startAt;
         const itemEndAt = item.endAt;
 
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
-        if (item.startAt < possibleRentalType.startAt || possibleEndAt < itemEndAt) {
+        if (itemStartAt < possibleStartAt || possibleEndAt < itemEndAt) {
           throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
         }
 
@@ -447,7 +451,7 @@ export class PaymentService {
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time;
 
-            if (item.startAt <= targetTime && targetTime <= itemEndAt - 1) {
+            if (item.startAt <= targetTime && targetTime <= itemEndAt) {
               acc += next.cost;
             }
             return acc;
