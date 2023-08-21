@@ -289,7 +289,6 @@ export class HostSettlementRepository {
       updateArgs.data = {
         ...updateArgs.data,
         reservations: {
-          disconnect: {},
           connect: reservationIds.map((id) => ({ id })),
         },
       };

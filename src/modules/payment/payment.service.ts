@@ -322,7 +322,7 @@ export class PaymentService {
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
     const currentDate = new Date();
     const year = currentDate.getFullYear().toString();
-    const month = currentDate.getMonth().toString();
+    const month = (currentDate.getMonth() + 1).toString();
     const day = currentDate.getDate().toString();
 
     const isExist = await this.settlementRepository.checkSettlementByDate(year, month, day, data.space.hostId);
