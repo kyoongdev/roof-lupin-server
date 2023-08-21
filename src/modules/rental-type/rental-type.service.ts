@@ -488,7 +488,10 @@ export class RentalTypeService {
         ) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
-            const endAt = reservedRentalType.endAt;
+            const endAt =
+              reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE
+                ? reservedRentalType.endAt
+                : reservedRentalType.endAt + 1;
 
             range(startAt, endAt).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
@@ -507,7 +510,7 @@ export class RentalTypeService {
           targetDate.month === blockedTime.month &&
           targetDate.day === blockedTime.day
         )
-          for (let time = blockedTime.startAt; time <= blockedTime.endAt; time++) {
+          for (let time = blockedTime.startAt; time < blockedTime.endAt; time++) {
             timeCostInfos[time].isPossible = false;
           }
       });
@@ -532,7 +535,7 @@ export class RentalTypeService {
             const openEnd = openHour.endAt - 1;
 
             timeCostInfos.forEach((timeCostInfo, index) => {
-              if (!(timeCostInfo.time >= openStart && timeCostInfo.time <= openEnd)) {
+              if (!(timeCostInfo.time >= openStart && timeCostInfo.time < openEnd)) {
                 timeCostInfos[index].isPossible = false;
               }
             });
@@ -559,12 +562,12 @@ export class RentalTypeService {
               );
             } else {
               const startAt = reservedRentalType.startAt;
-              const endAt = reservedRentalType.endAt;
+              const endAt = reservedRentalType.endAt + 1;
               const nextStartAt = rentalType.startAt;
               const nextEndAt = rentalType.endAt;
 
-              range(startAt, endAt + 1).forEach((hour) => {
-                if (nextStartAt <= hour && hour <= nextEndAt) isPossible = false;
+              range(startAt, endAt).forEach((hour) => {
+                if (nextStartAt <= hour && hour < nextEndAt) isPossible = false;
               });
             }
           });
@@ -572,7 +575,7 @@ export class RentalTypeService {
       });
 
       blockedTimes.forEach((blockedTime) => {
-        if (blockedTime.startAt <= rentalType.endAt && blockedTime.endAt >= rentalType.startAt) {
+        if (rentalType.endAt >= blockedTime.startAt && blockedTime.endAt >= rentalType.startAt) {
           isPossible = false;
         }
       });

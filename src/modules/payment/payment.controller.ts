@@ -83,8 +83,8 @@ export class PaymentController {
   @ResponseApi({
     type: PaymentPayloadDTO,
   })
-  async getPaymentPayload(@ReqUser() user: RequestUser, @Body() data: CreatePaymentPayloadDTO) {
-    return await this.paymentService.createPaymentPayload(user.id, data);
+  async getPaymentPayload(@Body() data: CreatePaymentPayloadDTO) {
+    return await this.paymentService.createPaymentPayload(data);
   }
 
   @Post('/test')

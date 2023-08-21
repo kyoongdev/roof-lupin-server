@@ -78,6 +78,11 @@ export class CreateRentalTypeDTO {
       if (isDuplicate) {
         throw new BadRequestException('시간은 9~32까지 하나만 입력해수제요.');
       }
+      const max = Math.max(...this.timeCostInfos.map(({ time }) => time));
+      const min = Math.min(...this.timeCostInfos.map(({ time }) => time));
+      if (max !== this.endAt || min !== this.startAt) {
+        throw new BadRequestException('시작 시간과 끝나는 시간을 확인해주세요.');
+      }
     }
   }
 }
