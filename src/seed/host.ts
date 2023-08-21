@@ -14,7 +14,6 @@ export const seedHosts = async (database: PrismaClient) => {
         data: {
           name: `호스트 ${idx}`,
           email: `host${idx}@gmail.com`,
-          gender: 1,
           phoneNumber: `01012341234`,
           password: hostPassword,
           salt,

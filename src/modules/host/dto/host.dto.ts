@@ -1,19 +1,18 @@
 import { Property } from 'cumuco-nestjs';
 
-import type { DateProps } from '@/common';
-
-import { BaseHostDTO } from './base-host.dto';
+import { DateDTO, type DateProps } from '@/common';
 
 export interface HostDTOProps extends DateProps {
   id: string;
   email: string;
   name: string;
   profileImage?: string;
-  gender: number;
   phoneNumber: string;
+  isBlocked: boolean;
+  unBlockAt?: Date;
 }
 
-export class HostDTO extends BaseHostDTO {
+export class HostDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: 'host ID' } })
   id: string;
 
@@ -29,8 +28,11 @@ export class HostDTO extends BaseHostDTO {
   @Property({ apiProperty: { type: 'string', description: '연락처' } })
   phoneNumber: string;
 
-  @Property({ apiProperty: { type: 'string', description: '남성 | 여성' } })
-  gender: string;
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '차단 여부' } })
+  isBlocked: boolean;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, format: 'date-time', description: '차단 해제일' } })
+  unBlockAt?: Date;
 
   constructor(props: HostDTOProps) {
     super();
@@ -39,7 +41,8 @@ export class HostDTO extends BaseHostDTO {
     this.name = props.name;
     this.profileImage = props.profileImage;
     this.phoneNumber = props.phoneNumber;
-    this.gender = this.hostGenderConverter(props.gender);
+    this.isBlocked = props.isBlocked;
+    this.unBlockAt = props.unBlockAt;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;

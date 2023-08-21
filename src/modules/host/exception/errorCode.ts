@@ -3,6 +3,7 @@ import { HttpCode, HttpStatus } from '@nestjs/common';
 import { ErrorCode } from 'cumuco-nestjs';
 
 export const HOST_NOT_FOUND = '호스트를 찾을 수 없습니다.' as const;
+export const HOST_ALREADY_EXIST = '이미 존재하는 호스트입니다.' as const;
 export const HOST_ACCOUNT_NOT_FOUND = '호스트 계좌 정보를 찾을 수 없습니다.' as const;
 export const HOST_ACCOUNT_ALREADY_EXIST = '호스트 계좌 정보가 이미 존재합니다.' as const;
 export const QNA_ANSWER_MUTATION_FORBIDDEN = '본인이 작성한 QnA 댓글만 수정/삭제가 가능합니다.';

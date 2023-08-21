@@ -6,6 +6,7 @@ import { EncryptProvider } from '@/common/encrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import {
+  BlockHostDTO,
   CreateHostAccountDTO,
   CreateHostDTO,
   HostAccountDTO,
@@ -150,6 +151,30 @@ export class HostRepository {
     });
 
     return id;
+  }
+
+  async blockHost(id: string, data: BlockHostDTO) {
+    await this.database.host.update({
+      where: {
+        id,
+      },
+      data: {
+        isBlocked: true,
+        unBlockAt: data.unBlockAt,
+      },
+    });
+  }
+
+  async unBlockHost(id: string) {
+    await this.database.host.update({
+      where: {
+        id,
+      },
+      data: {
+        isBlocked: false,
+        unBlockAt: null,
+      },
+    });
   }
 
   async deleteHost(id: string) {
