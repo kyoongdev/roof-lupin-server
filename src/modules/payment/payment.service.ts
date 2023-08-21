@@ -338,7 +338,7 @@ export class PaymentService {
         vatCost: isExist.vatCost + data.vatCost,
         lupinCost: isExist.lupinCost + lupinCost,
         lupinVatCost: isExist.lupinVatCost + getVatCost(lupinCost),
-        reservationIds: [...isExist.reservations.map((reservation) => reservation.id), data.id],
+        reservationIds: [data.id],
       });
     } else {
       await this.settlementRepository.createSettlementWithTransaction(database, {

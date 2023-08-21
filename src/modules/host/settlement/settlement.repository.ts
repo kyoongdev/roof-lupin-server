@@ -251,13 +251,27 @@ export class HostSettlementRepository {
       updateArgs.data = {
         ...updateArgs.data,
         reservations: {
-          deleteMany: {},
           connect: [...reservationIds.map((id) => ({ id }))],
         },
       };
     }
 
     await this.database.settlement.update(updateArgs);
+  }
+
+  async deleteSettlementReservation(id: string, reservationId: string) {
+    await this.database.settlement.update({
+      where: {
+        id,
+      },
+      data: {
+        reservations: {
+          disconnect: {
+            id: reservationId,
+          },
+        },
+      },
+    });
   }
 
   async updateSettlementWithTransaction(database: TransactionPrisma, id: string, data: UpdateSettlementDTO) {
@@ -275,8 +289,8 @@ export class HostSettlementRepository {
       updateArgs.data = {
         ...updateArgs.data,
         reservations: {
-          deleteMany: {},
-          connect: [...reservationIds.map((id) => ({ id }))],
+          disconnect: {},
+          connect: reservationIds.map((id) => ({ id })),
         },
       };
     }
