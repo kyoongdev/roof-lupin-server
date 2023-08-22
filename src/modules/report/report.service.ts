@@ -30,12 +30,18 @@ export class ReportService {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reportRepository.countReports({
       where: {
-        userId,
         ...args.where,
+        userId,
+        deletedAt: null,
       },
     });
     const reports = await this.reportRepository.findReports({
       ...args,
+      where: {
+        ...args.where,
+        userId,
+        deletedAt: null,
+      },
       skip,
       take,
     });
@@ -49,6 +55,7 @@ export class ReportService {
       where: {
         userId,
         spaceId: data.spaceId,
+        deletedAt: null,
       },
     });
 
@@ -65,6 +72,7 @@ export class ReportService {
       where: {
         userId,
         spaceReviewId: data.reviewId,
+        deletedAt: null,
       },
     });
 
@@ -81,6 +89,7 @@ export class ReportService {
       where: {
         userId,
         spaceQnAId: data.qnaId,
+        deletedAt: null,
       },
     });
 

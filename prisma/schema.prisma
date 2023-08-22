@@ -456,9 +456,10 @@ model UserReport {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
-  answer UserReportAnswer?
+  answer UserReportAnswer[]
 }
 
 //INFO: 공간 신고 답변
@@ -467,11 +468,12 @@ model UserReportAnswer {
 
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   adminId  String
   admin    Admin      @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  reportId String     @unique
+  reportId String
   report   UserReport @relation(fields: [reportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 

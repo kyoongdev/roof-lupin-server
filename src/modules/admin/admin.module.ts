@@ -28,6 +28,7 @@ import { AdminSearchModule } from './search/search.module';
 import { AdminServiceModule } from './service/service.module';
 import { AdminSettlementModule } from './settlement/settlement.module';
 import { AdminSpaceModule } from './space/space.module';
+import { AdminTaxReturnModule } from './tax-return/tax-return.module';
 import { AdminTermsModule } from './terms/terms.module';
 import { AdminUserModule } from './user/user.module';
 
@@ -57,6 +58,7 @@ export const AdminModules = [
   AdminLocationFilterModule,
   AdminContentModule,
   AdminFileModule,
+  AdminTaxReturnModule,
 ];
 
 @Module({

@@ -9,8 +9,8 @@ import { AdminReportController } from './report.controller';
 import { AdminReportService } from './report.service';
 
 @Module({
-  providers: [AdminReportService, ReportRepository, FCMEvent, AdminUserRepository],
-  exports: [AdminReportService, ReportRepository, FCMEvent, AdminUserRepository],
+  providers: [AdminReportService, ReportRepository],
+  exports: [AdminReportService, ReportRepository],
   controllers: [AdminReportController],
 })
 export class AdminReportModule {}
