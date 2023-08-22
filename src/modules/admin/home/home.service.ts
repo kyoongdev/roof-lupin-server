@@ -133,7 +133,7 @@ export class AdminHomeService {
     const isExist = await this.findHomeContent(id);
     await this.validateMutatingHomeContent(data);
 
-    const result = await this.database.$transaction(async (prisma) => {
+    await this.database.$transaction(async (prisma) => {
       await prisma.homeContents.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
@@ -239,11 +239,18 @@ export class AdminHomeService {
       }
     }
     if (data.exhibitionId) {
-      await this.exhibitionRepository.findExhibition(data.exhibitionId);
+      const exhibition = await this.exhibitionRepository.findExhibition(data.exhibitionId);
+
+      if (exhibition.deletedAt) {
+        throw new BadRequestException(HOME_CONTENT_DELETED);
+      }
     }
 
     if (data.rankingId) {
-      await this.rankingRepository.findRanking(data.rankingId);
+      const ranking = await this.rankingRepository.findRanking(data.rankingId);
+      if (ranking.deletedAt) {
+        throw new BadRequestException(HOME_CONTENT_DELETED);
+      }
     }
   }
 }
