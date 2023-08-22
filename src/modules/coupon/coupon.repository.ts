@@ -81,13 +81,22 @@ export class CouponRepository {
   }
 
   async deleteCoupon(id: string) {
-    const coupon = await this.database.coupon.delete({
+    await this.database.coupon.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteCoupon(id: string) {
+    await this.database.coupon.delete({
       where: {
         id,
       },
     });
-
-    return coupon.id;
   }
 
   async checkUserCoupon(couponId: string, userId: string) {

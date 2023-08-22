@@ -9,13 +9,13 @@ import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../validation/di
 export interface CouponDTOProps {
   id: string;
   name: string;
-
   discountType: number;
   discountValue: number;
   description: string;
   isLupinPay: boolean;
   defaultDueDateStart?: Date;
   defaultDueDay: number;
+  deletedAt?: Date;
 }
 
 export class CouponDTO {
@@ -46,6 +46,9 @@ export class CouponDTO {
   @Property({ apiProperty: { type: 'number', description: '쿠폰 기본 유효기간' } })
   defaultDueDay: number;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '쿠폰 삭제일' } })
+  deletedAt?: Date;
+
   @Property({ apiProperty: { type: CategoryDTO, isArray: true, nullable: true, description: '쿠폰 카테고리' } })
   categories?: CategoryDTO[];
 
@@ -58,5 +61,6 @@ export class CouponDTO {
     this.defaultDueDateStart = props.defaultDueDateStart || null;
     this.defaultDueDay = props.defaultDueDay;
     this.isLupinPay = props.isLupinPay;
+    this.deletedAt = props.deletedAt;
   }
 }
