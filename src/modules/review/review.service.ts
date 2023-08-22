@@ -72,7 +72,10 @@ export class ReviewService {
     const { skip, take } = paging.getSkipTake();
 
     const count = await this.reviewRepository.countReviews({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       orderBy: [
         {
           createdAt: 'desc',
@@ -83,7 +86,10 @@ export class ReviewService {
       ],
     });
     const rows = await this.reviewRepository.findReviews({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });
