@@ -22,7 +22,9 @@ export class ReportService {
   ) {}
 
   async findReport(id: string) {
-    const report = await this.reportRepository.findReport(id);
+    const report = await this.reportRepository.findReport(id, {
+      deletedAt: null,
+    });
     return report;
   }
 

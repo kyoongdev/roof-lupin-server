@@ -20,13 +20,14 @@ export class ReportRepository {
     return this.database.userReport.findFirst(args);
   }
 
-  async findReport(id: string) {
+  async findReport(id: string, answerWhere = {} as Prisma.UserReportAnswerWhereInput) {
     const report = await this.database.userReport.findUnique({
       where: {
         id,
       },
       include: {
         answer: {
+          where: answerWhere,
           include: {
             admin: true,
           },
