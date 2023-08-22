@@ -6,7 +6,7 @@ import { range } from 'lodash';
 
 import { getWeek } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import { DAY_ENUM } from '@/utils';
+import { DAY_ENUM, getDay } from '@/utils';
 
 import { HolidayService } from '../holiday/holiday.service';
 import { SearchRepository } from '../search/search.repository';
@@ -149,11 +149,9 @@ export class SpaceService {
             )}
           ) `;
 
-      const targetDate = new Date(Number(date.year), Number(date.month) - 1, Number(date.day));
-
+      const isHoliday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
       const week = getWeek(new Date(Number(date.year), Number(date.month) - 1, Number(date.day)));
-      const holiday = await this.holidayService.checkIsHoliday(date.year, date.month, date.day);
-      const day = holiday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+      const day = getDay(Number(date.year), Number(date.month), Number(date.day), isHoliday.isHoliday);
 
       const dateQuery = date
         ? Prisma.sql`(Reservation.isCanceled = 0 AND Reservation.deletedAt IS NULL AND Reservation.payedAt IS NOT NULL AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`

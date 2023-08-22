@@ -32,10 +32,10 @@ export enum DAY_ENUM {
 export const DAY_KEYS = Object.keys(DAY);
 export const DAY_VALUES = Object.values(DAY);
 
-export const getDay = (year: number, month: number, day: number) => {
+export const getDay = (year: number, month: number, day: number, isHoliday?: boolean) => {
   const date = new Date(year, month - 1, day);
 
-  return date.getDay();
+  return isHoliday ? DAY_ENUM.HOLIDAY : date.getDay();
 };
 
 @ValidatorConstraint()

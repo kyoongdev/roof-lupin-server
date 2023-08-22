@@ -54,8 +54,7 @@ export class RentalTypeService {
 
     if (query.day && query.month && query.year) {
       const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-      const targetDate = new Date(Number(query.year), Number(query.month) - 1, Number(query.day), 14, 0, 0);
-      const day = isHoliday.isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+      const day = getDay(Number(query.year), Number(query.month), Number(query.day), isHoliday.isHoliday);
 
       args.where = {
         day,
@@ -178,9 +177,7 @@ export class RentalTypeService {
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = isHoliday.isHoliday
-      ? DAY_ENUM.HOLIDAY
-      : getDay(Number(query.year), Number(query.month), Number(query.day));
+    const targetDay = getDay(Number(query.year), Number(query.month), Number(query.day), isHoliday.isHoliday);
 
     const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
       {
@@ -211,9 +208,8 @@ export class RentalTypeService {
 
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = isHoliday.isHoliday
-      ? DAY_ENUM.HOLIDAY
-      : getDay(Number(query.year), Number(query.month), Number(query.day));
+    const targetDay = getDay(Number(query.year), Number(query.month), Number(query.day), isHoliday.isHoliday);
+
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(
       id,
       {
