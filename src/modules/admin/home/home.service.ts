@@ -4,12 +4,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';
-import {
-  HOME_AT_LEAST_ONE_TARGET,
-  HOME_CONTENT_DELETED,
-  HOME_CONTENTS_NOT_FOUND,
-  HOME_ERROR_CODE,
-} from '@/modules/home/exception/errorCode';
+import { HOME_CONTENT_DELETED, HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from '@/modules/home/exception/errorCode';
 import { HomeException } from '@/modules/home/exception/home.exception';
 import { RankingRepository } from '@/modules/ranking/ranking.repository';
 import { SpaceDTO } from '@/modules/space/dto';
