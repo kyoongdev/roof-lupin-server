@@ -74,8 +74,12 @@ model FAQ {
   id       String  @id @default(uuid())
   question String  @db.VarChar(120)
   answer   String? @db.MediumText
-  userId   String
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Announcement {

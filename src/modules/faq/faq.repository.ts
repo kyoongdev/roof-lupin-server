@@ -57,7 +57,6 @@ export class FaqRepository {
   }
 
   async updateFAQ(id: string, data: UpdateFAQDTO) {
-    await this.findFAQ(id);
     await this.database.fAQ.update({
       where: {
         id,
@@ -67,7 +66,16 @@ export class FaqRepository {
   }
 
   async deleteFAQ(id: string) {
-    await this.findFAQ(id);
+    await this.database.fAQ.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+  async hardDeleteFAQ(id: string) {
     await this.database.fAQ.delete({
       where: {
         id,
