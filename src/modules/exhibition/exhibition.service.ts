@@ -17,11 +17,17 @@ export class ExhibitionService {
   async findPagingExhibitions(paging: PagingDTO, args = {} as Prisma.ExhibitionFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.exhibitionRepository.countExhibitions({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const exhibitions = await this.exhibitionRepository.findExhibitions({
       ...args,
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });

@@ -1004,7 +1004,8 @@ model Exhibition {
 
   isShow Boolean @default(false)
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   images         ExhibitionImage[]
   spaces         ExhibitionSpace[]
