@@ -62,4 +62,10 @@ export class ReservationDetailDTO extends ReservationDTO {
       isReviewed: rest.spaceReviews.length > 0,
     };
   }
+
+  getReservationDate() {
+    const reservationDate = new Date(Number(this.year), Number(this.month) - 1, Number(this.day));
+    reservationDate.setUTCHours(0, 0, 0, 0);
+    return reservationDate;
+  }
 }

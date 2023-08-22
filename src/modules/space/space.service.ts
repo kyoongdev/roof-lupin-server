@@ -129,7 +129,6 @@ export class SpaceService {
     const includeQueries: Prisma.Sql[] = [];
 
     if (date) {
-      const endAtIf = Prisma.sql`ReservationRentalType.endAt`;
       const timeQuery =
         date?.startAt && date?.endAt
           ? Prisma.sql`AND (      

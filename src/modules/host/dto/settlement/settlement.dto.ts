@@ -1,6 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
+import { LUPIN_CHARGE } from '@/common/constants';
+import { getVatCost } from '@/common/vat';
+
 import { FindSettlementsQuery } from './query';
 
 export interface SettlementDTOProps {
@@ -88,6 +91,33 @@ export class SettlementDTO {
           day: query.day,
         }),
       },
+    };
+  }
+
+  getNewSettlementCostInfo(oldTotalCost: number, newTotalCost: number, refundCost?: number) {
+    const oldCost = this.getSettlementCostInfo(oldTotalCost);
+    const newCost = this.getSettlementCostInfo(newTotalCost);
+
+    return {
+      lupinCost: this.lupinCost - oldCost.lupinCost + newCost.lupinCost,
+      settlementCost: this.settlementCost - oldCost.settlementCost + newCost.settlementCost,
+      vatCost: this.vatCost - oldCost.vatCost + newCost.vatCost,
+      lupinVatCost: this.lupinVatCost - oldCost.lupinVatCost + newCost.lupinVatCost,
+      originalCost: this.originalCost - (refundCost ?? 0),
+      totalCost: this.totalCost - oldTotalCost + newTotalCost,
+    };
+  }
+
+  getSettlementCostInfo(cost: number) {
+    const lupinCost = cost * LUPIN_CHARGE;
+    const lupinVatCost = getVatCost(lupinCost);
+    const settlementCost = cost - lupinCost;
+    const vatCost = getVatCost(settlementCost);
+    return {
+      lupinCost,
+      lupinVatCost,
+      settlementCost,
+      vatCost,
     };
   }
 }

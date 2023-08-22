@@ -230,8 +230,7 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
-    const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
-    reservationDate.setUTCHours(0, 0, 0, 0);
+    const reservationDate = reservation.getReservationDate();
     const now = new Date();
     now.setUTCHours(0, 0, 0, 0);
 
@@ -243,7 +242,7 @@ export class PaymentService {
     const refundTargetDate = diffDate / (1000 * 60 * 60 * 24);
     const refundPolicy = refundPolicies.reverse().find((policy) => policy.daysBefore <= refundTargetDate);
 
-    const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
+    const refundCost = refundPolicy.getRefundCost(reservation.totalCost);
 
     if (reservation.user.id !== userId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
@@ -274,25 +273,12 @@ export class PaymentService {
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
 
     const oldTotalCost = reservation.totalCost;
-    const oldLupinCost = oldTotalCost * LUPIN_CHARGE;
-    const oldLupinVatCost = getVatCost(oldLupinCost);
-    const oldSettlementCost = oldTotalCost - oldLupinCost;
-    const oldVatCost = getVatCost(oldSettlementCost);
-
     const newTotalCost = reservation.totalCost - refundCost;
-    const newLupinCost = newTotalCost * LUPIN_CHARGE;
-    const newLupinVatCost = getVatCost(newLupinCost);
-    const newSettlementCost = newTotalCost - newLupinCost;
-    const newVatCost = getVatCost(newSettlementCost);
 
-    await this.settlementRepository.updateSettlement(settlement.id, {
-      lupinCost: settlement.lupinCost - oldLupinCost + newLupinCost,
-      settlementCost: settlement.settlementCost - oldSettlementCost + newSettlementCost,
-      vatCost: settlement.vatCost - oldVatCost + newVatCost,
-      lupinVatCost: settlement.lupinVatCost - oldLupinVatCost + newLupinVatCost,
-      originalCost: settlement.originalCost - refundCost,
-      totalCost: settlement.totalCost - oldTotalCost + newTotalCost,
-    });
+    await this.settlementRepository.updateSettlement(
+      settlement.id,
+      settlement.getNewSettlementCostInfo(oldTotalCost, newTotalCost, refundCost)
+    );
 
     return reservation.id;
   }

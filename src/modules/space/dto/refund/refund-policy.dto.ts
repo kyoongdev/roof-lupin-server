@@ -21,4 +21,8 @@ export class RefundPolicyDTO {
     this.refundRate = props.refundRate;
     this.daysBefore = props.daysBefore;
   }
+
+  getRefundCost(cost: number) {
+    return cost * (this.refundRate / 100);
+  }
 }
