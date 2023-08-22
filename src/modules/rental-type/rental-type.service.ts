@@ -55,7 +55,7 @@ export class RentalTypeService {
     if (query.day && query.month && query.year) {
       const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
       const targetDate = new Date(Number(query.year), Number(query.month) - 1, Number(query.day), 14, 0, 0);
-      const day = isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
+      const day = isHoliday.isHoliday ? DAY_ENUM.HOLIDAY : targetDate.getDay();
 
       args.where = {
         day,
@@ -99,23 +99,9 @@ export class RentalTypeService {
       }
     );
 
-    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
-      where: {
-        spaceId,
-        year: query.year,
-        month: query.month,
-      },
-    });
-
-    const openHours = await this.openHourRepository.findOpenHours({
-      where: {
-        spaceId,
-      },
-    });
-    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
-      where: {
-        spaceId,
-      },
+    const { blockedTimes, openHours, spaceHolidays } = await this.getSpaceSubTimes(spaceId, {
+      year: query.year,
+      month: query.month,
     });
 
     return await this.getPossibleRentalTypesBySpaceIdWithMonth(
@@ -129,12 +115,22 @@ export class RentalTypeService {
 
   async findPagingPossibleRentalTypesBySpaceIdWithMonth(spaceId: string, paging: PossibleRentalTypePagingDTO) {
     await this.spaceRepository.findSpace(spaceId);
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        spaceId,
+      },
+    });
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        spaceId,
+      },
+    });
 
     const data = await Promise.all(
       range(
         paging.page + Number(paging.startMonth) - 1,
         paging.page + Number(paging.startMonth) + paging.limit - 1
-      ).map(async (month, index) => {
+      ).map(async (month) => {
         const currentYear =
           month / 12 > 1 ? Number(paging.startYear) + Math.floor(month / 12) : Number(paging.startYear);
         const currentMonth = month % 12 === 0 ? 12 : month % 12;
@@ -160,16 +156,7 @@ export class RentalTypeService {
             spaceId,
             year: `${currentYear}`,
             month: `${currentMonth}`,
-          },
-        });
-        const openHours = await this.openHourRepository.findOpenHours({
-          where: {
-            spaceId,
-          },
-        });
-        const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
-          where: {
-            spaceId,
+            deletedAt: null,
           },
         });
 
@@ -186,14 +173,14 @@ export class RentalTypeService {
       })
     );
 
-    const result = new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
-
-    return result;
+    return new PaginationPossibleRentalTypesByMonthDTO({ data, paging });
   }
 
   async findPossibleRentalTypesBySpaceId(spaceId: string, query: PossibleRentalTypeQuery) {
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(query.day));
+    const targetDay = isHoliday.isHoliday
+      ? DAY_ENUM.HOLIDAY
+      : getDay(Number(query.year), Number(query.month), Number(query.day));
 
     const rentalTypes = await this.rentalTypeRepository.findRentalTypesWithReservations(
       {
@@ -213,32 +200,20 @@ export class RentalTypeService {
       }
     );
 
-    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
-      where: {
-        spaceId,
-        year: query.year,
-        month: query.month,
-        day: query.day,
-      },
-    });
-
-    const openHours = await this.openHourRepository.findOpenHours({
-      where: {
-        spaceId,
-      },
-    });
-
-    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
-      where: {
-        spaceId,
-      },
+    const { blockedTimes, openHours, spaceHolidays } = await this.getSpaceSubTimes(spaceId, {
+      year: query.year,
+      month: query.month,
+      day: query.day,
     });
 
     return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
+
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(query.day));
+    const targetDay = isHoliday.isHoliday
+      ? DAY_ENUM.HOLIDAY
+      : getDay(Number(query.year), Number(query.month), Number(query.day));
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(
       id,
       {
@@ -256,25 +231,11 @@ export class RentalTypeService {
         },
       }
     );
-    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
-      where: {
-        spaceId: rentalType.spaceId,
-        year: query.year,
-        month: query.month,
-        day: query.day,
-      },
-    });
 
-    const openHours = await this.openHourRepository.findOpenHours({
-      where: {
-        spaceId: rentalType.spaceId,
-      },
-    });
-
-    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
-      where: {
-        spaceId: rentalType.spaceId,
-      },
+    const { blockedTimes, openHours, spaceHolidays } = await this.getSpaceSubTimes(rentalType.spaceId, {
+      year: query.year,
+      month: query.month,
+      day: query.day,
     });
 
     return await this.getPossibleRentalType(
@@ -315,6 +276,7 @@ export class RentalTypeService {
         year: query.year,
         month: query.month,
         day: query.day,
+        deletedAt: null,
       },
     });
 
@@ -335,6 +297,28 @@ export class RentalTypeService {
     return await this.getPossibleRentalTypesBySpaceId(rentalTypes, blockedTimes, spaceHolidays, openHours, query);
   }
 
+  async getSpaceSubTimes(spaceId: string, args = {} as Prisma.BlockedTimeWhereInput) {
+    const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
+      where: {
+        ...args,
+        spaceId,
+        deletedAt: null,
+      },
+    });
+
+    const openHours = await this.openHourRepository.findOpenHours({
+      where: {
+        spaceId,
+      },
+    });
+
+    const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
+      where: {
+        spaceId,
+      },
+    });
+    return { blockedTimes, openHours, spaceHolidays };
+  }
   async getPossibleRentalTypesBySpaceIdWithMonth(
     query: PossibleRentalTypeByMonthQuery,
     rentalTypes: RentalTypeWithReservationDTO[],
@@ -353,22 +337,12 @@ export class RentalTypeService {
         const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, `${day}`);
 
         const parsedRentalType = rentalTypes
-          .map((rentalType) => {
-            if (rentalType.day === DAY_ENUM.HOLIDAY && isHoliday) {
-              return rentalType;
-            }
-            if (rentalType.day !== DAY_ENUM.HOLIDAY && !isHoliday) {
-              const currentDay = getDay(Number(query.year), Number(query.month), day);
-
-              if (rentalType.day === currentDay) {
-                return rentalType;
-              } else {
-                return null;
-              }
-            }
-
-            return null;
-          })
+          .map((rentalType) =>
+            rentalType.getCurrentDayRentalType(isHoliday.isHoliday, {
+              ...query,
+              day: `${day}`,
+            })
+          )
           .filter(Boolean);
 
         const result = await this.getPossibleRentalTypesBySpaceId(
@@ -385,22 +359,21 @@ export class RentalTypeService {
 
         const currentDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
 
-        const currentDay = isHoliday ? DAY_ENUM.HOLIDAY : getDay(Number(query.year), Number(query.month), Number(day));
-        const week = getWeek(currentDate);
-        const holidays = spaceHolidays.filter((holiday) => {
-          if (holiday.interval === INTERVAL_WEEK.TWO) {
-            return (week === 2 || week === 4) && holiday.day === currentDay;
-          } else {
-            return holiday.day === currentDay;
-          }
+        const currentDay = isHoliday.getCurrentDay({
+          ...query,
+          day: `${day}`,
         });
+        const week = getWeek(currentDate);
+
+        const holidays = spaceHolidays.filter((holiday) => holiday.checkWeekIsHoliday(week, currentDay));
+
         const isImpossible =
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
         const data: PossibleRentalTypeByMonthDTOProps = {
           day: `${day}`,
-          isHoliday,
+          isHoliday: isHoliday.isHoliday,
           isPossible: holidays.length > 0 ? false : !isImpossible,
           rentalType: result,
         };
@@ -481,17 +454,10 @@ export class RentalTypeService {
       });
 
       reservations.forEach((reservation) => {
-        if (
-          targetDate.year === reservation.year &&
-          targetDate.month === reservation.month &&
-          targetDate.day === reservation.day
-        ) {
+        if (reservation.checkIsTargetDay(targetDate)) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
-            const endAt =
-              reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE
-                ? reservedRentalType.endAt
-                : reservedRentalType.endAt + 1;
+            const endAt = reservedRentalType.rentalType.getEndAt();
 
             range(startAt, endAt).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
@@ -505,11 +471,7 @@ export class RentalTypeService {
       });
       //INFO: 막아둔 날짜는 block
       blockedTimes.forEach((blockedTime) => {
-        if (
-          targetDate.year === blockedTime.year &&
-          targetDate.month === blockedTime.month &&
-          targetDate.day === blockedTime.day
-        )
+        if (blockedTime.checkIsTargetDay(targetDate))
           for (let time = blockedTime.startAt; time < blockedTime.endAt; time++) {
             timeCostInfos[time].isPossible = false;
           }
@@ -517,9 +479,7 @@ export class RentalTypeService {
 
       if (targetDate) {
         const isHoliday = await this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
-        const currentDay = isHoliday
-          ? DAY_ENUM.HOLIDAY
-          : new Date(Number(targetDate.year), Number(targetDate.month) - 1, Number(targetDate.day)).getDay();
+        const currentDay = isHoliday.getCurrentDay(targetDate);
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
         if (holidays.length > 0) {
@@ -550,11 +510,7 @@ export class RentalTypeService {
       let isPossible = true;
 
       reservations.forEach((reservation) => {
-        if (
-          targetDate.year === reservation.year &&
-          targetDate.month === reservation.month &&
-          targetDate.day === reservation.day
-        ) {
+        if (reservation.checkIsTargetDay(targetDate)) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
               isPossible = !(
@@ -581,10 +537,8 @@ export class RentalTypeService {
       });
 
       if (targetDate) {
-        const isHoliday = this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
-        const currentDay = isHoliday
-          ? DAY_ENUM.HOLIDAY
-          : getDay(Number(targetDate.year), Number(targetDate.month), Number(targetDate.day));
+        const isHoliday = await this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
+        const currentDay = isHoliday.getCurrentDay(targetDate);
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
         if (holidays.length > 0) {

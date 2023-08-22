@@ -1,5 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
+import { CheckIsTargetDay } from '@/interface/common.interface';
+
 export interface BlockedTimeDTOProps {
   id: string;
   year: string;
@@ -50,5 +52,9 @@ export class BlockedTimeDTO {
     this.spaceId = props.spaceId;
     this.name = props.name;
     this.createdAt = props.createdAt;
+  }
+
+  checkIsTargetDay(targetDate: CheckIsTargetDay) {
+    return targetDate.year === this.year && targetDate.month === this.month && targetDate.day === this.day;
   }
 }

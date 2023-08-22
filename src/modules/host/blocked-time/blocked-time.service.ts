@@ -33,10 +33,16 @@ export class HostBlockedTimeService {
   async findPagingBlockedTimes(paging: PagingDTO, args = {} as Prisma.BlockedTimeFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.blockedTimeRepository.countBlockedTimes({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       orderBy: [
         {
           year: 'desc',
@@ -99,6 +105,8 @@ export class HostBlockedTimeService {
             },
           },
         },
+        isCanceled: false,
+        deletedAt: null,
       },
     });
     this.validateBlockTime(data.startAt, data.endAt, reservations);

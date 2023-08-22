@@ -1,6 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonReservation } from '@/interface/reservation.interface';
+import { CheckIsTargetDay } from '@/interface/common.interface';
+import type { CommonReservation } from '@/interface/reservation.interface';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
@@ -49,5 +50,9 @@ export class ReservationDTO extends BaseReservationDTO {
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
     };
+  }
+
+  checkIsTargetDay(targetDate: CheckIsTargetDay) {
+    return targetDate.year === this.year && targetDate.month === this.month && targetDate.day === this.day;
   }
 }
