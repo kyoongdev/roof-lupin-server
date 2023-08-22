@@ -10,6 +10,7 @@ export interface TaxReturnDTOProps {
   receiptUrl?: string;
   submittedAt?: Date;
   host: HostDTOProps;
+  deletedAt?: Date;
 }
 
 export class TaxReturnDTO {
@@ -34,6 +35,9 @@ export class TaxReturnDTO {
   @Property({ apiProperty: { type: HostDTO, description: '호스트 정보' } })
   host: HostDTO;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '삭제일' } })
+  deletedAt?: Date;
+
   constructor(props: TaxReturnDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -42,5 +46,6 @@ export class TaxReturnDTO {
     this.receiptUrl = props.receiptUrl;
     this.submittedAt = props.submittedAt;
     this.host = new HostDTO(props.host);
+    this.deletedAt = props.deletedAt;
   }
 }

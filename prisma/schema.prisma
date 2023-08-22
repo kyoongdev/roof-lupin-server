@@ -432,6 +432,7 @@ model TaxReturn {
 
   receiptUrl  String?
   submittedAt DateTime?
+  deletedAt   DateTime?
 
   hostId String
   host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)

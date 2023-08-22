@@ -7,13 +7,14 @@ import { ApiController, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from './dto';
-import { TaxReturnService } from './tax-return.service';
+import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from '../dto/tax-return';
+
+import { AdminTaxReturnService } from './tax-return.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('admins/tax-returns', '[관리자] 세금 계산')
-export class TaxReturnController {
-  constructor(private readonly taxReturnService: TaxReturnService) {}
+@ApiController('tax-returns', '[관리자] 세금 계산')
+export class AdminTaxReturnController {
+  constructor(private readonly taxReturnService: AdminTaxReturnService) {}
 
   @Get(':taxReturnId/detail')
   @RequestApi({

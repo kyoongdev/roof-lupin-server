@@ -3,11 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from './dto';
+import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from '../dto/tax-return';
+
 import { TaxReturnRepository } from './tax-return.repository';
 
 @Injectable()
-export class TaxReturnService {
+export class AdminTaxReturnService {
   constructor(private readonly taxReturnRepository: TaxReturnRepository) {}
 
   async findTaxReturn(id: string) {
