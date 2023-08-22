@@ -136,6 +136,8 @@ model Ranking {
   name        String
   description String
 
+  deletedAt DateTime?
+
   spaces         RankingSpaces[]
   homeContents   HomeContents?   @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   homeContentsId String?         @unique

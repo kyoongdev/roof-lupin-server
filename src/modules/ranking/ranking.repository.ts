@@ -245,6 +245,16 @@ export class RankingRepository {
   }
 
   async deleteRanking(id: string) {
+    await this.database.ranking.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+  async hardDeleteRanking(id: string) {
     await this.database.ranking.delete({
       where: {
         id,

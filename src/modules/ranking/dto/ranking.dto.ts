@@ -6,6 +6,7 @@ export interface RankingDTOProps {
   id: string;
   name: string;
   description: string;
+  deletedAt?: Date;
   spaces: SpaceDTOProps[];
 }
 
@@ -19,6 +20,9 @@ export class RankingDTO {
   @Property({ apiProperty: { type: 'string', description: '설명' } })
   description: string;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '삭제일' } })
+  deletedAt?: Date;
+
   @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '공간' } })
   spaces: SpaceDTO[];
 
@@ -26,6 +30,7 @@ export class RankingDTO {
     this.id = props.id;
     this.name = props.name;
     this.description = props.description;
+    this.deletedAt = props.deletedAt;
     this.spaces = props.spaces.map((space) => new SpaceDTO(space));
   }
 }
