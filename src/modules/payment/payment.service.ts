@@ -425,7 +425,7 @@ export class PaymentService {
 
           //INFO: 대여하려는 시간이 예약 불가할 때
           (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
-            if (item.startAt <= time.time && time.time <= item.endAt && !time.isPossible) {
+            if (itemStartAt <= time.time && time.time <= itemEndAt && !time.isPossible) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
           });
@@ -433,7 +433,7 @@ export class PaymentService {
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time;
 
-            if (item.startAt <= targetTime && targetTime <= itemEndAt) {
+            if (itemStartAt <= targetTime && targetTime <= itemEndAt) {
               acc += next.cost;
             }
             return acc;
@@ -442,7 +442,7 @@ export class PaymentService {
           validatedRentalTypes.increaseCost(cost);
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           //INFO: 대여하려는 시간이 잘못 입력됐을 때
-          if (item.startAt !== possibleRentalType.startAt || item.endAt !== possibleRentalType.endAt) {
+          if (itemStartAt !== possibleStartAt || itemEndAt !== possibleEndAt) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
           }
           //INFO: 대여하려는 시간이 예약 불가할 때
