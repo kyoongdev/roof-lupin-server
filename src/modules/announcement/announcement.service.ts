@@ -17,10 +17,17 @@ export class AnnouncementService {
   async findPagingAnnouncements(paging: PagingDTO, args = {} as Prisma.AnnouncementFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.announcementRepository.countAnnouncements({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const announcements = await this.announcementRepository.findAnnouncements({
       ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });
@@ -29,6 +36,12 @@ export class AnnouncementService {
   }
 
   async findAnnouncements(args = {} as Prisma.AnnouncementFindManyArgs) {
-    return await this.announcementRepository.findAnnouncements(args);
+    return await this.announcementRepository.findAnnouncements({
+      ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+    });
   }
 }

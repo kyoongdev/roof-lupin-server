@@ -50,8 +50,6 @@ export class AnnouncementRepository {
   }
 
   async updateAnnouncement(id: string, data: UpdateAnnouncementDTO) {
-    await this.findAnnouncement(id);
-
     await this.database.announcement.update({
       where: {
         id,
@@ -61,8 +59,17 @@ export class AnnouncementRepository {
   }
 
   async deleteAnnouncement(id: string) {
-    await this.findAnnouncement(id);
+    await this.database.announcement.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 
+  async hardDeleteAnnouncement(id: string) {
     await this.database.announcement.delete({
       where: {
         id,
