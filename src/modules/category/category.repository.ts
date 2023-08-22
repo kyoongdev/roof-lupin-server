@@ -308,6 +308,16 @@ export class CategoryRepository {
   }
 
   async deleteContentCategory(id: string) {
+    await this.database.contentCategory.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: null,
+      },
+    });
+  }
+  async hardDeleteContentCategory(id: string) {
     await this.database.contentCategory.delete({
       where: {
         id,

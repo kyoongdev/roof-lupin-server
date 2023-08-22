@@ -1,22 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { FCMEvent } from '@/event/fcm';
 import { CreateReportAnswerDTO, ReportDTO, UpdateReportDTO } from '@/modules/report/dto';
 import { UpdateReportAnswerDTO } from '@/modules/report/dto/update-report-answer.dto';
+import { REPORT_ANSWER_ALREADY_EXISTS } from '@/modules/report/exception/errorCode';
 import { ReportRepository } from '@/modules/report/report.repository';
-
-import { AdminUserRepository } from '../user/user.repository';
 
 @Injectable()
 export class AdminReportService {
-  constructor(
-    private readonly reportRepository: ReportRepository,
-    private readonly fcmEvent: FCMEvent,
-    private readonly userRepository: AdminUserRepository
-  ) {}
+  constructor(private readonly reportRepository: ReportRepository) {}
 
   async findReport(id: string) {
     return await this.reportRepository.findReport(id);
@@ -45,6 +39,18 @@ export class AdminReportService {
   }
 
   async createReportAnswer(reportId: string, adminId: string, data: CreateReportAnswerDTO) {
+    const isExist = await this.reportRepository.checkReportAnswer({
+      where: {
+        reportId,
+        adminId,
+        deletedAt: null,
+      },
+    });
+
+    if (isExist) {
+      throw new ConflictException(REPORT_ANSWER_ALREADY_EXISTS);
+    }
+
     return await this.reportRepository.createReportAnswer(reportId, adminId, data);
   }
 

@@ -4,7 +4,7 @@ import { flatten, range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { HolidayDTO, HolidayPagingQuery } from './dto';
+import { HolidayDTO, HolidayPagingQuery, IsHolidayDTO } from './dto';
 import { PaginationHolidayDTO } from './dto/pagination-holiday.dto';
 import { PagingHolidayDTO } from './dto/paging-holiday.dto';
 
@@ -63,6 +63,8 @@ export class HolidayService {
       },
     });
 
-    return !!holiday;
+    return new IsHolidayDTO({
+      isHoliday: Boolean(holiday),
+    });
   }
 }

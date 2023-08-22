@@ -5,11 +5,10 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
+import { AdminSpaceSQL } from '@/sql';
 
 import { AdminFindSpacesQuery } from '../dto/query/space';
 import { SpaceCountDTO, UpdateSpaceOrderDTO } from '../dto/space';
-
-import { getAdminCountSpacesSQL, getAdminFindSpacesSQL } from './sql';
 
 @Injectable()
 export class AdminSpaceService {
@@ -29,19 +28,13 @@ export class AdminSpaceService {
   }
 
   async findPagingSpaces(paging: PagingDTO, query: AdminFindSpacesQuery) {
-    let where: Prisma.Sql = Prisma.empty;
+    const sqlQuery = new AdminSpaceSQL({
+      isHoliday: false,
+      paging: paging.getSqlPaging(),
+      query,
+    });
 
-    if (query.title) {
-      where = Prisma.sql`WHERE sp.title LIKE '%${Prisma.raw(query.title)}%'`;
-    } else if (query.isApproved) {
-      where = Prisma.sql`WHERE sp.isApproved = ${query.isApproved}`;
-    } else if (query.isPublic) {
-      where = Prisma.sql`WHERE sp.isPublic = ${query.isPublic}`;
-    }
-    const sqlPaging = paging.getSqlPaging();
-    const findSql = getAdminFindSpacesSQL(query, sqlPaging, where);
-
-    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(findSql);
+    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(sqlQuery.getSQLQuery());
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

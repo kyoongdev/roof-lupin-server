@@ -63,8 +63,8 @@ export class ReviewController {
     const args = await ReviewDTO.generateQuery(query, spaceId);
     return await this.reviewService.findPagingReviews(paging, {
       where: {
-        spaceId,
         ...args.where,
+        spaceId,
       },
       orderBy: args.orderBy,
     });

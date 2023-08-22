@@ -265,16 +265,17 @@ export class ExhibitionRepository {
   }
 
   async deleteExhibition(id: string) {
-    await this.database.image.deleteMany({
+    await this.database.exhibition.update({
       where: {
-        exhibitionImages: {
-          some: {
-            exhibitionId: id,
-          },
-        },
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
+  }
 
+  async hardDeleteExhibition(id: string) {
     await this.database.exhibition.delete({
       where: {
         id,

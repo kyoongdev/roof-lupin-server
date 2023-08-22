@@ -17,7 +17,13 @@ export class SearchService {
   }
 
   async findSearchRecords(args = {} as Prisma.SearchRecordFindManyArgs) {
-    return await this.searchRepository.findSearchRecords(args);
+    return await this.searchRepository.findSearchRecords({
+      ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+    });
   }
 
   async findSearchRecommends(args = {} as Prisma.SearchRecommendFindManyArgs) {
@@ -31,7 +37,7 @@ export class SearchService {
       throw new SearchException(SEARCH_ERROR_CODE.FORBIDDEN(SEARCH_RECORD_FORBIDDEN));
     }
 
-    await this.searchRepository.deleteSearchRecord(id, userId);
+    await this.searchRepository.deleteSearchRecord(id);
   }
 
   async deleteAllSearchRecords(userId: string) {

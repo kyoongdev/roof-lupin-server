@@ -53,6 +53,16 @@ export class HostBlockedTimeRepository {
   }
 
   async deleteBlockedTime(id: string) {
+    await this.database.blockedTime.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: null,
+      },
+    });
+  }
+  async hardDeleteBlockedTime(id: string) {
     await this.database.blockedTime.delete({
       where: {
         id,

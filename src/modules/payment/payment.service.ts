@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 import { LUPIN_CHARGE } from '@/common/constants';
+import { checkIsSameDate } from '@/common/date';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
@@ -230,8 +231,7 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
-    const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
-    reservationDate.setUTCHours(0, 0, 0, 0);
+    const reservationDate = reservation.getReservationDate();
     const now = new Date();
     now.setUTCHours(0, 0, 0, 0);
 
@@ -243,7 +243,7 @@ export class PaymentService {
     const refundTargetDate = diffDate / (1000 * 60 * 60 * 24);
     const refundPolicy = refundPolicies.reverse().find((policy) => policy.daysBefore <= refundTargetDate);
 
-    const refundCost = reservation.totalCost * (refundPolicy.refundRate / 100);
+    const refundCost = refundPolicy.getRefundCost(reservation.totalCost);
 
     if (reservation.user.id !== userId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
@@ -274,25 +274,12 @@ export class PaymentService {
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
 
     const oldTotalCost = reservation.totalCost;
-    const oldLupinCost = oldTotalCost * LUPIN_CHARGE;
-    const oldLupinVatCost = getVatCost(oldLupinCost);
-    const oldSettlementCost = oldTotalCost - oldLupinCost;
-    const oldVatCost = getVatCost(oldSettlementCost);
-
     const newTotalCost = reservation.totalCost - refundCost;
-    const newLupinCost = newTotalCost * LUPIN_CHARGE;
-    const newLupinVatCost = getVatCost(newLupinCost);
-    const newSettlementCost = newTotalCost - newLupinCost;
-    const newVatCost = getVatCost(newSettlementCost);
 
-    await this.settlementRepository.updateSettlement(settlement.id, {
-      lupinCost: settlement.lupinCost - oldLupinCost + newLupinCost,
-      settlementCost: settlement.settlementCost - oldSettlementCost + newSettlementCost,
-      vatCost: settlement.vatCost - oldVatCost + newVatCost,
-      lupinVatCost: settlement.lupinVatCost - oldLupinVatCost + newLupinVatCost,
-      originalCost: settlement.originalCost - refundCost,
-      totalCost: settlement.totalCost - oldTotalCost + newTotalCost,
-    });
+    await this.settlementRepository.updateSettlement(
+      settlement.id,
+      settlement.getNewSettlementCostInfo(oldTotalCost, newTotalCost, refundCost)
+    );
 
     return reservation.id;
   }
@@ -400,13 +387,9 @@ export class PaymentService {
         const reservationDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), item.startAt);
         const currentDate = new Date();
 
-        if (
-          reservationDate.getFullYear() === currentDate.getFullYear() &&
-          reservationDate.getMonth() === currentDate.getMonth() &&
-          reservationDate.getDate() === currentDate.getDate()
-        ) {
+        if (checkIsSameDate(reservationDate, currentDate)) {
           const diff = reservationDate.getHours() - currentDate.getHours();
-          console.log({ diff });
+
           if (diff <= 2) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MAX_RESERVATION_DATE));
           }
@@ -424,10 +407,8 @@ export class PaymentService {
           day: data.day,
         });
 
-        const possibleStartAt = possibleRentalType.startAt;
-        const possibleEndAt = possibleRentalType.endAt;
-        const itemStartAt = item.startAt;
-        const itemEndAt = item.endAt;
+        const { startAt: possibleStartAt, endAt: possibleEndAt } = possibleRentalType;
+        const { startAt: itemStartAt, endAt: itemEndAt } = item;
 
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
         if (itemStartAt < possibleStartAt || possibleEndAt < itemEndAt) {
@@ -444,7 +425,7 @@ export class PaymentService {
 
           //INFO: 대여하려는 시간이 예약 불가할 때
           (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
-            if (item.startAt <= time.time && time.time <= item.endAt && !time.isPossible) {
+            if (itemStartAt <= time.time && time.time <= itemEndAt && !time.isPossible) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
           });
@@ -452,7 +433,7 @@ export class PaymentService {
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time;
 
-            if (item.startAt <= targetTime && targetTime <= itemEndAt) {
+            if (itemStartAt <= targetTime && targetTime <= itemEndAt) {
               acc += next.cost;
             }
             return acc;
@@ -461,7 +442,7 @@ export class PaymentService {
           validatedRentalTypes.increaseCost(cost);
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           //INFO: 대여하려는 시간이 잘못 입력됐을 때
-          if (item.startAt !== possibleRentalType.startAt || item.endAt !== possibleRentalType.endAt) {
+          if (itemStartAt !== possibleStartAt || itemEndAt !== possibleEndAt) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
           }
           //INFO: 대여하려는 시간이 예약 불가할 때
@@ -571,19 +552,13 @@ export class PaymentService {
                 throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
               }
             }
+            const discount = isExist.coupon.getDiscountCost(cost);
+            if (!discount) {
+              throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+            }
 
-            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-              const discount = cost * (isExist.coupon.discountValue / 100);
-              discountCost += discount;
-              if (isExist.coupon.isLupinPay) {
-                lupinDiscountCost += discount;
-              }
-            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
-              discountCost += isExist.coupon.discountValue;
-              if (isExist.coupon.isLupinPay) {
-                lupinDiscountCost += isExist.coupon.discountValue;
-              }
-            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+            discountCost += discount.discountCost;
+            lupinDiscountCost += discount.lupinDiscountCost;
           }
         })
       );

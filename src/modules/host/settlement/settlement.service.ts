@@ -19,10 +19,15 @@ export class HostSettlementService {
     const { skip, take } = paging.getSkipTake();
 
     const count = await this.settlementRepository.countSettlements({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const settlements = await this.settlementRepository.findSettlements({
       where: {
+        ...args.where,
+        deletedAt: null,
         reservations: {
           some: {
             rentalTypes: {
@@ -36,7 +41,6 @@ export class HostSettlementService {
             },
           },
         },
-        ...args.where,
       },
       skip,
       take,

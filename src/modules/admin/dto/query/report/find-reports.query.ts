@@ -33,7 +33,17 @@ export class AdminFindReportsQuery extends PagingDTO {
         }),
         ...(typeof this.isAnswered === 'boolean' && {
           answer: {
-            ...(this.isAnswered ? { isNot: null } : { is: null }),
+            ...(this.isAnswered
+              ? {
+                  some: {
+                    deletedAt: null,
+                  },
+                }
+              : {
+                  none: {
+                    deletedAt: null,
+                  },
+                }),
           },
         }),
       },

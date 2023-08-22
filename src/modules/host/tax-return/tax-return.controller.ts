@@ -3,7 +3,7 @@ import { Get, Param } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { RequestHost } from '@/interface/role.interface';
-import { TaxReturnDTO } from '@/modules/tax-return/dto';
+import { TaxReturnDTO } from '@/modules/admin/dto/tax-return';
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';

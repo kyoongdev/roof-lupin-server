@@ -298,6 +298,17 @@ export class HostSettlementRepository {
   }
 
   async deleteSettlement(id: string) {
+    await this.database.settlement.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteSettlement(id: string) {
     await this.database.settlement.delete({
       where: {
         id,

@@ -6,7 +6,6 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { QnARepository } from '../qna/qna.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { SpaceRepository } from '../space/space.repository';
-import { UserRepository } from '../user/user.repository';
 
 import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
 import { REPORT_ALREADY_EXISTS } from './exception/errorCode';
@@ -22,7 +21,9 @@ export class ReportService {
   ) {}
 
   async findReport(id: string) {
-    const report = await this.reportRepository.findReport(id);
+    const report = await this.reportRepository.findReport(id, {
+      deletedAt: null,
+    });
     return report;
   }
 
@@ -30,15 +31,26 @@ export class ReportService {
     const { skip, take } = paging.getSkipTake();
     const count = await this.reportRepository.countReports({
       where: {
-        userId,
         ...args.where,
+        userId,
+        deletedAt: null,
       },
     });
-    const reports = await this.reportRepository.findReports({
-      ...args,
-      skip,
-      take,
-    });
+    const reports = await this.reportRepository.findReports(
+      {
+        ...args,
+        where: {
+          ...args.where,
+          userId,
+          deletedAt: null,
+        },
+        skip,
+        take,
+      },
+      {
+        deletedAt: null,
+      }
+    );
 
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
@@ -49,6 +61,7 @@ export class ReportService {
       where: {
         userId,
         spaceId: data.spaceId,
+        deletedAt: null,
       },
     });
 
@@ -65,6 +78,7 @@ export class ReportService {
       where: {
         userId,
         spaceReviewId: data.reviewId,
+        deletedAt: null,
       },
     });
 
@@ -81,6 +95,7 @@ export class ReportService {
       where: {
         userId,
         spaceQnAId: data.qnaId,
+        deletedAt: null,
       },
     });
 

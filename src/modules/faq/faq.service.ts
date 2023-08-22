@@ -20,10 +20,17 @@ export class FaqService {
   async findPagingFAQ(paging: PagingDTO, args = {} as Prisma.FAQFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.FaqRepository.countFAQs({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const faqs = await this.FaqRepository.findFAQs({
       ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });

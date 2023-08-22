@@ -84,4 +84,7 @@ export class RentalTypeDTO {
         })
     );
   }
+  getEndAt() {
+    return this.rentalType === RENTAL_TYPE_ENUM.PACKAGE ? this.endAt : this.endAt + 1;
+  }
 }

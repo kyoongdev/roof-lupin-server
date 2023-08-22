@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
@@ -57,6 +57,9 @@ export class CouponService {
     const coupon = await this.couponRepository.findCouponByCode(data.code);
     const userCoupon = await this.couponRepository.findUserCouponByCode(data.code);
 
+    if (coupon.deletedAt) {
+      throw new BadRequestException('삭제된 쿠폰입니다.');
+    }
     if (userCoupon) {
       throw new ConflictException('이미 등록된 쿠폰입니다.');
     }

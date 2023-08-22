@@ -26,7 +26,6 @@ import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
 import { ServiceModule } from './service/service.module';
 import { SpaceModule } from './space/space.module';
-import { TaxReturnModule } from './tax-return/tax-return.module';
 import { TermsModule } from './terms/terms.module';
 import { UserModule } from './user/user.module';
 
@@ -34,7 +33,6 @@ export const Modules = [
   ReviewModule,
   SpaceModule,
   UserModule,
-  TaxReturnModule,
   ReportModule,
   QnaModule,
   AuthModule,

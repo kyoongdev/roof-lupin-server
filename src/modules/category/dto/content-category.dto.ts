@@ -7,6 +7,7 @@ export interface ContentCategoryDTOProps {
   name: string;
   highlight?: string;
   spaces: SpaceDTOProps[];
+  deletedAt?: Date;
 }
 
 export class ContentCategoryDTO {
@@ -22,10 +23,14 @@ export class ContentCategoryDTO {
   @Property({ apiProperty: { type: SpaceDTO, isArray: true, description: '카테고리 공간' } })
   spaces: SpaceDTO[];
 
+  @Property({ apiProperty: { type: 'date', nullable: true, description: '카테고리 삭제일' } })
+  deletedAt?: Date;
+
   constructor(props: ContentCategoryDTOProps) {
     this.id = props.id;
     this.name = props.name;
     this.highlight = props.highlight;
     this.spaces = props.spaces.map((space) => new SpaceDTO(space));
+    this.deletedAt = props.deletedAt;
   }
 }

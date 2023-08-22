@@ -4,7 +4,8 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from './dto';
+import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from '../dto/tax-return';
+
 import { TAX_RETURN_ERROR_CODE, TAX_RETURN_NOT_FOUND } from './exception/errorCode';
 import { TaxReturnException } from './exception/tax-return.exception';
 
@@ -69,6 +70,15 @@ export class TaxReturnRepository {
   }
 
   async deleteTaxReturn(id: string) {
+    await this.database.taxReturn.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteTaxReturn(id: string) {
     await this.database.taxReturn.delete({
       where: { id },
     });

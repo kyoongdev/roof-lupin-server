@@ -10,6 +10,7 @@ export interface ExhibitionDTOProps {
   endAt: Date;
   createdAt: Date;
   isShow?: boolean;
+  deletedAt?: Date;
 }
 
 export class ExhibitionDTO {
@@ -40,6 +41,9 @@ export class ExhibitionDTO {
   @Property({ apiProperty: { type: 'boolean', description: '노출 여부' } })
   isShow: boolean;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '기획전 삭제일' } })
+  deletedAt?: Date;
+
   constructor(props: ExhibitionDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -50,5 +54,6 @@ export class ExhibitionDTO {
     this.endAt = props.endAt;
     this.createdAt = props.createdAt;
     this.isShow = props.isShow;
+    this.deletedAt = props.deletedAt;
   }
 }

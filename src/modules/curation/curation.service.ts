@@ -16,17 +16,30 @@ export class CurationService {
     return await this.curationRepository.findCuration(id);
   }
   async findCurations(args = {} as Prisma.CurationFindManyArgs) {
-    return await this.curationRepository.findCurations(args);
+    return await this.curationRepository.findCurations({
+      ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+    });
   }
 
   async findPagingCurations(paging: PagingDTO, args = {} as Prisma.CurationFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
 
     const count = await this.curationRepository.countCurations({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
     const curations = await this.curationRepository.findCurations({
       ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });

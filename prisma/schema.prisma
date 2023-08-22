@@ -74,8 +74,12 @@ model FAQ {
   id       String  @id @default(uuid())
   question String  @db.VarChar(120)
   answer   String? @db.MediumText
-  userId   String
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Announcement {
@@ -83,8 +87,9 @@ model Announcement {
   title   String @db.VarChar(120)
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Curation {
@@ -100,9 +105,11 @@ model Curation {
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  spaces    CurationSpace[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  spaces CurationSpace[]
 }
 
 model CurationSpace {
@@ -128,6 +135,8 @@ model Ranking {
   id          String @id @default(uuid())
   name        String
   description String
+
+  deletedAt DateTime?
 
   spaces         RankingSpaces[]
   homeContents   HomeContents?   @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -388,6 +397,9 @@ model BlockedTime {
 
   name String @db.VarChar(120)
 
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -410,6 +422,8 @@ model Settlement {
 
   isPayed Boolean @default(false)
 
+  deletedAt DateTime?
+
   reservations Reservation[]
   hostId       String
   host         Host          @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -426,6 +440,7 @@ model TaxReturn {
 
   receiptUrl  String?
   submittedAt DateTime?
+  deletedAt   DateTime?
 
   hostId String
   host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -449,9 +464,10 @@ model UserReport {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
-  answer UserReportAnswer?
+  answer UserReportAnswer[]
 }
 
 //INFO: 공간 신고 답변
@@ -460,11 +476,12 @@ model UserReportAnswer {
 
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   adminId  String
   admin    Admin      @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  reportId String     @unique
+  reportId String
   report   UserReport @relation(fields: [reportId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -782,7 +799,8 @@ model SearchRecord {
 
   content String
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -885,6 +903,8 @@ model ContentCategory {
   spaces         ContentCategorySpace[]
   homeContents   HomeContents?          @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   homeContentsId String?                @unique
+
+  deletedAt DateTime?
 }
 
 model ContentCategorySpace {
@@ -935,6 +955,8 @@ model Coupon {
   defaultDueDay       Int       @default(0) @db.SmallInt
   link                String?
 
+  deletedAt DateTime?
+
   userCoupons UserCoupon[]
 
   exhibitions ExhibitionCoupon[]
@@ -983,7 +1005,8 @@ model Exhibition {
 
   isShow Boolean @default(false)
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   images         ExhibitionImage[]
   spaces         ExhibitionSpace[]

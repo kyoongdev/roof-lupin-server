@@ -41,21 +41,28 @@ export class ReviewService {
   }
 
   async findReview(id: string) {
-    const review = await this.reviewRepository.findReview(id);
+    const review = await this.reviewRepository.findReview(id, {
+      deletedAt: null,
+    });
 
     return review;
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
-    return await this.reviewRepository.findReviews({
-      where: {
-        ...args.where,
+    return await this.reviewRepository.findReviews(
+      {
+        where: {
+          ...args.where,
+        },
+        orderBy: {
+          createdAt: 'desc',
+          ...args.orderBy,
+        },
       },
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
-    });
+      {
+        deletedAt: null,
+      }
+    );
   }
 
   async findBestReviewImages(spaceId: string) {
@@ -72,7 +79,10 @@ export class ReviewService {
     const { skip, take } = paging.getSkipTake();
 
     const count = await this.reviewRepository.countReviews({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       orderBy: [
         {
           createdAt: 'desc',
@@ -82,11 +92,19 @@ export class ReviewService {
         },
       ],
     });
-    const rows = await this.reviewRepository.findReviews({
-      where: args.where,
-      skip,
-      take,
-    });
+    const rows = await this.reviewRepository.findReviews(
+      {
+        where: {
+          ...args.where,
+          deletedAt: null,
+        },
+        skip,
+        take,
+      },
+      {
+        deletedAt: null,
+      }
+    );
 
     return new PaginationDTO<ReviewDTO>(rows, { count, paging });
   }

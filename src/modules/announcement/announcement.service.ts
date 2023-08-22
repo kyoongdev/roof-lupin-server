@@ -3,35 +3,31 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
-
-import { AnnouncementDTO, CreateAnnouncementDTO, UpdateAnnouncementDTO } from './dto';
-import { AnnouncementException } from './exception/announcement.exception';
-import { ANNOUNCEMENT_ERROR_CODE } from './exception/errorCode';
+import { AnnouncementRepository } from '../admin/announcement/announcement.repository';
+import { AnnouncementDTO } from '../admin/dto/announcement';
 
 @Injectable()
 export class AnnouncementService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(private readonly announcementRepository: AnnouncementRepository) {}
 
   async findAnnouncement(id: string) {
-    const announcement = await this.database.announcement.findUnique({
-      where: { id },
-    });
-
-    if (!announcement) {
-      throw new AnnouncementException(ANNOUNCEMENT_ERROR_CODE.NOT_FOUND());
-    }
-
-    return new AnnouncementDTO(announcement);
+    return await this.announcementRepository.findAnnouncement(id);
   }
 
   async findPagingAnnouncements(paging: PagingDTO, args = {} as Prisma.AnnouncementFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
-    const count = await this.countAnnouncements({
-      where: args.where,
+    const count = await this.announcementRepository.countAnnouncements({
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
     });
-    const announcements = await this.findAnnouncements({
+    const announcements = await this.announcementRepository.findAnnouncements({
       ...args,
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
       skip,
       take,
     });
@@ -40,46 +36,11 @@ export class AnnouncementService {
   }
 
   async findAnnouncements(args = {} as Prisma.AnnouncementFindManyArgs) {
-    const announcements = await this.database.announcement.findMany({
+    return await this.announcementRepository.findAnnouncements({
       ...args,
-      orderBy: {
-        createdAt: 'desc',
-        ...args.orderBy,
-      },
-    });
-
-    return announcements.map((announcement) => new AnnouncementDTO(announcement));
-  }
-
-  async countAnnouncements(args = {} as Prisma.AnnouncementCountArgs) {
-    return this.database.announcement.count(args);
-  }
-
-  async createAnnouncement(data: CreateAnnouncementDTO) {
-    const announcement = await this.database.announcement.create({
-      data,
-    });
-
-    return announcement.id;
-  }
-
-  async updateAnnouncement(id: string, data: UpdateAnnouncementDTO) {
-    await this.findAnnouncement(id);
-
-    await this.database.announcement.update({
       where: {
-        id,
-      },
-      data,
-    });
-  }
-
-  async deleteAnnouncement(id: string) {
-    await this.findAnnouncement(id);
-
-    await this.database.announcement.delete({
-      where: {
-        id,
+        ...args.where,
+        deletedAt: null,
       },
     });
   }

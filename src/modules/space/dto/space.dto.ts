@@ -124,7 +124,11 @@ export class SpaceDTO {
   static getSpacesIncludeOption() {
     return {
       location: true,
-      reviews: true,
+      reviews: {
+        where: {
+          deletedAt: null,
+        },
+      },
       publicTransportations: true,
       userInterests: true,
       rentalType: true,

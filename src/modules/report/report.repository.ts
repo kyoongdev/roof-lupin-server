@@ -20,13 +20,14 @@ export class ReportRepository {
     return this.database.userReport.findFirst(args);
   }
 
-  async findReport(id: string) {
+  async findReport(id: string, answerWhere = {} as Prisma.UserReportAnswerWhereInput) {
     const report = await this.database.userReport.findUnique({
       where: {
         id,
       },
       include: {
         answer: {
+          where: answerWhere,
           include: {
             admin: true,
           },
@@ -72,11 +73,12 @@ export class ReportRepository {
     return this.database.userReport.count(args);
   }
 
-  async findReports(args = {} as Prisma.UserReportFindManyArgs) {
+  async findReports(args = {} as Prisma.UserReportFindManyArgs, answerWhere = {} as Prisma.UserReportAnswerWhereInput) {
     const reports = await this.database.userReport.findMany({
       ...args,
       include: {
         answer: {
+          where: answerWhere,
           include: {
             admin: true,
           },
@@ -163,11 +165,26 @@ export class ReportRepository {
   }
 
   async deleteReport(id: string) {
+    await this.database.userReport.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+
+  async hardDeleteReport(id: string) {
     await this.database.userReport.delete({
       where: {
         id,
       },
     });
+  }
+
+  async checkReportAnswer(args = {} as Prisma.UserReportAnswerFindFirstArgs) {
+    return this.database.userReportAnswer.findFirst(args);
   }
 
   async findReportAnswer(reportAnswerId: string) {
@@ -207,16 +224,26 @@ export class ReportRepository {
     return reportAnswer.id;
   }
 
-  async updateReportAnswer(reportId: string, data: UpdateReportAnswerDTO) {
+  async updateReportAnswer(id: string, data: UpdateReportAnswerDTO) {
     await this.database.userReportAnswer.update({
       where: {
-        reportId,
+        id,
       },
       data,
     });
   }
 
   async deleteReportAnswer(reportAnswerId: string) {
+    await this.database.userReportAnswer.update({
+      where: {
+        id: reportAnswerId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
+  async hardDeleteReportAnswer(reportAnswerId: string) {
     await this.database.userReportAnswer.delete({
       where: {
         id: reportAnswerId,

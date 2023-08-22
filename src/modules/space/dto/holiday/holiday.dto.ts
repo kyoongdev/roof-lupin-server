@@ -1,5 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
+import { INTERVAL_WEEK } from '@/interface/token.interface';
 import { DayResDecorator } from '@/utils/validation';
 
 export interface SpaceHolidayDTOProps {
@@ -22,5 +23,13 @@ export class SpaceHolidayDTO {
     this.id = props.id;
     this.day = props.day;
     this.interval = props.interval;
+  }
+
+  checkWeekIsHoliday(week: number, currentDay: number) {
+    if (this.interval === INTERVAL_WEEK.TWO) {
+      return (week === 2 || week === 4) && this.day === currentDay;
+    } else {
+      return this.day === currentDay;
+    }
   }
 }

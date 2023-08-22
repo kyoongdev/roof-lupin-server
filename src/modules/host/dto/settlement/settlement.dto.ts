@@ -1,6 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
+import { LUPIN_CHARGE } from '@/common/constants';
+import { getVatCost } from '@/common/vat';
+
 import { FindSettlementsQuery } from './query';
 
 export interface SettlementDTOProps {
@@ -13,10 +16,10 @@ export interface SettlementDTOProps {
   vatCost: number;
   lupinCost: number;
   lupinVatCost: number;
-
   discountCost: number;
   originalCost: number;
   isPayed: boolean;
+  deletedAt?: Date;
 }
 
 export class SettlementDTO {
@@ -56,6 +59,9 @@ export class SettlementDTO {
   @Property({ apiProperty: { type: 'number', description: '루프루팡 수수료 vat' } })
   lupinVatCost: number;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '삭제일' } })
+  deletedAt?: Date;
+
   constructor(props: SettlementDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -69,6 +75,7 @@ export class SettlementDTO {
     this.isPayed = props.isPayed;
     this.lupinCost = props.lupinCost;
     this.lupinVatCost = props.lupinVatCost;
+    this.deletedAt = props.deletedAt;
   }
 
   static generateQuery(query: FindSettlementsQuery): Prisma.SettlementFindManyArgs {
@@ -84,6 +91,33 @@ export class SettlementDTO {
           day: query.day,
         }),
       },
+    };
+  }
+
+  getNewSettlementCostInfo(oldTotalCost: number, newTotalCost: number, refundCost?: number) {
+    const oldCost = this.getSettlementCostInfo(oldTotalCost);
+    const newCost = this.getSettlementCostInfo(newTotalCost);
+
+    return {
+      lupinCost: this.lupinCost - oldCost.lupinCost + newCost.lupinCost,
+      settlementCost: this.settlementCost - oldCost.settlementCost + newCost.settlementCost,
+      vatCost: this.vatCost - oldCost.vatCost + newCost.vatCost,
+      lupinVatCost: this.lupinVatCost - oldCost.lupinVatCost + newCost.lupinVatCost,
+      originalCost: this.originalCost - (refundCost ?? 0),
+      totalCost: this.totalCost - oldTotalCost + newTotalCost,
+    };
+  }
+
+  getSettlementCostInfo(cost: number) {
+    const lupinCost = cost * LUPIN_CHARGE;
+    const lupinVatCost = getVatCost(lupinCost);
+    const settlementCost = cost - lupinCost;
+    const vatCost = getVatCost(settlementCost);
+    return {
+      lupinCost,
+      lupinVatCost,
+      settlementCost,
+      vatCost,
     };
   }
 }

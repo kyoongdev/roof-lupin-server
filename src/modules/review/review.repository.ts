@@ -25,7 +25,7 @@ import { ReviewException } from './exception/review.exception';
 export class ReviewRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async findReview(id: string) {
+  async findReview(id: string, answerWhere = {} as Prisma.SpaceReviewAnswerWhereInput) {
     const review = await this.database.spaceReview.findUnique({
       where: {
         id,
@@ -38,9 +38,7 @@ export class ReviewRepository {
           },
         },
         answers: {
-          where: {
-            deletedAt: null,
-          },
+          where: answerWhere,
           include: {
             host: true,
           },
@@ -85,7 +83,10 @@ export class ReviewRepository {
     return score._avg.score;
   }
 
-  async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
+  async findReviews(
+    args = {} as Prisma.SpaceReviewFindManyArgs,
+    answerWhere = {} as Prisma.SpaceReviewAnswerWhereInput
+  ) {
     const reviews = await this.database.spaceReview.findMany({
       where: {
         ...args.where,
@@ -98,9 +99,7 @@ export class ReviewRepository {
           },
         },
         answers: {
-          where: {
-            deletedAt: null,
-          },
+          where: answerWhere,
           include: {
             host: true,
           },
@@ -155,7 +154,10 @@ export class ReviewRepository {
     return await this.database.spaceReviewImage.count(args);
   }
 
-  async findReviewImages(args = {} as Prisma.SpaceReviewImageFindManyArgs) {
+  async findReviewImages(
+    args = {} as Prisma.SpaceReviewImageFindManyArgs,
+    answerWhere = {} as Prisma.SpaceReviewAnswerWhereInput
+  ) {
     const images = await this.database.spaceReviewImage.findMany({
       ...args,
       include: {
@@ -168,9 +170,7 @@ export class ReviewRepository {
               },
             },
             answers: {
-              where: {
-                deletedAt: null,
-              },
+              where: answerWhere,
               include: {
                 host: true,
               },

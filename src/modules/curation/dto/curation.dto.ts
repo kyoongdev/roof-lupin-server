@@ -12,6 +12,7 @@ export interface CurationDTOProps {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
   orderNo?: number;
   spaces: CurationSpaceDTOProps[];
 }
@@ -35,6 +36,9 @@ export class CurationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '큐레이션 수정일' } })
   updatedAt: Date;
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '큐레이션 삭제일' } })
+  deletedAt?: Date;
+
   @Property({ apiProperty: { type: CurationSpaceDTO, isArray: true, description: '큐레이션 공간' } })
   spaces: CurationSpaceDTO[];
 
@@ -47,8 +51,9 @@ export class CurationDTO {
     this.subTitle = props.subTitle;
     this.thumbnail = props.thumbnail;
     this.createdAt = props.createdAt;
-    this.orderNo = props.orderNo;
     this.updatedAt = props.updatedAt;
+    this.deletedAt = props.deletedAt;
+    this.orderNo = props.orderNo;
     this.spaces = props.spaces.map((space) => new CurationSpaceDTO(space));
   }
 }

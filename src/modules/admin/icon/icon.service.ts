@@ -36,7 +36,6 @@ export class AdminIconService {
       throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_ICON_IN_USE));
     }
 
-    await this.fileService.deleteFile(icon.url);
     return await this.iconRepository.deleteIcon(id);
   }
 }
