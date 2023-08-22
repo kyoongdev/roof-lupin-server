@@ -19,11 +19,18 @@ export class QnAService {
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.qnaRepository.countQna({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+        user: {
+          deletedAt: null,
+        },
+      },
     });
     const qnas = await this.qnaRepository.findQnAs({
       where: {
         ...args.where,
+        deletedAt: null,
         user: {
           deletedAt: null,
         },
@@ -39,7 +46,13 @@ export class QnAService {
   }
   async findQnAs(args = {} as Prisma.SpaceQnAFindManyArgs) {
     return await this.qnaRepository.findQnAs({
-      where: args.where,
+      where: {
+        ...args.where,
+        deletedAt: null,
+        user: {
+          deletedAt: null,
+        },
+      },
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,

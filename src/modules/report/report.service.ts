@@ -35,16 +35,21 @@ export class ReportService {
         deletedAt: null,
       },
     });
-    const reports = await this.reportRepository.findReports({
-      ...args,
-      where: {
-        ...args.where,
-        userId,
-        deletedAt: null,
+    const reports = await this.reportRepository.findReports(
+      {
+        ...args,
+        where: {
+          ...args.where,
+          userId,
+          deletedAt: null,
+        },
+        skip,
+        take,
       },
-      skip,
-      take,
-    });
+      {
+        deletedAt: null,
+      }
+    );
 
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }
