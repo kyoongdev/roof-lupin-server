@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { SpaceDTO, UpdateSpaceDTO } from '@/modules/space/dto';

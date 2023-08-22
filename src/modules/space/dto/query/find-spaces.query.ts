@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
 import { SPACE_SORT_OPTION, SPACE_SORT_OPTION_VALUES, SpaceSortValidation } from '../validation/space-sort.validation';
