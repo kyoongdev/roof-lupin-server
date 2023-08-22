@@ -87,8 +87,9 @@ model Announcement {
   title   String @db.VarChar(120)
   content String @db.MediumText
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Curation {

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { AnnouncementRepository } from '../admin/announcement/announcement.repository';
-import { AnnouncementDTO } from '../admin/dto/announcement';
+import { AnnouncementDTO, CreateAnnouncementDTO, UpdateAnnouncementDTO } from '../dto/announcement';
+
+import { AnnouncementRepository } from './announcement.repository';
 
 @Injectable()
-export class AnnouncementService {
+export class AdminAnnouncementService {
   constructor(private readonly announcementRepository: AnnouncementRepository) {}
 
   async findAnnouncement(id: string) {
@@ -30,5 +31,18 @@ export class AnnouncementService {
 
   async findAnnouncements(args = {} as Prisma.AnnouncementFindManyArgs) {
     return await this.announcementRepository.findAnnouncements(args);
+  }
+
+  async createAnnouncement(data: CreateAnnouncementDTO) {
+    return await this.announcementRepository.createAnnouncement(data);
+  }
+  async updateAnnouncement(id: string, data: UpdateAnnouncementDTO) {
+    await this.findAnnouncement(id);
+    await this.announcementRepository.updateAnnouncement(id, data);
+  }
+
+  async deleteAnnouncement(id: string) {
+    await this.findAnnouncement(id);
+    await this.announcementRepository.deleteAnnouncement(id);
   }
 }
