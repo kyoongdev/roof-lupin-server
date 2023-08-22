@@ -414,6 +414,8 @@ model Settlement {
 
   isPayed Boolean @default(false)
 
+  deletedAt DateTime?
+
   reservations Reservation[]
   hostId       String
   host         Host          @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
