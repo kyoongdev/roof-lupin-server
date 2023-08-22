@@ -3,6 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 import { LUPIN_CHARGE } from '@/common/constants';
+import { checkIsSameDate } from '@/common/date';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
@@ -386,13 +387,9 @@ export class PaymentService {
         const reservationDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), item.startAt);
         const currentDate = new Date();
 
-        if (
-          reservationDate.getFullYear() === currentDate.getFullYear() &&
-          reservationDate.getMonth() === currentDate.getMonth() &&
-          reservationDate.getDate() === currentDate.getDate()
-        ) {
+        if (checkIsSameDate(reservationDate, currentDate)) {
           const diff = reservationDate.getHours() - currentDate.getHours();
-          console.log({ diff });
+
           if (diff <= 2) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MAX_RESERVATION_DATE));
           }
@@ -410,10 +407,8 @@ export class PaymentService {
           day: data.day,
         });
 
-        const possibleStartAt = possibleRentalType.startAt;
-        const possibleEndAt = possibleRentalType.endAt;
-        const itemStartAt = item.startAt;
-        const itemEndAt = item.endAt;
+        const { startAt: possibleStartAt, endAt: possibleEndAt } = possibleRentalType;
+        const { startAt: itemStartAt, endAt: itemEndAt } = item;
 
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
         if (itemStartAt < possibleStartAt || possibleEndAt < itemEndAt) {
@@ -557,19 +552,13 @@ export class PaymentService {
                 throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
               }
             }
+            const discount = isExist.coupon.getDiscountCost(cost);
+            if (!discount) {
+              throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+            }
 
-            if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
-              const discount = cost * (isExist.coupon.discountValue / 100);
-              discountCost += discount;
-              if (isExist.coupon.isLupinPay) {
-                lupinDiscountCost += discount;
-              }
-            } else if (isExist.coupon.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
-              discountCost += isExist.coupon.discountValue;
-              if (isExist.coupon.isLupinPay) {
-                lupinDiscountCost += isExist.coupon.discountValue;
-              }
-            } else throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
+            discountCost += discount.discountCost;
+            lupinDiscountCost += discount.lupinDiscountCost;
           }
         })
       );

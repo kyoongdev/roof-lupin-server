@@ -4,7 +4,11 @@ import { Property } from 'cumuco-nestjs';
 
 import { CategoryDTO, CategoryDTOProps } from '@/modules/category/dto';
 
-import { DISCOUNT_TYPE_VALUES, DiscountTypeResTransform } from '../validation/discount-value.validation';
+import {
+  DISCOUNT_TYPE_ENUM,
+  DISCOUNT_TYPE_VALUES,
+  DiscountTypeResTransform,
+} from '../validation/discount-value.validation';
 
 export interface CouponDTOProps {
   id: string;
@@ -62,5 +66,27 @@ export class CouponDTO {
     this.defaultDueDay = props.defaultDueDay;
     this.isLupinPay = props.isLupinPay;
     this.deletedAt = props.deletedAt;
+  }
+
+  getDiscountCost(cost: number) {
+    let discountCost = 0;
+    let lupinDiscountCost = 0;
+    if (this.discountType === DISCOUNT_TYPE_ENUM.PERCENTAGE) {
+      const discount = cost * (this.discountValue / 100);
+      discountCost += discount;
+      if (this.isLupinPay) {
+        lupinDiscountCost += discount;
+      }
+    } else if (this.discountType === DISCOUNT_TYPE_ENUM.VALUE) {
+      discountCost += this.discountValue;
+      if (this.isLupinPay) {
+        lupinDiscountCost += this.discountValue;
+      }
+    } else return null;
+
+    return {
+      discountCost,
+      lupinDiscountCost,
+    };
   }
 }
