@@ -28,16 +28,6 @@ export class AdminSpaceService {
   }
 
   async findPagingSpaces(paging: PagingDTO, query: AdminFindSpacesQuery) {
-    let where: Prisma.Sql = Prisma.empty;
-
-    if (query.title) {
-      where = Prisma.sql`WHERE sp.title LIKE '%${Prisma.raw(query.title)}%'`;
-    } else if (query.isApproved) {
-      where = Prisma.sql`WHERE sp.isApproved = ${query.isApproved}`;
-    } else if (query.isPublic) {
-      where = Prisma.sql`WHERE sp.isPublic = ${query.isPublic}`;
-    }
-
     const sqlQuery = new AdminSpaceSQL({
       isHoliday: false,
       paging: paging.getSqlPaging(),
