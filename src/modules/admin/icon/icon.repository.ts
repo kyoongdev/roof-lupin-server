@@ -80,6 +80,25 @@ export class IconRepository {
   }
 
   async deleteIcon(id: string) {
+    await this.database.icon.update({
+      where: {
+        id,
+      },
+      data: {
+        building: {
+          set: [],
+        },
+        category: {
+          set: [],
+        },
+        service: {
+          set: [],
+        },
+      },
+    });
+  }
+
+  async hardDeleteIcon(id: string) {
     await this.database.icon.delete({
       where: {
         id,
