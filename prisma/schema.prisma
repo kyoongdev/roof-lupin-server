@@ -105,9 +105,11 @@ model Curation {
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  spaces    CurationSpace[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  spaces CurationSpace[]
 }
 
 model CurationSpace {

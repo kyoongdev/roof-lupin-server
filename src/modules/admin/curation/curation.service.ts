@@ -31,7 +31,6 @@ export class AdminCurationService {
     const curations = await this.curationRepository.findCurations({
       where: args.where,
       skip,
-
       take,
     });
 

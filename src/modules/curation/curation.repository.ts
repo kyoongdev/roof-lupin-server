@@ -341,6 +341,37 @@ export class CurationRepository {
         },
       },
     });
+    await this.database.curation.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+        orderNo: null,
+      },
+    });
+  }
+
+  async hardDeleteCuration(id: string) {
+    const curation = await this.database.curation.findUnique({
+      where: { id },
+    });
+
+    if (!curation) {
+      throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+    }
+
+    await this.database.curation.updateMany({
+      where: {
+        orderNo: {
+          gt: curation.orderNo,
+        },
+      },
+      data: {
+        orderNo: {
+          decrement: 1,
+        },
+      },
+    });
+
     await this.database.curation.delete({
       where: { id },
     });
