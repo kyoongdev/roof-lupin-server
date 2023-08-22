@@ -10,6 +10,10 @@ import { CreateHistoryDTO, HistoryDTO } from './dto';
 export class HistoryRepository {
   constructor(private readonly database: PrismaService) {}
 
+  async countHistories(args = {} as Prisma.HistoryCountArgs) {
+    return this.database.history.count(args);
+  }
+
   async findHistories(args = {} as Prisma.HistoryFindManyArgs) {
     const histories = await this.database.history.findMany(args);
 

@@ -397,6 +397,8 @@ model BlockedTime {
 
   name String @db.VarChar(120)
 
+  createdAt DateTime @default(now())
+
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -796,7 +798,8 @@ model SearchRecord {
 
   content String
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

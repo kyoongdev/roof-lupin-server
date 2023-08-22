@@ -92,10 +92,13 @@ export class SearchRepository {
     return isExist.id;
   }
 
-  async deleteSearchRecord(id: string, userId: string) {
-    await this.database.searchRecord.delete({
+  async deleteSearchRecord(id: string) {
+    await this.database.searchRecord.update({
       where: {
         id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }

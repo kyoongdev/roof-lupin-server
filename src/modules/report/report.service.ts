@@ -6,7 +6,6 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { QnARepository } from '../qna/qna.repository';
 import { ReviewRepository } from '../review/review.repository';
 import { SpaceRepository } from '../space/space.repository';
-import { UserRepository } from '../user/user.repository';
 
 import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
 import { REPORT_ALREADY_EXISTS } from './exception/errorCode';
