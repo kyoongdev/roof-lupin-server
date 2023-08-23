@@ -31,16 +31,21 @@ export class AdminSpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
   }
 
   getWhere(): Prisma.Sql {
-    let where: Prisma.Sql = Prisma.empty;
+    const titleWhere = this.query.title
+      ? Prisma.sql`AND sp.title LIKE '%${Prisma.raw(this.query.title)}%'`
+      : Prisma.empty;
+    const isApprovedWhere = this.query.isApproved
+      ? Prisma.sql`AND sp.isApproved = ${this.query.isApproved}`
+      : Prisma.empty;
+    const isPublicWhere = this.query.isPublic ? Prisma.sql`AND sp.isPublic = ${this.query.isPublic}` : Prisma.empty;
+    const hostIdWhere = this.query.hostId ? Prisma.sql`AND sp.hostId = ${this.query.hostId}` : Prisma.empty;
 
-    if (this.query.title) {
-      where = Prisma.sql`WHERE sp.title LIKE '%${Prisma.raw(this.query.title)}%'`;
-    } else if (this.query.isApproved) {
-      where = Prisma.sql`WHERE sp.isApproved = ${this.query.isApproved}`;
-    } else if (this.query.isPublic) {
-      where = Prisma.sql`WHERE sp.isPublic = ${this.query.isPublic}`;
-    }
-    return where;
+    return Prisma.sql`WHERE 1 = 1
+                  ${titleWhere}
+                  ${isApprovedWhere}
+                  ${isPublicWhere}
+                  ${hostIdWhere}
+                `;
   }
 
   getOrderBy() {

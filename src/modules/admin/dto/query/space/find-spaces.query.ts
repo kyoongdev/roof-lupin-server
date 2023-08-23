@@ -22,4 +22,7 @@ export class AdminFindSpacesQuery extends PagingDTO {
   @AdminSpaceSortValidation()
   @Property({ apiProperty: { type: 'string', nullable: true, enum: ADMIN_SPACE_SORT_OPTION_VALUES } })
   sort?: keyof typeof ADMIN_SPACE_SORT_OPTION;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '호스트 id' } })
+  hostId?: string;
 }
