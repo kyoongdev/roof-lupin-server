@@ -4,7 +4,7 @@ import { BANK_CODES } from '@/utils/validation/bank.validation';
 
 export interface HostAccountDTOProps {
   id: string;
-  ownerName: string;
+
   bankCode: string;
   businessRegistrationNumber?: string;
   businessRegistrationFile?: string;
@@ -16,9 +16,6 @@ export interface HostAccountDTOProps {
 export class HostAccountDTO {
   @Property({ apiProperty: { type: 'string', description: '공간주 사업자 및 계좌 정보 id' } })
   id: string;
-
-  @Property({ apiProperty: { type: 'string', description: '사업주 이름' } })
-  ownerName: string;
 
   @Property({ apiProperty: { description: '은행 코드', type: 'string', example: BANK_CODES.join(' | ') } })
   bankCode: string;
@@ -40,7 +37,6 @@ export class HostAccountDTO {
 
   constructor(props: HostAccountDTOProps) {
     this.id = props.id;
-    this.ownerName = props.ownerName;
     this.bankCode = props.bankCode;
     this.businessRegistrationFile = props.businessRegistrationFile;
     this.businessRegistrationNumber = props.businessRegistrationNumber;

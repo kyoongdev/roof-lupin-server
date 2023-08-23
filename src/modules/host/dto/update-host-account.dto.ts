@@ -3,7 +3,6 @@ import { Property } from 'cumuco-nestjs';
 import { BankCodeReqDecorator } from '@/utils/validation/bank.validation';
 
 export interface UpdateHostAccountProps {
-  ownerName?: string;
   bankCode?: string;
   businessRegistrationNumber?: string;
   businessRegistrationFile?: string;
@@ -13,9 +12,6 @@ export interface UpdateHostAccountProps {
 }
 
 export class UpdateHostAccountDTO {
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '사업주 이름' } })
-  ownerName?: string;
-
   @BankCodeReqDecorator(true)
   bankCode?: string;
 
@@ -36,7 +32,6 @@ export class UpdateHostAccountDTO {
 
   constructor(props?: UpdateHostAccountProps) {
     if (props) {
-      this.ownerName = props.ownerName;
       this.bankCode = props.bankCode;
       this.businessRegistrationNumber = props.businessRegistrationNumber;
       this.businessRegistrationFile = props.businessRegistrationFile;
