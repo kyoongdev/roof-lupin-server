@@ -29,8 +29,22 @@ export class HostReservationService {
     return reservation;
   }
 
-  async findReservations(args = {} as Prisma.ReservationFindManyArgs) {
-    return await this.reservationRepository.findReservations(args);
+  async findReservations(hostId: string, args = {} as Prisma.ReservationFindManyArgs) {
+    return await this.reservationRepository.findReservations({
+      ...args,
+      where: {
+        ...args.where,
+        rentalTypes: {
+          some: {
+            rentalType: {
+              space: {
+                hostId,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
   async findPagingReservations(paging: PagingDTO, hostId: string, args = {} as Prisma.ReservationFindManyArgs) {

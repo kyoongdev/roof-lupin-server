@@ -32,6 +32,25 @@ export class HostReservationController {
     return await this.reservationService.findReservation(id, user.id);
   }
 
+  @Get('paging')
+  @RequestApi({
+    summary: {
+      summary: '예약 목록 페이징 조회하기',
+      description: '예약 목록 페이징 조회하기',
+    },
+  })
+  @ResponseApi({
+    type: ReservationDTO,
+    isPaging: true,
+  })
+  async getPagingReservationList(
+    @ReqUser() user: RequestHost,
+    @Paging() paging: PagingDTO,
+    @Query() query: HostFindReservationsQuery
+  ) {
+    return await this.reservationService.findPagingReservations(paging, user.id, query.generateQuery());
+  }
+
   @Get()
   @RequestApi({
     summary: {
@@ -41,14 +60,10 @@ export class HostReservationController {
   })
   @ResponseApi({
     type: ReservationDTO,
-    isPaging: true,
+    isArray: true,
   })
-  async getReservationList(
-    @ReqUser() user: RequestHost,
-    @Paging() paging: PagingDTO,
-    @Query() query: HostFindReservationsQuery
-  ) {
-    return await this.reservationService.findPagingReservations(paging, user.id, query.generateQuery());
+  async getReservationList(@ReqUser() user: RequestHost, @Query() query: HostFindReservationsQuery) {
+    return await this.reservationService.findReservations(user.id, query.generateQuery());
   }
 
   @Get('pending')
@@ -63,7 +78,7 @@ export class HostReservationController {
     isArray: true,
   })
   async getPendingReservationList(@ReqUser() user: RequestHost) {
-    return await this.reservationService.findReservations({
+    return await this.reservationService.findReservations(user.id, {
       where: {
         rentalTypes: {
           some: {
