@@ -11,7 +11,7 @@ import { AdminRentalTypeService } from './rental-type.service';
 export class AdminRentalTypeController {
   constructor(private readonly rentalTypeService: AdminRentalTypeService) {}
 
-  @Get(':spaceId')
+  @Get('spaces/:spaceId')
   @RequestApi({
     summary: {
       description: '공간 대여 타입 불러오기',

@@ -9,6 +9,7 @@ export interface HostAccountDTOProps {
   businessRegistrationNumber: string;
   account: string;
   accountOwner: string;
+  businessRegistrationFile?: string;
 }
 
 export class HostAccountDTO {
@@ -30,6 +31,9 @@ export class HostAccountDTO {
   @Property({ apiProperty: { type: 'string', description: '계좌 소유자 이름' } })
   accountOwner: string;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '사업자등록증 파일' } })
+  businessRegistrationFile?: string;
+
   constructor(props: HostAccountDTOProps) {
     this.id = props.id;
     this.ownerName = props.ownerName;
@@ -37,5 +41,6 @@ export class HostAccountDTO {
     this.businessRegistrationNumber = props.businessRegistrationNumber;
     this.account = props.account;
     this.accountOwner = props.accountOwner;
+    this.businessRegistrationFile = props.businessRegistrationFile;
   }
 }
