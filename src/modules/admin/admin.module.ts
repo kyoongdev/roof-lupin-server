@@ -21,6 +21,7 @@ import { AdminIconModule } from './icon/icon.module';
 import { AdminLocationFilterModule } from './location-filter/location-filter.module';
 import { AdminQnAModule } from './qna/qna.module';
 import { AdminRankingModule } from './ranking/ranking.module';
+import { AdminRentalTypeModule } from './rental-type/rental-type.module';
 import { AdminReportModule } from './report/report.module';
 import { AdminReservationModule } from './reservation/reservation.module';
 import { AdminReviewModule } from './review/review.module';
@@ -59,6 +60,7 @@ export const AdminModules = [
   AdminContentModule,
   AdminFileModule,
   AdminTaxReturnModule,
+  AdminRentalTypeModule,
 ];
 
 @Module({
