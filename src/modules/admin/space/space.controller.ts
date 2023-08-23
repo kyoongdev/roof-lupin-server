@@ -3,7 +3,7 @@ import { Body, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
-import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from '@/modules/space/dto';
+import { SpaceDetailDTO, SpaceDTO, SpaceHashTagDTO, SpaceIdsDTO, UpdateSpaceDTO } from '@/modules/space/dto';
 import { ApiController } from '@/utils';
 import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
@@ -46,6 +46,20 @@ export class AdminSpaceController {
   })
   async countSpaces() {
     return await this.spaceService.countSpaces();
+  }
+
+  @Get(':spaceId/hash-tags')
+  @RequestApi({
+    summary: {
+      description: '공간 해시태그 불러오기',
+      summary: '공간 해시태그 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: SpaceHashTagDTO,
+  })
+  async getSpaceHashTags(@Param('spaceId') id: string) {
+    return await this.spaceService.findSpaceHashTags(id);
   }
 
   @Get()

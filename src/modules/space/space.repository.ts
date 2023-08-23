@@ -7,7 +7,7 @@ import { SQLCategory, SqlSpace } from '@/interface/space.interface';
 
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 
-import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
+import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceHashTagDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { BuildingDTO, CreateBuildingDTO } from './dto/building';
 import { CreateHashTagDTO, HashTagDTO } from './dto/hashTag';
 import { RefundPolicyDTO } from './dto/refund';
@@ -89,6 +89,20 @@ export class SpaceRepository {
       spaces: data,
       count: count[0]['FOUND_ROWS()'],
     };
+  }
+  async findSpaceHashTags(id: string) {
+    const hashTags = await this.database.spaceHashTag.findMany({
+      where: {
+        spaceId: id,
+      },
+      include: {
+        hashTag: true,
+      },
+    });
+
+    return new SpaceHashTagDTO({
+      hashTags: hashTags.map(({ hashTag }) => hashTag),
+    });
   }
 
   async findSpace(id: string, userId?: string) {

@@ -20,6 +20,9 @@ export class AdminSpaceService {
   async findSpaceIds() {
     return await this.spaceRepository.findSpaceIds();
   }
+  async findSpaceHashTags(id: string) {
+    return await this.spaceRepository.findSpaceHashTags(id);
+  }
 
   async countSpaces() {
     const count = await this.spaceRepository.countSpaces();
