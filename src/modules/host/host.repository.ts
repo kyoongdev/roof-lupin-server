@@ -32,12 +32,15 @@ export class HostRepository {
           },
         },
       },
+      include: {
+        hostAccount: true,
+      },
     });
     if (!host) {
       throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
     }
 
-    return new HostDTO(host);
+    return new HostDetailDTO(host);
   }
 
   async findHosts(args = {} as Prisma.HostFindManyArgs) {

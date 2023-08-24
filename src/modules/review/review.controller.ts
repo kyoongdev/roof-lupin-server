@@ -25,6 +25,21 @@ import { ReviewService } from './review.service';
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
+  @Get('reservations/:reservationId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '예약 아이디로 나의 리뷰 조회',
+      summary: '예약 아이디로 나의 리뷰 조회',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDetailDTO,
+  })
+  async getReviewByReservationId(@Param('reservationId') reservationId: string, @ReqUser() user: RequestUser) {
+    return await this.reviewService.findReviewByReservationId(reservationId, user.id);
+  }
+
   @Get(':spaceId/summary')
   @RequestApi({
     summary: {

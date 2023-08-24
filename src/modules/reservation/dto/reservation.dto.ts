@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { CheckIsTargetDay } from '@/interface/common.interface';
@@ -49,6 +50,48 @@ export class ReservationDTO extends BaseReservationDTO {
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
+    };
+  }
+
+  static generateReservationInclude(userId?: string): Prisma.ReservationInclude {
+    return {
+      user: true,
+      rentalTypes: {
+        include: {
+          rentalType: {
+            include: {
+              timeCostInfos: true,
+              space: {
+                include: {
+                  location: true,
+                  reviews: true,
+                  publicTransportations: true,
+                  userInterests: true,
+                  rentalType: true,
+                  categories: {
+                    include: {
+                      category: {
+                        include: {
+                          icon: true,
+                        },
+                      },
+                    },
+                  },
+                  reports: true,
+                },
+              },
+              additionalServices: true,
+            },
+          },
+        },
+      },
+      spaceReviews: userId
+        ? {
+            where: {
+              userId,
+            },
+          }
+        : true,
     };
   }
 

@@ -34,7 +34,7 @@ export class HostController {
     },
   })
   @ResponseApi({
-    type: HostDTO,
+    type: HostDetailDTO,
   })
   async getHostBySpaceId(@Param('spaceId') id: string) {
     return await this.hostService.findHostBySpaceId(id);

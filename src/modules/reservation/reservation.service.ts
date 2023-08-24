@@ -25,15 +25,18 @@ export class ReservationService {
       },
     });
 
-    const reservations = await this.reservationRepository.findReservations({
-      where: {
-        userId,
-        deletedAt: null,
-        ...args.where,
+    const reservations = await this.reservationRepository.findReservations(
+      {
+        where: {
+          userId,
+          deletedAt: null,
+          ...args.where,
+        },
+        skip,
+        take,
       },
-      skip,
-      take,
-    });
+      userId
+    );
 
     return new PaginationDTO<ReservationDTO>(reservations, { count, paging });
   }
