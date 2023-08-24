@@ -97,6 +97,7 @@ export class ReviewRepository {
 
     return new ReviewDetailDTO({
       ...review,
+      answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
       images: review.images.map((image) => ({
         id: image.id,
         url: image.image.url,
@@ -159,6 +160,7 @@ export class ReviewRepository {
       (review) =>
         new ReviewDTO({
           ...review,
+          answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
           images: review.images.map((image) => ({
             id: image.id,
             imageId: image.image.id,
@@ -230,6 +232,7 @@ export class ReviewRepository {
           url: image.image.url,
           review: {
             ...image.spaceReview,
+            answer: image.spaceReview.answers.filter((answer) => !answer.deletedAt).at(-1),
             images: image.spaceReview.images.map((image) => ({
               id: image.id,
               imageId: image.imageId,

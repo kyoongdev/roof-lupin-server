@@ -12,7 +12,7 @@ import { ReviewImageDTO, ReviewImageDTOProps } from './review-image.dto';
 export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
   images: ReviewImageDTOProps[];
-  answers: ReviewAnswerDTOProps[];
+  answer?: ReviewAnswerDTOProps;
 }
 
 export class ReviewDTO {
@@ -42,8 +42,8 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 id' } })
   reservationId: string;
 
-  @Property({ apiProperty: { type: ReviewAnswerDTO, isArray: true, description: '리뷰 답변' } })
-  reviewAnswers: ReviewAnswerDTO[];
+  @Property({ apiProperty: { type: ReviewAnswerDTO, description: '리뷰 답변' } })
+  answer: ReviewAnswerDTO;
 
   constructor(props: ReviewDTOProps) {
     this.id = props.id;
@@ -53,7 +53,7 @@ export class ReviewDTO {
     this.images = props.images.map((image) => new ReviewImageDTO(image));
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
-    this.reviewAnswers = props.answers.map((answer) => new ReviewAnswerDTO(answer));
+    this.reservationId = props.reservationId;
   }
 
   static async generateQuery(query: FindReviewsQuery, spaceId?: string): Promise<Prisma.SpaceReviewFindManyArgs> {
