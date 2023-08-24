@@ -7,7 +7,7 @@ import { FCMEvent } from '@/event/fcm';
 
 import { HistoryRepository } from '../history/history.repository';
 
-import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
+import { CreateQnADTO, QnACountDTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
 import { QnARepository } from './qna.repository';
@@ -15,6 +15,12 @@ import { QnARepository } from './qna.repository';
 @Injectable()
 export class QnAService {
   constructor(private readonly qnaRepository: QnARepository, private readonly historyRepository: HistoryRepository) {}
+
+  async countQnA(args = {} as Prisma.SpaceQnACountArgs) {
+    const count = await this.qnaRepository.countQna(args);
+
+    return new QnACountDTO({ count });
+  }
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
@@ -44,6 +50,7 @@ export class QnAService {
     });
     return new PaginationDTO<QnADTO>(qnas, { count, paging });
   }
+
   async findQnAs(args = {} as Prisma.SpaceQnAFindManyArgs) {
     return await this.qnaRepository.findQnAs({
       where: {
