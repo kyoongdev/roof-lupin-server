@@ -60,6 +60,7 @@ export class ReviewService {
         deletedAt: null,
       }
     );
+
     return review;
   }
 
