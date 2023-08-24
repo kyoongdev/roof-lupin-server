@@ -6,6 +6,7 @@ import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
 import { AdminAlarmModule } from './alarm/alarm.module';
+import { AdminAnnouncementModule } from './announcement/announcement.module';
 import { AdminAuthModule } from './auth/auth.module';
 import { AdminCategoryModule } from './category/category.module';
 import { AdminContentModule } from './content/content.module';
@@ -34,6 +35,7 @@ import { AdminTermsModule } from './terms/terms.module';
 import { AdminUserModule } from './user/user.module';
 
 export const AdminModules = [
+  AdminAnnouncementModule,
   AdminAuthModule,
   AdminAlarmModule,
   AdminCategoryModule,

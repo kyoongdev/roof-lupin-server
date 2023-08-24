@@ -17,12 +17,10 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
 
       hostAccount: {
         create: {
-          ownerName: '박용준',
           account: '110161509211',
           accountOwner: '박용준',
           bankCode: '046',
           businessRegistrationNumber: '1234567890',
-          accountType: 2,
         },
       },
     },
@@ -1433,7 +1431,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           },
         ],
       },
-
       categories: {
         create: [
           {
