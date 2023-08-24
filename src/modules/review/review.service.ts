@@ -48,6 +48,22 @@ export class ReviewService {
     return review;
   }
 
+  async findReviewByReservationId(reservationId: string, userId: string) {
+    const review = await this.reviewRepository.findFirstReview(
+      {
+        where: {
+          reservationId,
+          userId,
+        },
+      },
+      {
+        deletedAt: null,
+      }
+    );
+
+    return review;
+  }
+
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
     return await this.reviewRepository.findReviews(
       {

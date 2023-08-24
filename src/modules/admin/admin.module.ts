@@ -6,6 +6,7 @@ import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
 import { AdminService } from './admin.service';
 import { AdminAlarmModule } from './alarm/alarm.module';
+import { AdminAnnouncementModule } from './announcement/announcement.module';
 import { AdminAuthModule } from './auth/auth.module';
 import { AdminCategoryModule } from './category/category.module';
 import { AdminContentModule } from './content/content.module';
@@ -21,6 +22,7 @@ import { AdminIconModule } from './icon/icon.module';
 import { AdminLocationFilterModule } from './location-filter/location-filter.module';
 import { AdminQnAModule } from './qna/qna.module';
 import { AdminRankingModule } from './ranking/ranking.module';
+import { AdminRentalTypeModule } from './rental-type/rental-type.module';
 import { AdminReportModule } from './report/report.module';
 import { AdminReservationModule } from './reservation/reservation.module';
 import { AdminReviewModule } from './review/review.module';
@@ -33,6 +35,7 @@ import { AdminTermsModule } from './terms/terms.module';
 import { AdminUserModule } from './user/user.module';
 
 export const AdminModules = [
+  AdminAnnouncementModule,
   AdminAuthModule,
   AdminAlarmModule,
   AdminCategoryModule,
@@ -59,6 +62,7 @@ export const AdminModules = [
   AdminContentModule,
   AdminFileModule,
   AdminTaxReturnModule,
+  AdminRentalTypeModule,
 ];
 
 @Module({

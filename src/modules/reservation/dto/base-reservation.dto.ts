@@ -12,6 +12,7 @@ export interface BaseReservationDTOProps {
   discountCost: number;
   originalCost: number;
   isCanceled: boolean;
+  isApproved: boolean;
   userName: string;
   receiptUrl: string;
   userPhoneNumber: string;
@@ -63,7 +64,9 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', description: '수정 날짜' } })
   updatedAt: Date;
 
-  @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '결제 날짜' } })
+  @Property({
+    apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '결제 날짜 - 있으면 예약 확정' },
+  })
   payedAt?: Date;
 
   @Property({ apiProperty: { type: 'string', description: '유저 이름' } })

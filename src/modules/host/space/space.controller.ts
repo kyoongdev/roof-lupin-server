@@ -5,7 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
 import { RentalTypeDTO, UpdateRentalTypeDTO } from '@/modules/rental-type/dto';
-import { SpaceDetailDTO, SpaceDTO } from '@/modules/space/dto';
+import { SpaceDetailDTO, SpaceDTO, SpaceIdsDTO } from '@/modules/space/dto';
 import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
@@ -21,6 +21,21 @@ import { HostSpaceService } from './space.service';
 @ApiController('spaces', '[호스트] 공간 관리')
 export class HostSpaceController {
   constructor(private readonly spaceService: HostSpaceService) {}
+
+  @Get('ids')
+  @RequestApi({
+    summary: {
+      description: '공간 id, title 불러오기',
+      summary: '공간 id, title 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: SpaceIdsDTO,
+    isArray: true,
+  })
+  async getSpaceIds() {
+    return await this.spaceService.findSpaceIds();
+  }
 
   @Get(':spaceId/detail')
   @RequestApi({

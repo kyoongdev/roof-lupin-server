@@ -4,7 +4,6 @@ import type { Prisma } from '@prisma/client';
 import { flatMap } from 'lodash';
 
 import { getRandom } from '@/common';
-import { reservationInclude } from '@/common/constants/query';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservation } from '@/interface/reservation.interface';
@@ -17,24 +16,24 @@ import { ReservationException } from './exception/reservation.exception';
 export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs) {
+  async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs, userId?: string) {
     const reservation = (await this.database.reservation.findFirst({
       ...args,
       where: {
         ...args.where,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation | undefined;
 
     return reservation ? new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)) : null;
   }
 
-  async findReservation(id: string) {
+  async findReservation(id: string, userId?: string) {
     const reservation = (await this.database.reservation.findUnique({
       where: {
         id,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation | undefined;
 
     if (!reservation) {
@@ -44,12 +43,12 @@ export class ReservationRepository {
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
-  async findReservationByOrderId(orderId: string) {
+  async findReservationByOrderId(orderId: string, userId?: string) {
     const reservation = (await this.database.reservation.findUnique({
       where: {
         orderId,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation | undefined;
 
     if (!reservation) {
@@ -58,12 +57,12 @@ export class ReservationRepository {
 
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
-  async checkReservationByOrderId(orderId: string) {
+  async checkReservationByOrderId(orderId: string, userId?: string) {
     const reservation = (await this.database.reservation.findUnique({
       where: {
         orderId,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation | undefined;
 
     if (!reservation) {
@@ -73,12 +72,12 @@ export class ReservationRepository {
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
-  async findReservationByOrderResultId(orderResultId: string) {
+  async findReservationByOrderResultId(orderResultId: string, userId?: string) {
     const reservation = (await this.database.reservation.findUnique({
       where: {
         orderResultId,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation | undefined;
 
     if (!reservation) {
@@ -92,12 +91,12 @@ export class ReservationRepository {
     return this.database.reservation.count(args);
   }
 
-  async findReservations(args = {} as Prisma.ReservationFindManyArgs) {
+  async findReservations(args = {} as Prisma.ReservationFindManyArgs, userId?: string) {
     const reservations = (await this.database.reservation.findMany({
       where: {
         ...args.where,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,
@@ -157,7 +156,7 @@ export class ReservationRepository {
         day: Number(rest.day),
         code: `${new Date().getTime()}${getRandom(10, 99)}`,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation;
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
@@ -210,7 +209,7 @@ export class ReservationRepository {
         }),
         vatCost,
       },
-      include: reservationInclude,
+      include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation;
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }

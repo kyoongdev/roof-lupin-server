@@ -66,6 +66,49 @@ export class ReviewRepository {
     });
   }
 
+  async findFirstReview(
+    args = {} as Prisma.SpaceReviewFindFirstArgs,
+    answerWhere = {} as Prisma.SpaceReviewAnswerWhereInput
+  ) {
+    const review = await this.database.spaceReview.findFirst({
+      where: args.where,
+      include: {
+        user: true,
+        images: {
+          include: {
+            image: true,
+          },
+        },
+        answers: {
+          where: answerWhere,
+          include: {
+            host: true,
+          },
+        },
+        space: {
+          include: SpaceDTO.getSpacesIncludeOption(),
+        },
+      },
+    });
+
+    if (!review) {
+      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
+    }
+
+    return new ReviewDetailDTO({
+      ...review,
+      answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
+      images: review.images.map((image) => ({
+        id: image.id,
+        url: image.image.url,
+        isBest: image.isBest,
+        imageId: image.image.id,
+        reviewId: image.spaceReviewId,
+      })),
+      space: SpaceDTO.generateSpaceDTO(review.space),
+    });
+  }
+
   async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
     return await this.database.spaceReview.count(args);
   }
@@ -117,6 +160,7 @@ export class ReviewRepository {
       (review) =>
         new ReviewDTO({
           ...review,
+          answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
           images: review.images.map((image) => ({
             id: image.id,
             imageId: image.image.id,
@@ -188,6 +232,7 @@ export class ReviewRepository {
           url: image.image.url,
           review: {
             ...image.spaceReview,
+            answer: image.spaceReview.answers.filter((answer) => !answer.deletedAt).at(-1),
             images: image.spaceReview.images.map((image) => ({
               id: image.id,
               imageId: image.imageId,

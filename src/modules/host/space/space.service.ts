@@ -27,6 +27,10 @@ export class HostSpaceService {
     private readonly fileService: FileService
   ) {}
 
+  async findSpaceIds() {
+    return await this.spaceRepository.findSpaceIds();
+  }
+
   async findSpace(id: string, hostId: string) {
     const space = await this.spaceRepository.findSpace(id);
 

@@ -39,6 +39,7 @@ import { PaymentService } from './payment.service';
   exports: [
     TossPayProvider,
     PaymentService,
+    ReservationRepository,
     RentalTypeRepository,
     CouponRepository,
     HostBlockedTimeRepository,
@@ -47,6 +48,9 @@ import { PaymentService } from './payment.service';
     HolidayService,
     FCMEvent,
     HostSettlementRepository,
+    FinanceProvider,
+    HostOpenHourRepository,
+    HostSpaceHolidayRepository,
   ],
 })
 export class PaymentModule {}

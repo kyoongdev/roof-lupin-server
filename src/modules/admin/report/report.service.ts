@@ -23,11 +23,16 @@ export class AdminReportService {
         ...args.where,
       },
     });
-    const reports = await this.reportRepository.findReports({
-      ...args,
-      skip,
-      take,
-    });
+    const reports = await this.reportRepository.findReports(
+      {
+        ...args,
+        skip,
+        take,
+      },
+      {
+        deletedAt: null,
+      }
+    );
 
     return new PaginationDTO<ReportDTO>(reports, { count, paging });
   }

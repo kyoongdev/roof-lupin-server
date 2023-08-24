@@ -17,7 +17,7 @@ export interface ReportDTOProps {
   spaceQnA?: QnADTOProps;
   user: CommonUserProps;
   createdAt: Date;
-  answer: ReportAnswerDTOProps[];
+  answer: ReportAnswerDTOProps;
   deletedAt?: Date;
 }
 
@@ -47,7 +47,7 @@ export class ReportDTO {
   createdAt: Date;
 
   @Property({ apiProperty: { type: ReportAnswerDTO, isArray: true, nullable: true, description: '신고 답변' } })
-  answers: ReportAnswerDTO[];
+  answer: ReportAnswerDTO;
 
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '삭제일' } })
   deletedAt?: Date;
@@ -61,7 +61,7 @@ export class ReportDTO {
     this.spaceQnA = props.spaceQnA ? new QnADTO(props.spaceQnA) : undefined;
     this.user = new CommonUserDTO(props.user);
     this.createdAt = props.createdAt;
-    this.answers = props.answer.map((answer) => new ReportAnswerDTO(answer));
+    this.answer = props.answer ? new ReportAnswerDTO(props.answer) : null;
     this.deletedAt = props.deletedAt;
   }
 }

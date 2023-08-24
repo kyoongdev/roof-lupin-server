@@ -10,7 +10,6 @@ export interface ReservationDetailDTOProps extends ReservationDTOProps {
   orderResultId?: string;
   payMethod?: string;
   refundCost?: number;
-  isApproved: boolean;
   approvedAt?: Date;
   settlementId: string;
 }

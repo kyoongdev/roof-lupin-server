@@ -467,7 +467,7 @@ model UserReport {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
-  answer UserReportAnswer[]
+  answers UserReportAnswer[]
 }
 
 //INFO: 공간 신고 답변
@@ -690,11 +690,10 @@ model Host {
 model HostAccount {
   id String @id @default(uuid())
 
-  accountType                Int     @db.TinyInt
   bankCode                   String  @db.Char(3)
-  ownerName                  String  @db.VarChar(20)
   businessRegistrationNumber String? @db.Char(10)
   businessRegistrationFile   String?
+  businessName               String?
   account                    String  @db.VarChar(40)
   accountOwner               String  @db.VarChar(20)
 

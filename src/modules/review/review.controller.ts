@@ -8,13 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import {
-  CreateReviewReportDTO,
-  ReviewDetailDTO,
-  ReviewsSummaryDTO,
-  UpdateReviewDTO,
-  UpdateReviewReportDTO,
-} from './dto';
+import { ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewImageDTO } from './dto/review-image.dto';
@@ -24,6 +18,21 @@ import { ReviewService } from './review.service';
 @ApiController('reviews', '공간 리뷰')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
+
+  @Get('reservations/:reservationId')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '예약 아이디로 나의 리뷰 조회',
+      summary: '예약 아이디로 나의 리뷰 조회',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDetailDTO,
+  })
+  async getReviewByReservationId(@Param('reservationId') reservationId: string, @ReqUser() user: RequestUser) {
+    return await this.reviewService.findReviewByReservationId(reservationId, user.id);
+  }
 
   @Get(':spaceId/summary')
   @RequestApi({

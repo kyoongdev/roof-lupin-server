@@ -53,9 +53,6 @@ export class CouponDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '쿠폰 삭제일' } })
   deletedAt?: Date;
 
-  @Property({ apiProperty: { type: CategoryDTO, isArray: true, nullable: true, description: '쿠폰 카테고리' } })
-  categories?: CategoryDTO[];
-
   constructor(props: CouponDTOProps) {
     this.id = props.id;
     this.name = props.name;

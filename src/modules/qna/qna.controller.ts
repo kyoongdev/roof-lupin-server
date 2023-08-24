@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -8,12 +8,34 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateQnADTO, QnADTO, UpdateQnADTO } from './dto';
+import { CreateQnADTO, QnACountDTO, QnADTO, UpdateQnADTO } from './dto';
+import { FindQnAsQuery } from './dto/query';
+import { CountQnAsQuery } from './dto/query/count-qnas.query';
 import { QnAService } from './qna.service';
 
 @ApiController('qnas', '공간 Q&A')
 export class QnAController {
   constructor(private readonly qnaService: QnAService) {}
+
+  @Get('me/count')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '내 Q&A 개수 조회',
+      summary: '내 Q&A 개수 조회 - 유저만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: QnACountDTO,
+  })
+  async countMyQnA(@ReqUser() user: RequestUser, @Query() query: CountQnAsQuery) {
+    return this.qnaService.countQnA({
+      where: {
+        ...query.generateQuery().where,
+        userId: user.id,
+      },
+    });
+  }
 
   @Get('me/list')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
@@ -42,17 +64,15 @@ export class QnAController {
       description: '내 Q&A 조회',
       summary: '내 Q&A 조회 - 유저만 사용 가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: QnADTO,
     isPaging: true,
   })
-  async getMyPagingQnA(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
+  async getMyPagingQnA(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser, @Query() query: FindQnAsQuery) {
     return this.qnaService.findPagingQnAs(paging, {
       where: {
+        ...query.generateQuery().where,
         userId: user.id,
       },
     });
