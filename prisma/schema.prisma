@@ -467,7 +467,7 @@ model UserReport {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
-  answer UserReportAnswer[]
+  answers UserReportAnswer[]
 }
 
 //INFO: 공간 신고 답변

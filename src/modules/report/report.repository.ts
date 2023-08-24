@@ -26,7 +26,7 @@ export class ReportRepository {
         id,
       },
       include: {
-        answer: {
+        answers: {
           where: answerWhere,
           include: {
             admin: true,
@@ -66,6 +66,7 @@ export class ReportRepository {
         ...report.spaceQnA,
         space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
       },
+      answer: report.answers.filter((answer) => !answer.deletedAt).at(-1),
     });
   }
 
@@ -77,7 +78,7 @@ export class ReportRepository {
     const reports = await this.database.userReport.findMany({
       ...args,
       include: {
-        answer: {
+        answers: {
           where: answerWhere,
           include: {
             admin: true,
@@ -100,6 +101,7 @@ export class ReportRepository {
       (report) =>
         new ReportDTO({
           ...report,
+          answer: report.answers.filter((answer) => !answer.deletedAt).at(-1),
           spaceReview: report.spaceReview && {
             ...report.spaceReview,
             images: report.spaceReview.images.map((image) => ({
