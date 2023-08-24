@@ -11,7 +11,6 @@ import { logger } from '@/log';
 import { FinanceProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
-import { DISCOUNT_TYPE_ENUM } from '../coupon/validation';
 import { HostSettlementRepository } from '../host/settlement/settlement.repository';
 import { PossiblePackageDTO, PossibleRentalTypeDTO, ValidatedRentalTypeDTO } from '../rental-type/dto';
 import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.validation';
@@ -97,7 +96,6 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_REQUIRED));
     }
     //TODO: Host 알림 추가
-    //TODO:
 
     const reservation = await this.reservationRepository.createPayment(userId, data, false);
     return reservation;
@@ -458,6 +456,7 @@ export class PaymentService {
         validatedRentalTypes.appendRentalType(rentalType);
       })
     );
+    console.log('COST', validatedRentalTypes.cost);
     const { discountCost, lupinDiscountCost, originalCost, totalCost } = await this.getRealCost(
       validatedRentalTypes.cost,
       data,
@@ -479,12 +478,7 @@ export class PaymentService {
   }
 
   async getRealCost(cost: number, data: CreatePaymentDTO | CreateReservationDTO, space: SpaceDetailDTO) {
-    const { discountCost, lupinDiscountCost } = await this.getDiscountCost(data, cost);
     let additionalCost = 0;
-
-    if (data['discountCost'] && data['discountCost'] !== discountCost) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
-    }
 
     await Promise.all(
       (data as CreatePaymentDTO).rentalTypes.map(async (rentalType) => {
@@ -512,6 +506,12 @@ export class PaymentService {
     if (space.overflowUserCount < data.userCount) {
       const userCount = data.userCount - space.overflowUserCount;
       additionalCost += space.overflowUserCost * userCount;
+    }
+
+    const { discountCost, lupinDiscountCost } = await this.getDiscountCost(data, cost + additionalCost);
+
+    if (data['discountCost'] && data['discountCost'] !== discountCost) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
     }
 
     return {
@@ -553,6 +553,7 @@ export class PaymentService {
               }
             }
             const discount = isExist.coupon.getDiscountCost(cost);
+            console.log(discount);
             if (!discount) {
               throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
             }
