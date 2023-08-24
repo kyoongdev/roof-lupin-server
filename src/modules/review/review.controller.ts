@@ -8,13 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import {
-  CreateReviewReportDTO,
-  ReviewDetailDTO,
-  ReviewsSummaryDTO,
-  UpdateReviewDTO,
-  UpdateReviewReportDTO,
-} from './dto';
+import { ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewImageDTO } from './dto/review-image.dto';
