@@ -1,19 +1,57 @@
-import { Body, Delete, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 
-import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { ApiController, JwtAuthGuard, ResponseWithIdInterceptor } from '@/utils';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateAnnouncementDTO, UpdateAnnouncementDTO } from '../dto/announcement';
+import { AnnouncementDTO, CreateAnnouncementDTO, UpdateAnnouncementDTO } from '../dto/announcement';
 
 import { AdminAnnouncementService } from './announcement.service';
 
 @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-@ApiController('announcements', '공지사항')
+@ApiController('announcements', '[관리자] 공지사항')
 export class AdminAnnouncementController {
   constructor(private readonly announcementService: AdminAnnouncementService) {}
+
+  @Get(':announcementId/detail')
+  @RequestApi({
+    summary: {
+      description: '공지사항 조회',
+      summary: '공지사항 조회',
+    },
+    params: {
+      name: 'announcementId',
+      description: '공지사항 아이디',
+      required: true,
+      type: 'string',
+    },
+  })
+  @ResponseApi({
+    type: AnnouncementDTO,
+  })
+  async getAnnouncement(@Param('announcementId') id: string) {
+    return await this.announcementService.findAnnouncement(id);
+  }
+
+  @Get('')
+  @RequestApi({
+    summary: {
+      description: '공지사항 목록 조회',
+      summary: '공지사항 목록 조회',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: AnnouncementDTO,
+    isPaging: true,
+  })
+  async getAnnouncements(@Paging() paging: PagingDTO) {
+    return await this.announcementService.findPagingAnnouncements(paging);
+  }
 
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)

@@ -12,7 +12,7 @@ import { AnnouncementService } from './announcement.service';
 export class AnnouncementController {
   constructor(private readonly announcementService: AnnouncementService) {}
 
-  @Get(':announcementId')
+  @Get(':announcementId/detail')
   @RequestApi({
     summary: {
       description: '공지사항 조회',
