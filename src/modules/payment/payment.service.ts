@@ -456,7 +456,7 @@ export class PaymentService {
         validatedRentalTypes.appendRentalType(rentalType);
       })
     );
-    console.log('COST', validatedRentalTypes.cost);
+
     const { discountCost, lupinDiscountCost, originalCost, totalCost } = await this.getRealCost(
       validatedRentalTypes.cost,
       data,
@@ -553,7 +553,7 @@ export class PaymentService {
               }
             }
             const discount = isExist.coupon.getDiscountCost(cost);
-            console.log(discount);
+
             if (!discount) {
               throw new InternalServerErrorException('쿠폰이 잘못되었습니다.');
             }
