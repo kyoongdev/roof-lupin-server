@@ -4,7 +4,6 @@ import type { Prisma } from '@prisma/client';
 import { flatten, range } from 'lodash';
 
 import { getWeek } from '@/common/date';
-import { INTERVAL_WEEK } from '@/interface/token.interface';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
@@ -12,7 +11,7 @@ import { OpenHourDTO } from '@/modules/host/dto/openHour';
 import { HostOpenHourRepository } from '@/modules/host/open-hour/open-hour.repository';
 import { HostSpaceHolidayRepository } from '@/modules/host/space-holiday/space-holiday.repository';
 import { ReservationDTO } from '@/modules/reservation/dto';
-import { DAY_ENUM, getDay } from '@/utils/validation/day.validation';
+import { getDay } from '@/utils/validation/day.validation';
 
 import { SpaceHolidayDTO } from '../space/dto/holiday';
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../space/dto/query';
@@ -93,6 +92,9 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           cancel: null,
+          refunds: {
+            isNot: null,
+          },
           deletedAt: null,
         },
       }
@@ -145,6 +147,9 @@ export class RentalTypeService {
               year: currentYear,
               month: currentMonth,
               cancel: null,
+              refunds: {
+                isNot: null,
+              },
               deletedAt: null,
             },
           }
@@ -192,6 +197,9 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
+          refunds: {
+            isNot: null,
+          },
           deletedAt: null,
         },
       }
@@ -223,6 +231,9 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
+          refunds: {
+            isNot: null,
+          },
           deletedAt: null,
         },
       }
@@ -259,6 +270,9 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
+          refunds: {
+            isNot: null,
+          },
           deletedAt: null,
         },
       }
