@@ -17,7 +17,6 @@ export interface UpdateReservationDTOProps {
   discountCost?: number;
   originalCost?: number;
   isApproved?: boolean;
-  isCanceled?: boolean;
 }
 
 export class UpdateReservationDTO {
@@ -57,9 +56,6 @@ export class UpdateReservationDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
   isApproved?: boolean;
 
-  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '취소 여부' } })
-  isCanceled?: boolean;
-
   constructor(props?: UpdateReservationDTOProps) {
     if (props) {
       this.year = props.year;
@@ -73,7 +69,6 @@ export class UpdateReservationDTO {
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.isApproved = props.isApproved;
-      this.isCanceled = props.isCanceled;
     }
   }
 }

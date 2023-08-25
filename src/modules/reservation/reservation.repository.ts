@@ -116,6 +116,7 @@ export class ReservationRepository {
     const reservation = (await this.database.reservation.create({
       data: {
         ...rest,
+
         user: {
           connect: {
             id: userId,
@@ -158,6 +159,7 @@ export class ReservationRepository {
       },
       include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation;
+
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 

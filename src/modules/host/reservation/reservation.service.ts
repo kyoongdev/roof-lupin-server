@@ -103,9 +103,10 @@ export class HostReservationService {
       });
     }
 
+    //TODO: 예약 취소
     await this.reservationRepository.updatePayment(id, {
       isApproved: false,
-      isCanceled: true,
+
       ...(isRefund && {
         refund: {
           refundCost: reservation.totalCost,

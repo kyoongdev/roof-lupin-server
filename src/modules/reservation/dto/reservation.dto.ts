@@ -53,7 +53,7 @@ export class ReservationDTO extends BaseReservationDTO {
     };
   }
 
-  static generateReservationInclude(userId?: string): Prisma.ReservationInclude {
+  static generateReservationInclude(userId?: string) {
     return {
       user: true,
       rentalTypes: {

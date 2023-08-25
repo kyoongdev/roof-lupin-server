@@ -8,3 +8,4 @@ export * from './refund-payment.dto';
 export * from './create-reservation.dto';
 export * from './create-refund.dto';
 export * from './refund.dto';
+export * from './reservation-cancel.dto';

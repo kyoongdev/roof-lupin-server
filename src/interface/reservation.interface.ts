@@ -39,4 +39,4 @@ export interface CommonReservationWithRentalType extends ReservationRentalType {
   reservation: CommonReservation;
 }
 
-export type ReservationStatus = 'APPROVED_PENDING' | 'APPROVED' | 'USED' | 'CANCELED' | '';
+export type ReservationStatus = 'APPROVED_PENDING' | 'APPROVED' | 'USED' | 'USER_CANCELED' | 'HOST_CANCELED' | 'REFUND';

@@ -106,7 +106,7 @@ export class RentalTypeRepository {
           },
           include: {
             reservation: {
-              include: reservationInclude,
+              include: ReservationDTO.generateReservationInclude(),
             },
           },
         },

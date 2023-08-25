@@ -92,7 +92,7 @@ export class RentalTypeService {
         where: {
           year: Number(query.year),
           month: Number(query.month),
-          isCanceled: false,
+          cancel: null,
           deletedAt: null,
         },
       }
@@ -144,7 +144,7 @@ export class RentalTypeService {
             where: {
               year: currentYear,
               month: currentMonth,
-              isCanceled: false,
+              cancel: null,
               deletedAt: null,
             },
           }
@@ -191,7 +191,7 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           day: Number(query.day),
-          isCanceled: false,
+          cancel: null,
           deletedAt: null,
         },
       }
@@ -222,7 +222,7 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           day: Number(query.day),
-          isCanceled: false,
+          cancel: null,
           deletedAt: null,
         },
       }
@@ -258,7 +258,7 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           day: Number(query.day),
-          isCanceled: false,
+          cancel: null,
           deletedAt: null,
         },
       }
