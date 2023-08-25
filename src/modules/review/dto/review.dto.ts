@@ -42,7 +42,7 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 id' } })
   reservationId: string;
 
-  @Property({ apiProperty: { type: ReviewAnswerDTO, description: '리뷰 답변' } })
+  @Property({ apiProperty: { type: ReviewAnswerDTO, nullable: true, description: '리뷰 답변' } })
   answer: ReviewAnswerDTO;
 
   constructor(props: ReviewDTOProps) {
