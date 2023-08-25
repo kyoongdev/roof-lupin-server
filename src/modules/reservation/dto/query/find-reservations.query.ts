@@ -44,8 +44,7 @@ export class FindReservationQuery extends PagingDTO {
                   }),
             },
           }),
-
-        ...(typeof this.isApproaching === 'boolean' && {
+        ...(Boolean(this.isApproaching) && {
           AND: [
             {
               year: {
