@@ -17,7 +17,6 @@ export interface BaseReservationDTOProps {
   userName: string;
   receiptUrl: string;
   userPhoneNumber: string;
-  cancel?: ReservationCancelDTOProps;
   payedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -77,8 +76,8 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 전화번호' } })
   userPhoneNumber: string;
 
-  @Property({ apiProperty: { type: ReservationCancelDTO, nullable: true, description: '취소 정보' } })
-  cancel?: ReservationCancelDTO;
+  @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
+  isApproved: boolean;
 
   constructor(props: BaseReservationDTOProps) {
     this.id = props.id;
@@ -97,6 +96,6 @@ export class BaseReservationDTO {
     this.updatedAt = props.updatedAt;
     this.userName = props.userName;
     this.userPhoneNumber = props.userPhoneNumber;
-    this.cancel = props.cancel ? new ReservationCancelDTO(props.cancel) : null;
+    this.isApproved = props.isApproved;
   }
 }

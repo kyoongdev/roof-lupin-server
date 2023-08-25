@@ -16,8 +16,14 @@ export interface CommonReservation extends Reservation {
   rentalTypes: CommonReservationRentalType[];
   spaceReviews: SpaceReview[];
   cancel?: CommonReservationCancel;
+  refund?: CommonReservationRefund;
 }
 
+export interface CommonReservationRefund {
+  id: string;
+  reason: string;
+  refundCost: number;
+}
 export interface CommonReservationCancel {
   id: string;
   reason: string;
@@ -39,4 +45,11 @@ export interface CommonReservationWithRentalType extends ReservationRentalType {
   reservation: CommonReservation;
 }
 
-export type ReservationStatus = 'APPROVED_PENDING' | 'APPROVED' | 'USED' | 'USER_CANCELED' | 'HOST_CANCELED' | 'REFUND';
+export type ReservationStatus =
+  | 'APPROVED_PENDING'
+  | 'APPROVED'
+  | 'USED'
+  | 'USER_CANCELED'
+  | 'HOST_CANCELED'
+  | 'REFUND'
+  | 'BEFORE_USAGE';

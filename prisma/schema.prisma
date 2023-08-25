@@ -391,13 +391,6 @@ model ReservationRefund {
 
   reservationId String      @unique
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId        String?
-  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  hostId        String?
-  host          Host?       @relation(fields: [hostId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  @@unique([reservationId, userId])
-  @@unique([reservationId, hostId])
 }
 
 model BlockedTime {
@@ -697,8 +690,8 @@ model Host {
   taxReturns         TaxReturn[]
   spaceReviewAnswers SpaceReviewAnswer[]
   settlements        Settlement[]
-  reservationRefunds ReservationRefund[]
-  ReservationCancel  ReservationCancel[]
+
+  ReservationCancel ReservationCancel[]
 }
 
 //INFO: 공간주 사업자 및 계좌 정보
@@ -754,21 +747,21 @@ model User {
   blockedAt DateTime?
   loginedAt DateTime?
 
-  spaceReviews       SpaceReview[]
-  reports            UserReport[]
-  spaceInterests     SpaceInterest[]
-  spaceQnAs          SpaceQnA[]
-  locations          UserLocation[]
-  coupons            UserCoupon[]
-  socials            UserSocial[]
-  curations          Curation[]
-  searchRecords      SearchRecord[]
-  alarms             UserAlarm[]
-  reservations       Reservation[]
-  recentSpaces       RecentSpace[]
-  faqs               FAQ[]
-  reservationRefunds ReservationRefund[]
-  ReservationCancel  ReservationCancel[]
+  spaceReviews   SpaceReview[]
+  reports        UserReport[]
+  spaceInterests SpaceInterest[]
+  spaceQnAs      SpaceQnA[]
+  locations      UserLocation[]
+  coupons        UserCoupon[]
+  socials        UserSocial[]
+  curations      Curation[]
+  searchRecords  SearchRecord[]
+  alarms         UserAlarm[]
+  reservations   Reservation[]
+  recentSpaces   RecentSpace[]
+  faqs           FAQ[]
+
+  ReservationCancel ReservationCancel[]
 }
 
 model UserAlarm {
