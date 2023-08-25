@@ -310,12 +310,56 @@ export class ReservationRepository {
   }
 
   async updatePaymentWithTransaction(database: TransactionPrisma, id: string, data: UpdatePaymentDTO) {
+    const { refund, cancel, ...rest } = data;
     await database.reservation.update({
       where: {
         id,
       },
       data: {
-        ...data,
+        ...rest,
+        ...(cancel && {
+          cancel: {
+            create: {
+              reason: cancel.reason,
+              ...(cancel.hostId && {
+                host: {
+                  connect: {
+                    id: cancel.hostId,
+                  },
+                },
+              }),
+              ...(cancel.userId && {
+                user: {
+                  connect: {
+                    id: cancel.userId,
+                  },
+                },
+              }),
+            },
+          },
+        }),
+        ...(refund && {
+          refunds: {
+            create: {
+              reason: refund.reason,
+              refundCost: refund.refundCost,
+              ...(refund.hostId && {
+                host: {
+                  connect: {
+                    id: refund.hostId,
+                  },
+                },
+              }),
+              ...(refund.userId && {
+                user: {
+                  connect: {
+                    id: refund.userId,
+                  },
+                },
+              }),
+            },
+          },
+        }),
       },
     });
   }
