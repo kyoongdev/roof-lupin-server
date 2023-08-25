@@ -37,7 +37,7 @@ export class ReservationDTO extends BaseReservationDTO {
     apiProperty: {
       type: 'string',
       description: '예약 상태',
-      example: 'APPROVED_PENDING | APPROVED | USED | USER_CANCELED | HOST_CANCELED | REFUND',
+      example: 'APPROVED_PENDING | APPROVED | USED | USER_CANCELED | HOST_CANCELED | REFUND | BEFORE_USAGE',
     },
   })
   status: ReservationStatus;

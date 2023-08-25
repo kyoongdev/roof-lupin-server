@@ -24,8 +24,7 @@ COPY --chown=node:node . .
 
 RUN yarn prisma generate;\
     yarn build;\
-    yarn --frozen-lockfile --production; \
-    rm -rf ./.next/cache;
+    yarn --frozen-lockfile --production; 
 
 USER node
 
@@ -41,9 +40,6 @@ COPY --chown=node:node --from=build /usr/src/app/.env ./
 COPY --chown=node:node --from=build /usr/src/app/package.json ./package.json
 COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 
-
-
-
 EXPOSE 8000
 
-CMD [ "yarn", "start:docker" ]
+CMD [ "node", "./dist/main.js" ]
