@@ -14,6 +14,8 @@ import { ReservationException } from '@/modules/reservation/exception/reservatio
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { TossPayProvider } from '@/utils';
 
+import { HostCancelReservationDTO } from '../dto/reservation';
+
 @Injectable()
 export class HostReservationService {
   constructor(
@@ -87,7 +89,7 @@ export class HostReservationService {
     });
   }
 
-  async cancelReservation(id: string, hostId: string) {
+  async cancelReservation(id: string, hostId: string, data: HostCancelReservationDTO) {
     const reservation = await this.findReservation(id, hostId);
 
     const isRefund = Boolean(reservation.payedAt) && reservation.orderResultId;
@@ -99,13 +101,12 @@ export class HostReservationService {
     if (isRefund) {
       await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
         cancelAmount: reservation.totalCost,
-        cancelReason: '호스트 예약 취소',
+        cancelReason: data.cancelReason,
       });
     }
 
     await this.reservationRepository.updatePayment(id, {
       isApproved: false,
-      isCanceled: true,
       ...(isRefund && {
         refund: {
           refundCost: reservation.totalCost,
@@ -113,6 +114,10 @@ export class HostReservationService {
           hostId,
         },
       }),
+      cancel: {
+        reason: data.cancelReason,
+        hostId,
+      },
     });
   }
 }

@@ -105,7 +105,7 @@ export class HostBlockedTimeService {
             },
           },
         },
-        isCanceled: false,
+        cancel: null,
         deletedAt: null,
       },
     });

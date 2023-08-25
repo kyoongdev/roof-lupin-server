@@ -1,5 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
+import { CreateReservationCancelDTO, CreateReservationCancelDTOProps } from './cancel/create-reservation-cancel.dto';
 import { CreateRefundDTO, CreateRefundDTOProps } from './create-refund.dto';
 
 export interface UpdatePaymentDTOProps {
@@ -14,7 +15,7 @@ export interface UpdatePaymentDTOProps {
   refund?: CreateRefundDTOProps;
   receiptUrl?: string;
   isApproved?: boolean;
-  isCanceled?: boolean;
+  cancel?: CreateReservationCancelDTOProps;
 }
 
 export class UpdatePaymentDTO {
@@ -51,8 +52,8 @@ export class UpdatePaymentDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
   isApproved?: boolean;
 
-  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '취소 여부' } })
-  isCanceled?: boolean;
+  @Property({ apiProperty: { type: CreateReservationCancelDTO, nullable: true, description: '예약 취소 정보' } })
+  cancel?: CreateReservationCancelDTO;
 
   constructor(props?: UpdatePaymentDTOProps) {
     if (props) {
@@ -67,7 +68,7 @@ export class UpdatePaymentDTO {
       this.refund = props.refund ? new CreateRefundDTO(props.refund) : null;
       this.receiptUrl = props.receiptUrl;
       this.isApproved = props.isApproved;
-      this.isCanceled = props.isCanceled;
+      this.cancel = props.cancel ? new CreateReservationCancelDTO(props.cancel) : null;
     }
   }
 }

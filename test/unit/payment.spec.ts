@@ -63,8 +63,7 @@ describe('The AuthenticationService', () => {
   describe('결제 테스트', () => {
     it('시간 상품 쿠폰  결제 생성', async () => {
       const user = await database.user.findFirst({});
-      console.log(user);
-      expect(user).toBeDefined();
+
       const coupon = await database.coupon.findFirst({
         where: {
           name: '회원가입',
@@ -110,7 +109,6 @@ describe('The AuthenticationService', () => {
       }, 0);
       const discountCost = realCoupon.getDiscountCost(originalCost);
 
-      console.log(discountCost, originalCost, realCoupon);
       const payload = new CreatePaymentPayloadDTO({
         year: '2023',
         month: '8',
@@ -123,6 +121,87 @@ describe('The AuthenticationService', () => {
             startAt,
             endAt,
             additionalServices: [],
+          },
+        ],
+        spaceId: space.id,
+        totalCost: originalCost - discountCost.discountCost,
+        userCount: 2,
+        userName: '박용준',
+        userPhoneNumber: '01012341234',
+        userCouponIds: [userCoupon.id],
+      });
+
+      expect(await paymentService.createPaymentPayload(payload)).toBeDefined();
+    });
+
+    it('시간 상품 쿠폰 + 부가상품  결제 생성', async () => {
+      const user = await database.user.findFirst({});
+
+      const coupon = await database.coupon.findFirst({
+        where: {
+          name: '회원가입',
+        },
+      });
+      const userCoupon = await database.userCoupon.create({
+        data: {
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+          coupon: {
+            connect: {
+              id: coupon.id,
+            },
+          },
+          usageDateEndAt: new Date(2025, 1, 1),
+          usageDateStartAt: new Date(2021, 1, 1),
+        },
+      });
+      const realCoupon = await couponRepository.findCoupon(coupon.id);
+      const targetSpace = await database.space.findFirst({
+        where: {
+          title: '디난트 파티룸',
+        },
+      });
+
+      const space = await spaceRepository.findSpace(targetSpace.id);
+      const possibleRentalType = await rentalTypeService.findPossibleRentalTypesBySpaceId(space.id, {
+        year: '2023',
+        month: '8',
+        day: '7',
+      });
+      const startAt = 12;
+      const endAt = 19;
+      const additionalService = possibleRentalType.time.additionalServices[0];
+      const originalCost =
+        possibleRentalType.time.timeCostInfos.reduce((acc, cur) => {
+          if (cur.time >= startAt && cur.time <= endAt) {
+            acc += cur.cost;
+          }
+
+          return acc;
+        }, 0) + additionalService.cost;
+
+      const discountCost = realCoupon.getDiscountCost(originalCost);
+
+      const payload = new CreatePaymentPayloadDTO({
+        year: '2023',
+        month: '8',
+        day: '7',
+        discountCost: discountCost.discountCost,
+        originalCost,
+        rentalTypes: [
+          {
+            rentalTypeId: possibleRentalType.time.id,
+            startAt,
+            endAt,
+            additionalServices: [
+              {
+                id: additionalService.id,
+                count: 1,
+              },
+            ],
           },
         ],
         spaceId: space.id,

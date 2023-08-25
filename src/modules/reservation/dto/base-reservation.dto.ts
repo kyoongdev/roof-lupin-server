@@ -1,5 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
+import { ReservationCancelDTO, ReservationCancelDTOProps } from './cancel/reservation-cancel.dto';
+
 export interface BaseReservationDTOProps {
   id: string;
   year: string;
@@ -11,7 +13,6 @@ export interface BaseReservationDTOProps {
   vatCost: number;
   discountCost: number;
   originalCost: number;
-  isCanceled: boolean;
   isApproved: boolean;
   userName: string;
   receiptUrl: string;
@@ -75,6 +76,9 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 전화번호' } })
   userPhoneNumber: string;
 
+  @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
+  isApproved: boolean;
+
   constructor(props: BaseReservationDTOProps) {
     this.id = props.id;
     this.year = props.year;
@@ -85,7 +89,6 @@ export class BaseReservationDTO {
     this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
-    this.isCanceled = props.isCanceled;
     this.receiptUrl = props.receiptUrl;
     this.payedAt = props.payedAt;
     this.userCount = props.userCount;
@@ -93,5 +96,6 @@ export class BaseReservationDTO {
     this.updatedAt = props.updatedAt;
     this.userName = props.userName;
     this.userPhoneNumber = props.userPhoneNumber;
+    this.isApproved = props.isApproved;
   }
 }

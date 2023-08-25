@@ -1,4 +1,4 @@
-import { Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Get, Param, Post, Query } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { HostFindReservationsQuery } from '../dto/query/reservation';
+import { HostCancelReservationDTO } from '../dto/reservation';
 
 import { HostReservationService } from './reservation.service';
 
@@ -119,7 +120,11 @@ export class HostReservationController {
   @ResponseApi({
     type: EmptyResponseDTO,
   })
-  async cancelReservation(@ReqUser() user: RequestHost, @Param('reservationId') id: string) {
-    return await this.reservationService.cancelReservation(id, user.id);
+  async cancelReservation(
+    @ReqUser() user: RequestHost,
+    @Param('reservationId') id: string,
+    @Body() body: HostCancelReservationDTO
+  ) {
+    return await this.reservationService.cancelReservation(id, user.id, body);
   }
 }
