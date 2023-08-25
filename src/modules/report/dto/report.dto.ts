@@ -17,7 +17,7 @@ export interface ReportDTOProps {
   spaceQnA?: QnADTOProps;
   user: CommonUserProps;
   createdAt: Date;
-  answer: ReportAnswerDTOProps;
+  answer?: ReportAnswerDTOProps;
   deletedAt?: Date;
 }
 

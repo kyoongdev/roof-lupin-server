@@ -43,6 +43,7 @@ export class QnARepository {
       (qna) =>
         new QnADTO({
           ...qna,
+          answer: qna.answers.filter((answer) => !answer.deletedAt).at(-1),
           space: SpaceDTO.generateSpaceDTO(qna.space),
         })
     );
@@ -78,6 +79,7 @@ export class QnARepository {
 
     return new QnADTO({
       ...qna,
+      answer: qna.answers.filter((answer) => !answer.deletedAt).at(-1),
       space: SpaceDTO.generateSpaceDTO(qna.space),
     });
   }
