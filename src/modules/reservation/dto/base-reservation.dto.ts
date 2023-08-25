@@ -11,7 +11,6 @@ export interface BaseReservationDTOProps {
   vatCost: number;
   discountCost: number;
   originalCost: number;
-  isCanceled: boolean;
   isApproved: boolean;
   userName: string;
   receiptUrl: string;
@@ -85,7 +84,6 @@ export class BaseReservationDTO {
     this.vatCost = props.vatCost;
     this.discountCost = props.discountCost;
     this.originalCost = props.originalCost;
-    this.isCanceled = props.isCanceled;
     this.receiptUrl = props.receiptUrl;
     this.payedAt = props.payedAt;
     this.userCount = props.userCount;

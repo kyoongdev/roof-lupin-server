@@ -1,5 +1,6 @@
 import type {
   AdditionalService,
+  Host,
   RentalType,
   Reservation,
   ReservationRentalType,
@@ -14,6 +15,14 @@ export interface CommonReservation extends Reservation {
   user: User;
   rentalTypes: CommonReservationRentalType[];
   spaceReviews: SpaceReview[];
+  cancel?: CommonReservationCancel;
+}
+
+export interface CommonReservationCancel {
+  id: string;
+  reason: string;
+  user?: User;
+  host?: Host;
 }
 
 export interface CommonRentalType extends RentalType {
@@ -29,3 +38,5 @@ export interface CommonReservationRentalType extends ReservationRentalType {
 export interface CommonReservationWithRentalType extends ReservationRentalType {
   reservation: CommonReservation;
 }
+
+export type ReservationStatus = 'APPROVED_PENDING' | 'APPROVED' | 'USED' | 'CANCELED' | '';

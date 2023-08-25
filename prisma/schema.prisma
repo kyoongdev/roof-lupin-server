@@ -348,7 +348,6 @@ model Reservation {
   payMethod           String?
   isApproved          Boolean   @default(true) //INFO: 결제 승인 여부
   approvedAt          DateTime?
-  isCanceled          Boolean   @default(false) //INFO: 취소 여부
   receiptUrl          String?   @db.VarChar(255) //INFO: 영수증 URL
   userName            String?
   userPhoneNumber     String?   @db.VarChar(11)
@@ -367,6 +366,21 @@ model Reservation {
   additionalServices ReservedAdditionalService[]
   rentalTypes        ReservationRentalType[]
   refunds            ReservationRefund?
+  cancel             ReservationCancel?
+}
+
+model ReservationCancel {
+  id String @id @unique @default(uuid())
+
+  reason String @db.VarChar(255)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  hostId String?
+  host   Host?   @relation(fields: [hostId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  reservationId String      @unique
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model ReservationRefund {
@@ -684,6 +698,7 @@ model Host {
   spaceReviewAnswers SpaceReviewAnswer[]
   settlements        Settlement[]
   reservationRefunds ReservationRefund[]
+  ReservationCancel  ReservationCancel[]
 }
 
 //INFO: 공간주 사업자 및 계좌 정보
@@ -753,6 +768,7 @@ model User {
   recentSpaces       RecentSpace[]
   faqs               FAQ[]
   reservationRefunds ReservationRefund[]
+  ReservationCancel  ReservationCancel[]
 }
 
 model UserAlarm {
