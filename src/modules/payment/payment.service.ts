@@ -267,6 +267,10 @@ export class PaymentService {
         reason: '사용자 환불 요청',
         userId,
       },
+      cancel: {
+        reason: data.cancelReason,
+        userId,
+      },
     });
 
     const settlement = await this.settlementRepository.findSettlement(reservation.settlementId);
