@@ -54,6 +54,7 @@ export class ReviewDTO {
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.reservationId = props.reservationId;
+    this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
   }
 
   static async generateQuery(query: FindReviewsQuery, spaceId?: string): Promise<Prisma.SpaceReviewFindManyArgs> {

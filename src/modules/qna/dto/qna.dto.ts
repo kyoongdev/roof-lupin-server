@@ -11,7 +11,7 @@ export interface QnADTOProps extends DateProps {
   id: string;
   content: string;
   user: CommonUserProps;
-  answers: QnAAnswerProps[];
+  answer?: QnAAnswerProps;
   space: SpaceDTOProps;
 }
 
@@ -26,8 +26,8 @@ export class QnADTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저' } })
   user: CommonUserDTO;
 
-  @Property({ apiProperty: { type: QnAAnswerDTO, description: '답변', isArray: true } })
-  answers: QnAAnswerDTO[];
+  @Property({ apiProperty: { type: QnAAnswerDTO, nullable: true, description: '답변' } })
+  answer?: QnAAnswerDTO;
 
   @Property({ apiProperty: { type: 'string', format: 'date-time' } })
   createdAt: Date;
@@ -42,7 +42,7 @@ export class QnADTO {
     this.id = props.id;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
-    this.answers = props.answers.map((answer) => new QnAAnswerDTO(answer));
+    this.answer = new QnAAnswerDTO(props.answer);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.space = new SpaceDTO(props.space);
