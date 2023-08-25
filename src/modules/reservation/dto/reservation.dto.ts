@@ -56,6 +56,12 @@ export class ReservationDTO extends BaseReservationDTO {
   static generateReservationInclude(userId?: string) {
     return {
       user: true,
+      cancel: {
+        include: {
+          user: true,
+          host: true,
+        },
+      },
       rentalTypes: {
         include: {
           rentalType: {

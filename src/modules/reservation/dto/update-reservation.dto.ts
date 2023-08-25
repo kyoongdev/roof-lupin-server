@@ -2,6 +2,7 @@ import { Property } from 'cumuco-nestjs';
 
 import { PhoneNumberValidation } from '@/utils/validation';
 
+import { CreateReservationCancelDTO, CreateReservationCancelDTOProps } from './cancel/create-reservation-cancel.dto';
 import { CreatePaymentDTO, CreatePaymentDTOProps } from './create-payment';
 import { TimeValidation } from './validation';
 
@@ -17,6 +18,7 @@ export interface UpdateReservationDTOProps {
   discountCost?: number;
   originalCost?: number;
   isApproved?: boolean;
+  cancel?: CreateReservationCancelDTOProps;
 }
 
 export class UpdateReservationDTO {
@@ -56,6 +58,9 @@ export class UpdateReservationDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
   isApproved?: boolean;
 
+  @Property({ apiProperty: { type: CreateReservationCancelDTO, nullable: true, description: '예약 취소 정보' } })
+  cancel?: CreateReservationCancelDTO;
+
   constructor(props?: UpdateReservationDTOProps) {
     if (props) {
       this.year = props.year;
@@ -69,6 +74,7 @@ export class UpdateReservationDTO {
       this.discountCost = props.discountCost;
       this.originalCost = props.originalCost;
       this.isApproved = props.isApproved;
+      this.cancel = props.cancel ? new CreateReservationCancelDTO(props.cancel) : null;
     }
   }
 }

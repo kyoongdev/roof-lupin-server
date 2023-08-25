@@ -213,20 +213,43 @@ export class ReservationRepository {
       },
       include: ReservationDTO.generateReservationInclude(userId),
     })) as CommonReservation;
+
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
   }
 
   async updateReservation(id: string, data: UpdateReservationDTO) {
+    const { cancel, ...rest } = data;
     await this.database.reservation.update({
       where: {
         id,
       },
       data: {
-        ...data,
+        ...rest,
         year: data.year ? Number(data.year) : undefined,
         month: data.month ? Number(data.month) : undefined,
         day: data.day ? Number(data.day) : undefined,
         approvedAt: data.isApproved ? new Date() : null,
+        ...(cancel && {
+          cancel: {
+            create: {
+              reason: cancel.reason,
+              ...(cancel.hostId && {
+                host: {
+                  connect: {
+                    id: cancel.hostId,
+                  },
+                },
+              }),
+              ...(cancel.userId && {
+                user: {
+                  connect: {
+                    id: cancel.userId,
+                  },
+                },
+              }),
+            },
+          },
+        }),
       },
     });
   }
