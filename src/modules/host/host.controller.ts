@@ -26,7 +26,7 @@ import { HostService } from './host.service';
 export class HostController {
   constructor(private readonly hostService: HostService) {}
 
-  @Get('spaces/:spaceId')
+  @Get('detail/spaces/:spaceId')
   @RequestApi({
     summary: {
       description: '공간 id 로 호스트 조회하기기',

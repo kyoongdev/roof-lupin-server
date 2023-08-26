@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { GenderReqDecorators, PhoneNumberValidation } from '@/utils/validation';
+import { PhoneNumberValidation } from '@/utils/validation';
 
 interface CreateHostDTOProps {
   name: string;
