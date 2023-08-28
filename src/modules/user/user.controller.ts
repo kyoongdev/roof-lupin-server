@@ -1,34 +1,23 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Delete, Get, Patch } from '@nestjs/common';
 
-import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
-import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CreateUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { CountInfoDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CommonUserDTO } from './dto/common-user.dto';
-import { FindUsersQuery } from './dto/query';
 import { UserService } from './user.service';
 
+@Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('users', '유저')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('/me/push-token')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '나의 푸시토큰 불러오기',
@@ -43,7 +32,6 @@ export class UserController {
   }
 
   @Get('me')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보',
@@ -57,8 +45,21 @@ export class UserController {
     return await this.userService.findUser(user.id);
   }
 
+  @Get('me/count-info')
+  @RequestApi({
+    summary: {
+      description: '내 정보 카운트 정보 불러오기',
+      summary: '내 정보 카운트 정보 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: CountInfoDTO,
+  })
+  async getMyCountInfo(@ReqUser() user: RequestUser) {
+    return await this.userService.getCountInfo(user.id);
+  }
+
   @Patch('')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보 수정',
@@ -76,7 +77,6 @@ export class UserController {
   }
 
   @Delete('')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 정보 삭제',
