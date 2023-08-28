@@ -629,6 +629,51 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 userCount: 3,
                 vatCost: 1000,
                 isApproved: false,
+                space: {
+                  connect: {
+                    id: space.id,
+                  },
+                },
+                code: `${new Date().getTime()}${index}${spIdx}`,
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                rentalTypes: {
+                  create: [
+                    {
+                      startAt: 12,
+                      endAt: 32,
+                      rentalType: {
+                        connect: {
+                          id: rentalType.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: 2023,
+                month: 10,
+                day: (spIdx % 29) + 1,
+                userName: '용준',
+                userPhoneNumber: '01012341234',
+                originalCost: 10000,
+                totalCost: 10000,
+                discountCost: 0,
+                userCount: 3,
+                vatCost: 1000,
+                isApproved: true,
+                space: {
+                  connect: {
+                    id: space.id,
+                  },
+                },
+                payedAt: new Date(),
                 code: `${new Date().getTime()}${index}${spIdx}`,
                 user: {
                   connect: {

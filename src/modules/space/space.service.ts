@@ -41,16 +41,19 @@ export class SpaceService {
     return space;
   }
 
-  async findPagingSpaces(paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
+  async findPagingSpaces(userId: string, paging: PagingDTO, args = {} as Prisma.SpaceFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
     const count = await this.spaceRepository.countSpaces({
       where: args.where,
     });
-    const spaces = await this.spaceRepository.findSpaces({
-      ...args,
-      skip,
-      take,
-    });
+    const spaces = await this.spaceRepository.findSpaces(
+      {
+        ...args,
+        skip,
+        take,
+      },
+      userId
+    );
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }
 

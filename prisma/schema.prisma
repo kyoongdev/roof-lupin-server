@@ -209,6 +209,7 @@ model Space {
   openHours             OpenHour[]
   holidays              SpaceHoliday[]
   alarms                AlarmSpace[]
+  reservations          Reservation[]
 }
 
 //INFO: 공간 영업시간
@@ -360,6 +361,8 @@ model Reservation {
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   settlementId String?
   settlement   Settlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  spaceId      String
+  space        Space       @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   spaceReviews       SpaceReview[]
   userCoupon         UserCoupon[]

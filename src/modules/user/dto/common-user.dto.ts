@@ -66,6 +66,6 @@ export class CommonUserDTO extends BaseUserDTO {
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
-    this.socialType = numberToSocialType(props.socials.at(-1).socialType);
+    this.socialType = props.socials.length > 0 ? numberToSocialType(props.socials.at(-1).socialType) : null;
   }
 }

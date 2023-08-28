@@ -106,7 +106,7 @@ export class SpaceController {
     isPaging: true,
   })
   async getPagingInterestSpaces(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
-    return await this.spaceService.findPagingSpaces(paging, {
+    return await this.spaceService.findPagingSpaces(user.id, paging, {
       where: {
         userInterests: {
           some: {
