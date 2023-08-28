@@ -93,7 +93,7 @@ export class HostQnAController {
     });
   }
 
-  @Get('/space/:spaceId/not-answered/count')
+  @Get('/spaces/:spaceId/not-answered/count')
   @RequestApi({
     summary: {
       description: '미답변 QnA 개수 조회',
@@ -114,7 +114,7 @@ export class HostQnAController {
     });
   }
 
-  @Get('/space/:spaceId/not-answered')
+  @Get('/spaces/:spaceId/not-answered')
   @RequestApi({
     summary: {
       description: '미답변 QnA  조회',
@@ -143,7 +143,7 @@ export class HostQnAController {
     });
   }
 
-  @Get('/space/:spaceId/answered')
+  @Get('/spaces/:spaceId/answered')
   @RequestApi({
     summary: {
       description: '답변 QnA  조회',
@@ -171,7 +171,7 @@ export class HostQnAController {
     });
   }
 
-  @Get('/space/:spaceId/answered/count')
+  @Get('/spaces/:spaceId/answered/count')
   @RequestApi({
     summary: {
       description: '답변 QnA 개수 조회',

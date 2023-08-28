@@ -4,3 +4,4 @@ export * from './create-user.dto';
 export * from './create-social-user.dto';
 export * from './update-user.dto';
 export * from './push-token.dto';
+export * from './count-info.dto';
