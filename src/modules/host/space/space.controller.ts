@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { FindSpacesQuery } from '../dto/query';
+import { HostSpaceCountDTO } from '../dto/space';
 
 import { HostSpaceService } from './space.service';
 
@@ -21,6 +22,20 @@ import { HostSpaceService } from './space.service';
 @ApiController('spaces', '[호스트] 공간 관리')
 export class HostSpaceController {
   constructor(private readonly spaceService: HostSpaceService) {}
+
+  @Get('count')
+  @RequestApi({
+    summary: {
+      description: '공간 개수 조회',
+      summary: '공간 개수 조회',
+    },
+  })
+  @ResponseApi({
+    type: HostSpaceCountDTO,
+  })
+  async getSpaceCount(@ReqUser() user: RequestHost) {
+    return await this.spaceService.countSpaces(user.id);
+  }
 
   @Get('ids')
   @RequestApi({
@@ -33,8 +48,8 @@ export class HostSpaceController {
     type: SpaceIdsDTO,
     isArray: true,
   })
-  async getSpaceIds() {
-    return await this.spaceService.findSpaceIds();
+  async getSpaceIds(@ReqUser() user: RequestHost) {
+    return await this.spaceService.findSpaceIds(user.id);
   }
 
   @Get(':spaceId/detail')

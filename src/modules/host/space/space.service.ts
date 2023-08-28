@@ -11,6 +11,7 @@ import { CreateSpaceDTO } from '@/modules/space/dto/create-space.dto';
 import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
+import { HostSpaceCountDTO } from '../dto/space';
 import {
   HOST_ERROR_CODE,
   HOST_SPACE_FIND_FORBIDDEN,
@@ -27,8 +28,22 @@ export class HostSpaceService {
     private readonly fileService: FileService
   ) {}
 
-  async findSpaceIds() {
-    return await this.spaceRepository.findSpaceIds();
+  async countSpaces(hostId: string) {
+    const count = await this.spaceRepository.countSpaces({
+      where: {
+        hostId,
+      },
+    });
+
+    return new HostSpaceCountDTO({ count });
+  }
+
+  async findSpaceIds(hostId: string) {
+    return await this.spaceRepository.findSpaceIds({
+      where: {
+        hostId,
+      },
+    });
   }
 
   async findSpace(id: string, hostId: string) {
