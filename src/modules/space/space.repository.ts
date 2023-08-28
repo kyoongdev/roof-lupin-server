@@ -18,15 +18,16 @@ import { SpaceException } from './exception/space.exception';
 export class SpaceRepository {
   constructor(private readonly database: PrismaService, private readonly rentalTypeRepository: RentalTypeRepository) {}
 
-  async findSpaceIds() {
+  async findSpaceIds(args = {} as Prisma.SpaceFindManyArgs) {
     const spaces = await this.database.space.findMany({
+      where: args.where,
       select: {
         id: true,
         title: true,
         thumbnail: true,
       },
     });
-
+    console.log({ spaces });
     return spaces.map((space) => new SpaceIdsDTO(space));
   }
 

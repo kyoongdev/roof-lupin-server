@@ -42,7 +42,7 @@ export class QnADTO {
     this.id = props.id;
     this.content = props.content;
     this.user = new CommonUserDTO(props.user);
-    this.answer = new QnAAnswerDTO(props.answer);
+    this.answer = props.answer ? new QnAAnswerDTO(props.answer) : null;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.space = new SpaceDTO(props.space);

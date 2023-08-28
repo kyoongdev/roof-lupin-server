@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client';
 import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
+import { RESERVATION_STATUS, ReservationStatusReqDecorator } from '../validation/status.validation';
+
 export class FindReservationQuery extends PagingDTO {
   @ToBoolean()
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
@@ -18,14 +20,65 @@ export class FindReservationQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '다가오는 예약 여부' } })
   isApproaching?: boolean;
 
+  @ReservationStatusReqDecorator(true)
+  status?: keyof typeof RESERVATION_STATUS;
+
   generateQuery(userId?: string): Prisma.ReservationFindManyArgs {
     const currentDate = new Date();
     return {
       where: {
-        ...(typeof this.isApproved === 'boolean' && {
-          isApproved: this.isApproved,
+        ...(this.status === 'APPROVED_PENDING' && {
+          isApproved: false,
+          spaceReviews: {
+            some: {
+              space: {
+                isImmediateReservation: true,
+              },
+            },
+          },
         }),
-        ...(typeof this.isCanceled === 'boolean' && {
+        ...(this.status === 'BEFORE_USAGE' && {
+          OR: [
+            {
+              isApproved: true,
+              spaceReviews: {
+                some: {
+                  space: {
+                    isImmediateReservation: true,
+                  },
+                },
+              },
+              payedAt: {
+                not: null,
+              },
+            },
+            {
+              payedAt: {
+                not: null,
+              },
+              spaceReviews: {
+                some: {
+                  space: {
+                    isImmediateReservation: false,
+                  },
+                },
+              },
+            },
+          ],
+        }),
+        ...((typeof this.isApproved === 'boolean' || this.status === 'APPROVED') && {
+          isApproved: this.isApproved,
+          spaceReviews: {
+            some: {
+              space: {
+                isImmediateReservation: true,
+              },
+            },
+          },
+        }),
+        ...((typeof this.isCanceled === 'boolean' ||
+          this.status === 'HOST_CANCELED' ||
+          this.status === 'USER_CANCELED') && {
           ...(this.isCanceled
             ? {
                 cancel: {

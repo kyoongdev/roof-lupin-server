@@ -38,8 +38,12 @@ export class HostSpaceService {
     return new HostSpaceCountDTO({ count });
   }
 
-  async findSpaceIds() {
-    return await this.spaceRepository.findSpaceIds();
+  async findSpaceIds(hostId: string) {
+    return await this.spaceRepository.findSpaceIds({
+      where: {
+        hostId,
+      },
+    });
   }
 
   async findSpace(id: string, hostId: string) {

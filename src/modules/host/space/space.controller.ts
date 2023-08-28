@@ -48,8 +48,8 @@ export class HostSpaceController {
     type: SpaceIdsDTO,
     isArray: true,
   })
-  async getSpaceIds() {
-    return await this.spaceService.findSpaceIds();
+  async getSpaceIds(@ReqUser() user: RequestHost) {
+    return await this.spaceService.findSpaceIds(user.id);
   }
 
   @Get(':spaceId/detail')
