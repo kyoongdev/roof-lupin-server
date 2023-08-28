@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { QnACountDTO } from '../dto/qna';
+import { HostFindQnAsQuery } from '../dto/query/qna/find-qnas.query';
 
 import { HostQnAService } from './qna.service';
 
@@ -75,17 +76,15 @@ export class HostQnAController {
       description: 'QnA 목록 조회',
       summary: 'QnA 목록 조회 - 호스트만 사용 가능합니다.',
     },
-    query: {
-      type: PagingDTO,
-    },
   })
   @ResponseApi({
     type: QnADTO,
     isPaging: true,
   })
-  async getQnAs(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost) {
+  async getQnAs(@Paging() paging: PagingDTO, @ReqUser() user: RequestHost, @Query() query: HostFindQnAsQuery) {
     return await this.qnaService.findPagingQnAs(paging, {
       where: {
+        ...query.generateQuery(),
         space: {
           hostId: user.id,
         },
