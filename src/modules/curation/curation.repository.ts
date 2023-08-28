@@ -32,7 +32,11 @@ export class CurationRepository {
     const curation = await this.database.curation.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         spaces: {
           include: {
             space: {

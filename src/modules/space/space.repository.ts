@@ -135,8 +135,11 @@ export class SpaceRepository {
                 },
               ],
             },
-
-            user: true,
+            user: {
+              include: {
+                socials: true,
+              },
+            },
           },
           skip: 0,
           take: 3,

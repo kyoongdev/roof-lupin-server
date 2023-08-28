@@ -55,7 +55,11 @@ export class QnADTO {
           host: true,
         },
       },
-      user: true,
+      user: {
+        include: {
+          socials: true,
+        },
+      },
       space: {
         include: SpaceDTO.getSpacesIncludeOption(),
       },

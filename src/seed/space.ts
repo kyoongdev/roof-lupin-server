@@ -628,7 +628,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 discountCost: 0,
                 userCount: 3,
                 vatCost: 1000,
-                isApproved: true,
+                isApproved: false,
                 code: `${new Date().getTime()}${index}${spIdx}`,
                 user: {
                   connect: {

@@ -15,12 +15,7 @@ export class AdminFaqService {
   constructor(private readonly FaqRepository: FaqRepository) {}
 
   async findFAQ(id: string) {
-    const faq = await this.FaqRepository.findFAQ(id);
-
-    if (!faq) {
-      throw new FAQException(FAQ_ERROR_CODE.NOT_FOUND(FAQ_NOT_FOUND));
-    }
-    return new FAQDTO(faq);
+    return await this.FaqRepository.findFAQ(id);
   }
 
   async findPagingFAQ(paging: PagingDTO, args = {} as Prisma.FAQFindManyArgs) {

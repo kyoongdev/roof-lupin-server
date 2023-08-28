@@ -41,7 +41,11 @@ export class ReportRepository {
         spaceQnA: {
           include: QnADTO.generateInclude(),
         },
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -93,7 +97,11 @@ export class ReportRepository {
         spaceQnA: {
           include: QnADTO.generateInclude(),
         },
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 

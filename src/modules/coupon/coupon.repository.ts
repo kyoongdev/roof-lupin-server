@@ -116,7 +116,11 @@ export class CouponRepository {
         id,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -139,7 +143,11 @@ export class CouponRepository {
         },
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -161,7 +169,11 @@ export class CouponRepository {
         },
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -184,7 +196,11 @@ export class CouponRepository {
     const userCoupons = await this.database.userCoupon.findMany({
       ...args,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -216,7 +232,11 @@ export class CouponRepository {
         ...rest,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
     return userCoupon;

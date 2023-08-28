@@ -84,7 +84,11 @@ export class ReviewDTO {
 
   static generateInclude() {
     return {
-      user: true,
+      user: {
+        include: {
+          socials: true,
+        },
+      },
       images: {
         include: {
           image: true,

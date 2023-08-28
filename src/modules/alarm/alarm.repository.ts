@@ -18,7 +18,11 @@ export class AlarmRepository {
         id,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -37,7 +41,11 @@ export class AlarmRepository {
     const alarms = await this.database.userAlarm.findMany({
       ...args,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -78,7 +86,11 @@ export class AlarmRepository {
         }),
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -92,7 +104,11 @@ export class AlarmRepository {
       },
       data,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
   }

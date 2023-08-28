@@ -48,7 +48,11 @@ export class HostSettlementRepository {
       include: {
         reservations: {
           include: {
-            user: true,
+            user: {
+              include: {
+                socials: true,
+              },
+            },
             spaceReviews: true,
             rentalTypes: {
               include: {
@@ -95,7 +99,11 @@ export class HostSettlementRepository {
       include: {
         reservations: {
           include: {
-            user: true,
+            user: {
+              include: {
+                socials: true,
+              },
+            },
             spaceReviews: true,
             rentalTypes: {
               include: {
@@ -142,7 +150,11 @@ export class HostSettlementRepository {
       include: {
         reservations: {
           include: {
-            user: true,
+            user: {
+              include: {
+                socials: true,
+              },
+            },
             spaceReviews: true,
             rentalTypes: {
               include: {
