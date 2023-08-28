@@ -1,7 +1,11 @@
 import { Prisma } from '@prisma/client';
 
 export const reservationInclude: Prisma.ReservationInclude = {
-  user: true,
+  user: {
+    include: {
+      socials: true,
+    },
+  },
   rentalTypes: {
     include: {
       rentalType: {

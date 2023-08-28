@@ -1,12 +1,16 @@
-import { User } from '@prisma/client';
+import { User, UserSocial } from '@prisma/client';
 import { Expose } from 'class-transformer';
 import { Property } from 'cumuco-nestjs';
 
 import { GENDER_VALUE, GenderReqTransForm, GenderResTransForm } from '@/utils/validation';
 
+import { numberToSocialType, socialTypeToNumber } from '../utils';
+
 import { BaseUserDTO } from './base-user.dto';
 
-export type CommonUserProps = Partial<User>;
+export interface CommonUserProps extends Partial<User> {
+  socials: UserSocial[];
+}
 
 export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string' } })
@@ -43,6 +47,9 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'boolean', description: '알림 승인 여부' } })
   isAlarmAccepted: boolean;
 
+  @Property({ apiProperty: { type: 'string', description: '유저 소셜 타입', example: 'KAKAO | NAVER | APPLE' } })
+  socialType: string;
+
   constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
@@ -59,5 +66,6 @@ export class CommonUserDTO extends BaseUserDTO {
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
+    this.socialType = props.socials.length > 0 ? numberToSocialType(props.socials.at(-1).socialType) : null;
   }
 }

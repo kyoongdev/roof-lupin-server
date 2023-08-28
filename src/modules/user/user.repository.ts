@@ -15,6 +15,9 @@ export class UserRepository {
       where: {
         id,
       },
+      include: {
+        socials: true,
+      },
     });
 
     if (!user) {
@@ -50,6 +53,9 @@ export class UserRepository {
       where: {
         email,
       },
+      include: {
+        socials: true,
+      },
     });
     if (!user) {
       throw new UserException(USER_ERROR_CODE.NOT_FOUND());
@@ -62,6 +68,9 @@ export class UserRepository {
     const user = await this.database.user.findFirst({
       where: {
         nickname,
+      },
+      include: {
+        socials: true,
       },
     });
     if (!user) {
@@ -76,7 +85,11 @@ export class UserRepository {
         socialId,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -111,7 +124,11 @@ export class UserRepository {
         socialId,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 

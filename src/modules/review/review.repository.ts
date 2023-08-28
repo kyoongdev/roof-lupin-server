@@ -31,7 +31,11 @@ export class ReviewRepository {
         id,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         images: {
           include: {
             image: true,
@@ -73,7 +77,11 @@ export class ReviewRepository {
     const review = await this.database.spaceReview.findFirst({
       where: args.where,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         images: {
           include: {
             image: true,
@@ -135,7 +143,11 @@ export class ReviewRepository {
         ...args.where,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         images: {
           include: {
             image: true,
@@ -207,7 +219,11 @@ export class ReviewRepository {
       include: {
         spaceReview: {
           include: {
-            user: true,
+            user: {
+              include: {
+                socials: true,
+              },
+            },
             images: {
               include: {
                 image: true,

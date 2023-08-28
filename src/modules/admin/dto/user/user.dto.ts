@@ -3,7 +3,7 @@ import { Property } from 'cumuco-nestjs';
 import { SOCIAL_TYPE, SocialType } from '@/interface/user.interface';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
-export interface AdminUserDTOProps extends CommonUserProps {
+export interface AdminUserDTOProps extends Omit<CommonUserProps, 'socialType'> {
   isBlocked: boolean;
   unBlockAt?: Date;
   loginedAt?: Date;
@@ -19,9 +19,6 @@ export class AdminUserDTO extends CommonUserDTO {
 
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true, description: '차단 여부' } })
   loginedAt?: Date;
-
-  @Property({ apiProperty: { type: 'string', example: Object.keys(SOCIAL_TYPE).join(','), description: '소셜 종류' } })
-  socialType?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '푸시 토큰' } })
   pushToken?: string;

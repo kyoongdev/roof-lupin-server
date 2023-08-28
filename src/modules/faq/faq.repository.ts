@@ -17,7 +17,11 @@ export class FaqRepository {
         id,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
@@ -35,7 +39,11 @@ export class FaqRepository {
     const faqs = await this.database.fAQ.findMany({
       ...args,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 

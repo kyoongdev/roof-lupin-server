@@ -105,10 +105,18 @@ export class ReservationDTO extends BaseReservationDTO {
 
   static generateReservationInclude(userId?: string) {
     return {
-      user: true,
+      user: {
+        include: {
+          socials: true,
+        },
+      },
       cancel: {
         include: {
-          user: true,
+          user: {
+            include: {
+              socials: true,
+            },
+          },
           host: true,
         },
       },

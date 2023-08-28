@@ -160,7 +160,11 @@ export class RentalTypeRepository {
           include: {
             reservation: {
               include: {
-                user: true,
+                user: {
+                  include: {
+                    socials: true,
+                  },
+                },
                 rentalTypes: {
                   include: {
                     rentalType: {

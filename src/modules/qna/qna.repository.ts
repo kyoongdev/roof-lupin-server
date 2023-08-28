@@ -26,7 +26,11 @@ export class QnARepository {
             createdAt: 'desc',
           },
         },
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         space: {
           include: SpaceDTO.getSpacesIncludeOption(),
         },
@@ -70,7 +74,11 @@ export class QnARepository {
             createdAt: 'desc',
           },
         },
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
     if (!qna) {

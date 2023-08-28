@@ -122,6 +122,11 @@ export class ReservationRepository {
             id: userId,
           },
         },
+        space: {
+          connect: {
+            id: spaceId,
+          },
+        },
         rentalTypes: {
           create: rentalTypes.map((rentalType) => ({
             endAt: rentalType.endAt,
@@ -179,6 +184,11 @@ export class ReservationRepository {
         user: {
           connect: {
             id: userId,
+          },
+        },
+        space: {
+          connect: {
+            id: spaceId,
           },
         },
         rentalTypes: {

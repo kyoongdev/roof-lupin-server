@@ -69,7 +69,11 @@ export class AdminCouponRepository {
         id,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -92,7 +96,11 @@ export class AdminCouponRepository {
         },
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });
@@ -115,7 +123,11 @@ export class AdminCouponRepository {
     const userCoupons = await this.database.userCoupon.findMany({
       ...args,
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
         coupon: true,
       },
     });

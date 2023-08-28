@@ -68,12 +68,8 @@ export class HostFindReservationsQuery extends PagingDTO {
           OR: [
             {
               isApproved: true,
-              spaceReviews: {
-                some: {
-                  space: {
-                    isImmediateReservation: true,
-                  },
-                },
+              space: {
+                isImmediateReservation: true,
               },
               payedAt: {
                 not: null,
@@ -83,12 +79,8 @@ export class HostFindReservationsQuery extends PagingDTO {
               payedAt: {
                 not: null,
               },
-              spaceReviews: {
-                some: {
-                  space: {
-                    isImmediateReservation: false,
-                  },
-                },
+              space: {
+                isImmediateReservation: false,
               },
             },
           ],

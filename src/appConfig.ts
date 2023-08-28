@@ -50,7 +50,11 @@ class AppConfig {
         isRead: false,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            socials: true,
+          },
+        },
       },
     });
 
