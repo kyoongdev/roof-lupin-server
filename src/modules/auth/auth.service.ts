@@ -154,7 +154,6 @@ export class AuthService {
         email: user.email,
         gender: user.gender === 'M' ? 1 : user.gender === 'F' ? 2 : undefined,
         phoneNumber: user.mobile,
-        profileImage: user.profile_image,
       }),
       `${user.id}`,
       'naver',

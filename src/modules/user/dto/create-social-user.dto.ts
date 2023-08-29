@@ -75,7 +75,6 @@ export class CreateSocialUserDTO {
     this.email = account.email;
     this.gender = account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined;
     this.phoneNumber = account.phone_number;
-    this.profileImage = socialUser.properties.profile_image;
     return this;
   }
 
