@@ -27,7 +27,7 @@ export class SpaceRepository {
         thumbnail: true,
       },
     });
-    console.log({ spaces });
+
     return spaces.map((space) => new SpaceIdsDTO(space));
   }
 
@@ -827,5 +827,41 @@ export class SpaceRepository {
     });
 
     return interest ? true : false;
+  }
+
+  async getMainSpace(hostId: string) {
+    const space = await this.database.space.findFirst({
+      where: {
+        hostId,
+        isMain: true,
+      },
+      include: {
+        host: true,
+      },
+    });
+
+    return space;
+  }
+
+  async setMainSpace(id: string) {
+    await this.database.space.update({
+      where: {
+        id,
+      },
+      data: {
+        isMain: true,
+      },
+    });
+  }
+
+  async unsetMainSpace(id: string) {
+    await this.database.space.update({
+      where: {
+        id,
+      },
+      data: {
+        isMain: false,
+      },
+    });
   }
 }
