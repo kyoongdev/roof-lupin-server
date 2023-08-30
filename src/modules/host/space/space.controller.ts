@@ -263,4 +263,38 @@ export class HostSpaceController {
   async hardDeleteSpace(@ReqUser() user: RequestHost, @Param('spaceId') id: string) {
     await this.spaceService.hardDeleteSpace(id, user.id);
   }
+
+  @Post(':spaceId/main')
+  @RequestApi({
+    summary: {
+      description: '공간 메인 설정',
+      summary: '공간 메인 설정 ',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async setMainSpace(@ReqUser() user: RequestHost, @Param('spaceId') id: string) {
+    await this.spaceService.setMainSpace(id, user.id);
+  }
+
+  @Delete(':spaceId/main')
+  @RequestApi({
+    summary: {
+      description: '공간 메인 설정',
+      summary: '공간 메인 설정 ',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async unsetMainSpace(@ReqUser() user: RequestHost, @Param('spaceId') id: string) {
+    await this.spaceService.unsetMainSpace(id, user.id);
+  }
 }

@@ -25,6 +25,7 @@ export class SpaceRepository {
         id: true,
         title: true,
         thumbnail: true,
+        isMain: true,
       },
     });
 
