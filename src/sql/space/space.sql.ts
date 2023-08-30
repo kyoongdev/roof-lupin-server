@@ -197,7 +197,7 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
       const day = getDay(Number(date.year), Number(date.month), Number(date.day), this.isHoliday);
 
       const dateQuery = date
-        ? Prisma.sql`(Reservation.isCanceled = 0 AND Reservation.deletedAt IS NULL AND Reservation.payedAt IS NOT NULL AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
+        ? Prisma.sql`(NOT EXISTS (SELECT rc.id FROM ReservationCancel rc WHERE Reservation.id = rc.reservationId) AND Reservation.deletedAt IS NULL AND Reservation.payedAt IS NOT NULL AND Reservation.year = ${date.year} AND Reservation.month = ${date.month} AND Reservation.day = ${date.day})${timeQuery}`
         : Prisma.empty;
 
       const query = Prisma.sql`
