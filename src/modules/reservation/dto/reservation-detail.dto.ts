@@ -59,6 +59,10 @@ export class ReservationDetailDTO extends ReservationDTO {
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: rest.spaceReviews.length > 0,
+      additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({
+        ...additionalService,
+        count,
+      })),
     };
   }
 
