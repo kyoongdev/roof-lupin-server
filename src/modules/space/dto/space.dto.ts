@@ -25,6 +25,8 @@ export interface SpaceDTOProps {
   rentalType: RentalType[];
   categories?: SpaceCategoryDTOProps[];
   orderNo: number;
+  overflowUserCost: number;
+  overflowUserCount: number;
 }
 
 export class SpaceDTO {
@@ -84,6 +86,12 @@ export class SpaceDTO {
   })
   categories?: SpaceCategoryDTO[];
 
+  @Property({ apiProperty: { type: 'number', description: '초과 사용자 비용' } })
+  overflowUserCost: number;
+
+  @Property({ apiProperty: { type: 'number', description: '초과 사용자 수' } })
+  overflowUserCount: number;
+
   constructor(props: SpaceDTOProps) {
     const timeRentals = props.rentalType.filter((target) => target.rentalType === 1);
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
@@ -106,6 +114,8 @@ export class SpaceDTO {
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
     this.orderNo = props.orderNo ?? null;
     this.categories = props.categories ? props.categories?.map((category) => new SpaceCategoryDTO(category)) : [];
+    this.overflowUserCost = props.overflowUserCost;
+    this.overflowUserCount = props.overflowUserCount;
   }
 
   static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {

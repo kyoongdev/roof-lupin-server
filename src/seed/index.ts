@@ -5,6 +5,7 @@ import { EncryptProvider } from '../common/encrypt';
 import { COUPON_CODE } from '../modules/coupon/constants';
 import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
 
+import { seedAnnouncement } from './announcement';
 import { seedFilter } from './filter';
 import { seedHoliday } from './holiday';
 import { seedHome } from './home';
@@ -19,7 +20,7 @@ export const seedDatabase = async (database: PrismaClient) => {
   await database.admin.deleteMany({});
   await database.location.deleteMany({});
   await database.category.deleteMany({});
-
+  await database.announcement.deleteMany({});
   await database.coupon.deleteMany({});
   await database.homeContents.deleteMany({});
   await database.curation.deleteMany({});
@@ -34,6 +35,7 @@ export const seedDatabase = async (database: PrismaClient) => {
   await seedHoliday(database);
   await seedService(database);
   await seedFilter(database);
+  await seedAnnouncement(database);
 
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();

@@ -20,6 +20,12 @@ export interface CommonReservation extends Reservation {
   spaceReviews: SpaceReview[];
   cancel?: CommonReservationCancel;
   refund?: CommonReservationRefund;
+  additionalServices: CommonReservationAdditionalService[];
+}
+
+export interface CommonReservationAdditionalService {
+  count: number;
+  additionalService: AdditionalService;
 }
 
 export interface CommonReservationRefund {

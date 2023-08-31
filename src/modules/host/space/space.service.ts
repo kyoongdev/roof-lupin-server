@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
@@ -163,5 +163,28 @@ export class HostSpaceService {
     }
 
     await this.spaceRepository.hardDeleteSpace(id);
+  }
+
+  async setMainSpace(id: string, hostId: string) {
+    const mainSpace = await this.spaceRepository.getMainSpace(hostId);
+
+    if (mainSpace.host.id !== hostId) {
+      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+    }
+
+    if (mainSpace) {
+      await this.spaceRepository.unsetMainSpace(id);
+    }
+    await this.spaceRepository.setMainSpace(id);
+  }
+
+  async unsetMainSpace(id: string, hostId: string) {
+    const space = await this.spaceRepository.findSpace(id);
+
+    if (space.host.id !== hostId) {
+      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+    }
+
+    await this.spaceRepository.unsetMainSpace(id);
   }
 }
