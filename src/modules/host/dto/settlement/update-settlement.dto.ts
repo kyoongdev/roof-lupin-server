@@ -1,9 +1,9 @@
 import { Property } from 'cumuco-nestjs';
 
 export interface UpdateSettlementDTOProps {
-  year?: string;
-  month?: string;
-  day?: string;
+  year?: number;
+  month?: number;
+  day?: number;
   settlementCost?: number;
   totalCost?: number;
   vatCost?: number;
@@ -16,14 +16,14 @@ export interface UpdateSettlementDTOProps {
 }
 
 export class UpdateSettlementDTO {
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '정산 연도' } })
-  year?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '정산 연도' } })
+  year?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '정산 월' } })
-  month?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '정산 월' } })
+  month?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '정산 일' } })
-  day?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '정산 일' } })
+  day?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '정산 금액' } })
   settlementCost?: number;

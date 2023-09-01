@@ -1,4 +1,4 @@
-import { Prisma, RentalType } from '@prisma/client';
+import { RentalType } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { CommonSpace } from '@/interface/space.interface';

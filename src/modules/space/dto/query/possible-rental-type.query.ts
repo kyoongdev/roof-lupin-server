@@ -1,18 +1,18 @@
 import { Property } from 'cumuco-nestjs';
 
 export interface PossibleRentalTypeQueryProps {
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
 }
 
 export class PossibleRentalTypeQuery {
-  @Property({ apiProperty: { type: 'string', description: '년도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '년도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '일' } })
+  day: number;
 }

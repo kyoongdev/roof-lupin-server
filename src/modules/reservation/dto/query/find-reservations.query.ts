@@ -41,12 +41,8 @@ export class FindReservationQuery extends PagingDTO {
           OR: [
             {
               isApproved: true,
-              spaceReviews: {
-                some: {
-                  space: {
-                    isImmediateReservation: true,
-                  },
-                },
+              space: {
+                isImmediateReservation: true,
               },
               payedAt: {
                 not: null,
@@ -56,12 +52,8 @@ export class FindReservationQuery extends PagingDTO {
               payedAt: {
                 not: null,
               },
-              spaceReviews: {
-                some: {
-                  space: {
-                    isImmediateReservation: false,
-                  },
-                },
+              space: {
+                isImmediateReservation: false,
               },
             },
           ],
@@ -121,10 +113,11 @@ export class FindReservationQuery extends PagingDTO {
               },
             },
             {
-              cancel: null,
-              refunds: {
-                isNot: null,
+              payedAt: {
+                not: null,
               },
+              cancel: null,
+              refunds: null,
               deletedAt: null,
             },
           ],

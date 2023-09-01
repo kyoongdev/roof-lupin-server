@@ -8,9 +8,9 @@ import { FindSettlementsQuery } from './query';
 
 export interface SettlementDTOProps {
   id: string;
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
   settlementCost: number;
   totalCost: number;
   vatCost: number;
@@ -26,14 +26,14 @@ export class SettlementDTO {
   @Property({ apiProperty: { type: 'string', description: '정산 Id' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '정산 연도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '정산 연도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '정산 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '정산 월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '정산 일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '정산 일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'number', description: '최종 정산 금액' } })
   settlementCost: number;

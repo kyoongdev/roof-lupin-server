@@ -1,9 +1,9 @@
 import { Property } from 'cumuco-nestjs';
 
 export interface CreateBlockedTimeDTOProps {
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
   startAt: number;
   endAt: number;
   spaceId: string;
@@ -14,14 +14,14 @@ export class CreateBlockedTimeDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 id' } })
   spaceId: string;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 연' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 연' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'number', description: '차단된 시간 시작시간' } })
   startAt: number;

@@ -15,7 +15,7 @@ import { SettlementException } from './exception/settlement.exception';
 export class HostSettlementRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async checkSettlementByHostAndDate(year: string, month: string, day: string, hostId: string) {
+  async checkSettlementByHostAndDate(year: number, month: number, day: number, hostId: string) {
     const settlement = await this.database.settlement.findFirst({
       where: {
         year,
@@ -88,7 +88,7 @@ export class HostSettlementRepository {
     });
   }
 
-  async findSettlementByDate(year: string, month: string, day: string, hostId: string) {
+  async findSettlementByDate(year: number, month: number, day: number, hostId: string) {
     const settlement = await this.database.settlement.findFirst({
       where: {
         year,
@@ -139,7 +139,7 @@ export class HostSettlementRepository {
     });
   }
 
-  async checkSettlementByDate(year: string, month: string, day: string, hostId: string) {
+  async checkSettlementByDate(year: number, month: number, day: number, hostId: string) {
     const settlement = await this.database.settlement.findFirst({
       where: {
         year,

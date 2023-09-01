@@ -4,8 +4,8 @@ import { HostDTO, HostDTOProps } from '@/modules/host/dto';
 
 export interface TaxReturnDTOProps {
   id: string;
-  year: string;
-  month: string;
+  year: number;
+  month: number;
   cost: number;
   receiptUrl?: string;
   submittedAt?: Date;
@@ -17,11 +17,11 @@ export class TaxReturnDTO {
   @Property({ apiProperty: { type: 'string', description: ' 세금계산서 신고 id' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: ' 세금계산서 신고 연도 ' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: ' 세금계산서 신고 연도 ' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: ' 세금계산서 신고 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: ' 세금계산서 신고 월' } })
+  month: number;
 
   @Property({ apiProperty: { type: 'number', description: '신고 금액' } })
   cost: number;

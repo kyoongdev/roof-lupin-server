@@ -100,9 +100,9 @@ export class ReservationDTO extends BaseReservationDTO {
 
     return {
       ...rest,
-      year: `${rest.year}`,
-      month: `${rest.month}`,
-      day: `${rest.day}`,
+      year: rest.year,
+      month: rest.month,
+      day: rest.day,
       user: rest.user,
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
@@ -179,6 +179,10 @@ export class ReservationDTO extends BaseReservationDTO {
   }
 
   checkIsTargetDay(targetDate: CheckIsTargetDay) {
-    return targetDate.year === this.year && targetDate.month === this.month && targetDate.day === this.day;
+    return (
+      Number(targetDate.year) === this.year &&
+      Number(targetDate.month) === this.month &&
+      Number(targetDate.day) === this.day
+    );
   }
 }

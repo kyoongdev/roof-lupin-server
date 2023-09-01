@@ -10,9 +10,9 @@ import {
 } from './create-reservation-rental-type.dto';
 
 export interface CreatePaymentDTOProps {
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
   userName: string;
   userPhoneNumber: string;
   totalCost: number;
@@ -26,14 +26,14 @@ export interface CreatePaymentDTOProps {
 }
 
 export class CreatePaymentDTO {
-  @Property({ apiProperty: { type: 'string', maxLength: 4, minLength: 4, description: '예약 연도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', maxLength: 4, minLength: 4, description: '예약 연도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '예약 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '예약 월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '예약 일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '예약 일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'string', description: '대표 이용자 이름' } })
   userName: string;

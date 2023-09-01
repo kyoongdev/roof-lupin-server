@@ -3,9 +3,9 @@ import { Property } from 'cumuco-nestjs';
 export interface HolidayDTOProps {
   id: string;
   name: string;
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
 }
 
 export class HolidayDTO {
@@ -16,13 +16,13 @@ export class HolidayDTO {
   name: string;
 
   @Property({ apiProperty: { type: 'string' } })
-  year: string;
+  year: number;
 
-  @Property({ apiProperty: { type: 'string' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number' } })
+  day: number;
 
   constructor(props: HolidayDTOProps) {
     this.id = props.id;

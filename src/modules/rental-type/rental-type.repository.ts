@@ -86,6 +86,7 @@ export class RentalTypeRepository {
     args = {} as Prisma.RentalTypeFindManyArgs,
     reservationArgs = {} as Prisma.ReservationFindManyArgs
   ) {
+    console.log(reservationArgs);
     const rentalTypes = await this.database.rentalType.findMany({
       ...args,
       where: {
@@ -215,13 +216,13 @@ export class RentalTypeRepository {
         const { space } = rentalTypes[0].rentalType;
         return {
           ...rest,
-          year: String(rest.year),
-          month: String(rest.month),
-          day: String(rest.day),
+          year: rest.year,
+          month: rest.month,
+          day: rest.day,
           rentalTypes: rentalTypes.map((rentalType) => rentalType),
           space: SpaceDTO.generateSpaceDTO(space),
           isReviewed: rest.spaceReviews.length > 0,
-          additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({
+          additionalServices: reservation.additionalServices?.map(({ count, additionalService }) => ({
             ...additionalService,
             count,
           })),

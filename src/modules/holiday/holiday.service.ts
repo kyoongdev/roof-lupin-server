@@ -12,7 +12,7 @@ import { PagingHolidayDTO } from './dto/paging-holiday.dto';
 export class HolidayService {
   constructor(private readonly database: PrismaService) {}
 
-  async findHoliday(year: string, month: string) {
+  async findHoliday(year: number, month: number) {
     const holidays = await this.database.holiday.findMany({
       where: {
         year: year,
@@ -35,14 +35,14 @@ export class HolidayService {
 
         const holidays = await this.database.holiday.findMany({
           where: {
-            year: currentYear.toString(),
-            month: currentMonth.toString(),
+            year: currentYear,
+            month: currentMonth,
           },
         });
 
         return new PagingHolidayDTO({
-          year: currentYear.toString(),
-          month: currentMonth.toString(),
+          year: currentYear,
+          month: currentMonth,
           holidays: holidays.map((holiday) => new HolidayDTO(holiday)),
         });
       })
@@ -54,7 +54,7 @@ export class HolidayService {
     });
   }
 
-  async checkIsHoliday(year: string, month: string, day: string) {
+  async checkIsHoliday(year: number, month: number, day: number) {
     const holiday = await this.database.holiday.findFirst({
       where: {
         year: year,
