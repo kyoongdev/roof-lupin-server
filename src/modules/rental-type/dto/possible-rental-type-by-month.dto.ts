@@ -3,15 +3,15 @@ import { Property } from 'cumuco-nestjs';
 import { PossibleRentalTypesDTO, PossibleRentalTypesDTOProps } from './possible-rental-types.dto';
 
 export interface PossibleRentalTypeByMonthDTOProps {
-  day: string;
+  day: number;
   isPossible: boolean;
   isHoliday: boolean;
   rentalType: PossibleRentalTypesDTOProps;
 }
 
 export class PossibleRentalTypeByMonthDTO {
-  @Property({ apiProperty: { type: 'string', description: '요일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '요일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'boolean', description: '가능 여부' } })
   isPossible: boolean;
