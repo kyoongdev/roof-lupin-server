@@ -4,9 +4,9 @@ import { ReservationCancelDTO, ReservationCancelDTOProps } from './cancel/reserv
 
 export interface BaseReservationDTOProps {
   id: string;
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
   code: string;
   userCount: number;
   totalCost: number;
@@ -26,14 +26,14 @@ export class BaseReservationDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 아이디' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '예약 년도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '예약 년도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '예약 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '예약 월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '예약 일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '예약 일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'string', description: '예약 코드' } })
   code: string;

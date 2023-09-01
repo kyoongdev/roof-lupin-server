@@ -181,7 +181,7 @@ export class PaymentService {
           throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_FORBIDDEN));
         }
 
-        await this.tossPay.confirmPayment({
+        const result = await this.tossPay.confirmPayment({
           amount: paymentInfo.totalCost,
           orderId: orderId,
           paymentKey: data.paymentKey,
@@ -195,8 +195,8 @@ export class PaymentService {
         await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
           orderResultId: data.paymentKey,
           payedAt: new Date(),
-          receiptUrl: tossPayment.receipt?.url,
-          payMethod: tossPayment.card ? '카드' : tossPayment.easyPay?.provider ?? undefined,
+          receiptUrl: result.receipt?.url,
+          payMethod: result.card ? '카드' : result.easyPay?.provider ?? undefined,
         });
 
         await this.createSettlement(database, reservation);
@@ -310,9 +310,9 @@ export class PaymentService {
 
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
     const currentDate = new Date();
-    const year = currentDate.getFullYear().toString();
-    const month = (currentDate.getMonth() + 1).toString();
-    const day = currentDate.getDate().toString();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
 
     const isExist = await this.settlementRepository.checkSettlementByDate(year, month, day, data.space.hostId);
     const lupinCost = data.totalCost * LUPIN_CHARGE;
@@ -431,6 +431,7 @@ export class PaymentService {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
           });
+          // 15 ~ 18
 
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time;

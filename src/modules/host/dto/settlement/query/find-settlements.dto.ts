@@ -1,12 +1,12 @@
 import { Property } from 'cumuco-nestjs';
 
 export class FindSettlementsQuery {
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '연도' } })
-  year?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '연도' } })
+  year?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '월' } })
-  month?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '월' } })
+  month?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '일' } })
-  day?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '일' } })
+  day?: number;
 }

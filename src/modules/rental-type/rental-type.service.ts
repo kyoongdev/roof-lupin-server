@@ -92,9 +92,7 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           cancel: null,
-          refunds: {
-            isNot: null,
-          },
+          refunds: null,
           deletedAt: null,
         },
       }
@@ -147,9 +145,7 @@ export class RentalTypeService {
               year: currentYear,
               month: currentMonth,
               cancel: null,
-              refunds: {
-                isNot: null,
-              },
+              refunds: null,
               deletedAt: null,
             },
           }
@@ -158,16 +154,16 @@ export class RentalTypeService {
         const blockedTimes = await this.blockedTimeRepository.findBlockedTimes({
           where: {
             spaceId,
-            year: `${currentYear}`,
-            month: `${currentMonth}`,
+            year: currentYear,
+            month: currentMonth,
             deletedAt: null,
           },
         });
 
         return await this.getPossibleRentalTypesBySpaceIdWithMonth(
           {
-            year: `${currentYear}`,
-            month: `${currentMonth}`,
+            year: currentYear,
+            month: currentMonth,
           },
           rentalTypes,
           spaceHolidays,
@@ -197,9 +193,7 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: {
-            isNot: null,
-          },
+          refunds: null,
           deletedAt: null,
         },
       }
@@ -231,9 +225,7 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: {
-            isNot: null,
-          },
+          refunds: null,
           deletedAt: null,
         },
       }
@@ -270,9 +262,7 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: {
-            isNot: null,
-          },
+          refunds: null,
           deletedAt: null,
         },
       }
@@ -344,13 +334,13 @@ export class RentalTypeService {
     const fullDays = new Date(Number(query.year), Number(query.month), 0).getDate();
     await Promise.all(
       range(1, fullDays + 1).map(async (day) => {
-        const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, `${day}`);
+        const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, day);
 
         const parsedRentalType = rentalTypes
           .map((rentalType) =>
             rentalType.getCurrentDayRentalType(isHoliday.isHoliday, {
               ...query,
-              day: `${day}`,
+              day: day,
             })
           )
           .filter(Boolean);
@@ -363,7 +353,7 @@ export class RentalTypeService {
           {
             year: query.year,
             month: query.month,
-            day: `${day}`,
+            day: day,
           }
         );
 
@@ -371,7 +361,7 @@ export class RentalTypeService {
 
         const currentDay = isHoliday.getCurrentDay({
           ...query,
-          day: `${day}`,
+          day: day,
         });
         const week = getWeek(currentDate);
 
@@ -467,11 +457,12 @@ export class RentalTypeService {
         if (reservation.checkIsTargetDay(targetDate)) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
-            const endAt = reservedRentalType.rentalType.getEndAt();
+            const endAt = reservedRentalType.endAt;
+            console.log({ reservedRentalType, startAt, endAt });
 
-            range(startAt, endAt).forEach((hour) => {
+            range(startAt, endAt + 1).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
-
+              console.log({ hour, index });
               if (index !== -1) {
                 timeCostInfos[index].isPossible = false;
               }

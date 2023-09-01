@@ -1,19 +1,15 @@
-import { BadRequestException } from '@nestjs/common';
-
 import { Property } from 'cumuco-nestjs';
 
-import { PossibleRentalTypePagingDTO } from './possible-rental-type-paging.dto';
-
 export interface PossibleRentalTypeByMonthQueryProps {
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
 }
 
 export class PossibleRentalTypeByMonthQuery {
-  @Property({ apiProperty: { type: 'string', description: '년도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '년도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '월' } })
+  month: number;
 }

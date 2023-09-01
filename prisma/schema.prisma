@@ -59,9 +59,9 @@ model HomeContents {
 model Holiday {
   id    String @id @default(uuid())
   name  String @db.VarChar(120)
-  year  String
-  month String
-  day   String
+  year  Int
+  month Int
+  day   Int
 }
 
 model AppInfo {
@@ -400,11 +400,11 @@ model ReservationRefund {
 model BlockedTime {
   id String @id @unique @default(uuid())
 
-  year    String @db.Char(4)
-  month   String @db.VarChar(2)
-  day     String @db.VarChar(2)
-  startAt Int    @db.TinyInt
-  endAt   Int    @db.TinyInt
+  year    Int
+  month   Int
+  day     Int
+  startAt Int @db.TinyInt
+  endAt   Int @db.TinyInt
 
   name String @db.VarChar(120)
 
@@ -419,9 +419,9 @@ model BlockedTime {
 model Settlement {
   id String @id @default(uuid())
 
-  year  String @db.Char(4)
-  month String @db.VarChar(2)
-  day   String @db.VarChar(2)
+  year  Int
+  month Int
+  day   Int
 
   settlementCost Int @db.MediumInt //INFO: 정산 금액
   totalCost      Int @db.MediumInt //INFO: 최종 매출 금액 (originalCost - discountCost)
@@ -444,8 +444,8 @@ model Settlement {
 model TaxReturn {
   id String @id @default(uuid())
 
-  year  String @db.Char(4)
-  month String @db.VarChar(2)
+  year  Int
+  month Int
 
   cost Int @db.MediumInt //INFO: 신고 금액
 

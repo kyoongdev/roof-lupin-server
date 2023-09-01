@@ -53,9 +53,9 @@ export class ReservationDetailDTO extends ReservationDTO {
 
     return {
       ...rest,
-      year: String(rest.year),
-      month: String(rest.month),
-      day: String(rest.day),
+      year: rest.year,
+      month: rest.month,
+      day: rest.day,
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: rest.spaceReviews.length > 0,

@@ -42,14 +42,14 @@ export class FindSpacesQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '지역명', example: '강동구' } })
   locationName?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 가능 연도' } })
-  year?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 연도' } })
+  year?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 가능 월' } })
-  month?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 월' } })
+  month?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 가능 일' } })
-  day?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 일' } })
+  day?: number;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 가능 시작 시간' } })
   startAt?: number;

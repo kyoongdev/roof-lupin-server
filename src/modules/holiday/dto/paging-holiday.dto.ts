@@ -3,16 +3,16 @@ import { Property } from 'cumuco-nestjs';
 import { HolidayDTO, HolidayDTOProps } from './holiday.dto';
 
 export interface PagingHolidayDTOProps {
-  year: string;
-  month: string;
+  year: number;
+  month: number;
   holidays: HolidayDTOProps[];
 }
 export class PagingHolidayDTO {
-  @Property({ apiProperty: { type: 'string', description: '연도' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '연도' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '월' } })
+  month: number;
 
   @Property({ apiProperty: { type: HolidayDTO, isArray: true, description: '휴일' } })
   holidays: HolidayDTO[];

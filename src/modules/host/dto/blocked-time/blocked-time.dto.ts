@@ -4,9 +4,9 @@ import { CheckIsTargetDay } from '@/interface/common.interface';
 
 export interface BlockedTimeDTOProps {
   id: string;
-  year: string;
-  month: string;
-  day: string;
+  year: number;
+  month: number;
+  day: number;
   startAt: number;
   endAt: number;
   spaceId: string;
@@ -18,14 +18,14 @@ export class BlockedTimeDTO {
   @Property({ apiProperty: { type: 'string', description: '차단된 시간 id' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 연' } })
-  year: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 연' } })
+  year: number;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 월' } })
-  month: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 월' } })
+  month: number;
 
-  @Property({ apiProperty: { type: 'string', description: '차단된 시간 일' } })
-  day: string;
+  @Property({ apiProperty: { type: 'number', description: '차단된 시간 일' } })
+  day: number;
 
   @Property({ apiProperty: { type: 'number', description: '차단된 시간 시작시간' } })
   startAt: number;
