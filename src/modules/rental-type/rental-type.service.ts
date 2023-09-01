@@ -372,11 +372,12 @@ export class RentalTypeService {
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
         const data: PossibleRentalTypeByMonthDTOProps = {
-          day: `${day}`,
+          day,
           isHoliday: isHoliday.isHoliday,
           isPossible: holidays.length > 0 ? false : !isImpossible,
           rentalType: result,
         };
+
         possibleRentalTypes.days.push(data);
       })
     );

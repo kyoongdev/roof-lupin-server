@@ -5,6 +5,7 @@ import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
+import { RefundPolicyDTO, RefundPolicyDTOProps } from './refund';
 import { TransportationDTO, type TransportationDTOProps } from './transportaion';
 
 export interface SpaceDTOProps {
@@ -27,6 +28,7 @@ export interface SpaceDTOProps {
   orderNo: number;
   overflowUserCost: number;
   overflowUserCount: number;
+  refundPolicies: RefundPolicyDTOProps[];
 }
 
 export class SpaceDTO {
@@ -92,6 +94,9 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: 'number', description: '초과 사용자 수' } })
   overflowUserCount: number;
 
+  @Property({ apiProperty: { type: RefundPolicyDTO, isArray: true, description: '환불 정책' } })
+  refundPolicies: RefundPolicyDTO[];
+
   constructor(props: SpaceDTOProps) {
     const timeRentals = props.rentalType.filter((target) => target.rentalType === 1);
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
@@ -116,6 +121,7 @@ export class SpaceDTO {
     this.categories = props.categories ? props.categories?.map((category) => new SpaceCategoryDTO(category)) : [];
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
+    this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
   }
 
   static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {
@@ -152,6 +158,7 @@ export class SpaceDTO {
         },
       },
       reports: true,
+      refundPolicies: true,
     };
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, PublicTransportation, RentalType } from '@prisma/client';
+import { Prisma, PublicTransportation, RefundPolicy, RentalType } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { SQLCategory, SqlSpace } from '@/interface/space.interface';
@@ -59,6 +59,12 @@ export class SpaceRepository {
           WHERE sc.spaceId = ${space.id}
         `);
 
+        const refundPolicies: RefundPolicy[] = await this.database.$queryRaw(Prisma.sql`
+          SELECT * 
+          FROM RefundPolicy rp
+          WHERE rp.spaceId = ${space.id}
+        `);
+
         return new SpaceDTO({
           ...space,
           isApproved: space.isApproved === 1,
@@ -83,6 +89,7 @@ export class SpaceRepository {
               name: category.iconName,
             },
           })),
+          refundPolicies,
         });
       })
     );
@@ -270,38 +277,13 @@ export class SpaceRepository {
       where: {
         id,
       },
-      include: {
-        location: true,
-        reviews: true,
-        publicTransportations: true,
-        userInterests: true,
-        rentalType: true,
-        categories: {
-          include: {
-            category: {
-              include: {
-                icon: true,
-              },
-            },
-          },
-        },
-        reports: true,
-      },
+      include: SpaceDTO.getSpacesIncludeOption(),
     });
     if (!space) {
       throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
     }
-    space.rentalType;
-    return new SpaceDTO({
-      ...space,
-      reviewCount: space.reviews.length,
-      location: space.location,
-      averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-      isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
-      categories: space.categories.map(({ category }) => category),
-      reportCount: space.reports.length,
-      interestCount: space.userInterests.length,
-    });
+
+    return new SpaceDTO(SpaceDTO.generateSpaceDTO(space, userId));
   }
 
   async countSpaces(args = {} as Prisma.SpaceCountArgs) {
@@ -318,43 +300,14 @@ export class SpaceRepository {
     const spaces = await this.database.space.findMany({
       ...args,
       where: args.where,
-      include: {
-        location: true,
-        reviews: true,
-        publicTransportations: true,
-        userInterests: true,
-        rentalType: true,
-        categories: {
-          include: {
-            category: {
-              include: {
-                icon: true,
-              },
-            },
-          },
-        },
-        reports: true,
-      },
+      include: SpaceDTO.getSpacesIncludeOption(),
       orderBy: {
         ...args.orderBy,
       },
     });
 
     //TODO: isBest는 어떻게 산정?
-    return spaces.map(
-      (space) =>
-        new SpaceDTO({
-          ...space,
-          rentalType: space.rentalType,
-          reviewCount: space.reviews.length,
-          location: space.location,
-          averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-          isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
-          categories: space.categories.map(({ category }) => category),
-          reportCount: space.reports.length,
-          interestCount: space.userInterests.length,
-        })
-    );
+    return spaces.map((space) => new SpaceDTO(SpaceDTO.generateSpaceDTO(space, userId)));
   }
   async findRefundPolicyBySpaceId(spaceId: string) {
     const refundPolicies = await this.database.refundPolicy.findMany({

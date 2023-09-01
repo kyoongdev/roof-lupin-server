@@ -2,6 +2,7 @@ import {
   Category,
   Icon,
   PublicTransportation,
+  RefundPolicy,
   RentalType,
   Space,
   SpaceCategory,
@@ -54,6 +55,7 @@ export interface CommonSpace extends Space {
   publicTransportations: PublicTransportation[];
   rentalType: RentalType[];
   userInterests: SpaceInterest[];
+  refundPolicies: RefundPolicy[];
   categories?: (SpaceCategory & {
     category: Category & {
       icon: Icon;
