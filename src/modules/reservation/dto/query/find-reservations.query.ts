@@ -113,10 +113,11 @@ export class FindReservationQuery extends PagingDTO {
               },
             },
             {
-              cancel: null,
-              refunds: {
-                isNot: null,
+              payedAt: {
+                not: null,
               },
+              cancel: null,
+              refunds: null,
               deletedAt: null,
             },
           ],

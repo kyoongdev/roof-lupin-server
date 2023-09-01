@@ -209,8 +209,9 @@ export class RentalTypeService {
   }
 
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
+    console.log(query);
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
-    const targetDay = getDay(Number(query.year), Number(query.month), Number(query.day), isHoliday.isHoliday);
+    const targetDay = getDay(query.year, query.month, query.day, isHoliday.isHoliday);
 
     const rentalType = await this.rentalTypeRepository.findRentalTypeWithReservations(
       id,
