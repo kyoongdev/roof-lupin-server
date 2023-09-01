@@ -19,7 +19,7 @@ export interface ReservationDTOProps extends BaseReservationDTOProps {
   isReviewed: boolean;
   cancel?: ReservationCancelDTOProps;
   refund?: RefundDTOProps;
-  additionalServices?: ReservationAdditionalServiceDTOProps[];
+  additionalServices: ReservationAdditionalServiceDTOProps[];
 }
 
 export class ReservationDTO extends BaseReservationDTO {
@@ -51,7 +51,7 @@ export class ReservationDTO extends BaseReservationDTO {
   cancel?: ReservationCancelDTO;
 
   @Property({ apiProperty: { type: ReservationAdditionalServiceDTO, isArray: true, description: '부가 서비스 정보' } })
-  additionalServices?: ReservationAdditionalServiceDTO[];
+  additionalServices: ReservationAdditionalServiceDTO[];
 
   constructor(props: ReservationDTOProps) {
     super(props);
