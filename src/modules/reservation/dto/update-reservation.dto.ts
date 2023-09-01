@@ -3,13 +3,12 @@ import { Property } from 'cumuco-nestjs';
 import { PhoneNumberValidation } from '@/utils/validation';
 
 import { CreateReservationCancelDTO, CreateReservationCancelDTOProps } from './cancel/create-reservation-cancel.dto';
-import { CreatePaymentDTO, CreatePaymentDTOProps } from './create-payment';
 import { TimeValidation } from './validation';
 
 export interface UpdateReservationDTOProps {
-  year?: string;
-  month?: string;
-  day?: string;
+  year?: number;
+  month?: number;
+  day?: number;
   userName?: string;
   userPhoneNumber?: string;
   startAt?: number;
@@ -22,14 +21,14 @@ export interface UpdateReservationDTOProps {
 }
 
 export class UpdateReservationDTO {
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 연도' } })
-  year?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 연도' } })
+  year?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 월' } })
-  month?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 월' } })
+  month?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '예약 일' } })
-  day?: string;
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '예약 일' } })
+  day?: number;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '대표 이용자 이름' } })
   userName?: string;

@@ -4,7 +4,6 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { ReservationDTO } from '@/modules/reservation/dto';
-import { SpaceDTO } from '@/modules/space/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 

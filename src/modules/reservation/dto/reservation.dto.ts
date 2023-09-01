@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { CheckIsTargetDay } from '@/interface/common.interface';

@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { WordLengthValidation } from '@/utils/validation';
-
 export interface CreateTaxReturnDTOProps {
   year: number;
   month: number;

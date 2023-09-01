@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { WordLengthValidation } from '@/utils/validation';
-
 import { CreateTaxReturnDTOProps } from './create-tax-return.dto';
 
 export type UpdateTaxReturnDTOProps = Omit<Partial<CreateTaxReturnDTOProps>, 'hostId'>;

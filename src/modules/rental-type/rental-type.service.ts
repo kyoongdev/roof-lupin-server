@@ -209,7 +209,6 @@ export class RentalTypeService {
   }
 
   async findPossibleRentalTypesById(id: string, query: PossibleRentalTypeQuery) {
-    console.log(query);
     const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, query.day);
     const targetDay = getDay(query.year, query.month, query.day, isHoliday.isHoliday);
 
@@ -459,11 +458,10 @@ export class RentalTypeService {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
             const endAt = reservedRentalType.endAt;
-            console.log({ reservedRentalType, startAt, endAt });
 
             range(startAt, endAt + 1).forEach((hour) => {
               const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
-              console.log({ hour, index });
+
               if (index !== -1) {
                 timeCostInfos[index].isPossible = false;
               }

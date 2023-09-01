@@ -1,13 +1,11 @@
-import { BadRequestException } from '@nestjs/common';
-
 import { Property } from 'cumuco-nestjs';
 
 export interface PossibleRentalTypePagingDTOProps {
   page: number;
   limit: number;
   maxSize: number;
-  startYear: string;
-  startMonth: string;
+  startYear: number;
+  startMonth: number;
 }
 
 export class PossibleRentalTypePagingDTO {
@@ -20,11 +18,11 @@ export class PossibleRentalTypePagingDTO {
   @Property({ apiProperty: { type: 'number', minimum: 1, default: 20 } })
   maxSize: number;
 
-  @Property({ apiProperty: { type: 'string', description: '시작연도' } })
-  startYear: string;
+  @Property({ apiProperty: { type: 'number', description: '시작연도' } })
+  startYear: number;
 
-  @Property({ apiProperty: { type: 'string', description: '시작 월' } })
-  startMonth: string;
+  @Property({ apiProperty: { type: 'number', description: '시작 월' } })
+  startMonth: number;
 
   constructor(props?: PossibleRentalTypePagingDTOProps) {
     if (props) {

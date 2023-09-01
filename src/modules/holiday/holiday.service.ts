@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { flatten, range } from 'lodash';
+import { range } from 'lodash';
 
 import { PrismaService } from '@/database/prisma.service';
 
