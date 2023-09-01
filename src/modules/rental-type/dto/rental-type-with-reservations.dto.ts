@@ -1,13 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
 import { GetCurrentDayRenalType } from '@/interface/rental-type.interface';
-import {
-  BaseReservationDTO,
-  BaseReservationDTOProps,
-  ReservationDTO,
-  ReservationDTOProps,
-} from '@/modules/reservation/dto';
-import { PossibleRentalTypeByMonthQuery } from '@/modules/space/dto/query';
+import { ReservationDTO, ReservationDTOProps } from '@/modules/reservation/dto';
 import { DAY_ENUM, getDay } from '@/utils';
 
 import { RentalTypeDTO, RentalTypeDTOProps } from './rental-type.dto';

@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { ReservationCancelDTO, ReservationCancelDTOProps } from './cancel/reservation-cancel.dto';
-
 export interface BaseReservationDTOProps {
   id: string;
   year: number;

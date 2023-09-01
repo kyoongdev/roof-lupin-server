@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 
-import { reservationInclude } from '@/common/constants/query';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
@@ -86,7 +85,6 @@ export class RentalTypeRepository {
     args = {} as Prisma.RentalTypeFindManyArgs,
     reservationArgs = {} as Prisma.ReservationFindManyArgs
   ) {
-    console.log(reservationArgs);
     const rentalTypes = await this.database.rentalType.findMany({
       ...args,
       where: {

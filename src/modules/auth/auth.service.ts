@@ -6,12 +6,10 @@ import type { Response } from 'express';
 import { nanoid } from 'nanoid';
 import queryString from 'querystring';
 
-import { EncryptProvider } from '@/common/encrypt';
 import { FCMEvent } from '@/event/fcm';
 import type { TokenPayload } from '@/interface/token.interface';
 import type { SocialType } from '@/interface/user.interface';
 import { logger } from '@/log';
-import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 import { Jsonwebtoken } from '@/utils/jwt';
 
