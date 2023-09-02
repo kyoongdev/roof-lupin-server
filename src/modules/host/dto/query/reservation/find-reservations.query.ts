@@ -54,17 +54,7 @@ export class HostFindReservationsQuery extends PagingDTO {
             },
           },
         }),
-        ...(this.status === 'APPROVED_PENDING' && {
-          isApproved: false,
-          spaceReviews: {
-            some: {
-              space: {
-                isImmediateReservation: true,
-              },
-            },
-          },
-        }),
-        ...(this.status === 'BEFORE_USAGE' && {
+        ...(this.status === RESERVATION_STATUS.BEFORE_USAGE && {
           OR: [
             {
               isApproved: true,
@@ -87,17 +77,11 @@ export class HostFindReservationsQuery extends PagingDTO {
         }),
         ...((typeof this.isApproved === 'boolean' || this.status === 'APPROVED') && {
           isApproved: this.isApproved,
-          spaceReviews: {
-            some: {
-              space: {
-                isImmediateReservation: true,
-              },
-            },
+          space: {
+            isImmediateReservation: true,
           },
         }),
-        ...((typeof this.isCanceled === 'boolean' ||
-          this.status === 'HOST_CANCELED' ||
-          this.status === 'USER_CANCELED') && {
+        ...(typeof this.isCanceled === 'boolean' && {
           ...(this.isCanceled
             ? {
                 cancel: {
@@ -109,6 +93,19 @@ export class HostFindReservationsQuery extends PagingDTO {
                   is: null,
                 },
               }),
+        }),
+        ...((this.status === RESERVATION_STATUS.HOST_CANCELED || this.status === RESERVATION_STATUS.USER_CANCELED) && {
+          cancel: {
+            isNot: null,
+            refundCost: null,
+          },
+        }),
+        ...(this.status === RESERVATION_STATUS.REFUND && {
+          cancel: {
+            refundCost: {
+              not: null,
+            },
+          },
         }),
         ...(typeof this.isReviewed === 'boolean' && {
           spaceReviews: {
@@ -136,9 +133,6 @@ export class HostFindReservationsQuery extends PagingDTO {
             },
             {
               cancel: null,
-              refunds: {
-                isNot: null,
-              },
               deletedAt: null,
             },
           ],

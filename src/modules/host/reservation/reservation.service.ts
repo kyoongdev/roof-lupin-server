@@ -89,6 +89,24 @@ export class HostReservationService {
     });
   }
 
+  async rejectReservation(id: string, hostId: string, data: HostCancelReservationDTO) {
+    const reservation = await this.findReservation(id, hostId);
+
+    if (!reservation.space.isImmediateReservation) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
+    }
+    if (reservation.isApproved) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_ALREADY_APPROVED));
+    }
+
+    await this.reservationRepository.updateReservation(id, {
+      isApproved: false,
+      cancel: {
+        reason: data.cancelReason,
+      },
+    });
+  }
+
   async cancelReservation(id: string, hostId: string, data: HostCancelReservationDTO) {
     const reservation = await this.findReservation(id, hostId);
 
@@ -107,16 +125,12 @@ export class HostReservationService {
 
     await this.reservationRepository.updatePayment(id, {
       isApproved: false,
-      ...(isRefund && {
-        refund: {
-          refundCost: reservation.totalCost,
-          reason: '호스트 예약 취소',
-          hostId,
-        },
-      }),
       cancel: {
         reason: data.cancelReason,
         hostId,
+        ...(isRefund && {
+          refundCost: reservation.totalCost,
+        }),
       },
     });
   }

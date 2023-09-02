@@ -1,7 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
 import { CheckIsTargetDay } from '@/interface/common.interface';
-import type { CommonReservation, ReservationStatus } from '@/interface/reservation.interface';
+import { type CommonReservation, RESERVATION_STATUS, type ReservationStatus } from '@/interface/reservation.interface';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
@@ -38,7 +38,7 @@ export class ReservationDTO extends BaseReservationDTO {
     apiProperty: {
       type: 'string',
       description: '예약 상태',
-      example: 'APPROVED_PENDING | APPROVED | USED | USER_CANCELED | HOST_CANCELED | REFUND | BEFORE_USAGE',
+      example: Object.keys(RESERVATION_STATUS).join(' | '),
     },
   })
   status: ReservationStatus;
@@ -75,21 +75,21 @@ export class ReservationDTO extends BaseReservationDTO {
       Number(this.day) <= currentDateTime.getDate() &&
       startAt <= currentDateTime.getHours()
     ) {
-      this.status = 'USED';
+      this.status = RESERVATION_STATUS.USED;
     } else if (this.space.isImmediateReservation && !this.isApproved) {
-      this.status = 'APPROVED_PENDING';
+      this.status = RESERVATION_STATUS.APPROVED_PENDING;
     } else if (this.space.isImmediateReservation && this.isApproved && !this.payedAt) {
-      this.status = 'APPROVED';
+      this.status = RESERVATION_STATUS.APPROVED;
     } else if (this.cancel) {
-      if (this.cancel.user) {
-        this.status = 'USER_CANCELED';
+      if (this.cancel.refundCost) {
+        this.status = RESERVATION_STATUS.REFUND;
+      } else if (this.cancel.user) {
+        this.status = RESERVATION_STATUS.USER_CANCELED;
       } else if (this.cancel.host) {
-        this.status = 'HOST_CANCELED';
+        this.status = RESERVATION_STATUS.HOST_CANCELED;
       }
-    } else if (this.refund) {
-      this.status = 'REFUND';
     } else {
-      this.status = 'BEFORE_USAGE';
+      this.status = RESERVATION_STATUS.BEFORE_USAGE;
     }
   }
 

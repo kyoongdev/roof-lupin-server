@@ -17,6 +17,7 @@ export interface UpdateReservationDTOProps {
   discountCost?: number;
   originalCost?: number;
   isApproved?: boolean;
+  isApproveRejected?: boolean;
   cancel?: CreateReservationCancelDTOProps;
 }
 

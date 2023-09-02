@@ -265,7 +265,7 @@ export class ReservationRepository {
   }
 
   async updatePayment(id: string, data: UpdatePaymentDTO) {
-    const { refund, cancel, ...rest } = data;
+    const { cancel, ...rest } = data;
     await this.database.reservation.update({
       where: {
         id,
@@ -293,34 +293,12 @@ export class ReservationRepository {
             },
           },
         }),
-        ...(refund && {
-          refunds: {
-            create: {
-              reason: refund.reason,
-              refundCost: refund.refundCost,
-              ...(refund.hostId && {
-                host: {
-                  connect: {
-                    id: refund.hostId,
-                  },
-                },
-              }),
-              ...(refund.userId && {
-                user: {
-                  connect: {
-                    id: refund.userId,
-                  },
-                },
-              }),
-            },
-          },
-        }),
       },
     });
   }
 
   async updatePaymentWithTransaction(database: TransactionPrisma, id: string, data: UpdatePaymentDTO) {
-    const { refund, cancel, ...rest } = data;
+    const { cancel, ...rest } = data;
     await database.reservation.update({
       where: {
         id,
@@ -342,28 +320,6 @@ export class ReservationRepository {
                 user: {
                   connect: {
                     id: cancel.userId,
-                  },
-                },
-              }),
-            },
-          },
-        }),
-        ...(refund && {
-          refunds: {
-            create: {
-              reason: refund.reason,
-              refundCost: refund.refundCost,
-              ...(refund.hostId && {
-                host: {
-                  connect: {
-                    id: refund.hostId,
-                  },
-                },
-              }),
-              ...(refund.userId && {
-                user: {
-                  connect: {
-                    id: refund.userId,
                   },
                 },
               }),

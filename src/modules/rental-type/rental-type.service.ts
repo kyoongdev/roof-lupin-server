@@ -92,7 +92,6 @@ export class RentalTypeService {
           year: Number(query.year),
           month: Number(query.month),
           cancel: null,
-          refunds: null,
           deletedAt: null,
         },
       }
@@ -145,7 +144,6 @@ export class RentalTypeService {
               year: currentYear,
               month: currentMonth,
               cancel: null,
-              refunds: null,
               deletedAt: null,
             },
           }
@@ -193,7 +191,6 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: null,
           deletedAt: null,
         },
       }
@@ -225,7 +222,6 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: null,
           deletedAt: null,
         },
       }
@@ -262,7 +258,6 @@ export class RentalTypeService {
           month: Number(query.month),
           day: Number(query.day),
           cancel: null,
-          refunds: null,
           deletedAt: null,
         },
       }
