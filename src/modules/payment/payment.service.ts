@@ -251,7 +251,7 @@ export class PaymentService {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_NOT_COMPLETED));
     }
 
-    const cancelableAmount = reservation.totalCost - reservation.refundCost;
+    const cancelableAmount = reservation.totalCost - (reservation.cancel.refundCost ?? 0);
     if (cancelableAmount <= 0) {
       throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_ALREADY_REFUNDED));
     }
@@ -262,13 +262,9 @@ export class PaymentService {
     });
 
     await this.reservationRepository.updatePayment(reservation.id, {
-      refund: {
+      cancel: {
         refundCost,
         reason: '사용자 환불 요청',
-        userId,
-      },
-      cancel: {
-        reason: data.cancelReason,
         userId,
       },
     });

@@ -4,6 +4,18 @@ import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 import { RESERVATION_STATUS, ReservationStatusReqDecorator } from '../validation/status.validation';
 
 export class FindReservationQuery extends PagingDTO {
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '연도' } })
+  year?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '월' } })
+  month?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '일' } })
+  day?: number;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 id' } })
+  spaceId?: string;
+
   @ToBoolean()
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
   isApproved?: boolean;
@@ -23,21 +35,23 @@ export class FindReservationQuery extends PagingDTO {
   @ReservationStatusReqDecorator(true)
   status?: keyof typeof RESERVATION_STATUS;
 
-  generateQuery(userId?: string): Prisma.ReservationFindManyArgs {
+  generateQuery(): Prisma.ReservationFindManyArgs {
     const currentDate = new Date();
     return {
       where: {
-        ...(this.status === 'APPROVED_PENDING' && {
-          isApproved: false,
-          spaceReviews: {
+        ...(this.year && { year: Number(this.year) }),
+        ...(this.month && { month: Number(this.month) }),
+        ...(this.day && { day: Number(this.day) }),
+        ...(this.spaceId && {
+          rentalTypes: {
             some: {
-              space: {
-                isImmediateReservation: true,
+              rentalType: {
+                spaceId: this.spaceId,
               },
             },
           },
         }),
-        ...(this.status === 'BEFORE_USAGE' && {
+        ...(this.status === RESERVATION_STATUS.BEFORE_USAGE && {
           OR: [
             {
               isApproved: true,
@@ -60,17 +74,11 @@ export class FindReservationQuery extends PagingDTO {
         }),
         ...((typeof this.isApproved === 'boolean' || this.status === 'APPROVED') && {
           isApproved: this.isApproved,
-          spaceReviews: {
-            some: {
-              space: {
-                isImmediateReservation: true,
-              },
-            },
+          space: {
+            isImmediateReservation: true,
           },
         }),
-        ...((typeof this.isCanceled === 'boolean' ||
-          this.status === 'HOST_CANCELED' ||
-          this.status === 'USER_CANCELED') && {
+        ...(typeof this.isCanceled === 'boolean' && {
           ...(this.isCanceled
             ? {
                 cancel: {
@@ -83,22 +91,30 @@ export class FindReservationQuery extends PagingDTO {
                 },
               }),
         }),
-        ...(typeof this.isReviewed === 'boolean' &&
-          userId && {
-            spaceReviews: {
-              ...(this.isReviewed
-                ? {
-                    some: {
-                      userId,
-                    },
-                  }
-                : {
-                    none: {
-                      userId,
-                    },
-                  }),
+        ...((this.status === RESERVATION_STATUS.HOST_CANCELED || this.status === RESERVATION_STATUS.USER_CANCELED) && {
+          cancel: {
+            isNot: null,
+            refundCost: null,
+          },
+        }),
+        ...(this.status === RESERVATION_STATUS.REFUND && {
+          cancel: {
+            refundCost: {
+              not: null,
             },
-          }),
+          },
+        }),
+        ...(typeof this.isReviewed === 'boolean' && {
+          spaceReviews: {
+            ...(this.isReviewed
+              ? {
+                  some: {},
+                }
+              : {
+                  none: {},
+                }),
+          },
+        }),
         ...(Boolean(this.isApproaching) && {
           AND: [
             {
@@ -113,11 +129,7 @@ export class FindReservationQuery extends PagingDTO {
               },
             },
             {
-              payedAt: {
-                not: null,
-              },
               cancel: null,
-              refunds: null,
               deletedAt: null,
             },
           ],

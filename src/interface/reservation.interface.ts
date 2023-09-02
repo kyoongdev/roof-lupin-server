@@ -40,6 +40,7 @@ export interface CommonReservationCancel {
     socials: UserSocial[];
   };
   host?: Host;
+  createdAt: Date;
 }
 
 export interface CommonRentalType extends RentalType {
@@ -56,11 +57,14 @@ export interface CommonReservationWithRentalType extends ReservationRentalType {
   reservation: CommonReservation;
 }
 
-export type ReservationStatus =
-  | 'APPROVED_PENDING'
-  | 'APPROVED'
-  | 'USED'
-  | 'USER_CANCELED'
-  | 'HOST_CANCELED'
-  | 'REFUND'
-  | 'BEFORE_USAGE';
+export const RESERVATION_STATUS = {
+  APPROVED_PENDING: 'APPROVED_PENDING',
+  APPROVED: 'APPROVED',
+  USED: 'USED',
+  USER_CANCELED: 'USER_CANCELED',
+  HOST_CANCELED: 'HOST_CANCELED',
+  REFUND: 'REFUND',
+  BEFORE_USAGE: 'BEFORE_USAGE',
+} as const;
+
+export type ReservationStatus = keyof typeof RESERVATION_STATUS;

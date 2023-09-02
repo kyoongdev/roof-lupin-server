@@ -12,7 +12,6 @@ export interface UpdatePaymentDTOProps {
   orderResultId?: string;
   payMethod?: string;
   payedAt?: Date;
-  refund?: CreateRefundDTOProps;
   receiptUrl?: string;
   isApproved?: boolean;
   cancel?: CreateReservationCancelDTOProps;
@@ -43,9 +42,6 @@ export class UpdatePaymentDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '결제일' } })
   payedAt?: Date;
 
-  @Property({ apiProperty: { type: CreateRefundDTO, nullable: true, description: '환불 금액' } })
-  refund?: CreateRefundDTO;
-
   @Property({ apiProperty: { type: 'string', nullable: true, description: '영수증 URL' } })
   receiptUrl?: string;
 
@@ -65,7 +61,6 @@ export class UpdatePaymentDTO {
       this.orderResultId = props.orderResultId;
       this.payMethod = props.payMethod;
       this.payedAt = props.payedAt;
-      this.refund = props.refund ? new CreateRefundDTO(props.refund) : null;
       this.receiptUrl = props.receiptUrl;
       this.isApproved = props.isApproved;
       this.cancel = props.cancel ? new CreateReservationCancelDTO(props.cancel) : null;

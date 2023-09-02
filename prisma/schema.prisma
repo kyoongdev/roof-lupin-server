@@ -369,29 +369,20 @@ model Reservation {
   userCoupon         UserCoupon[]
   additionalServices ReservedAdditionalService[]
   rentalTypes        ReservationRentalType[]
-  refunds            ReservationRefund?
   cancel             ReservationCancel?
 }
 
 model ReservationCancel {
   id String @id @unique @default(uuid())
 
-  reason String @db.VarChar(255)
+  reason     String   @db.VarChar(255)
+  refundCost Int?     @db.MediumInt
+  createdAt  DateTime @default(now())
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   hostId String?
   host   Host?   @relation(fields: [hostId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  reservationId String      @unique
-  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model ReservationRefund {
-  id String @id @unique @default(uuid())
-
-  refundCost Int    @db.MediumInt
-  reason     String @db.VarChar(255)
 
   reservationId String      @unique
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
