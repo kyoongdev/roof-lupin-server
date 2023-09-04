@@ -161,6 +161,26 @@ export class ReviewController {
     });
   }
 
+  @Get('count')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '내가 작성한 리뷰 개수',
+      summary: '내가 작성한 리뷰 개수를 불러옵니다. 유저만 사용이 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: ReviewDTO,
+    isPaging: true,
+  })
+  async countMyReviewsPaging(@ReqUser() user: RequestUser) {
+    return await this.reviewService.countReviews({
+      where: {
+        userId: user.id,
+      },
+    });
+  }
+
   @Get(':reviewId/detail')
   @RequestApi({
     summary: {
@@ -171,8 +191,8 @@ export class ReviewController {
   @ResponseApi({
     type: ReviewDetailDTO,
   })
-  async getReview(@Param('reviewId') reviewId: string) {
-    return await this.reviewService.findReview(reviewId);
+  async getReview(@Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
+    return await this.reviewService.findReview(reviewId, user.id);
   }
 
   @Post()

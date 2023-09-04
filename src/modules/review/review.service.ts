@@ -40,11 +40,11 @@ export class ReviewService {
     return new ReviewsSummaryDTO({ averageScore: score || 0, count });
   }
 
-  async findReview(id: string) {
+  async findReview(id: string, userId?: string) {
     const review = await this.reviewRepository.findReview(id, {
       deletedAt: null,
     });
-
+    review.setIsEditable(userId);
     return review;
   }
 
@@ -61,11 +61,17 @@ export class ReviewService {
       }
     );
 
+    review.setIsEditable(userId);
+
     return review;
   }
 
+  async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
+    return await this.reviewRepository.countReviews(args);
+  }
+
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
-    return await this.reviewRepository.findReviews(
+    const reviews = await this.reviewRepository.findReviews(
       {
         where: {
           ...args.where,
@@ -79,6 +85,11 @@ export class ReviewService {
         deletedAt: null,
       }
     );
+
+    return reviews.map((review) => {
+      review.setIsEditable(args.where?.userId as string);
+      return review;
+    });
   }
 
   async findBestReviewImages(spaceId: string) {
@@ -122,7 +133,13 @@ export class ReviewService {
       }
     );
 
-    return new PaginationDTO<ReviewDTO>(rows, { count, paging });
+    return new PaginationDTO<ReviewDTO>(
+      rows.map((row) => {
+        row.setIsEditable(args.where?.userId as string);
+        return row;
+      }),
+      { count, paging }
+    );
   }
 
   async createReview(props: CreateReviewDTO, userId: string) {
@@ -162,10 +179,9 @@ export class ReviewService {
 
   async updateReview(reviewId: string, userId: string, props: UpdateReviewDTO) {
     const review = await this.findReview(reviewId);
-    const reservation = await this.reservationRepository.findReservation(review.reservationId);
 
     const currentDate = new Date();
-    const reviewedAt = reservation.createdAt;
+    const reviewedAt = review.createdAt;
 
     if (getTimeDiff(currentDate, reviewedAt) > 72) {
       throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_UPDATE_DUE_DATE));
