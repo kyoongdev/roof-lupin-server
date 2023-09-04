@@ -6,5 +6,5 @@ export * from './base-reservation.dto';
 export * from './update-payment.dto';
 export * from './create-reservation.dto';
 export * from './create-refund.dto';
-export * from './refund/refund.dto';
+
 export * from './cancel/reservation-cancel.dto';
