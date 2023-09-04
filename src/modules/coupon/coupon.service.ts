@@ -55,13 +55,13 @@ export class CouponService {
 
   async registerCouponByCode(user: RequestUser, data: RegisterCouponByCodeDTO) {
     const coupon = await this.couponRepository.findCouponByCode(data.code);
-    const userCoupon = await this.couponRepository.findUserCouponByCode(data.code);
+    const userCoupon = await this.couponRepository.checkUserCouponByCode(data.code);
 
     if (coupon.deletedAt) {
       throw new BadRequestException('삭제된 쿠폰입니다.');
     }
     if (userCoupon) {
-      throw new ConflictException('이미 등록된 쿠폰입니다.');
+      throw new ConflictException('이미 등록된 쿠폰코드입니다.');
     }
 
     const now = new Date();
