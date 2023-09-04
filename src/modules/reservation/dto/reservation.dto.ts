@@ -8,7 +8,6 @@ import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 import { ReservationAdditionalServiceDTO, ReservationAdditionalServiceDTOProps } from './additional-service';
 import { BaseReservationDTO, BaseReservationDTOProps } from './base-reservation.dto';
 import { ReservationCancelDTO, ReservationCancelDTOProps } from './cancel';
-import { RefundDTO, RefundDTOProps } from './refund/refund.dto';
 import { ReservationRentalTypeDTO, ReservationRentalTypeDTOProps } from './reservation-rental-type.dto';
 
 export interface ReservationDTOProps extends BaseReservationDTOProps {
@@ -17,7 +16,6 @@ export interface ReservationDTOProps extends BaseReservationDTOProps {
   space: SpaceDTOProps;
   isReviewed: boolean;
   cancel?: ReservationCancelDTOProps;
-  refund?: RefundDTOProps;
   additionalServices: ReservationAdditionalServiceDTOProps[];
 }
 
@@ -43,9 +41,6 @@ export class ReservationDTO extends BaseReservationDTO {
   })
   status: ReservationStatus;
 
-  @Property({ apiProperty: { type: RefundDTO, description: '환불 정보' } })
-  refund?: RefundDTO;
-
   @Property({ apiProperty: { type: ReservationCancelDTO, nullable: true, description: '취소 정보' } })
   cancel?: ReservationCancelDTO;
 
@@ -58,7 +53,6 @@ export class ReservationDTO extends BaseReservationDTO {
     this.user = new CommonUserDTO(props.user);
     this.rentalTypes = props.rentalTypes.map((rentalType) => new ReservationRentalTypeDTO(rentalType));
     this.space = new SpaceDTO(props.space);
-    this.refund = props.refund ? new RefundDTO(props.refund) : null;
     this.cancel = props.cancel ? new ReservationCancelDTO(props.cancel) : null;
     this.additionalServices = props.additionalServices
       ? props.additionalServices.map((additionalService) => new ReservationAdditionalServiceDTO(additionalService))
@@ -106,7 +100,6 @@ export class ReservationDTO extends BaseReservationDTO {
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
-      refund: reservation.refund ? reservation.refund : undefined,
       additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({
         ...additionalService,
         count,
@@ -131,7 +124,6 @@ export class ReservationDTO extends BaseReservationDTO {
           host: true,
         },
       },
-      refunds: true,
       additionalServices: {
         include: {
           additionalService: true,

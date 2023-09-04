@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { PagingDTO, Property, ToBoolean } from 'cumuco-nestjs';
 
-export class CountQnAsQuery extends PagingDTO {
+export class CountQnAsQuery {
   @ToBoolean()
   @Property({ apiProperty: { type: 'boolean', description: '답변 여부' } })
   isAnswered?: boolean;
