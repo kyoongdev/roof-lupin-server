@@ -64,7 +64,7 @@ export class CouponController {
     return await this.couponService.countUserCoupons(user.id);
   }
 
-  @Post('/register')
+  @Post('register')
   @UseInterceptors(ResponseWithIdInterceptor)
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
