@@ -118,7 +118,7 @@ export class ReviewController {
     return await this.reviewService.findBestReviewImages(spaceId);
   }
 
-  @Get('me/list')
+  @Get('list')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
@@ -138,7 +138,7 @@ export class ReviewController {
     });
   }
 
-  @Get('me/paging')
+  @Get('paging')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
