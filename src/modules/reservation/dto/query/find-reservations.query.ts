@@ -29,6 +29,10 @@ export class FindReservationQuery extends PagingDTO {
   isReviewed?: boolean;
 
   @ToBoolean()
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '이용 완료 여부' } })
+  isUsed?: boolean;
+
+  @ToBoolean()
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '다가오는 예약 여부' } })
   isApproaching?: boolean;
 
@@ -91,7 +95,7 @@ export class FindReservationQuery extends PagingDTO {
                 },
               }),
         }),
-        ...((this.status === RESERVATION_STATUS.HOST_CANCELED || this.status === RESERVATION_STATUS.USER_CANCELED) && {
+        ...(this.status === RESERVATION_STATUS.HOST_CANCELED && {
           cancel: {
             isNot: null,
             refundCost: null,
@@ -116,6 +120,40 @@ export class FindReservationQuery extends PagingDTO {
           },
         }),
         ...(Boolean(this.isApproaching) && {
+          AND: [
+            {
+              year: {
+                gte: currentDate.getFullYear(),
+              },
+              month: {
+                gte: currentDate.getMonth(),
+              },
+              day: {
+                gte: currentDate.getDate(),
+              },
+            },
+            {
+              cancel: null,
+              deletedAt: null,
+            },
+          ],
+        }),
+        ...(typeof this.isUsed === 'boolean' && {
+          ...(this.isUsed
+            ? {
+                year: {
+                  lte: currentDate.getFullYear(),
+                },
+                month: {
+                  lte: currentDate.getMonth(),
+                },
+                day: {
+                  lt: currentDate.getDate(),
+                },
+                cancel: null,
+                deletedAt: null,
+              }
+            : {}),
           AND: [
             {
               year: {

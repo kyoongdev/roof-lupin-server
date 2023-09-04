@@ -9,7 +9,6 @@ export const RESERVATION_STATUS = {
   APPROVED_PENDING: 'APPROVED_PENDING',
   APPROVED: 'APPROVED',
   USED: 'USED',
-  USER_CANCELED: 'USER_CANCELED',
   HOST_CANCELED: 'HOST_CANCELED',
   REFUND: 'REFUND',
   BEFORE_USAGE: 'BEFORE_USAGE',
@@ -24,8 +23,7 @@ export class ReservationStatusConstraint implements ValidatorConstraintInterface
       value !== RESERVATION_STATUS.BEFORE_USAGE &&
       value !== RESERVATION_STATUS.HOST_CANCELED &&
       value !== RESERVATION_STATUS.REFUND &&
-      value !== RESERVATION_STATUS.USED &&
-      value !== RESERVATION_STATUS.USER_CANCELED
+      value !== RESERVATION_STATUS.USED
     ) {
       return false;
     }

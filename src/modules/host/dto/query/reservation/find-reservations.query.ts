@@ -94,7 +94,7 @@ export class HostFindReservationsQuery extends PagingDTO {
                 },
               }),
         }),
-        ...((this.status === RESERVATION_STATUS.HOST_CANCELED || this.status === RESERVATION_STATUS.USER_CANCELED) && {
+        ...(this.status === RESERVATION_STATUS.HOST_CANCELED && {
           cancel: {
             isNot: null,
             refundCost: null,
