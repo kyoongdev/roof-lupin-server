@@ -153,24 +153,25 @@ export class FindReservationQuery extends PagingDTO {
                 cancel: null,
                 deletedAt: null,
               }
-            : {}),
-          AND: [
-            {
-              year: {
-                gte: currentDate.getFullYear(),
-              },
-              month: {
-                gte: currentDate.getMonth(),
-              },
-              day: {
-                gte: currentDate.getDate(),
-              },
-            },
-            {
-              cancel: null,
-              deletedAt: null,
-            },
-          ],
+            : {
+                AND: [
+                  {
+                    year: {
+                      gte: currentDate.getFullYear(),
+                    },
+                    month: {
+                      gte: currentDate.getMonth(),
+                    },
+                    day: {
+                      gte: currentDate.getDate(),
+                    },
+                  },
+                  {
+                    cancel: null,
+                    deletedAt: null,
+                  },
+                ],
+              }),
         }),
       },
     };
