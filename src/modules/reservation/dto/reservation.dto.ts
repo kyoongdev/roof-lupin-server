@@ -77,8 +77,6 @@ export class ReservationDTO extends BaseReservationDTO {
     } else if (this.cancel) {
       if (this.cancel.refundCost) {
         this.status = RESERVATION_STATUS.REFUND;
-      } else if (this.cancel.user) {
-        this.status = RESERVATION_STATUS.USER_CANCELED;
       } else if (this.cancel.host) {
         this.status = RESERVATION_STATUS.HOST_CANCELED;
       }
