@@ -2,6 +2,7 @@ import { Image, Prisma, PrismaClient, SpaceReview, User } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { DateDTO } from '@/common';
+import { getTimeDiff } from '@/common/date';
 import { ImageDTO } from '@/modules/file/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
@@ -45,6 +46,9 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: ReviewAnswerDTO, nullable: true, description: '리뷰 답변' } })
   answer: ReviewAnswerDTO;
 
+  @Property({ apiProperty: { type: 'boolean', description: '수정 가능 여부' } })
+  isEditable: boolean;
+
   constructor(props: ReviewDTOProps) {
     this.id = props.id;
     this.content = props.content;
@@ -55,6 +59,10 @@ export class ReviewDTO {
     this.updatedAt = props.updatedAt;
     this.reservationId = props.reservationId;
     this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
+  }
+
+  setIsEditable(userId?: string) {
+    this.isEditable = this.user.id === userId && getTimeDiff(new Date(), this.createdAt) < 72;
   }
 
   static async generateQuery(query: FindReviewsQuery, spaceId?: string): Promise<Prisma.SpaceReviewFindManyArgs> {
