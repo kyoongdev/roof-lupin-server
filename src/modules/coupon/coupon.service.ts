@@ -75,7 +75,7 @@ export class CouponService {
       usageDateEndAt,
     });
 
-    if (user && user.isAlarmAccepted && user.pushToken) {
+    if (userCoupon.user.setting.checkIsPushAlarmAccepted() && user.pushToken) {
       this.fcmEvent.createCouponDurationAlarm({
         dueDate: usageDateEndAt,
         jobId: `${user.id}_${userCouponId}`,

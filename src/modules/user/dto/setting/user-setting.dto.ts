@@ -41,4 +41,16 @@ export class UserSettingDTO {
     this.isKakaoTalkAccepted = props.isKakaoTalkAccepted;
     this.isPushAccepted = props.isPushAccepted;
   }
+
+  checkIsKakaoTalkAlarmAccepted(): boolean {
+    return this.isAlarmAccepted && this.isKakaoTalkAccepted;
+  }
+
+  checkIsPushAlarmAccepted(): boolean {
+    return this.isAlarmAccepted && this.isPushAccepted;
+  }
+
+  checkIsEmailAlarmAccepted(): boolean {
+    return this.isAlarmAccepted && this.isEmailAccepted;
+  }
 }

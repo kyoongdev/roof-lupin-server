@@ -1,11 +1,13 @@
 import { Property } from 'cumuco-nestjs';
 
+import { UserSettingDTO, UserSettingDTOProps } from './setting';
+
 export interface PushTokenDTOProps {
   id: string;
   nickname?: string;
   name?: string;
-  isAlarmAccepted: boolean;
   pushToken?: string;
+  setting: UserSettingDTOProps;
 }
 
 export class PushTokenDTO {
@@ -18,17 +20,17 @@ export class PushTokenDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '유저 이름' } })
   name?: string;
 
-  @Property({ apiProperty: { type: 'boolean', description: '알림 수신 여부' } })
-  isAlarmAccepted: boolean;
-
   @Property({ apiProperty: { type: 'string', nullable: true, description: '푸시 토큰' } })
   pushToken: string | null;
+
+  @Property({ apiProperty: { type: UserSettingDTO, description: '유저 설정' } })
+  setting: UserSettingDTO;
 
   constructor(props: PushTokenDTOProps) {
     this.pushToken = props.pushToken ?? null;
     this.id = props.id;
     this.nickname = props.nickname;
     this.name = props.name;
-    this.isAlarmAccepted = props.isAlarmAccepted;
+    this.setting = new UserSettingDTO(props.setting);
   }
 }

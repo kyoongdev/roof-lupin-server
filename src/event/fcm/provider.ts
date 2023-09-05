@@ -18,6 +18,8 @@ import {
 } from '@/interface/fcm.interface';
 import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
+import { CommonUserDTO, PushTokenDTO } from '@/modules/user/dto';
+import { UserRepository } from '@/modules/user/user.repository';
 import { FCMProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
@@ -115,15 +117,12 @@ export class FCMEventProvider {
     });
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      const user = await this.database.user.findUnique({
-        where: {
-          id: data.userId,
-        },
-      });
+      const user = await this.getUser(data.userId);
+      if (!user) return;
       await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
-        isAlarmAccepted: user.isAlarmAccepted,
+        isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
       });
     });
   }
@@ -144,15 +143,12 @@ export class FCMEventProvider {
       alarmAt: targetDate,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      const user = await this.database.user.findUnique({
-        where: {
-          id: data.userId,
-        },
-      });
+      const user = await this.getUser(data.userId);
+      if (!user) return;
       await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
-        isAlarmAccepted: user.isAlarmAccepted,
+        isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
       });
     });
   }
@@ -176,15 +172,12 @@ export class FCMEventProvider {
       alarmAt: targetDate,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      const user = await this.database.user.findUnique({
-        where: {
-          id: data.userId,
-        },
-      });
+      const user = await this.getUser(data.userId);
+      if (!user) return;
       await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
-        isAlarmAccepted: user.isAlarmAccepted,
+        isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
       });
     });
   }
@@ -238,28 +231,21 @@ export class FCMEventProvider {
     });
 
     if (dateDiff <= 1) {
-      const user = await this.database.user.findUnique({
-        where: {
-          id: data.userId,
-        },
-      });
-
+      const user = await this.getUser(data.userId);
+      if (!user) return;
       await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
-        isAlarmAccepted: user.isAlarmAccepted,
+        isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
       });
     } else {
       this.schedulerEvent.createSchedule(`${data.userId}_${data.exhibitionId}`, targetDate, async () => {
-        const user = await this.database.user.findUnique({
-          where: {
-            id: data.userId,
-          },
-        });
+        const user = await this.getUser(data.userId);
+        if (!user) return;
         await this.sendAlarmWithUpdate(alarm.id, {
           ...alarmData,
           token: user.pushToken,
-          isAlarmAccepted: user.isAlarmAccepted,
+          isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
         });
       });
     }
@@ -323,5 +309,19 @@ export class FCMEventProvider {
         isPushed: true,
       },
     });
+  }
+
+  async getUser(id: string) {
+    const user = await this.database.user.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        setting: true,
+        socials: true,
+      },
+    });
+    return new PushTokenDTO(user);
   }
 }

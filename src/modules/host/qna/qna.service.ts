@@ -69,7 +69,7 @@ export class HostQnAService {
       pushToken: user.pushToken,
       spaceName: qna.space.title,
       nickname: user.nickname || user.name,
-      isAlarmAccepted: user.isAlarmAccepted,
+      isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
     });
 
     return qnaAnswerId;

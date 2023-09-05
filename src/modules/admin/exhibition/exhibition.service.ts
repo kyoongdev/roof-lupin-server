@@ -52,9 +52,12 @@ export class AdminExhibitionService {
 
     const users = await this.database.user.findMany({
       where: {
-        isAlarmAccepted: true,
         pushToken: {
           not: null,
+        },
+        setting: {
+          isAlarmAccepted: true,
+          isPushAccepted: true,
         },
       },
       select: {

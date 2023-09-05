@@ -33,12 +33,8 @@ export class UserRepository {
       where: {
         id,
       },
-      select: {
-        id: true,
-        nickname: true,
-        name: true,
-        isAlarmAccepted: true,
-        pushToken: true,
+      include: {
+        setting: true,
       },
     });
 
