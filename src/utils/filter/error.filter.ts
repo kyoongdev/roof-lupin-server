@@ -31,5 +31,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       message,
     });
+
+    // status : 500
+    // message : Internal Server Error
+
+    // status : 404
+    // message : 유저를 찾을 수 없습니다.
   }
 }

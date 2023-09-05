@@ -5,11 +5,11 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 import { EmptyResponseDTO } from '@/common';
 import { RequestHost } from '@/interface/role.interface';
 import { ReservationDetailDTO, ReservationDTO } from '@/modules/reservation/dto';
+import { FindReservationQuery } from '@/modules/reservation/dto/query';
 import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { HostFindReservationsQuery } from '../dto/query/reservation';
 import { HostCancelReservationDTO } from '../dto/reservation';
 
 import { HostReservationService } from './reservation.service';
@@ -47,7 +47,7 @@ export class HostReservationController {
   async getPagingReservationList(
     @ReqUser() user: RequestHost,
     @Paging() paging: PagingDTO,
-    @Query() query: HostFindReservationsQuery
+    @Query() query: FindReservationQuery
   ) {
     return await this.reservationService.findPagingReservations(paging, user.id, query.generateQuery());
   }
@@ -63,7 +63,7 @@ export class HostReservationController {
     type: ReservationDTO,
     isArray: true,
   })
-  async getReservationList(@ReqUser() user: RequestHost, @Query() query: HostFindReservationsQuery) {
+  async getReservationList(@ReqUser() user: RequestHost, @Query() query: FindReservationQuery) {
     return await this.reservationService.findReservations(user.id, query.generateQuery());
   }
 

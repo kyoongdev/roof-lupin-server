@@ -7,7 +7,7 @@ import { FCMEvent } from '@/event/fcm';
 
 import { HistoryRepository } from '../history/history.repository';
 
-import { CreateQnADTO, QnACountDTO, QnADTO, UpdateQnADTO } from './dto';
+import { CreateQnADTO, QnACountDTO, QnACountSummaryDTO, QnADTO, UpdateQnADTO } from './dto';
 import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
 import { QnARepository } from './qna.repository';
@@ -16,8 +16,33 @@ import { QnARepository } from './qna.repository';
 export class QnAService {
   constructor(private readonly qnaRepository: QnARepository, private readonly historyRepository: HistoryRepository) {}
 
-  async countQnA(args = {} as Prisma.SpaceQnACountArgs) {
-    const count = await this.qnaRepository.countQna(args);
+  async countQnASummary(userId: string) {
+    const notAnsweredCount = await this.qnaRepository.countQna({
+      where: {
+        userId,
+        answers: {
+          none: {},
+        },
+      },
+    });
+
+    const answeredCount = await this.qnaRepository.countQna({
+      where: {
+        userId,
+        answers: {
+          some: {},
+        },
+      },
+    });
+    return new QnACountSummaryDTO({ notAnsweredCount, answeredCount });
+  }
+
+  async countTotalQnA(userId: string) {
+    const count = await this.qnaRepository.countQna({
+      where: {
+        userId,
+      },
+    });
 
     return new QnACountDTO({ count });
   }

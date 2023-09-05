@@ -1,6 +1,8 @@
 import { Controller, Get, Response } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import axios from 'axios';
+import crypto from 'crypto';
 import type { Response as ResponseType } from 'express';
 
 import { PrismaService } from './database/prisma.service';
@@ -24,7 +26,7 @@ export class AppController {
   }
 
   @Get('/test')
-  async test2() {
-    return { asdf: 'asdf' };
+  async test2(@Response() res: ResponseType) {
+    return { test: 'test' };
   }
 }
