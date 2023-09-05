@@ -8,7 +8,7 @@ import { FCMEvent } from '@/event/fcm';
 import { UserRepository } from '../user/user.repository';
 
 import { AlarmRepository } from './alarm.repository';
-import { AlarmDTO } from './dto';
+import { AlarmDTO, UnReadAlarmDTO } from './dto';
 import {
   AlarmResultDTO,
   AlarmResultsDTO,
@@ -48,6 +48,17 @@ export class AlarmService {
     });
 
     return new PaginationDTO<AlarmDTO>(alarms, { count, paging });
+  }
+
+  async checkUnReadAlarmExists(userId: string) {
+    const count = await this.alarmRepository.countAlarms({
+      where: {
+        userId,
+        isRead: false,
+      },
+    });
+
+    return new UnReadAlarmDTO({ isExists: count > 0 });
   }
 
   async readAlarm(id: string, userId: string) {

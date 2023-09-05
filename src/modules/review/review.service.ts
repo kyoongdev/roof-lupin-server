@@ -36,7 +36,7 @@ export class ReviewService {
 
   async getReviewSummary(spaceId: string) {
     const score = await this.reviewRepository.getReviewAverageScore(spaceId);
-    const count = await this.reviewRepository.countReviews({ where: { spaceId } });
+    const count = await this.reviewRepository.countReviews({ where: { spaceId, deletedAt: null } });
     return new ReviewsSummaryDTO({ averageScore: score || 0, count });
   }
 
@@ -67,7 +67,12 @@ export class ReviewService {
   }
 
   async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
-    return await this.reviewRepository.countReviews(args);
+    return await this.reviewRepository.countReviews({
+      where: {
+        ...args.where,
+        deletedAt: null,
+      },
+    });
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
