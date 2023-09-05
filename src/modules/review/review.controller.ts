@@ -5,7 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
-import { JwtAuthGuard } from '@/utils/guards';
+import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
@@ -182,6 +182,7 @@ export class ReviewController {
   }
 
   @Get(':reviewId/detail')
+  @Auth([JwtNullableAuthGuard])
   @RequestApi({
     summary: {
       description: '리뷰 자세히 불러오기',
@@ -191,8 +192,8 @@ export class ReviewController {
   @ResponseApi({
     type: ReviewDetailDTO,
   })
-  async getReview(@Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
-    return await this.reviewService.findReview(reviewId, user.id);
+  async getReview(@Param('reviewId') reviewId: string, @ReqUser() user?: RequestUser) {
+    return await this.reviewService.findReview(reviewId, user?.id);
   }
 
   @Post()
