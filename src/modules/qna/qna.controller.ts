@@ -108,11 +108,6 @@ export class QnAController {
       description: '공간 Q&A 조회',
       summary: '공간 Q&A 조회',
     },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      description: '공간 아이디',
-    },
   })
   @ResponseApi({
     type: QnADTO,
@@ -131,11 +126,6 @@ export class QnAController {
     summary: {
       description: '공간 Q&A 조회',
       summary: '공간 Q&A 조회',
-    },
-    params: {
-      name: 'spaceId',
-      type: 'string',
-      description: '공간 아이디',
     },
     query: {
       type: PagingDTO,
@@ -160,9 +150,6 @@ export class QnAController {
     summary: {
       description: '공간 Q&A 생성',
       summary: '공간 Q&A 생성 - 유저만 사용 가능합니다.',
-    },
-    body: {
-      type: CreateQnADTO,
     },
   })
   @ResponseApi(
@@ -199,11 +186,6 @@ export class QnAController {
     summary: {
       description: '공간 Q&A 삭제',
       summary: '공간 Q&A 삭제 - 유저만 사용 가능합니다.',
-    },
-    params: {
-      name: 'qnaId',
-      type: 'string',
-      description: 'Q&A 아이디',
     },
   })
   @ResponseApi(
