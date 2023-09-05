@@ -20,6 +20,7 @@ export class FaqRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -42,6 +43,7 @@ export class FaqRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

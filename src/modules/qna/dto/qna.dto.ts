@@ -58,6 +58,7 @@ export class QnADTO {
       user: {
         include: {
           socials: true,
+          setting: true,
         },
       },
       space: {

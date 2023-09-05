@@ -119,6 +119,7 @@ export class CouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -146,6 +147,7 @@ export class CouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -172,6 +174,7 @@ export class CouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -199,6 +202,7 @@ export class CouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -235,6 +239,7 @@ export class CouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

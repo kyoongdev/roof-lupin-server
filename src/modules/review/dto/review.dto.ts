@@ -95,6 +95,7 @@ export class ReviewDTO {
       user: {
         include: {
           socials: true,
+          setting: true,
         },
       },
       images: {

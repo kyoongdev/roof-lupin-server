@@ -50,6 +50,7 @@ export class HostSettlementRepository {
             user: {
               include: {
                 socials: true,
+                setting: true,
               },
             },
             spaceReviews: true,
@@ -101,6 +102,7 @@ export class HostSettlementRepository {
             user: {
               include: {
                 socials: true,
+                setting: true,
               },
             },
             spaceReviews: true,

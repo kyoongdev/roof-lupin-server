@@ -44,6 +44,7 @@ export class ReportRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -100,6 +101,7 @@ export class ReportRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

@@ -17,6 +17,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
 
@@ -55,6 +56,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
     if (!user) {
@@ -71,6 +73,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
     if (!user) {
@@ -127,6 +130,7 @@ export class UserRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

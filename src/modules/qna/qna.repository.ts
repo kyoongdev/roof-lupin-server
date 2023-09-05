@@ -29,6 +29,7 @@ export class QnARepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         space: {
@@ -77,6 +78,7 @@ export class QnARepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

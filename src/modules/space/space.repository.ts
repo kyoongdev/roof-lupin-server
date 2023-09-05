@@ -146,6 +146,7 @@ export class SpaceRepository {
             user: {
               include: {
                 socials: true,
+                setting: true,
               },
             },
           },

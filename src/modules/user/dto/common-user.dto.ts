@@ -7,9 +7,11 @@ import { GENDER_VALUE, GenderReqTransForm, GenderResTransForm } from '@/utils/va
 import { numberToSocialType, socialTypeToNumber } from '../utils';
 
 import { BaseUserDTO } from './base-user.dto';
+import { UserSettingDTO, UserSettingDTOProps } from './setting';
 
 export interface CommonUserProps extends Partial<User> {
   socials: UserSocial[];
+  setting: UserSettingDTOProps;
 }
 
 export class CommonUserDTO extends BaseUserDTO {
@@ -50,6 +52,9 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: 'string', description: '유저 소셜 타입', example: 'KAKAO | NAVER | APPLE' } })
   socialType: string;
 
+  @Property({ apiProperty: { type: UserSettingDTO, description: '설정' } })
+  setting: UserSettingDTO;
+
   constructor(props: CommonUserProps) {
     super();
     this.id = props.id;
@@ -67,5 +72,6 @@ export class CommonUserDTO extends BaseUserDTO {
     this.updatedAt = props.updatedAt;
     this.deletedAt = props.deletedAt;
     this.socialType = props.socials.length > 0 ? numberToSocialType(props.socials.at(-1).socialType) : null;
+    this.setting = new UserSettingDTO(props.setting);
   }
 }

@@ -4,6 +4,7 @@ export const reservationInclude: Prisma.ReservationInclude = {
   user: {
     include: {
       socials: true,
+      setting: true,
     },
   },
   rentalTypes: {

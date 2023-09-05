@@ -126,6 +126,7 @@ export class ReservationDTO extends BaseReservationDTO {
       user: {
         include: {
           socials: true,
+          setting: true,
         },
       },
       cancel: {
@@ -133,6 +134,7 @@ export class ReservationDTO extends BaseReservationDTO {
           user: {
             include: {
               socials: true,
+              setting: true,
             },
           },
           host: true,

@@ -162,6 +162,7 @@ export class RentalTypeRepository {
                 user: {
                   include: {
                     socials: true,
+                    setting: true,
                   },
                 },
                 rentalTypes: {
