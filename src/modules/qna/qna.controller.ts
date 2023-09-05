@@ -10,34 +10,43 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateQnADTO, QnACountDTO, QnADTO, UpdateQnADTO } from './dto';
 import { FindQnAsQuery } from './dto/query';
-import { CountQnAsQuery } from './dto/query/count-qnas.query';
 import { QnAService } from './qna.service';
 
 @ApiController('qnas', '공간 Q&A')
 export class QnAController {
   constructor(private readonly qnaService: QnAService) {}
 
-  @Get('me/count')
+  @Get('count')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '내 Q&A 개수 조회',
-      summary: '내 Q&A 개수 조회 - 유저만 사용 가능합니다.',
+      summary: '내 Q&A 개수 조회',
     },
   })
   @ResponseApi({
     type: QnACountDTO,
   })
-  async countMyQnA(@ReqUser() user: RequestUser, @Query() query: CountQnAsQuery) {
-    return this.qnaService.countQnA({
-      where: {
-        ...query.generateQuery().where,
-        userId: user.id,
-      },
-    });
+  async countMyQnA(@ReqUser() user: RequestUser) {
+    return this.qnaService.countQnASummary(user.id);
   }
 
-  @Get('me/list')
+  @Get('count/total')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: '내 Q&A 총 개수 조회',
+      summary: '내 Q&A 총 개수 조회',
+    },
+  })
+  @ResponseApi({
+    type: QnACountDTO,
+  })
+  async countMyTotalQnA(@ReqUser() user: RequestUser) {
+    return this.qnaService.countTotalQnA(user.id);
+  }
+
+  @Get('list')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
@@ -57,7 +66,7 @@ export class QnAController {
     });
   }
 
-  @Get('me/paging')
+  @Get('paging')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {

@@ -94,9 +94,9 @@ describe('The AuthenticationService', () => {
 
       const space = await spaceRepository.findSpace(targetSpace.id);
       const possibleRentalType = await rentalTypeService.findPossibleRentalTypesBySpaceId(space.id, {
-        year: '2023',
-        month: '8',
-        day: '7',
+        year: 2023,
+        month: 10,
+        day: 5,
       });
       const startAt = 12;
       const endAt = 19;
@@ -110,9 +110,9 @@ describe('The AuthenticationService', () => {
       const discountCost = realCoupon.getDiscountCost(originalCost);
 
       const payload = new CreatePaymentPayloadDTO({
-        year: '2023',
-        month: '8',
-        day: '7',
+        year: 2023,
+        month: 10,
+        day: 5,
         discountCost: discountCost.discountCost,
         originalCost,
         rentalTypes: [
@@ -167,9 +167,9 @@ describe('The AuthenticationService', () => {
 
       const space = await spaceRepository.findSpace(targetSpace.id);
       const possibleRentalType = await rentalTypeService.findPossibleRentalTypesBySpaceId(space.id, {
-        year: '2023',
-        month: '8',
-        day: '7',
+        year: 2023,
+        month: 10,
+        day: 6,
       });
       const startAt = 12;
       const endAt = 19;
@@ -186,9 +186,9 @@ describe('The AuthenticationService', () => {
       const discountCost = realCoupon.getDiscountCost(originalCost);
 
       const payload = new CreatePaymentPayloadDTO({
-        year: '2023',
-        month: '8',
-        day: '7',
+        year: 2023,
+        month: 10,
+        day: 6,
         discountCost: discountCost.discountCost,
         originalCost,
         rentalTypes: [

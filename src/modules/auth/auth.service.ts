@@ -141,23 +141,7 @@ export class AuthService {
     const result = await this.naverService.getRestCallback(code);
     const { user } = result;
 
-    this.socialCallback(
-      new CreateSocialUserDTO({
-        nickname: user.name,
-        name: user.name,
-        socialId: `${user.id}`,
-        socialType: 'naver',
-        birthDay: user.birthday,
-        birthYear: user.birthyear,
-        email: user.email,
-        gender: user.gender === 'M' ? 1 : user.gender === 'F' ? 2 : undefined,
-        phoneNumber: user.mobile,
-      }),
-      `${user.id}`,
-      'naver',
-      result.token,
-      res
-    );
+    this.socialCallback(new CreateSocialUserDTO().setNaverUser(user), `${user.id}`, 'naver', result.token, res);
   }
 
   async refresh(tokens: TokenDTO) {

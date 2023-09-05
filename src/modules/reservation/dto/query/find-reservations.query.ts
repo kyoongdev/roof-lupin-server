@@ -120,23 +120,17 @@ export class FindReservationQuery extends PagingDTO {
           },
         }),
         ...(Boolean(this.isApproaching) && {
-          AND: [
-            {
-              year: {
-                gte: currentDate.getFullYear(),
-              },
-              month: {
-                gte: currentDate.getMonth(),
-              },
-              day: {
-                gte: currentDate.getDate(),
-              },
-            },
-            {
-              cancel: null,
-              deletedAt: null,
-            },
-          ],
+          year: {
+            gte: currentDate.getFullYear(),
+          },
+          month: {
+            gte: currentDate.getMonth(),
+          },
+          day: {
+            gte: currentDate.getDate(),
+          },
+          cancel: null,
+          deletedAt: null,
         }),
         ...(typeof this.isUsed === 'boolean' && {
           ...(this.isUsed
@@ -154,23 +148,17 @@ export class FindReservationQuery extends PagingDTO {
                 deletedAt: null,
               }
             : {
-                AND: [
-                  {
-                    year: {
-                      gte: currentDate.getFullYear(),
-                    },
-                    month: {
-                      gte: currentDate.getMonth(),
-                    },
-                    day: {
-                      gte: currentDate.getDate(),
-                    },
-                  },
-                  {
-                    cancel: null,
-                    deletedAt: null,
-                  },
-                ],
+                year: {
+                  gte: currentDate.getFullYear(),
+                },
+                month: {
+                  gte: currentDate.getMonth(),
+                },
+                day: {
+                  gte: currentDate.getDate(),
+                },
+                cancel: null,
+                deletedAt: null,
               }),
         }),
       },

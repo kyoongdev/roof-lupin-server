@@ -22,7 +22,7 @@ export class ReservationController {
     private readonly paymentService: PaymentService
   ) {}
 
-  @Get('me/close')
+  @Get('close')
   @RequestApi({
     summary: {
       description: '내 근접한 예약 조회',
@@ -36,7 +36,7 @@ export class ReservationController {
     return await this.reservationService.findMyCloseReservation(user.id);
   }
 
-  @Get('me/paging')
+  @Get('paging')
   @RequestApi({
     summary: {
       description: '내 예약 조회',
@@ -55,7 +55,7 @@ export class ReservationController {
     return await this.reservationService.findMyPagingReservations(paging, user.id, query.generateQuery());
   }
 
-  @Get(':reservationId/me')
+  @Get(':reservationId/detail')
   @RequestApi({
     summary: {
       description: '내 예약 상세 조회',

@@ -52,9 +52,21 @@ export class ReservationService {
   }
 
   async findMyCloseReservation(userId: string) {
+    const currentDate = new Date();
     return await this.reservationRepository.findFirstReservation({
       where: {
         userId,
+        year: {
+          lte: currentDate.getFullYear(),
+        },
+        month: {
+          lte: currentDate.getMonth(),
+        },
+        day: {
+          lt: currentDate.getDate(),
+        },
+        cancel: null,
+        deletedAt: null,
       },
       orderBy: [
         {

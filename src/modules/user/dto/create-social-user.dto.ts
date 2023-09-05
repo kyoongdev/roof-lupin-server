@@ -1,4 +1,4 @@
-import { KakaoGetUser, Property } from 'cumuco-nestjs';
+import { KakaoGetUser, NaverUser, Property } from 'cumuco-nestjs';
 
 import { type SocialType } from '@/interface/user.interface';
 
@@ -74,11 +74,26 @@ export class CreateSocialUserDTO {
     this.birthYear = account.birthyear;
     this.email = account.email;
     this.gender = account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined;
-    this.phoneNumber = account.phone_number;
+    this.phoneNumber = account.phone_number.replace(/-/g, '').replace('+82 ', '0').trim();
+
     return this;
   }
 
   getKakaoUser() {
+    return this;
+  }
+
+  setNaverUser(socialUser: NaverUser) {
+    this.nickname = socialUser.name;
+    this.name = socialUser.name;
+    this.socialId = `${socialUser.id}`;
+    this.socialType = socialTypeToNumber('naver');
+    this.birthDay = socialUser.birthday;
+    this.birthYear = socialUser.birthyear;
+    this.email = socialUser.email;
+    this.gender = socialUser.gender === 'M' ? 1 : socialUser.gender === 'F' ? 2 : undefined;
+    this.phoneNumber = socialUser.mobile.replace(/-/g, '');
+
     return this;
   }
 }
