@@ -584,7 +584,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   await Promise.all(
     spaces.map(async (space, spIdx) => {
       const rentalType = space.rentalType.find((type: any) => type.name === '시간당 요금');
-      console.log({ rentalType });
+
       if (rentalType)
         await Promise.all(
           users.map(async (user, index) => {
