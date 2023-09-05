@@ -6,7 +6,6 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservationWithRentalType } from '@/interface/reservation.interface';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
-import { SpaceDTO } from '../space/dto';
 import { AdditionalServiceDTO } from '../space/dto/additional-service';
 import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../space/exception/errorCode';
 import { SpaceException } from '../space/exception/space.exception';
