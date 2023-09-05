@@ -29,8 +29,8 @@ export class ReservationService {
       {
         where: {
           userId,
-          deletedAt: null,
           ...args.where,
+          deletedAt: null,
         },
         skip,
         take,
@@ -56,15 +56,27 @@ export class ReservationService {
     return await this.reservationRepository.findFirstReservation({
       where: {
         userId,
-        year: {
-          lte: currentDate.getFullYear(),
-        },
-        month: {
-          lte: currentDate.getMonth(),
-        },
-        day: {
-          lt: currentDate.getDate(),
-        },
+        OR: [
+          {
+            year: {
+              equals: currentDate.getFullYear(),
+            },
+            month: {
+              equals: currentDate.getMonth() + 1,
+            },
+            day: {
+              gte: currentDate.getDate(),
+            },
+          },
+          {
+            year: {
+              gte: currentDate.getFullYear(),
+            },
+            month: {
+              gt: currentDate.getMonth() + 1,
+            },
+          },
+        ],
         cancel: null,
         deletedAt: null,
       },

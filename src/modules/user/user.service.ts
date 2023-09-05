@@ -22,21 +22,26 @@ export class UserService {
     const qnaCount = await this.qnaRepository.countQna({
       where: {
         userId,
+        deletedAt: null,
       },
     });
     const reservationCount = await this.reservationRepository.countReservations({
       where: {
         userId,
+        cancel: null,
+        deletedAt: null,
       },
     });
     const couponCount = await this.couponRepository.countUserCoupons({
       where: {
         userId,
+        deletedAt: null,
       },
     });
     const reviewCount = await this.reviewRepository.countReviews({
       where: {
         userId,
+        deletedAt: null,
       },
     });
 
