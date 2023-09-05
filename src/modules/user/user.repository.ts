@@ -165,6 +165,7 @@ export class UserRepository {
             socialType,
           },
         },
+        setting: {},
       },
     });
 
