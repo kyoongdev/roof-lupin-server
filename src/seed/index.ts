@@ -77,7 +77,7 @@ export const seedDatabase = async (database: PrismaClient) => {
           name: `테스트유저${i}`,
           gender: i % 2 === 0 ? 1 : 2,
           email: `testUser${i}@gmail.com`,
-          isAlarmAccepted: true,
+          setting: {},
         },
       });
       await database.fAQ.create({

@@ -7,6 +7,7 @@ import type {
   SpaceReview,
   TimeCostInfo,
   User,
+  UserSetting,
   UserSocial,
 } from '@prisma/client';
 
@@ -15,6 +16,7 @@ import { CommonSpace } from './space.interface';
 export interface CommonReservation extends Reservation {
   user: User & {
     socials: UserSocial[];
+    setting: UserSetting;
   };
   rentalTypes: CommonReservationRentalType[];
   spaceReviews: SpaceReview[];
@@ -38,6 +40,7 @@ export interface CommonReservationCancel {
   reason: string;
   user?: User & {
     socials: UserSocial[];
+    setting: UserSetting;
   };
   host?: Host;
   createdAt: Date;

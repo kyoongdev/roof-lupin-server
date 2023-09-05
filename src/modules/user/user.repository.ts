@@ -17,6 +17,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
 
@@ -32,12 +33,8 @@ export class UserRepository {
       where: {
         id,
       },
-      select: {
-        id: true,
-        nickname: true,
-        name: true,
-        isAlarmAccepted: true,
-        pushToken: true,
+      include: {
+        setting: true,
       },
     });
 
@@ -55,6 +52,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
     if (!user) {
@@ -71,6 +69,7 @@ export class UserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
     if (!user) {
@@ -127,6 +126,7 @@ export class UserRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -165,6 +165,7 @@ export class UserRepository {
             socialType,
           },
         },
+        setting: {},
       },
     });
 

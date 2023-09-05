@@ -18,6 +18,7 @@ export class AdminUserRepository {
       ...args,
       include: {
         socials: true,
+        setting: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -45,6 +46,7 @@ export class AdminUserRepository {
       },
       include: {
         socials: true,
+        setting: true,
       },
     });
 

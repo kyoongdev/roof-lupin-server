@@ -344,7 +344,7 @@ export class PaymentService {
   }
 
   async sendMessage(reservation: ReservationDetailDTO) {
-    if (reservation.user.isAlarmAccepted) {
+    if (reservation.user.setting.checkIsKakaoTalkAlarmAccepted())
       reservation.rentalTypes.forEach((rentalType) => {
         this.fcmEvent.createReservationUsageAlarm({
           year: reservation.year,
@@ -358,6 +358,7 @@ export class PaymentService {
         });
       });
 
+    if (reservation.user.setting.checkIsPushAlarmAccepted())
       this.fcmEvent.createReviewRecommendAlarm({
         year: reservation.year,
         month: reservation.month,
@@ -367,7 +368,6 @@ export class PaymentService {
         userId: reservation.user.id,
         nickname: reservation.user.nickname,
       });
-    }
   }
 
   createOrderId() {

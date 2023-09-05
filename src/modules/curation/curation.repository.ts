@@ -35,6 +35,7 @@ export class CurationRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         spaces: {

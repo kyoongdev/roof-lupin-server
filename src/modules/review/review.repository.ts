@@ -34,6 +34,7 @@ export class ReviewRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         images: {
@@ -80,6 +81,7 @@ export class ReviewRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         images: {
@@ -146,6 +148,7 @@ export class ReviewRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         images: {
@@ -222,6 +225,7 @@ export class ReviewRepository {
             user: {
               include: {
                 socials: true,
+                setting: true,
               },
             },
             images: {

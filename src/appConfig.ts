@@ -53,6 +53,7 @@ class AppConfig {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

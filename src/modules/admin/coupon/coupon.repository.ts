@@ -72,6 +72,7 @@ export class AdminCouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -99,6 +100,7 @@ export class AdminCouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,
@@ -126,6 +128,7 @@ export class AdminCouponRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
         coupon: true,

@@ -10,7 +10,6 @@ import {
   CreateExhibitionSpaceDTO,
   ExhibitionDTO,
   UpdateExhibitionDTO,
-  UpdateExhibitionOrderDTO,
   UpdateExhibitionSpaceDTO,
 } from '@/modules/exhibition/dto';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
@@ -52,9 +51,12 @@ export class AdminExhibitionService {
 
     const users = await this.database.user.findMany({
       where: {
-        isAlarmAccepted: true,
         pushToken: {
           not: null,
+        },
+        setting: {
+          isAlarmAccepted: true,
+          isPushAccepted: true,
         },
       },
       select: {

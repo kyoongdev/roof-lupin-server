@@ -21,6 +21,7 @@ export class AlarmRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -44,6 +45,7 @@ export class AlarmRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -89,6 +91,7 @@ export class AlarmRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },
@@ -107,6 +110,7 @@ export class AlarmRepository {
         user: {
           include: {
             socials: true,
+            setting: true,
           },
         },
       },

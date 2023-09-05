@@ -722,19 +722,18 @@ model Admin {
 model User {
   id String @id @default(uuid())
 
-  name            String?
-  nickname        String
-  email           String?
-  phoneNumber     String?   @db.Char(11)
-  birthYear       String?   @db.Char(4)
-  birthDay        String?   @db.Char(4)
-  gender          Int?      @db.TinyInt
-  profileImage    String?
-  isAdult         Boolean   @default(false)
-  isAlarmAccepted Boolean   @default(false)
-  isBlocked       Boolean   @default(false)
-  unBlockAt       DateTime?
-  pushToken       String?
+  name         String?
+  nickname     String
+  email        String?
+  phoneNumber  String?   @db.Char(11)
+  birthYear    String?   @db.Char(4)
+  birthDay     String?   @db.Char(4)
+  gender       Int?      @db.TinyInt
+  profileImage String?
+  isAdult      Boolean   @default(false)
+  isBlocked    Boolean   @default(false)
+  unBlockAt    DateTime?
+  pushToken    String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -757,6 +756,21 @@ model User {
   faqs           FAQ[]
 
   ReservationCancel ReservationCancel[]
+  setting           UserSetting?
+}
+
+model UserSetting {
+  id String @id @default(uuid())
+
+  isAdult                Boolean @default(false)
+  isAlarmAccepted        Boolean @default(false)
+  isLocationInfoAccepted Boolean @default(false)
+  isEmailAccepted        Boolean @default(false)
+  isKakaoTalkAccepted    Boolean @default(false)
+  isPushAccepted         Boolean @default(false)
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model UserAlarm {
