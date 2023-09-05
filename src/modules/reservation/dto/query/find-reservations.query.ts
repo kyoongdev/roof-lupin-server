@@ -29,6 +29,10 @@ export class FindReservationQuery extends PagingDTO {
   isReviewed?: boolean;
 
   @ToBoolean()
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '리뷰 작성 가능 여부' } })
+  isReviewable?: boolean;
+
+  @ToBoolean()
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '이용 완료 여부' } })
   isUsed?: boolean;
 
@@ -41,8 +45,42 @@ export class FindReservationQuery extends PagingDTO {
 
   generateQuery(): Prisma.ReservationFindManyArgs {
     const currentDate = new Date();
+    const reviewableDate = new Date();
+    reviewableDate.setMonth(reviewableDate.getMonth() - 1);
+    reviewableDate.setDate(0);
+
     return {
       where: {
+        ...(Boolean(this.isReviewable) && {
+          spaceReviews: {
+            none: {},
+          },
+          OR: [
+            {
+              year: {
+                equals: currentDate.getFullYear(),
+              },
+              month: {
+                equals: currentDate.getMonth() + 1,
+              },
+              day: {
+                gte: currentDate.getDate(),
+                lte: currentDate.getDate() + 14,
+              },
+            },
+            {
+              year: {
+                lte: currentDate.getFullYear(),
+              },
+              month: {
+                lt: currentDate.getMonth() + 1,
+              },
+              day: {
+                gte: reviewableDate.getDate() - (14 - currentDate.getDate()),
+              },
+            },
+          ],
+        }),
         ...(this.year && { year: Number(this.year) }),
         ...(this.month && { month: Number(this.month) }),
         ...(this.day && { day: Number(this.day) }),
@@ -120,28 +158,7 @@ export class FindReservationQuery extends PagingDTO {
           },
         }),
         ...(Boolean(this.isApproaching) && {
-          OR: [
-            {
-              year: {
-                equals: currentDate.getFullYear(),
-              },
-              month: {
-                equals: currentDate.getMonth() + 1,
-              },
-              day: {
-                gte: currentDate.getDate(),
-              },
-            },
-            {
-              year: {
-                gte: currentDate.getFullYear(),
-              },
-              month: {
-                gt: currentDate.getMonth() + 1,
-              },
-            },
-          ],
-
+          OR: FindReservationQuery.getORWhereClause(currentDate),
           cancel: null,
           deletedAt: null,
         }),
@@ -161,32 +178,35 @@ export class FindReservationQuery extends PagingDTO {
                 deletedAt: null,
               }
             : {
-                OR: [
-                  {
-                    year: {
-                      equals: currentDate.getFullYear(),
-                    },
-                    month: {
-                      equals: currentDate.getMonth() + 1,
-                    },
-                    day: {
-                      gte: currentDate.getDate(),
-                    },
-                  },
-                  {
-                    year: {
-                      gt: currentDate.getFullYear(),
-                    },
-                    month: {
-                      gt: currentDate.getMonth() + 1,
-                    },
-                  },
-                ],
+                OR: FindReservationQuery.getORWhereClause(currentDate),
                 cancel: null,
                 deletedAt: null,
               }),
         }),
       },
     };
+  }
+  static getORWhereClause(currentDate: Date) {
+    return [
+      {
+        year: {
+          equals: currentDate.getFullYear(),
+        },
+        month: {
+          equals: currentDate.getMonth() + 1,
+        },
+        day: {
+          gte: currentDate.getDate(),
+        },
+      },
+      {
+        year: {
+          gte: currentDate.getFullYear(),
+        },
+        month: {
+          gt: currentDate.getMonth() + 1,
+        },
+      },
+    ];
   }
 }

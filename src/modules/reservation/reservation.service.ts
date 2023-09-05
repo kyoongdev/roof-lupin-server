@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { ReservationDTO } from './dto';
+import { FindReservationQuery } from './dto/query';
 import {
   RESERVATION_ERROR_CODE,
   RESERVATION_USER_DELETE_FORBIDDEN,
@@ -56,27 +57,7 @@ export class ReservationService {
     return await this.reservationRepository.findFirstReservation({
       where: {
         userId,
-        OR: [
-          {
-            year: {
-              equals: currentDate.getFullYear(),
-            },
-            month: {
-              equals: currentDate.getMonth() + 1,
-            },
-            day: {
-              gte: currentDate.getDate(),
-            },
-          },
-          {
-            year: {
-              gte: currentDate.getFullYear(),
-            },
-            month: {
-              gt: currentDate.getMonth() + 1,
-            },
-          },
-        ],
+        OR: FindReservationQuery.getORWhereClause(currentDate),
         cancel: null,
         deletedAt: null,
       },

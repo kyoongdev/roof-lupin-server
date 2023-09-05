@@ -1,5 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
+import { getDateDiff } from '@/common/date';
 import { CommonReservation } from '@/interface/reservation.interface';
 import { SpaceDTO } from '@/modules/space/dto';
 
@@ -45,7 +46,13 @@ export class ReservationDetailDTO extends ReservationDTO {
   static generateReservationDetailDTO(reservation: CommonReservation): ReservationDetailDTOProps {
     const { rentalTypes, ...rest } = reservation;
     const { space } = rentalTypes[0].rentalType;
-
+    const currentDate = new Date();
+    const reservationDate = new Date(
+      Number(reservation.year),
+      Number(reservation.month) - 1,
+      Number(reservation.day),
+      9
+    );
     return {
       ...rest,
       year: rest.year,
@@ -54,6 +61,10 @@ export class ReservationDetailDTO extends ReservationDTO {
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: rest.spaceReviews.length > 0,
+      isReviewable:
+        reservation.spaceReviews.length < 0 &&
+        currentDate > reservationDate &&
+        getDateDiff(reservationDate, currentDate) <= 14,
       additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({
         ...additionalService,
         count,

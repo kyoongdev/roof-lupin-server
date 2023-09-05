@@ -1,5 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
+import { getDateDiff } from '@/common/date';
 import { CheckIsTargetDay } from '@/interface/common.interface';
 import { type CommonReservation, RESERVATION_STATUS, type ReservationStatus } from '@/interface/reservation.interface';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
@@ -15,6 +16,7 @@ export interface ReservationDTOProps extends BaseReservationDTOProps {
   rentalTypes: ReservationRentalTypeDTOProps[];
   space: SpaceDTOProps;
   isReviewed: boolean;
+  isReviewable: boolean;
   cancel?: ReservationCancelDTOProps;
   additionalServices: ReservationAdditionalServiceDTOProps[];
 }
@@ -31,6 +33,9 @@ export class ReservationDTO extends BaseReservationDTO {
 
   @Property({ apiProperty: { type: 'boolean', description: '리뷰 작성 여부' } })
   isReviewed: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '리뷰 작성 가능 여부' } })
+  isReviewable: boolean;
 
   @Property({
     apiProperty: {
@@ -50,6 +55,7 @@ export class ReservationDTO extends BaseReservationDTO {
   constructor(props: ReservationDTOProps) {
     super(props);
     this.isReviewed = props.isReviewed;
+    this.isReviewable = props.isReviewable;
     this.user = new CommonUserDTO(props.user);
     this.rentalTypes = props.rentalTypes.map((rentalType) => new ReservationRentalTypeDTO(rentalType));
     this.space = new SpaceDTO(props.space);
@@ -88,7 +94,13 @@ export class ReservationDTO extends BaseReservationDTO {
   static generateReservationDTO(reservation: CommonReservation): ReservationDTOProps {
     const { rentalTypes, ...rest } = reservation;
     const { space } = rentalTypes[0].rentalType;
-
+    const currentDate = new Date();
+    const reservationDate = new Date(
+      Number(reservation.year),
+      Number(reservation.month) - 1,
+      Number(reservation.day),
+      9
+    );
     return {
       ...rest,
       year: rest.year,
@@ -98,6 +110,10 @@ export class ReservationDTO extends BaseReservationDTO {
       rentalTypes: rentalTypes.map((rentalType) => rentalType),
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
+      isReviewable:
+        reservation.spaceReviews.length < 0 &&
+        currentDate > reservationDate &&
+        getDateDiff(reservationDate, currentDate) <= 14,
       additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({
         ...additionalService,
         count,
