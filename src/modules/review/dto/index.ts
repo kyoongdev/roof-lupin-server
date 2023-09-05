@@ -12,3 +12,4 @@ export * from './reviews-summary.dto';
 export * from './review-detail.dto';
 export * from './review-image-detail.dto';
 export * from './create-best-review-images.dto';
+export * from './review-count.dto';

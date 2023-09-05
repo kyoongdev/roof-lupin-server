@@ -8,7 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
+import { ReviewCountDTO, ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewImageDTO } from './dto/review-image.dto';
@@ -170,8 +170,7 @@ export class ReviewController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
-    isPaging: true,
+    type: ReviewCountDTO,
   })
   async countMyReviewsPaging(@ReqUser() user: RequestUser) {
     return await this.reviewService.countReviews({

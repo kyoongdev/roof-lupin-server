@@ -9,7 +9,7 @@ import { FileService } from '../file/file.service';
 import { HistoryRepository } from '../history/history.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 
-import { ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
+import { ReviewCountDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
 import {
@@ -67,12 +67,13 @@ export class ReviewService {
   }
 
   async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
-    return await this.reviewRepository.countReviews({
+    const count = await this.reviewRepository.countReviews({
       where: {
         ...args.where,
         deletedAt: null,
       },
     });
+    return new ReviewCountDTO({ count });
   }
 
   async findReviews(args = {} as Prisma.SpaceReviewFindManyArgs) {
