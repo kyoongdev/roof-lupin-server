@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CommonUserDTO, CreateSocialUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { UpdateUserSettingDTO } from './dto/setting';
 import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
@@ -173,10 +174,18 @@ export class UserRepository {
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {
-    await this.findUser(id);
     await this.database.user.update({
       where: {
         id,
+      },
+      data,
+    });
+  }
+
+  async updateSetting(userId: string, data: UpdateUserSettingDTO) {
+    await this.database.userSetting.update({
+      where: {
+        userId,
       },
       data,
     });
@@ -194,8 +203,6 @@ export class UserRepository {
   }
 
   async deleteUser(id: string) {
-    await this.findUser(id);
-
     await this.database.user.update({
       where: {
         id,
