@@ -182,14 +182,6 @@ export class QnAController {
       description: '공간 Q&A 수정',
       summary: '공간 Q&A 수정 - 유저만 사용 가능합니다.',
     },
-    params: {
-      name: 'qnaId',
-      type: 'string',
-      description: 'Q&A 아이디',
-    },
-    body: {
-      type: UpdateQnADTO,
-    },
   })
   @ResponseApi(
     {
@@ -197,7 +189,7 @@ export class QnAController {
     },
     204
   )
-  async updateSpaceQnA(@Param('qnaId') qnaId: string, @ReqUser() user: RequestUser, @Body() data: CreateQnADTO) {
+  async updateSpaceQnA(@Param('qnaId') qnaId: string, @ReqUser() user: RequestUser, @Body() data: UpdateQnADTO) {
     return this.qnaService.updateQnA(qnaId, user.id, data);
   }
 
