@@ -8,7 +8,7 @@ import { FCMEvent } from '@/event/fcm';
 import { HistoryRepository } from '../history/history.repository';
 
 import { CreateQnADTO, QnACountDTO, QnACountSummaryDTO, QnADTO, UpdateQnADTO } from './dto';
-import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN } from './exception/errorCode';
+import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN, QNA_READ_FORBIDDEN } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
 import { QnARepository } from './qna.repository';
 
@@ -48,6 +48,16 @@ export class QnAService {
     });
 
     return new QnACountDTO({ count });
+  }
+
+  async findQnA(id: string, userId: string) {
+    const qna = await this.qnaRepository.findQnA(id);
+
+    if (qna.user.id !== userId) {
+      throw new QnAException(QNA_ERROR_CODE.FORBIDDEN(QNA_READ_FORBIDDEN));
+    }
+
+    return qna;
   }
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {

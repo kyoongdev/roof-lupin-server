@@ -46,6 +46,21 @@ export class QnAController {
     return this.qnaService.countTotalQnA(user.id);
   }
 
+  @Get(':qnaId/detail')
+  @Auth([JwtAuthGuard, RoleGuard('USER')])
+  @RequestApi({
+    summary: {
+      description: 'Q&A 상세 조회',
+      summary: 'Q&A 상세 조회',
+    },
+  })
+  @ResponseApi({
+    type: QnADTO,
+  })
+  async getQnA(@Param('qnaId') qnaId: string, @ReqUser() user: RequestUser) {
+    return this.qnaService.findQnA(qnaId, user.id);
+  }
+
   @Get('list')
   @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
