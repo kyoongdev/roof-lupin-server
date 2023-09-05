@@ -209,23 +209,9 @@ export class RentalTypeRepository {
       name: rentalType.name,
       rentalType: rentalType.rentalType,
       timeCostInfos: rentalType.timeCostInfos,
-      reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) => {
-        const { rentalTypes, ...rest } = reservation;
-        const { space } = rentalTypes[0].rentalType;
-        return {
-          ...rest,
-          year: rest.year,
-          month: rest.month,
-          day: rest.day,
-          rentalTypes: rentalTypes.map((rentalType) => rentalType),
-          space: SpaceDTO.generateSpaceDTO(space),
-          isReviewed: rest.spaceReviews.length > 0,
-          additionalServices: reservation.additionalServices?.map(({ count, additionalService }) => ({
-            ...additionalService,
-            count,
-          })),
-        };
-      }),
+      reservations: (rentalType.reservations as CommonReservationWithRentalType[]).map(({ reservation }) =>
+        ReservationDTO.generateReservationDTO(reservation)
+      ),
       baseHour: rentalType.baseHour,
       day: rentalType.day,
       endAt: rentalType.endAt,
