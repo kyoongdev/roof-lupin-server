@@ -10,7 +10,6 @@ import {
   CreateExhibitionSpaceDTO,
   ExhibitionDTO,
   UpdateExhibitionDTO,
-  UpdateExhibitionOrderDTO,
   UpdateExhibitionSpaceDTO,
 } from '@/modules/exhibition/dto';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';

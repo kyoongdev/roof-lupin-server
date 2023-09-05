@@ -18,8 +18,7 @@ import {
 } from '@/interface/fcm.interface';
 import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
-import { CommonUserDTO, PushTokenDTO } from '@/modules/user/dto';
-import { UserRepository } from '@/modules/user/user.repository';
+import { PushTokenDTO } from '@/modules/user/dto';
 import { FCMProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
