@@ -76,6 +76,23 @@ export class UserController {
     await this.userService.updateUser(user.id, body);
   }
 
+  @Patch('settings')
+  @RequestApi({
+    summary: {
+      description: '내 정보 설정 수정',
+      summary: '내 설정 수정하기 - 로그인 필요, 유저만 사용 가능',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateSetting(@ReqUser() user: RequestUser, @Body() body: UpdateUserDTO) {
+    await this.userService.updateSetting(user.id, body);
+  }
+
   @Delete('')
   @RequestApi({
     summary: {

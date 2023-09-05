@@ -6,6 +6,7 @@ import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 
 import { CountInfoDTO, UpdateUserDTO } from './dto';
+import { UpdateUserSettingDTO } from './dto/setting';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -62,10 +63,17 @@ export class UserService {
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {
+    await this.findUser(id);
     await this.userRepository.updateUser(id, data);
   }
 
+  async updateSetting(userId: string, data: UpdateUserSettingDTO) {
+    await this.findUser(userId);
+    await this.userRepository.updateSetting(userId, data);
+  }
+
   async deleteUser(id: string) {
+    await this.findUser(id);
     await this.userRepository.deleteUser(id);
   }
 }
