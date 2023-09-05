@@ -120,15 +120,28 @@ export class FindReservationQuery extends PagingDTO {
           },
         }),
         ...(Boolean(this.isApproaching) && {
-          year: {
-            gte: currentDate.getFullYear(),
-          },
-          month: {
-            gte: currentDate.getMonth(),
-          },
-          day: {
-            gte: currentDate.getDate(),
-          },
+          OR: [
+            {
+              year: {
+                equals: currentDate.getFullYear(),
+              },
+              month: {
+                equals: currentDate.getMonth() + 1,
+              },
+              day: {
+                gte: currentDate.getDate(),
+              },
+            },
+            {
+              year: {
+                gte: currentDate.getFullYear(),
+              },
+              month: {
+                gt: currentDate.getMonth() + 1,
+              },
+            },
+          ],
+
           cancel: null,
           deletedAt: null,
         }),
@@ -139,7 +152,7 @@ export class FindReservationQuery extends PagingDTO {
                   lte: currentDate.getFullYear(),
                 },
                 month: {
-                  lte: currentDate.getMonth(),
+                  lte: currentDate.getMonth() + 1,
                 },
                 day: {
                   lt: currentDate.getDate(),
@@ -148,15 +161,27 @@ export class FindReservationQuery extends PagingDTO {
                 deletedAt: null,
               }
             : {
-                year: {
-                  gte: currentDate.getFullYear(),
-                },
-                month: {
-                  gte: currentDate.getMonth(),
-                },
-                day: {
-                  gte: currentDate.getDate(),
-                },
+                OR: [
+                  {
+                    year: {
+                      equals: currentDate.getFullYear(),
+                    },
+                    month: {
+                      equals: currentDate.getMonth() + 1,
+                    },
+                    day: {
+                      gte: currentDate.getDate(),
+                    },
+                  },
+                  {
+                    year: {
+                      gt: currentDate.getFullYear(),
+                    },
+                    month: {
+                      gt: currentDate.getMonth() + 1,
+                    },
+                  },
+                ],
                 cancel: null,
                 deletedAt: null,
               }),

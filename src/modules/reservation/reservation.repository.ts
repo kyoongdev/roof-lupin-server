@@ -17,13 +17,12 @@ export class ReservationRepository {
   constructor(private readonly database: PrismaService) {}
 
   async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs, userId?: string) {
-    const reservation = (await this.database.reservation.findFirst({
+    const reservation = await this.database.reservation.findFirst({
       ...args,
-      where: {
-        ...args.where,
-      },
+      where: args.where,
       include: ReservationDTO.generateReservationInclude(userId),
-    })) as CommonReservation | undefined;
+      orderBy: args.orderBy,
+    });
 
     return reservation ? new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)) : null;
   }
@@ -93,6 +92,7 @@ export class ReservationRepository {
 
   async findReservations(args = {} as Prisma.ReservationFindManyArgs, userId?: string) {
     const reservations = (await this.database.reservation.findMany({
+      ...args,
       where: {
         ...args.where,
       },
@@ -101,7 +101,6 @@ export class ReservationRepository {
         createdAt: 'desc',
         ...args.orderBy,
       },
-      ...args,
     })) as CommonReservation[];
 
     return reservations.map((reservation) => new ReservationDTO(ReservationDTO.generateReservationDTO(reservation)));
