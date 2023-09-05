@@ -23,6 +23,7 @@ export class QnAService {
         answers: {
           none: {},
         },
+        deletedAt: null,
       },
     });
 
@@ -32,6 +33,7 @@ export class QnAService {
         answers: {
           some: {},
         },
+        deletedAt: null,
       },
     });
     return new QnACountSummaryDTO({ notAnsweredCount, answeredCount });
@@ -41,6 +43,7 @@ export class QnAService {
     const count = await this.qnaRepository.countQna({
       where: {
         userId,
+        deletedAt: null,
       },
     });
 
