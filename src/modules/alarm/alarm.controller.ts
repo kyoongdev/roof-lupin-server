@@ -9,8 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { AlarmService } from './alarm.service';
-import { AlarmDTO } from './dto';
-
+import { AlarmDTO, UnReadAlarmDTO } from './dto';
 @Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('alarms', '알람')
 export class AlarmController {
@@ -56,6 +55,20 @@ export class AlarmController {
         userId: user.id,
       },
     });
+  }
+
+  @Get('un-read')
+  @RequestApi({
+    summary: {
+      description: '안읽은 알람 유무 불러오기',
+      summary: '안읽은 알람 유무 불러오기',
+    },
+  })
+  @ResponseApi({
+    type: UnReadAlarmDTO,
+  })
+  async checkUnReadAlarms(@Paging() paging: PagingDTO, @ReqUser() user: RequestUser) {
+    return await this.alarmService.checkUnReadAlarmExists(user.id);
   }
 
   @Post(':alarmId/read')
