@@ -8,7 +8,7 @@ import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 import { logger } from '@/log';
-import { FinanceProvider, TossPayProvider } from '@/utils';
+import { TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HostSettlementRepository } from '../host/settlement/settlement.repository';
@@ -65,13 +65,8 @@ export class PaymentService {
     private readonly tossPay: TossPayProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
-    private readonly settlementRepository: HostSettlementRepository,
-    private readonly financeProvider: FinanceProvider
+    private readonly settlementRepository: HostSettlementRepository
   ) {}
-
-  async validateAccount() {
-    return await this.financeProvider.getToken();
-  }
 
   async getReservation(data: CreatePaymentDTO, space: SpaceDetailDTO): Promise<undefined | ReservationDetailDTO> {
     if (data.reservationId) {

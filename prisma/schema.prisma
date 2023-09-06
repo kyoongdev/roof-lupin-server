@@ -604,6 +604,8 @@ model SpaceImage {
   imageId String
   image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  orderNo Int? @db.TinyInt
+
   @@id([spaceId, imageId])
 }
 

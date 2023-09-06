@@ -1,3 +1,5 @@
+import { BANK_CODE } from '@/common/constants';
+
 export interface PortOnePreparePayment {
   /** 가맹점 주문번호 */
   merchant_uid: string;
@@ -88,6 +90,11 @@ export interface CancelPortOnePayment {
   amount: number;
   /** 환불 가능 금액 */
   checksum: number;
+}
+
+export interface PortOneValidateAccount {
+  bank_code: keyof typeof BANK_CODE;
+  bank_num: string;
 }
 
 export type ProtOneResponse<T> = {

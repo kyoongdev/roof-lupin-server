@@ -35,7 +35,7 @@ export class PaymentController {
     type: ResponseWithIdDTO,
   })
   async validateAccount() {
-    return await this.paymentService.validateAccount();
+    // return await this.paymentService.validateAccount();
   }
 
   @Get('/accounts')
