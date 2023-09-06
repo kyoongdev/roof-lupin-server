@@ -8,7 +8,7 @@ import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
 import { logger } from '@/log';
-import { TossPayProvider } from '@/utils';
+import { PortOneProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HostSettlementRepository } from '../host/settlement/settlement.repository';
@@ -28,6 +28,8 @@ import {
   CreatePaymentPayloadDTO,
   PaymentPayloadDTO,
   RefundPaymentDTO,
+  ValidateAccountQuery,
+  ValidatedAccountDTO,
   ValidatedPaymentDTO,
 } from './dto';
 import {
@@ -63,10 +65,20 @@ export class PaymentService {
     private readonly rentalTypeService: RentalTypeService,
     private readonly couponRepository: CouponRepository,
     private readonly tossPay: TossPayProvider,
+    private readonly portOne: PortOneProvider,
     private readonly database: PrismaService,
     private readonly fcmEvent: FCMEvent,
     private readonly settlementRepository: HostSettlementRepository
   ) {}
+
+  async validateAccount(data: ValidateAccountQuery) {
+    const isValid = await this.portOne.validateAccount({
+      bank_code: data.bankCode,
+      bank_num: data.bankNum,
+    });
+
+    return new ValidatedAccountDTO({ isValid });
+  }
 
   async getReservation(data: CreatePaymentDTO, space: SpaceDetailDTO): Promise<undefined | ReservationDetailDTO> {
     if (data.reservationId) {

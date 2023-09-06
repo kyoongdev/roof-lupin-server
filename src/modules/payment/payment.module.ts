@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { FCMEvent } from '@/event/fcm';
-import { TossPayProvider } from '@/utils';
+import { PortOneProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
 import { HolidayService } from '../holiday/holiday.service';
@@ -21,6 +21,7 @@ import { PaymentService } from './payment.service';
 @Module({
   providers: [
     TossPayProvider,
+    PortOneProvider,
     PaymentService,
     ReservationRepository,
     RentalTypeRepository,
@@ -37,6 +38,7 @@ import { PaymentService } from './payment.service';
   controllers: [PaymentController],
   exports: [
     TossPayProvider,
+    PortOneProvider,
     PaymentService,
     ReservationRepository,
     RentalTypeRepository,

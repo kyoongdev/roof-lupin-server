@@ -36,18 +36,19 @@ export const bankNameToCode = (name: string) => {
   return BANK_CODES[BANK_NAMES.indexOf(name)];
 };
 
-export const BankCodeRequestTransForm = () => Transform(({ value }) => bankCodeToName(value));
+export const BankCodeRequestTransForm = () => Transform(({ value }) => bankNameToCode(value));
 
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
     BankCodeValidation(),
+    BankCodeRequestTransForm(),
     Property({
       apiProperty: {
-        description: '은행 코드',
+        description: '은행명',
         type: 'string',
-        enum: BANK_CODES,
+        enum: BANK_NAMES,
         nullable,
-        example: BANK_CODES.join(' | '),
+        example: BANK_NAMES.join(' | '),
       },
     })
   );

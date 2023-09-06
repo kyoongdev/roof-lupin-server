@@ -17,6 +17,7 @@ import {
   CreatePaymentPayloadDTO,
   PaymentPayloadDTO,
   RefundPaymentDTO,
+  ValidateAccountQuery,
 } from './dto';
 import { PaymentService } from './payment.service';
 
@@ -34,22 +35,8 @@ export class PaymentController {
   @ResponseApi({
     type: ResponseWithIdDTO,
   })
-  async validateAccount() {
-    // return await this.paymentService.validateAccount();
-  }
-
-  @Get('/accounts')
-  @RequestApi({
-    summary: {
-      summary: '계좌 유효성 검사하기 ',
-      description: '계좌 유효성 검사하기',
-    },
-  })
-  @ResponseApi({
-    type: ResponseWithIdDTO,
-  })
-  async validateAccountCallback(@Query() query: any) {
-    return { asdf: 'asdfsa' };
+  async validateAccount(@Query() query: ValidateAccountQuery) {
+    return await this.paymentService.validateAccount(query);
   }
 
   @Get('/bank-code')
@@ -66,8 +53,8 @@ export class PaymentController {
   async getBankCode() {
     return Object.entries(BANK_CODE).map(([key, value]) => {
       return new BankCodeDTO({
-        code: value,
-        name: key,
+        code: key,
+        name: value,
       });
     });
   }
