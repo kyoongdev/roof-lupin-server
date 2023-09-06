@@ -4,6 +4,7 @@ import { SocialLocationService } from 'cumuco-nestjs';
 
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
 import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
+import { KakaoKeywordQuery } from './dto/query/kakao-keyword.query';
 import { LocationRepository } from './location.repository';
 
 @Injectable()
@@ -12,6 +13,21 @@ export class LocationService {
     private readonly locationRepository: LocationRepository,
     private readonly socialLocationService: SocialLocationService
   ) {}
+
+  async findKakaoSubway(query: KakaoKeywordQuery) {
+    try {
+      const response = await this.socialLocationService.getKakaoLocationByKeyword({
+        keyword: query.keyword,
+
+        category_group_code: '지하철역',
+        page: query.page,
+        limit: query.limit,
+      });
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async findNaverLocation(query: NaverGeocodeQuery) {
     const { latitude, longitude, ...rest } = query;

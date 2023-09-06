@@ -730,7 +730,6 @@ model User {
   birthDay     String?   @db.Char(4)
   gender       Int?      @db.TinyInt
   profileImage String?
-  isAdult      Boolean   @default(false)
   isBlocked    Boolean   @default(false)
   unBlockAt    DateTime?
   pushToken    String?

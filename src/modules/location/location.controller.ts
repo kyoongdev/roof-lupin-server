@@ -5,13 +5,29 @@ import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 import { ApiController } from '@/utils';
 
 import { NaverLocationDTO } from './dto';
+import { KakaoKeywordDTO } from './dto/kakao/kakao-keyword.dto';
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
 import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
+import { KakaoKeywordQuery } from './dto/query/kakao-keyword.query';
 import { LocationService } from './location.service';
 
 @ApiController('locations', '지도 / 위치 ')
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
+
+  @Get('kakao/subway')
+  @RequestApi({
+    summary: {
+      description: '카카오 지도 API를 이용하여 지하철역을 검색합니다.',
+      summary: '카카오 지도 API를 이용하여 지하철역을 검색합니다.',
+    },
+  })
+  @ResponseApi({
+    type: KakaoKeywordDTO,
+  })
+  async findKakaoSubway(@Query() query: KakaoKeywordQuery) {
+    return await this.locationService.findKakaoSubway(query);
+  }
 
   @Get('naver/geocode')
   @RequestApi({

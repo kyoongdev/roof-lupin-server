@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, Space, SpaceLocation } from '@prisma/client';
+import { SpaceLocation } from '@prisma/client';
 import { PagingDTO } from 'cumuco-nestjs';
 
-import {} from 'prisma';
 import { PrismaService } from '@/database/prisma.service';
 
-import { FindSpacesQuery } from '../space/dto/query';
 import { FindByLocationQuery } from '../space/dto/query/find-by-location.query';
-
-import { LatLngDTO } from './dto';
 
 @Injectable()
 export class LocationRepository {
