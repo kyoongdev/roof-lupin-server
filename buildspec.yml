@@ -17,6 +17,9 @@ phases:
     commands:
       - yarn build
 artifacts:
+  exclude-paths:
+    - ./src
+    - ./logs
   files:
     - '**/*'
   name: rooflupin-build-$(date +%Y-%m-%d)
