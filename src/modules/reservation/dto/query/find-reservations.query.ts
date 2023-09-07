@@ -64,8 +64,8 @@ export class FindReservationQuery extends PagingDTO {
                 equals: currentDate.getMonth() + 1,
               },
               day: {
-                gte: currentDate.getDate(),
-                lte: currentDate.getDate() + 14,
+                gte: currentDate.getDate() - 14,
+                lte: currentDate.getDate(),
               },
             },
             {

@@ -630,12 +630,55 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 userCount: 3,
                 vatCost: 1000,
                 isApproved: true,
+                payedAt: new Date(2023, 10, (spIdx % 29) + 1),
+                payMethod: '토스페이',
                 space: {
                   connect: {
                     id: space.id,
                   },
                 },
                 code: `${new Date().getTime()}${index}${spIdx}`,
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+                rentalTypes: {
+                  create: [
+                    {
+                      startAt: 12,
+                      endAt: 32,
+                      rentalType: {
+                        connect: {
+                          id: rentalType.id,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+            await database.reservation.create({
+              data: {
+                year: 2023,
+                month: 9,
+                day: (spIdx % 29) + 2,
+                userName: '용준',
+                userPhoneNumber: '01012341234',
+                originalCost: 10000,
+                totalCost: 10000,
+                discountCost: 0,
+                userCount: 3,
+                vatCost: 1000,
+                isApproved: true,
+                payedAt: new Date(2023, 10, (spIdx % 29) + 2),
+                payMethod: '토스페이',
+                space: {
+                  connect: {
+                    id: space.id,
+                  },
+                },
+                code: `${new Date().getTime()}2${index}${spIdx}`,
                 user: {
                   connect: {
                     id: user.id,
@@ -675,7 +718,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                   },
                 },
                 payedAt: new Date(),
-                code: `${new Date().getTime()}${index}${spIdx}`,
+                code: `${new Date().getTime()}3${index}${spIdx}`,
                 user: {
                   connect: {
                     id: user.id,

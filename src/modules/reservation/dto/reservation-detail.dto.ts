@@ -62,7 +62,7 @@ export class ReservationDetailDTO extends ReservationDTO {
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: rest.spaceReviews.length > 0,
       isReviewable:
-        reservation.spaceReviews.length < 0 &&
+        reservation.spaceReviews.length === 0 &&
         currentDate > reservationDate &&
         getDateDiff(reservationDate, currentDate) <= 14,
       additionalServices: reservation.additionalServices.map(({ count, additionalService }) => ({

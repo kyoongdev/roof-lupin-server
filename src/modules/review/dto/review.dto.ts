@@ -1,19 +1,20 @@
-import { Image, Prisma, PrismaClient, SpaceReview, User } from '@prisma/client';
+import { Prisma, SpaceReview } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
-import { DateDTO } from '@/common';
 import { getTimeDiff } from '@/common/date';
-import { ImageDTO } from '@/modules/file/dto';
+import { SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
 import { ReviewAnswerDTO, ReviewAnswerDTOProps } from './review-answer.dto';
 import { ReviewImageDTO, ReviewImageDTOProps } from './review-image.dto';
+import { ReviewSpaceDTO } from './review-space.dto';
 
 export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
   images: ReviewImageDTOProps[];
   answer?: ReviewAnswerDTOProps;
+  space: SpaceDTOProps;
 }
 
 export class ReviewDTO {
@@ -49,6 +50,9 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'boolean', description: '수정 가능 여부' } })
   isEditable: boolean;
 
+  @Property({ apiProperty: { type: ReviewSpaceDTO, description: '공간 정보' } })
+  space: ReviewSpaceDTO;
+
   constructor(props: ReviewDTOProps) {
     this.id = props.id;
     this.content = props.content;
@@ -59,6 +63,7 @@ export class ReviewDTO {
     this.updatedAt = props.updatedAt;
     this.reservationId = props.reservationId;
     this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
+    this.isEditable = false;
   }
 
   setIsEditable(userId?: string) {

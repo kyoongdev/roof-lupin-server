@@ -162,6 +162,9 @@ export class ReviewRepository {
             host: true,
           },
         },
+        space: {
+          include: SpaceDTO.getSpacesIncludeOption(),
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -183,6 +186,7 @@ export class ReviewRepository {
             url: image.image.url,
             reviewId: image.spaceReviewId,
           })),
+          space: SpaceDTO.generateSpaceDTO(review.space),
         })
     );
   }
@@ -239,6 +243,9 @@ export class ReviewRepository {
                 host: true,
               },
             },
+            space: {
+              include: SpaceDTO.getSpacesIncludeOption(),
+            },
           },
         },
         image: true,
@@ -260,6 +267,7 @@ export class ReviewRepository {
               url: image.image.url,
               reviewId: image.spaceReviewId,
             })),
+            space: SpaceDTO.generateSpaceDTO(image.spaceReview.space),
           },
         })
     );
