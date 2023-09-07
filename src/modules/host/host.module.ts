@@ -7,6 +7,7 @@ import { HostBlockedTimeModule } from './blocked-time/blocked-time.module';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
 import { HostService } from './host.service';
+import { HostPaymentModule } from './payment/payment.module';
 import { HostQnAModule } from './qna/qna.module';
 import { HostReportModule } from './report/report.module';
 import { HostReservationModule } from './reservation/reservation.module';
@@ -27,6 +28,7 @@ export const HostModules = [
   HostSettlementModule,
   HostSpaceModule,
   HostTaxReturnModule,
+  HostPaymentModule,
 ];
 
 @Module({

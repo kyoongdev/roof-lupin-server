@@ -18,6 +18,7 @@ import {
   PaymentPayloadDTO,
   RefundPaymentDTO,
   ValidateAccountQuery,
+  ValidatedAccountDTO,
 } from './dto';
 import { PaymentService } from './payment.service';
 
@@ -33,7 +34,7 @@ export class PaymentController {
     },
   })
   @ResponseApi({
-    type: ResponseWithIdDTO,
+    type: ValidatedAccountDTO,
   })
   async validateAccount(@Query() query: ValidateAccountQuery) {
     return await this.paymentService.validateAccount(query);
