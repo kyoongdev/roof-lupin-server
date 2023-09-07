@@ -239,17 +239,7 @@ export class SpaceRepository {
       })),
       openHours,
       holidays,
-      reviews: reviews.map((review) => ({
-        ...review,
-        images: review.images.map((image) => ({
-          id: image.id,
-          imageId: image.imageId,
-          isBest: image.isBest,
-          url: image.image.url,
-          reviewId: image.spaceReviewId,
-        })),
-        space: SpaceDTO.generateSpaceDTO(review.space),
-      })),
+      reviews: reviews.map((review) => ReviewDTO.generateReviewDTO(review)),
     });
   }
 

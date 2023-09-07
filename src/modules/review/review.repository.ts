@@ -17,6 +17,7 @@ import {
   UpdateReviewDTO,
 } from './dto';
 import { ReviewImageDTO } from './dto/review-image.dto';
+import { ReviewSpaceDTO } from './dto/review-space.dto';
 import { ReviewDTO } from './dto/review.dto';
 import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_IMAGE_NOT_FOUND } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
@@ -30,28 +31,7 @@ export class ReviewRepository {
       where: {
         id,
       },
-      include: {
-        user: {
-          include: {
-            socials: true,
-            setting: true,
-          },
-        },
-        images: {
-          include: {
-            image: true,
-          },
-        },
-        answers: {
-          where: answerWhere,
-          include: {
-            host: true,
-          },
-        },
-        space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
-        },
-      },
+      include: ReviewDTO.generateInclude(),
     });
 
     if (!review) {
@@ -67,7 +47,7 @@ export class ReviewRepository {
         imageId: image.image.id,
         reviewId: image.spaceReviewId,
       })),
-      space: SpaceDTO.generateSpaceDTO(review.space),
+      space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
     });
   }
 
@@ -94,7 +74,7 @@ export class ReviewRepository {
         imageId: image.image.id,
         reviewId: image.spaceReviewId,
       })),
-      space: SpaceDTO.generateSpaceDTO(review.space),
+      space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
     });
   }
 
@@ -123,28 +103,7 @@ export class ReviewRepository {
       where: {
         ...args.where,
       },
-      include: {
-        user: {
-          include: {
-            socials: true,
-            setting: true,
-          },
-        },
-        images: {
-          include: {
-            image: true,
-          },
-        },
-        answers: {
-          where: answerWhere,
-          include: {
-            host: true,
-          },
-        },
-        space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
-        },
-      },
+      include: ReviewDTO.generateInclude(answerWhere),
       orderBy: {
         createdAt: 'desc',
         ...args.orderBy,
@@ -153,21 +112,7 @@ export class ReviewRepository {
       take: args.take,
     });
 
-    return reviews.map(
-      (review) =>
-        new ReviewDTO({
-          ...review,
-          answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
-          images: review.images.map((image) => ({
-            id: image.id,
-            imageId: image.image.id,
-            isBest: image.isBest,
-            url: image.image.url,
-            reviewId: image.spaceReviewId,
-          })),
-          space: SpaceDTO.generateSpaceDTO(review.space),
-        })
-    );
+    return reviews.map((review) => new ReviewDTO(ReviewDTO.generateReviewDTO(review)));
   }
 
   async findBestPhotoReviews(spaceId: string) {
@@ -204,28 +149,7 @@ export class ReviewRepository {
       ...args,
       include: {
         spaceReview: {
-          include: {
-            user: {
-              include: {
-                socials: true,
-                setting: true,
-              },
-            },
-            images: {
-              include: {
-                image: true,
-              },
-            },
-            answers: {
-              where: answerWhere,
-              include: {
-                host: true,
-              },
-            },
-            space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
-            },
-          },
+          include: ReviewDTO.generateInclude(),
         },
         image: true,
       },
@@ -236,18 +160,7 @@ export class ReviewRepository {
         new ReviewImageDetailDTO({
           ...image,
           url: image.image.url,
-          review: {
-            ...image.spaceReview,
-            answer: image.spaceReview.answers.filter((answer) => !answer.deletedAt).at(-1),
-            images: image.spaceReview.images.map((image) => ({
-              id: image.id,
-              imageId: image.imageId,
-              isBest: image.isBest,
-              url: image.image.url,
-              reviewId: image.spaceReviewId,
-            })),
-            space: SpaceDTO.generateSpaceDTO(image.spaceReview.space),
-          },
+          review: ReviewDTO.generateReviewDTO(image.spaceReview),
         })
     );
   }

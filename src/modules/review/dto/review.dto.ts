@@ -2,19 +2,20 @@ import { Prisma, SpaceReview } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
+import { CommonReview } from '@/interface/review.interface';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
 import { ReviewAnswerDTO, ReviewAnswerDTOProps } from './review-answer.dto';
 import { ReviewImageDTO, ReviewImageDTOProps } from './review-image.dto';
-import { ReviewSpaceDTO } from './review-space.dto';
+import { ReviewSpaceDTO, ReviewSpaceDTOProps } from './review-space.dto';
 
 export interface ReviewDTOProps extends Partial<SpaceReview> {
   user: CommonUserProps;
   images: ReviewImageDTOProps[];
   answer?: ReviewAnswerDTOProps;
-  space: SpaceDTOProps;
+  space: ReviewSpaceDTOProps;
 }
 
 export class ReviewDTO {
@@ -96,7 +97,22 @@ export class ReviewDTO {
     };
   }
 
-  static generateInclude() {
+  static generateReviewDTO(review: CommonReview) {
+    return {
+      ...review,
+      answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
+      images: review.images.map((image) => ({
+        id: image.id,
+        imageId: image.image.id,
+        isBest: image.isBest,
+        url: image.image.url,
+        reviewId: image.spaceReviewId,
+      })),
+      space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
+    };
+  }
+
+  static generateInclude(answerWhere = {} as Prisma.SpaceReviewAnswerWhereInput) {
     return {
       user: {
         include: {
@@ -113,15 +129,13 @@ export class ReviewDTO {
         } as Prisma.SpaceReviewImageOrderByWithRelationInput,
       },
       answers: {
-        where: {
-          deletedAt: null,
-        },
+        where: answerWhere,
         include: {
           host: true,
         },
       },
       space: {
-        include: SpaceDTO.getSpacesIncludeOption(),
+        include: ReviewSpaceDTO.generateInclude(),
       },
     };
   }

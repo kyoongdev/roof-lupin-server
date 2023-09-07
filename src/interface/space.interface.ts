@@ -9,6 +9,7 @@ import {
   SpaceInterest,
   SpaceLocation,
   SpaceReview,
+  UserReport,
 } from '@prisma/client';
 
 export interface SqlSpace {
@@ -61,6 +62,7 @@ export interface CommonSpace extends Space {
       icon: Icon;
     };
   })[];
+  reports: UserReport[];
 }
 
 export interface MaxPossibleTime {

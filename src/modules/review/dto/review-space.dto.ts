@@ -1,6 +1,7 @@
 import { Prisma, RentalType } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
+import { CommonReviewSpace } from '@/interface/review.interface';
 import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from '@/modules/space/dto/category';
@@ -105,5 +106,33 @@ export class ReviewSpaceDTO {
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
     this.orderNo = props.orderNo ?? null;
     this.categories = props.categories ? props.categories?.map((category) => new SpaceCategoryDTO(category)) : [];
+  }
+
+  static generateReviewSpaceDTO(space: CommonReviewSpace, userId?: string): ReviewSpaceDTOProps {
+    return {
+      ...space,
+      isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+      reviewCount: space.reviews.length,
+      averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
+      reportCount: space.reports.length,
+      interestCount: space.userInterests.length,
+    };
+  }
+
+  static generateInclude() {
+    return {
+      publicTransportations: true,
+      userInterests: true,
+      rentalType: true,
+      location: true,
+      reviews: true,
+      reports: {
+        where: {
+          spaceId: {
+            not: null,
+          },
+        },
+      },
+    };
   }
 }

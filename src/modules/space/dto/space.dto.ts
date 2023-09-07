@@ -1,4 +1,4 @@
-import { RentalType } from '@prisma/client';
+import { Prisma, RentalType } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { CommonSpace } from '@/interface/space.interface';
@@ -132,7 +132,7 @@ export class SpaceDTO {
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
       isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
       categories: space.categories ? space.categories?.map(({ category }) => category) : [],
-      reportCount: 0, //TODO: report
+      reportCount: space.reports.length,
       interestCount: space.userInterests.length,
     };
   }
@@ -157,7 +157,13 @@ export class SpaceDTO {
           },
         },
       },
-      reports: true,
+      reports: {
+        where: {
+          spaceId: {
+            not: null,
+          },
+        },
+      },
       refundPolicies: true,
     };
   }

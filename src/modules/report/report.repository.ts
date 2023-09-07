@@ -56,17 +56,7 @@ export class ReportRepository {
 
     return new ReportDTO({
       ...report,
-      spaceReview: report.spaceReview && {
-        ...report.spaceReview,
-        images: report.spaceReview.images.map((image) => ({
-          id: image.id,
-          imageId: image.imageId,
-          url: image.image.url,
-          isBest: image.isBest,
-          reviewId: image.spaceReviewId,
-        })),
-        space: SpaceDTO.generateSpaceDTO(report.spaceReview.space),
-      },
+      spaceReview: report.spaceReview && ReviewDTO.generateReviewDTO(report.spaceReview),
       space: report.space && SpaceDTO.generateSpaceDTO(report.space),
       spaceQnA: report.spaceQnA && {
         ...report.spaceQnA,
@@ -113,17 +103,7 @@ export class ReportRepository {
         new ReportDTO({
           ...report,
           answer: report.answers.filter((answer) => !answer.deletedAt).at(-1),
-          spaceReview: report.spaceReview && {
-            ...report.spaceReview,
-            images: report.spaceReview.images.map((image) => ({
-              id: image.id,
-              imageId: image.imageId,
-              url: image.image.url,
-              isBest: image.isBest,
-              reviewId: image.spaceReviewId,
-            })),
-            space: SpaceDTO.generateSpaceDTO(report.spaceReview.space),
-          },
+          spaceReview: report.spaceReview && ReviewDTO.generateReviewDTO(report.spaceReview),
           space: report.space && SpaceDTO.generateSpaceDTO(report.space),
           spaceQnA: report.spaceQnA && {
             ...report.spaceQnA,
