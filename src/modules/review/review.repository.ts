@@ -77,28 +77,7 @@ export class ReviewRepository {
   ) {
     const review = await this.database.spaceReview.findFirst({
       where: args.where,
-      include: {
-        user: {
-          include: {
-            socials: true,
-            setting: true,
-          },
-        },
-        images: {
-          include: {
-            image: true,
-          },
-        },
-        answers: {
-          where: answerWhere,
-          include: {
-            host: true,
-          },
-        },
-        space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
-        },
-      },
+      include: ReviewDTO.generateInclude(),
     });
 
     if (!review) {

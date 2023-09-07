@@ -6,6 +6,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { SQLCategory, SqlSpace } from '@/interface/space.interface';
 
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
+import { ReviewDTO } from '../review/dto';
 
 import { CreateSpaceDTO, SpaceDetailDTO, SpaceDTO, SpaceHashTagDTO, SpaceIdsDTO, UpdateSpaceDTO } from './dto';
 import { BuildingDTO, CreateBuildingDTO } from './dto/building';
@@ -127,29 +128,7 @@ export class SpaceRepository {
           },
         },
         reviews: {
-          include: {
-            answers: {
-              include: {
-                host: true,
-              },
-            },
-            images: {
-              include: {
-                image: true,
-              },
-              orderBy: [
-                {
-                  isBest: 'desc',
-                },
-              ],
-            },
-            user: {
-              include: {
-                socials: true,
-                setting: true,
-              },
-            },
-          },
+          include: ReviewDTO.generateInclude(),
           skip: 0,
           take: 3,
           orderBy: [
@@ -269,6 +248,7 @@ export class SpaceRepository {
           url: image.image.url,
           reviewId: image.spaceReviewId,
         })),
+        space: SpaceDTO.generateSpaceDTO(review.space),
       })),
     });
   }

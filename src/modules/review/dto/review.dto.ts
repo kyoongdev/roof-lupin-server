@@ -2,7 +2,7 @@ import { Prisma, SpaceReview } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
-import { SpaceDTOProps } from '@/modules/space/dto';
+import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
@@ -64,6 +64,7 @@ export class ReviewDTO {
     this.reservationId = props.reservationId;
     this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
     this.isEditable = false;
+    this.space = new ReviewSpaceDTO(props.space);
   }
 
   setIsEditable(userId?: string) {
@@ -107,6 +108,9 @@ export class ReviewDTO {
         include: {
           image: true,
         },
+        orderBy: {
+          isBest: 'desc',
+        } as Prisma.SpaceReviewImageOrderByWithRelationInput,
       },
       answers: {
         where: {
@@ -115,6 +119,9 @@ export class ReviewDTO {
         include: {
           host: true,
         },
+      },
+      space: {
+        include: SpaceDTO.getSpacesIncludeOption(),
       },
     };
   }

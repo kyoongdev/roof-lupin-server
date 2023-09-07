@@ -65,6 +65,7 @@ export class ReportRepository {
           isBest: image.isBest,
           reviewId: image.spaceReviewId,
         })),
+        space: SpaceDTO.generateSpaceDTO(report.spaceReview.space),
       },
       space: report.space && SpaceDTO.generateSpaceDTO(report.space),
       spaceQnA: report.spaceQnA && {
@@ -121,6 +122,7 @@ export class ReportRepository {
               isBest: image.isBest,
               reviewId: image.spaceReviewId,
             })),
+            space: SpaceDTO.generateSpaceDTO(report.spaceReview.space),
           },
           space: report.space && SpaceDTO.generateSpaceDTO(report.space),
           spaceQnA: report.spaceQnA && {
