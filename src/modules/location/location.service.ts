@@ -9,10 +9,7 @@ import { LocationRepository } from './location.repository';
 
 @Injectable()
 export class LocationService {
-  constructor(
-    private readonly locationRepository: LocationRepository,
-    private readonly socialLocationService: SocialLocationService
-  ) {}
+  constructor(private readonly socialLocationService: SocialLocationService) {}
 
   async findKakaoSubway(query: KakaoKeywordQuery) {
     try {
@@ -25,7 +22,7 @@ export class LocationService {
       });
       return response;
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
   }
 
