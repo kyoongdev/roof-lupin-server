@@ -13,3 +13,4 @@ export * from './review-detail.dto';
 export * from './review-image-detail.dto';
 export * from './create-best-review-images.dto';
 export * from './review-count.dto';
+export * from './update-my-review.dto';

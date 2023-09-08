@@ -8,7 +8,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { ReviewCountDTO, ReviewDetailDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
+import { ReviewCountDTO, ReviewDetailDTO, ReviewsSummaryDTO, UpdateMyReviewDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { FindReviewsQuery } from './dto/query';
 import { ReviewImageDTO } from './dto/review-image.dto';
@@ -224,9 +224,6 @@ export class ReviewController {
       description: '공간 리뷰 수정',
       summary: '공간 리뷰를 수정합니다. 리뷰 작성자만 사용이 가능합니다.',
     },
-    body: {
-      type: UpdateReviewDTO,
-    },
   })
   @ResponseApi(
     {
@@ -234,7 +231,11 @@ export class ReviewController {
     },
     204
   )
-  async updateReview(@Body() body: UpdateReviewDTO, @Param('reviewId') reviewId: string, @ReqUser() user: RequestUser) {
+  async updateReview(
+    @Body() body: UpdateMyReviewDTO,
+    @Param('reviewId') reviewId: string,
+    @ReqUser() user: RequestUser
+  ) {
     await this.reviewService.updateReview(reviewId, user.id, body);
   }
 

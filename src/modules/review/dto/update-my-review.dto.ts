@@ -5,10 +5,9 @@ interface Props {
   content?: string;
   score?: number;
   images?: string[];
-  isBest?: boolean;
 }
 
-export class UpdateReviewDTO {
+export class UpdateMyReviewDTO {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   content?: string;
 
@@ -19,15 +18,11 @@ export class UpdateReviewDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, description: '이미지 url' } })
   images?: string[];
 
-  @Property({ apiProperty: { type: 'boolean' } })
-  isBest?: boolean;
-
   constructor(props?: Props) {
     if (props) {
       this.content = props.content;
       this.score = props.score;
       this.images = props.images;
-      this.isBest = props.isBest;
     }
   }
 }
