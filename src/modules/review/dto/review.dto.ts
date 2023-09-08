@@ -12,6 +12,7 @@ import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 import { FindReviewsQuery } from './query';
 import { ReviewAnswerDTO, type ReviewAnswerDTOProps } from './review-answer.dto';
 import { ReviewImageDTO, type ReviewImageDTOProps } from './review-image.dto';
+import { ReviewReservationDTO, ReviewReservationDTOProps } from './review-reservation.dto';
 import { ReviewSpaceDTO, type ReviewSpaceDTOProps } from './review-space.dto';
 
 export interface ReviewDTOProps extends Partial<SpaceReview> {
@@ -19,7 +20,7 @@ export interface ReviewDTOProps extends Partial<SpaceReview> {
   images: ReviewImageDTOProps[];
   answer?: ReviewAnswerDTOProps;
   space: ReviewSpaceDTOProps;
-  reservationRentalTypes: ReservationRentalTypeDTOProps[];
+  reservation: ReviewReservationDTOProps;
 }
 
 export class ReviewDTO {
@@ -56,8 +57,8 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: ReviewSpaceDTO, description: '공간 정보' } })
   space: ReviewSpaceDTO;
 
-  @Property({ apiProperty: { type: ReservationRentalTypeDTO, isArray: true, description: '예약 타입 정보' } })
-  reservationRentalTypes: ReservationRentalTypeDTO[];
+  @Property({ apiProperty: { type: ReviewReservationDTO, isArray: true, description: '예약 타입 정보' } })
+  reservation: ReviewReservationDTO;
 
   constructor(props: ReviewDTOProps) {
     this.id = props.id;
@@ -71,9 +72,7 @@ export class ReviewDTO {
     this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
     this.isEditable = false;
     this.space = new ReviewSpaceDTO(props.space);
-    this.reservationRentalTypes = props.reservationRentalTypes.map(
-      (rentalType) => new ReservationRentalTypeDTO(rentalType)
-    );
+    this.reservation = new ReviewReservationDTO(props.reservation);
   }
 
   setIsEditable(userId?: string) {
@@ -117,7 +116,6 @@ export class ReviewDTO {
         reviewId: image.spaceReviewId,
       })),
       space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
-      reservationRentalTypes: review.reservation.rentalTypes,
     };
   }
 

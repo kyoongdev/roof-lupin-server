@@ -48,7 +48,6 @@ export class ReviewRepository {
         reviewId: image.spaceReviewId,
       })),
       space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
-      reservationRentalTypes: review.reservation.rentalTypes,
     });
   }
 
@@ -76,7 +75,6 @@ export class ReviewRepository {
         reviewId: image.spaceReviewId,
       })),
       space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
-      reservationRentalTypes: review.reservation.rentalTypes,
     });
   }
 

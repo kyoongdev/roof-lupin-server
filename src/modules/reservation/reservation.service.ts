@@ -69,11 +69,20 @@ export class ReservationService {
     });
   }
 
-  async deleteMyReservation(id: string, userId: string) {
+  async deleteMyReservation(id: string, userId: string, reason?: string) {
     const reservation = await this.reservationRepository.findReservation(id);
 
     if (reservation.user.id !== userId) {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_USER_DELETE_FORBIDDEN));
+    }
+
+    if (reason) {
+      await this.reservationRepository.updateReservation(id, {
+        cancel: {
+          reason,
+          userId,
+        },
+      });
     }
 
     await this.reservationRepository.deleteReservation(id);

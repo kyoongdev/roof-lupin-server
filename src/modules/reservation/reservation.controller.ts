@@ -12,6 +12,7 @@ import { PaymentService } from '../payment/payment.service';
 
 import { CreateReservationDTO, ReservationDetailDTO, ReservationDTO } from './dto';
 import { FindReservationQuery } from './dto/query';
+import { CancelReservationQuery } from './dto/query/cancel-reservation.query';
 import { ReservationService } from './reservation.service';
 
 @Auth([JwtAuthGuard, RoleGuard('USER')])
@@ -90,11 +91,6 @@ export class ReservationController {
       description: '예약 삭제하기',
       summary: '예약 삭제하기 - 유저만 사용가능합니다.',
     },
-    params: {
-      name: 'reservationId',
-      type: 'string',
-      description: '예약 아이디',
-    },
   })
   @ResponseApi(
     {
@@ -102,7 +98,11 @@ export class ReservationController {
     },
     204
   )
-  async deleteReservation(@Param('reservationId') id: string, @ReqUser() user: RequestUser) {
-    return await this.reservationService.deleteMyReservation(id, user.id);
+  async deleteReservation(
+    @Param('reservationId') id: string,
+    @Query() query: CancelReservationQuery,
+    @ReqUser() user: RequestUser
+  ) {
+    return await this.reservationService.deleteMyReservation(id, user.id, query.reason);
   }
 }
