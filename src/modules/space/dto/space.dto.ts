@@ -77,15 +77,13 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: TransportationDTO, isArray: true, nullable: true, description: '공간 대중 교통' } })
   publicTransportations: TransportationDTO[];
 
-  @Property({ apiProperty: { type: LocationDTO, nullable: true, description: '공간 위치' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 위치' } })
   location: LocationDTO | null;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '공간 순서' } })
   orderNo?: number;
 
-  @Property({
-    apiProperty: { type: SpaceCategoryDTO, isArray: true, description: '공간이 속한 카테고리' },
-  })
+  @Property({ apiProperty: { type: SpaceCategoryDTO, isArray: true, description: '공간이 속한 카테고리' } })
   categories?: SpaceCategoryDTO[];
 
   @Property({ apiProperty: { type: 'number', description: '초과 사용자 비용' } })

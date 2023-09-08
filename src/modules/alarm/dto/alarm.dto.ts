@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 export interface AlarmDTOProps {
   id: string;
@@ -11,7 +11,7 @@ export interface AlarmDTOProps {
   isRead: boolean;
   isPush: boolean;
   isPushed: boolean;
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
 }
 
 export class AlarmDTO {

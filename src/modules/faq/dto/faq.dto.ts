@@ -1,12 +1,12 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 export interface FAQDTOProps {
   id: string;
   question: string;
   answer?: string;
-  user?: CommonUserProps;
+  user?: CommonUserDTOProps;
   createdAt?: Date;
   deletedAt?: Date;
 }

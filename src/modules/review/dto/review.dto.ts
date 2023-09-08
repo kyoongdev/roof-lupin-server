@@ -1,21 +1,25 @@
-import { Prisma, SpaceReview } from '@prisma/client';
+import type { Prisma, SpaceReview } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
-import { CommonReview } from '@/interface/review.interface';
-import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import type { CommonReview } from '@/interface/review.interface';
+import {
+  ReservationRentalTypeDTO,
+  type ReservationRentalTypeDTOProps,
+} from '@/modules/reservation/dto/reservation-rental-type.dto';
+import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
-import { ReviewAnswerDTO, ReviewAnswerDTOProps } from './review-answer.dto';
-import { ReviewImageDTO, ReviewImageDTOProps } from './review-image.dto';
-import { ReviewSpaceDTO, ReviewSpaceDTOProps } from './review-space.dto';
+import { ReviewAnswerDTO, type ReviewAnswerDTOProps } from './review-answer.dto';
+import { ReviewImageDTO, type ReviewImageDTOProps } from './review-image.dto';
+import { ReviewSpaceDTO, type ReviewSpaceDTOProps } from './review-space.dto';
 
 export interface ReviewDTOProps extends Partial<SpaceReview> {
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
   images: ReviewImageDTOProps[];
   answer?: ReviewAnswerDTOProps;
   space: ReviewSpaceDTOProps;
+  reservationRentalTypes: ReservationRentalTypeDTOProps[];
 }
 
 export class ReviewDTO {
@@ -25,9 +29,7 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: 'string' } })
   content: string;
 
-  @Property({
-    apiProperty: { type: 'number' },
-  })
+  @Property({ apiProperty: { type: 'number' } })
   score: number;
 
   @Property({ apiProperty: { type: ReviewImageDTO, isArray: true } })
@@ -54,6 +56,9 @@ export class ReviewDTO {
   @Property({ apiProperty: { type: ReviewSpaceDTO, description: '공간 정보' } })
   space: ReviewSpaceDTO;
 
+  @Property({ apiProperty: { type: ReservationRentalTypeDTO, isArray: true, description: '예약 타입 정보' } })
+  reservationRentalTypes: ReservationRentalTypeDTO[];
+
   constructor(props: ReviewDTOProps) {
     this.id = props.id;
     this.content = props.content;
@@ -66,6 +71,9 @@ export class ReviewDTO {
     this.answer = props.answer ? new ReviewAnswerDTO(props.answer) : null;
     this.isEditable = false;
     this.space = new ReviewSpaceDTO(props.space);
+    this.reservationRentalTypes = props.reservationRentalTypes.map(
+      (rentalType) => new ReservationRentalTypeDTO(rentalType)
+    );
   }
 
   setIsEditable(userId?: string) {
@@ -97,7 +105,7 @@ export class ReviewDTO {
     };
   }
 
-  static generateReviewDTO(review: CommonReview) {
+  static generateReviewDTO(review: CommonReview): ReviewDTOProps {
     return {
       ...review,
       answer: review.answers.filter((answer) => !answer.deletedAt).at(-1),
@@ -109,6 +117,7 @@ export class ReviewDTO {
         reviewId: image.spaceReviewId,
       })),
       space: ReviewSpaceDTO.generateReviewSpaceDTO(review.space),
+      reservationRentalTypes: review.reservation.rentalTypes,
     };
   }
 
@@ -136,6 +145,20 @@ export class ReviewDTO {
       },
       space: {
         include: ReviewSpaceDTO.generateInclude(),
+      },
+      reservation: {
+        include: {
+          rentalTypes: {
+            include: {
+              rentalType: {
+                include: {
+                  additionalServices: true,
+                  timeCostInfos: true,
+                },
+              },
+            },
+          },
+        },
       },
     };
   }

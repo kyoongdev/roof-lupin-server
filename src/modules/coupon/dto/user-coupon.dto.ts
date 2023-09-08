@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 import { CouponDTO, CouponDTOProps } from './coupon.dto';
 
@@ -10,7 +10,7 @@ export interface UserCouponDTOProps {
   usageDateEndAt: Date;
   isUsed: boolean;
   createdAt: Date;
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
   coupon: CouponDTOProps;
   reservationId?: string;
 }

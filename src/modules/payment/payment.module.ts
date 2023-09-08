@@ -13,7 +13,6 @@ import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceRepository } from '../space/space.repository';
-import { UserRepository } from '../user/user.repository';
 
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';

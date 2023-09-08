@@ -3,16 +3,16 @@ import { Property } from 'cumuco-nestjs';
 import { getDateDiff } from '@/common/date';
 import { CheckIsTargetDay } from '@/interface/common.interface';
 import { type CommonReservation, RESERVATION_STATUS, type ReservationStatus } from '@/interface/reservation.interface';
-import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { SpaceDTO, type SpaceDTOProps } from '@/modules/space/dto';
+import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
-import { ReservationAdditionalServiceDTO, ReservationAdditionalServiceDTOProps } from './additional-service';
-import { BaseReservationDTO, BaseReservationDTOProps } from './base-reservation.dto';
-import { ReservationCancelDTO, ReservationCancelDTOProps } from './cancel';
-import { ReservationRentalTypeDTO, ReservationRentalTypeDTOProps } from './reservation-rental-type.dto';
+import { ReservationAdditionalServiceDTO, type ReservationAdditionalServiceDTOProps } from './additional-service';
+import { BaseReservationDTO, type BaseReservationDTOProps } from './base-reservation.dto';
+import { ReservationCancelDTO, type ReservationCancelDTOProps } from './cancel';
+import { ReservationRentalTypeDTO, type ReservationRentalTypeDTOProps } from './reservation-rental-type.dto';
 
 export interface ReservationDTOProps extends BaseReservationDTOProps {
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
   rentalTypes: ReservationRentalTypeDTOProps[];
   space: SpaceDTOProps;
   isReviewed: boolean;
@@ -28,7 +28,7 @@ export class ReservationDTO extends BaseReservationDTO {
   @Property({ apiProperty: { type: ReservationRentalTypeDTO, isArray: true, description: '대여 정보' } })
   rentalTypes: ReservationRentalTypeDTO[];
 
-  @Property({ apiProperty: { type: SpaceDTO, description: '공간 정보' } })
+  @Property({ apiProperty: { type: SpaceDTO ?? 'string', description: '공간 정보' } })
   space: SpaceDTO;
 
   @Property({ apiProperty: { type: 'boolean', description: '리뷰 작성 여부' } })

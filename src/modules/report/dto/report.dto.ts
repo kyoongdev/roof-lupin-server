@@ -3,7 +3,7 @@ import { Property } from 'cumuco-nestjs';
 import { QnADTO, QnADTOProps } from '@/modules/qna/dto';
 import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 import { ReportAnswerDTO, ReportAnswerDTOProps } from './report-answer.dto';
 import { ReportStatusResDecorator } from './validation';
@@ -15,7 +15,7 @@ export interface ReportDTOProps {
   space?: SpaceDTOProps;
   spaceReview?: ReviewDTOProps;
   spaceQnA?: QnADTOProps;
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
   createdAt: Date;
   answer?: ReportAnswerDTOProps;
   deletedAt?: Date;

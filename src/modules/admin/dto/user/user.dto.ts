@@ -1,9 +1,9 @@
 import { Property } from 'cumuco-nestjs';
 
 import { SOCIAL_TYPE, SocialType } from '@/interface/user.interface';
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
-export interface AdminUserDTOProps extends Omit<CommonUserProps, 'socialType'> {
+export interface AdminUserDTOProps extends Omit<CommonUserDTOProps, 'socialType'> {
   isBlocked: boolean;
   unBlockAt?: Date;
   loginedAt?: Date;

@@ -8,7 +8,7 @@ import { numberToSocialType } from '../utils';
 import { BaseUserDTO } from './base-user.dto';
 import { UserSettingDTO, UserSettingDTOProps } from './setting';
 
-export interface CommonUserProps extends Partial<User> {
+export interface CommonUserDTOProps extends Partial<User> {
   socials: UserSocial[];
   setting: UserSettingDTOProps;
 }
@@ -48,7 +48,7 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: UserSettingDTO, description: '설정' } })
   setting: UserSettingDTO;
 
-  constructor(props: CommonUserProps) {
+  constructor(props: CommonUserDTOProps) {
     super();
     this.id = props.id;
     this.name = props.name;

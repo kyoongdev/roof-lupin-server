@@ -3,14 +3,14 @@ import { Property } from 'cumuco-nestjs';
 
 import { DateDTO, DateProps } from '@/common';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
 import { QnAAnswerDTO, QnAAnswerProps } from './qna-answer.dto';
 
 export interface QnADTOProps extends DateProps {
   id: string;
   content: string;
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
   answer?: QnAAnswerProps;
   space: SpaceDTOProps;
 }

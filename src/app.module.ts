@@ -44,7 +44,6 @@ const providers: Provider[] = [
     V1Module,
     AdminModule,
     HostModule,
-
     RouterModule.forRoutes([
       {
         path: '/api/v1',

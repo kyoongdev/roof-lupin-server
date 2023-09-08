@@ -1,18 +1,22 @@
 import type {
+  AdditionalService,
   Host,
   Image,
   PublicTransportation,
   RentalType,
+  Reservation,
+  ReservationRentalType,
   Space,
   SpaceInterest,
   SpaceLocation,
   SpaceReview,
   SpaceReviewAnswer,
   SpaceReviewImage,
+  TimeCostInfo,
   UserReport,
 } from '@prisma/client';
 
-import { CommonUser } from './user.interface';
+import type { CommonUser } from './user.interface';
 
 export interface CommonReviewSpace extends Space {
   publicTransportations: PublicTransportation[];
@@ -21,6 +25,18 @@ export interface CommonReviewSpace extends Space {
   reviews: SpaceReview[];
   location: SpaceLocation;
   reports: UserReport[];
+}
+
+export interface CommonReviewRentalType extends RentalType {
+  timeCostInfos: TimeCostInfo[];
+  additionalServices: AdditionalService[];
+}
+
+export interface CommonReviewReservationRentalType extends ReservationRentalType {
+  rentalType: CommonReviewRentalType;
+}
+export interface CommonReviewReservation extends Reservation {
+  rentalTypes: CommonReviewReservationRentalType[];
 }
 
 export interface CommonReviewAnswer extends SpaceReviewAnswer {
@@ -36,4 +52,5 @@ export interface CommonReview extends SpaceReview {
   answers: CommonReviewAnswer[];
   images: CommonReviewImage[];
   space: CommonReviewSpace;
+  reservation: CommonReviewReservation;
 }

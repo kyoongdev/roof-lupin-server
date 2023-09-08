@@ -1,12 +1,12 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonUserDTO, type CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
 import { CurationDTO, type CurationDTOProps } from './curation.dto';
 
 export interface CurationDetailDTOProps extends CurationDTOProps {
   content: string;
-  user?: CommonUserProps;
+  user?: CommonUserDTOProps;
 }
 
 export class CurationDetailDTO extends CurationDTO {

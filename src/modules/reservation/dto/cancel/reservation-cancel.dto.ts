@@ -1,13 +1,13 @@
 import { Property } from 'cumuco-nestjs';
 
 import { HostDTO, HostDTOProps } from '@/modules/host/dto';
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 export interface ReservationCancelDTOProps {
   id: string;
   reason: string;
   refundCost?: number;
-  user?: CommonUserProps;
+  user?: CommonUserDTOProps;
   host?: HostDTOProps;
   createdAt: Date;
 }

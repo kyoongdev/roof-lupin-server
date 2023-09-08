@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CommonUserDTO, CommonUserProps } from '@/modules/user/dto';
+import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
 export interface ReviewReportDTOProps {
   id: string;
@@ -8,7 +8,7 @@ export interface ReviewReportDTOProps {
   content: string;
   isProcessed: boolean;
   createdAt: Date;
-  user: CommonUserProps;
+  user: CommonUserDTOProps;
 }
 
 export class ReviewReportDTO {
