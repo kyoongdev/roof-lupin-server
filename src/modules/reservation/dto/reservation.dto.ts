@@ -123,7 +123,6 @@ export class ReservationDTO extends BaseReservationDTO {
       Number(reservation.day),
       9
     );
-    const startAt = Math.min(...reservation.rentalTypes.map((rentalType) => rentalType.startAt));
 
     return {
       ...rest,
@@ -149,25 +148,26 @@ export class ReservationDTO extends BaseReservationDTO {
     const currentDateTime = new Date();
     const currentYear = currentDateTime.getFullYear();
     const currentMonth = currentDateTime.getMonth() + 1;
-    const currentDay = currentDateTime.getDate();
     const startAt = Math.min(...this.rentalTypes.map((rentalType) => rentalType.startAt));
 
-    if (this.year > currentYear) {
-      return true;
-    } else if (this.year === currentYear) {
-      if (this.month > currentMonth) {
-        return true;
-      } else if (this.month === currentMonth) {
-        if (this.day > currentDay) {
-          return true;
-        } else if (this.day === currentDay) {
-          if (startAt - currentDateTime.getHours() > 2) {
-            return true;
-          }
-        } else return false;
-      }
+    if (!this.payedAt) {
+      return false;
     }
-    return false;
+
+    if (this.checkIsUsed()) {
+      return false;
+    }
+
+    if (
+      currentYear === this.year &&
+      currentMonth === this.month &&
+      this.day === currentDateTime.getDate() &&
+      startAt - currentDateTime.getHours() <= 2
+    ) {
+      return false;
+    }
+
+    return true;
   }
 
   static generateReservationInclude(userId?: string) {
