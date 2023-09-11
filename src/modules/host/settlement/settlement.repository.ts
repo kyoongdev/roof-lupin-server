@@ -46,32 +46,7 @@ export class HostSettlementRepository {
       },
       include: {
         reservations: {
-          include: {
-            user: {
-              include: {
-                socials: true,
-                setting: true,
-              },
-            },
-            spaceReviews: true,
-            rentalTypes: {
-              include: {
-                rentalType: {
-                  include: {
-                    timeCostInfos: true,
-                    space: {
-                      include: {
-                        reviews: true,
-                        location: true,
-                        publicTransportations: true,
-                        rentalType: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+          include: ReservationDTO.generateReservationInclude(),
         },
         host: true,
       },

@@ -73,10 +73,4 @@ export class ReservationDetailDTO extends ReservationDTO {
       })),
     };
   }
-
-  getReservationDate() {
-    const reservationDate = new Date(Number(this.year), Number(this.month) - 1, Number(this.day));
-    reservationDate.setUTCHours(0, 0, 0, 0);
-    return reservationDate;
-  }
 }

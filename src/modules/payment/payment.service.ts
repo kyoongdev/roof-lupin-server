@@ -236,32 +236,25 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservation(data.reservationId);
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
-    const reservationDate = reservation.getReservationDate();
-    const now = new Date();
-    now.setUTCHours(0, 0, 0, 0);
-
-    const diffDate = reservationDate.getTime() - now.getTime();
-    if (diffDate < 0) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_REFUND_DUE_DATE_PASSED));
+    if (!reservation.isRefundable) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
     }
-
-    const refundTargetDate = diffDate / (1000 * 60 * 60 * 24);
-    const refundPolicy = refundPolicies.reverse().find((policy) => policy.daysBefore <= refundTargetDate);
-
-    const refundCost = refundPolicy.getRefundCost(reservation.totalCost);
-
     if (reservation.user.id !== userId) {
       throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
     }
 
-    if (!reservation.payedAt) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_NOT_COMPLETED));
-    }
+    const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
+    const now = new Date();
 
-    const cancelableAmount = reservation.totalCost - (reservation.cancel.refundCost ?? 0);
-    if (cancelableAmount <= 0) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_ALREADY_REFUNDED));
-    }
+    const diffTime = reservationDate.getTime() - now.getTime();
+    const refundTargetDate = diffTime / (1000 * 60 * 60 * 24);
+
+    const refundPolicy = refundPolicies
+      .sort((a, b) => a.daysBefore - b.daysBefore)
+      .reverse()
+      .find((policy) => policy.daysBefore <= refundTargetDate);
+
+    const refundCost = refundPolicy.getRefundCost(reservation.totalCost);
 
     await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
       cancelAmount: refundCost,

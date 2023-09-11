@@ -128,7 +128,7 @@ export class SpaceDTO {
       reviewCount: space.reviews.length,
       location: space.location,
       averageScore: space.reviews.reduce((acc, cur) => acc + cur.score, 0) / space.reviews.length,
-      isInterested: space.userInterests.some((userInterest) => userInterest.userId === userId),
+      isInterested: space.userInterests?.some((userInterest) => userInterest.userId === userId),
       categories: space.categories ? space.categories?.map(({ category }) => category) : [],
       reportCount: space.reports.length,
       interestCount: space.userInterests.length,
