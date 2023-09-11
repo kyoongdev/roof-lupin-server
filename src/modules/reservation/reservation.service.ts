@@ -84,7 +84,5 @@ export class ReservationService {
         },
       });
     }
-
-    await this.reservationRepository.deleteReservation(id);
   }
 }
