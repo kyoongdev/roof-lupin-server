@@ -150,6 +150,10 @@ export class ReservationDTO extends BaseReservationDTO {
     const currentMonth = currentDateTime.getMonth() + 1;
     const startAt = Math.min(...this.rentalTypes.map((rentalType) => rentalType.startAt));
 
+    if (this.cancel?.refundCost) {
+      return false;
+    }
+
     if (!this.payedAt) {
       return false;
     }

@@ -274,6 +274,7 @@ export class ReservationRepository {
         ...(cancel && {
           cancel: {
             create: {
+              refundCost: cancel.refundCost ?? undefined,
               reason: cancel.reason,
               ...(cancel.hostId && {
                 host: {
