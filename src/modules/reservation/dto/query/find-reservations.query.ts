@@ -98,7 +98,7 @@ export class FindReservationQuery extends PagingDTO {
             {
               isApproved: true,
               space: {
-                isImmediateReservation: true,
+                isImmediateReservation: false,
               },
               payedAt: {
                 not: null,
@@ -109,7 +109,7 @@ export class FindReservationQuery extends PagingDTO {
                 not: null,
               },
               space: {
-                isImmediateReservation: false,
+                isImmediateReservation: true,
               },
             },
           ],
@@ -117,7 +117,7 @@ export class FindReservationQuery extends PagingDTO {
         ...((typeof this.isApproved === 'boolean' || this.status === 'APPROVED') && {
           isApproved: this.isApproved,
           space: {
-            isImmediateReservation: true,
+            isImmediateReservation: false,
           },
         }),
         ...(typeof this.isCanceled === 'boolean' && {
@@ -133,7 +133,7 @@ export class FindReservationQuery extends PagingDTO {
                 },
               }),
         }),
-        ...(this.status === RESERVATION_STATUS.HOST_CANCELED && {
+        ...(this.status === RESERVATION_STATUS.CANCELED && {
           cancel: {
             isNot: null,
             refundCost: null,
@@ -158,27 +158,19 @@ export class FindReservationQuery extends PagingDTO {
           },
         }),
         ...(Boolean(this.isApproaching) && {
-          OR: FindReservationQuery.getORWhereClause(currentDate),
+          OR: FindReservationQuery.getApproachingWhere(currentDate),
           cancel: null,
           deletedAt: null,
         }),
         ...(typeof this.isUsed === 'boolean' && {
           ...(this.isUsed
             ? {
-                year: {
-                  lte: currentDate.getFullYear(),
-                },
-                month: {
-                  lte: currentDate.getMonth() + 1,
-                },
-                day: {
-                  lt: currentDate.getDate(),
-                },
+                OR: FindReservationQuery.getUsedWhere(currentDate),
                 cancel: null,
                 deletedAt: null,
               }
             : {
-                OR: FindReservationQuery.getORWhereClause(currentDate),
+                OR: FindReservationQuery.getApproachingWhere(currentDate),
                 cancel: null,
                 deletedAt: null,
               }),
@@ -186,7 +178,7 @@ export class FindReservationQuery extends PagingDTO {
       },
     };
   }
-  static getORWhereClause(currentDate: Date) {
+  static getApproachingWhere(currentDate: Date) {
     return [
       {
         year: {
@@ -206,6 +198,53 @@ export class FindReservationQuery extends PagingDTO {
         month: {
           gt: currentDate.getMonth() + 1,
         },
+      },
+    ];
+  }
+
+  static getUsedWhere(currentDate: Date) {
+    return [
+      {
+        year: {
+          lt: currentDate.getFullYear(),
+        },
+      },
+      {
+        year: {
+          equals: currentDate.getFullYear(),
+        },
+        OR: [
+          {
+            month: {
+              lt: currentDate.getMonth() + 1,
+            },
+          },
+          {
+            month: {
+              equals: currentDate.getMonth() + 1,
+            },
+
+            OR: [
+              {
+                day: {
+                  lt: currentDate.getDate(),
+                },
+              },
+              {
+                day: {
+                  equals: currentDate.getDate(),
+                },
+                rentalTypes: {
+                  some: {
+                    startAt: {
+                      lt: currentDate.getHours(),
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
       },
     ];
   }

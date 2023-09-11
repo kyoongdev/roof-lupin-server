@@ -57,7 +57,7 @@ export class ReservationService {
     return await this.reservationRepository.findFirstReservation({
       where: {
         userId,
-        OR: FindReservationQuery.getORWhereClause(currentDate),
+        OR: FindReservationQuery.getApproachingWhere(currentDate),
         cancel: null,
         deletedAt: null,
       },

@@ -37,6 +37,9 @@ export class ReservationDTO extends BaseReservationDTO {
   @Property({ apiProperty: { type: 'boolean', description: '리뷰 작성 가능 여부' } })
   isReviewable: boolean;
 
+  @Property({ apiProperty: { type: 'boolean', description: '환불 가능 여부' } })
+  isRefundable: boolean;
+
   @Property({
     apiProperty: {
       type: 'string',
@@ -64,31 +67,50 @@ export class ReservationDTO extends BaseReservationDTO {
       ? props.additionalServices.map((additionalService) => new ReservationAdditionalServiceDTO(additionalService))
       : null;
     this.setReservationStatus();
+    this.isRefundable = this.checkIsRefundable();
   }
 
   setReservationStatus() {
-    const currentDateTime = new Date();
-    const startAt = Math.min(...this.rentalTypes.map((rentalType) => rentalType.startAt));
-    if (
-      Number(this.year) <= currentDateTime.getFullYear() &&
-      Number(this.month) <= currentDateTime.getMonth() &&
-      Number(this.day) <= currentDateTime.getDate() &&
-      startAt <= currentDateTime.getHours()
-    ) {
+    if (this.checkIsUsed()) {
       this.status = RESERVATION_STATUS.USED;
-    } else if (this.space.isImmediateReservation && !this.isApproved) {
+    } else if (!this.space.isImmediateReservation && !this.isApproved) {
       this.status = RESERVATION_STATUS.APPROVED_PENDING;
-    } else if (this.space.isImmediateReservation && this.isApproved && !this.payedAt) {
+    } else if (!this.space.isImmediateReservation && this.isApproved && !this.payedAt) {
       this.status = RESERVATION_STATUS.APPROVED;
     } else if (this.cancel) {
       if (this.cancel.refundCost) {
         this.status = RESERVATION_STATUS.REFUND;
       } else if (this.cancel.host) {
-        this.status = RESERVATION_STATUS.HOST_CANCELED;
+        this.status = RESERVATION_STATUS.CANCELED;
       }
     } else {
       this.status = RESERVATION_STATUS.BEFORE_USAGE;
     }
+  }
+
+  checkIsUsed() {
+    const currentDateTime = new Date();
+    const currentYear = currentDateTime.getFullYear();
+    const currentMonth = currentDateTime.getMonth() + 1;
+    const currentDay = currentDateTime.getDate();
+    const startAt = Math.min(...this.rentalTypes.map((rentalType) => rentalType.startAt));
+
+    if (this.year < currentYear) {
+      return true;
+    } else if (this.year === currentYear) {
+      if (this.month < currentMonth) {
+        return true;
+      } else if (this.month === currentMonth) {
+        if (this.day < currentDay) {
+          return true;
+        } else if (this.day === currentDay) {
+          if (startAt <= currentDateTime.getHours()) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   static generateReservationDTO(reservation: CommonReservation): ReservationDTOProps {
@@ -101,6 +123,7 @@ export class ReservationDTO extends BaseReservationDTO {
       Number(reservation.day),
       9
     );
+    const startAt = Math.min(...reservation.rentalTypes.map((rentalType) => rentalType.startAt));
 
     return {
       ...rest,
@@ -120,6 +143,31 @@ export class ReservationDTO extends BaseReservationDTO {
         count,
       })),
     };
+  }
+
+  checkIsRefundable() {
+    const currentDateTime = new Date();
+    const currentYear = currentDateTime.getFullYear();
+    const currentMonth = currentDateTime.getMonth() + 1;
+    const currentDay = currentDateTime.getDate();
+    const startAt = Math.min(...this.rentalTypes.map((rentalType) => rentalType.startAt));
+
+    if (this.year > currentYear) {
+      return true;
+    } else if (this.year === currentYear) {
+      if (this.month > currentMonth) {
+        return true;
+      } else if (this.month === currentMonth) {
+        if (this.day > currentDay) {
+          return true;
+        } else if (this.day === currentDay) {
+          if (startAt - currentDateTime.getHours() > 2) {
+            return true;
+          }
+        } else return false;
+      }
+    }
+    return false;
   }
 
   static generateReservationInclude(userId?: string) {
