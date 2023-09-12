@@ -49,7 +49,7 @@ export class HostController {
     },
   })
   @ResponseApi({
-    type: HostDTO,
+    type: HostDetailDTO,
   })
   async getMe(@ReqUser() user: RequestHost) {
     return await this.hostService.findHost(user.id);
