@@ -28,7 +28,6 @@ export class PortOneProvider {
 
   async validateAccount(params: PortOneValidateAccount) {
     const token = await this.getToken();
-    //bank_code, bank_num
 
     try {
       await this.apiClient.get('/vbanks/holder', {

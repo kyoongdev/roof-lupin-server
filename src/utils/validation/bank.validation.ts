@@ -22,7 +22,7 @@ export class BankCodeConstraint implements ValidatorConstraintInterface {
 }
 export const BankCodeValidation = BaseValidator(
   BankCodeConstraint,
-  'bankCode 옵션은 다음 중 하나여야 합니다: ' + BANK_NAMES.join(', ') + '.'
+  'bankCode 옵션은 다음 중 하나여야 합니다: ' + BANK_CODES.join(', ') + '.'
 );
 
 export const bankCodeToName = (code: string) => {
@@ -36,12 +36,10 @@ export const bankNameToCode = (name: string) => {
   return BANK_CODES[BANK_NAMES.indexOf(name)];
 };
 
-export const BankCodeRequestTransForm = () => Transform(({ value }) => bankNameToCode(value));
-
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
     BankCodeValidation(),
-    BankCodeRequestTransForm(),
+
     Property({
       apiProperty: {
         description: '은행명',
