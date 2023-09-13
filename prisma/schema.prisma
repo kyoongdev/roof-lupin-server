@@ -724,17 +724,18 @@ model Admin {
 model User {
   id String @id @default(uuid())
 
-  name         String?
-  nickname     String
-  email        String?
-  phoneNumber  String?   @db.Char(11)
-  birthYear    String?   @db.Char(4)
-  birthDay     String?   @db.Char(4)
-  gender       Int?      @db.TinyInt
-  profileImage String?
-  isBlocked    Boolean   @default(false)
-  unBlockAt    DateTime?
-  pushToken    String?
+  name           String?
+  nickname       String
+  email          String?
+  phoneNumber    String?   @db.Char(11)
+  birthYear      String?   @db.Char(4)
+  birthDay       String?   @db.Char(4)
+  gender         Int?      @db.TinyInt
+  profileImage   String?
+  isBlocked      Boolean   @default(false)
+  unBlockAt      DateTime?
+  pushToken      String?
+  portOneCertKey String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

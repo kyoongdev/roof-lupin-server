@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 import {
+  PortOneCertification,
   PortOneToken,
   PortOneValidateAccount,
   PortOneValidatedAccount,
@@ -48,8 +49,16 @@ export class PortOneProvider {
 
       return false;
     } catch (err) {
-      console.log(err, params);
       return false;
     }
+  }
+
+  async validateCertification(imp_uid: string) {
+    const token = await this.getToken();
+    const response = await this.apiClient.get<PortOneCertification>(`/certifications/${imp_uid}`, {
+      headers: { Authorization: token },
+    });
+
+    return response.data;
   }
 }
