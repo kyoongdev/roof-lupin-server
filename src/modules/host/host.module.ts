@@ -4,6 +4,7 @@ import { EncryptProvider } from '@/common/encrypt';
 
 import { HostAuthModule } from './auth/auth.module';
 import { HostBlockedTimeModule } from './blocked-time/blocked-time.module';
+import { HostCategoryModule } from './category/category.module';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
 import { HostService } from './host.service';
@@ -29,6 +30,7 @@ export const HostModules = [
   HostSpaceModule,
   HostTaxReturnModule,
   HostPaymentModule,
+  HostCategoryModule,
 ];
 
 @Module({

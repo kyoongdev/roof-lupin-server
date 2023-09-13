@@ -11,6 +11,7 @@ export class HostPaymentService {
     const isValid = await this.portOne.validateAccount({
       bank_code: data.bankCode,
       bank_num: data.bankNum,
+      bank_holder: data.bankHolder,
     });
 
     return new ValidatedAccountDTO({ isValid });

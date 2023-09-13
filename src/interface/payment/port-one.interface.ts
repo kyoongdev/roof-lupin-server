@@ -95,6 +95,10 @@ export interface CancelPortOnePayment {
 export interface PortOneValidateAccount {
   bank_code: keyof typeof BANK_CODE;
   bank_num: string;
+  bank_holder: string;
+}
+export interface PortOneValidatedAccount {
+  bank_holder: string;
 }
 
 export type ProtOneResponse<T> = {

@@ -18,13 +18,13 @@ class AppConfig {
   }
   async init() {
     this.configureSwagger();
+    this.revalidate();
 
     await this.configureDatabase();
 
     await this.app.listen(8000, () => {
-      console.info('🔥루프루팡 서버 시작!! 8000🔥');
+      console.info('🔥 루프루팡 서버 시작!! 8000 🔥');
     });
-    this.revalidate();
     await this.initAlarm();
   }
 
@@ -144,7 +144,6 @@ class AppConfig {
   }
 
   private async configureDatabase() {
-    const config = this.app.get(ConfigService);
     const database = this.app.get(PrismaService);
 
     await database.enableShutdownHooks(this.app);

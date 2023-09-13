@@ -1,12 +1,11 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 
-import axios from 'axios';
-
 import AppConfig from '@/appConfig';
 import { logger } from '@/log';
 
 import { AppModule } from './app.module';
+
 (async function () {
   const app = await NestFactory.create(AppModule, {
     logger,

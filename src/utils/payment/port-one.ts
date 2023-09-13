@@ -3,7 +3,12 @@ import { ConfigService } from '@nestjs/config';
 
 import axios from 'axios';
 
-import { PortOneToken, PortOneValidateAccount, ProtOneResponse } from '@/interface/payment/port-one.interface';
+import {
+  PortOneToken,
+  PortOneValidateAccount,
+  PortOneValidatedAccount,
+  ProtOneResponse,
+} from '@/interface/payment/port-one.interface';
 
 @Injectable()
 export class PortOneProvider {
@@ -28,16 +33,22 @@ export class PortOneProvider {
 
   async validateAccount(params: PortOneValidateAccount) {
     const token = await this.getToken();
-
+    const { bank_holder, ...rest } = params;
     try {
-      await this.apiClient.get('/vbanks/holder', {
+      const { data } = await this.apiClient.get<ProtOneResponse<PortOneValidatedAccount>>('/vbanks/holder', {
         params: {
-          ...params,
+          ...rest,
           _token: token,
         },
       });
-      return true;
+
+      if (data.response.bank_holder === bank_holder) {
+        return true;
+      }
+
+      return false;
     } catch (err) {
+      console.log(err, params);
       return false;
     }
   }
