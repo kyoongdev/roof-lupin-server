@@ -1,12 +1,14 @@
 import { Get } from '@nestjs/common';
 
-import { RequestApi, ResponseApi } from 'cumuco-nestjs';
+import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { CategoryDTO } from '@/modules/category/dto';
-import { ApiController } from '@/utils';
+import { ApiController, JwtAuthGuard } from '@/utils';
+import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { HostCategoryService } from './category.service';
 
+@Auth([JwtAuthGuard, RoleGuard('HOST')])
 @ApiController('categories', '[호스트] 카테고리')
 export class HostCategoryController {
   constructor(private readonly categoryService: HostCategoryService) {}
