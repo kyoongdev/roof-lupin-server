@@ -9,6 +9,7 @@ import { HostFileModule } from './file/file.module';
 import { HostController } from './host.controller';
 import { HostRepository } from './host.repository';
 import { HostService } from './host.service';
+import { HostLocationModule } from './location/location.module';
 import { HostPaymentModule } from './payment/payment.module';
 import { HostQnAModule } from './qna/qna.module';
 import { HostReportModule } from './report/report.module';
@@ -33,6 +34,7 @@ export const HostModules = [
   HostPaymentModule,
   HostCategoryModule,
   HostFileModule,
+  HostLocationModule,
 ];
 
 @Module({
