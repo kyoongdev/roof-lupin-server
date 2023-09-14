@@ -15,6 +15,20 @@ import { LocationService } from './location.service';
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
+  @Get('address')
+  @RequestApi({
+    summary: {
+      description: '주소를 검색합니다.',
+      summary: '주소 검색',
+    },
+  })
+  @ResponseApi({
+    type: KakaoKeywordDTO,
+  })
+  async findAddress() {
+    return await this.locationService.findAddress();
+  }
+
   @Get('kakao/subway')
   @RequestApi({
     summary: {

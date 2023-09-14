@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
+import axios from 'axios';
 import { SocialLocationService } from 'cumuco-nestjs';
+
+import { AddressResult } from '@/interface/location.interface';
 
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
 import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
@@ -9,7 +13,27 @@ import { LocationRepository } from './location.repository';
 
 @Injectable()
 export class LocationService {
-  constructor(private readonly socialLocationService: SocialLocationService) {}
+  private locationApiClient = axios.create({
+    baseURL: 'https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do',
+  });
+  constructor(
+    private readonly socialLocationService: SocialLocationService,
+    private readonly configService: ConfigService
+  ) {}
+
+  async findAddress() {
+    const response = await this.locationApiClient.get<AddressResult>('', {
+      params: {
+        confmKey: this.configService.get('LOCATION_KEY'),
+        currentPage: 1,
+        countPerPage: 10,
+        keyword: '자양로 3길 55',
+        resultType: 'json',
+      },
+    });
+
+    return response.data;
+  }
 
   async findKakaoSubway(query: KakaoKeywordQuery) {
     try {
