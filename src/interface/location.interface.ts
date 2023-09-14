@@ -58,6 +58,8 @@ export interface Common {
 }
 
 export interface AddressResult {
-  common: Common;
-  juso: Juso[];
+  results: {
+    common: Common;
+    juso: Juso[];
+  };
 }

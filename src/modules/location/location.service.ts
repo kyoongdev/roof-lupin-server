@@ -6,8 +6,9 @@ import { SocialLocationService } from 'cumuco-nestjs';
 
 import { AddressResult } from '@/interface/location.interface';
 
+import { JusoResultDTO } from './dto';
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
-import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
+import { AddressQuery, NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
 import { KakaoKeywordQuery } from './dto/query/kakao-keyword.query';
 import { LocationRepository } from './location.repository';
 
@@ -21,18 +22,18 @@ export class LocationService {
     private readonly configService: ConfigService
   ) {}
 
-  async findAddress() {
-    const response = await this.locationApiClient.get<AddressResult>('', {
+  async findAddress(query: AddressQuery) {
+    const response = await this.locationApiClient.get<string>('', {
       params: {
         confmKey: this.configService.get('LOCATION_KEY'),
-        currentPage: 1,
-        countPerPage: 10,
-        keyword: '자양로 3길 55',
+        currentPage: query.page,
+        countPerPage: query.limit,
+        keyword: query.keyword,
         resultType: 'json',
       },
     });
 
-    return response.data;
+    return new JusoResultDTO(JSON.parse(response.data.slice(1, -1) as string) as AddressResult);
   }
 
   async findKakaoSubway(query: KakaoKeywordQuery) {

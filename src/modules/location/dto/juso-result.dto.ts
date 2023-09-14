@@ -12,8 +12,8 @@ export class JusoResultDTO {
   @Property({ apiProperty: { type: JusoDTO, isArray: true } })
   juso: JusoDTO[];
 
-  constructor(props: AddressResult) {
-    this.common = new JusoCommonDTO(props.common);
-    this.juso = props.juso.map((juso) => new JusoDTO(juso));
+  constructor({ results }: AddressResult) {
+    this.common = new JusoCommonDTO(results.common);
+    this.juso = results.juso?.map((juso) => new JusoDTO(juso));
   }
 }

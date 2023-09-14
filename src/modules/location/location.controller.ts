@@ -4,10 +4,10 @@ import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { ApiController } from '@/utils';
 
-import { NaverLocationDTO } from './dto';
+import { JusoResultDTO, NaverLocationDTO } from './dto';
 import { KakaoKeywordDTO } from './dto/kakao/kakao-keyword.dto';
 import { NaverCoordinateLocationDTO } from './dto/naver/naver-coordinate-location.dto';
-import { NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
+import { AddressQuery, NaverCoordinateQuery, NaverGeocodeQuery } from './dto/query';
 import { KakaoKeywordQuery } from './dto/query/kakao-keyword.query';
 import { LocationService } from './location.service';
 
@@ -23,10 +23,10 @@ export class LocationController {
     },
   })
   @ResponseApi({
-    type: KakaoKeywordDTO,
+    type: JusoResultDTO,
   })
-  async findAddress() {
-    return await this.locationService.findAddress();
+  async findAddress(@Query() query: AddressQuery) {
+    return await this.locationService.findAddress(query);
   }
 
   @Get('kakao/subway')
