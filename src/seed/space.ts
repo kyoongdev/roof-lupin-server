@@ -105,7 +105,11 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   for (let i = 0; i < 1; i++) {
     const space = await database.space.create({
       include: {
-        rentalType: true,
+        rentalType: {
+          include: {
+            additionalServices: true,
+          },
+        },
       },
       data: {
         title: '디난트 파티룸',
@@ -617,6 +621,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 }),
               },
             });
+
             const reservation = await database.reservation.create({
               data: {
                 year: 2023,
@@ -653,6 +658,18 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                           id: rentalType.id,
                         },
                       },
+                    },
+                  ],
+                },
+                additionalServices: {
+                  create: [
+                    {
+                      additionalService: {
+                        connect: {
+                          id: rentalType.additionalServices[0].id,
+                        },
+                      },
+                      count: 1,
                     },
                   ],
                 },

@@ -7,6 +7,7 @@ export interface AdditionalServiceDTOProps {
   description?: string;
   tooltip?: string;
   maxCount?: number;
+  rentalTypeId: string;
 }
 
 export class AdditionalServiceDTO {
@@ -28,6 +29,9 @@ export class AdditionalServiceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '추가 서비스 최대 개수' } })
   maxCount?: number;
 
+  @Property({ apiProperty: { type: 'string', description: '대여 상품 id' } })
+  rentalTypeId: string;
+
   constructor(props: AdditionalServiceDTOProps) {
     this.id = props.id;
     this.name = props.name;
@@ -35,5 +39,6 @@ export class AdditionalServiceDTO {
     this.description = props.description;
     this.tooltip = props.tooltip;
     this.maxCount = props.maxCount;
+    this.rentalTypeId = props.rentalTypeId;
   }
 }
