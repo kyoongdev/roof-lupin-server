@@ -8,6 +8,7 @@ import {
   CreateReservationRentalTypeDTO,
   CreateReservationRentalTypeDTOProps,
 } from './create-reservation-rental-type.dto';
+import { ReservationDetailDTO } from './reservation-detail.dto';
 
 export interface CreatePaymentDTOProps {
   year: number;
@@ -91,14 +92,14 @@ export class CreatePaymentDTO {
   }
 
   //TODO: 예약 승인 신청하고 다시 요청할 때 validate
-  validateProperties(target: Partial<CreatePaymentDTO>) {
+  validateProperties(target: ReservationDetailDTO) {
     if (
       this.year !== target.year ||
       this.month !== target.month ||
       this.day !== target.day ||
       this.userName !== target.userName ||
       this.userPhoneNumber !== target.userPhoneNumber ||
-      this.spaceId !== target.spaceId
+      this.spaceId !== target.space.id
     ) {
       throw new BadRequestException('예약 정보가 일치하지 않습니다.');
     }
