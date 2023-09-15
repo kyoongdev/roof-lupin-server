@@ -157,42 +157,7 @@ export class RentalTypeRepository {
           },
           include: {
             reservation: {
-              include: {
-                user: {
-                  include: {
-                    socials: true,
-                    setting: true,
-                  },
-                },
-                rentalTypes: {
-                  include: {
-                    rentalType: {
-                      include: {
-                        timeCostInfos: true,
-                        space: {
-                          include: {
-                            reviews: true,
-                            location: true,
-                            publicTransportations: true,
-                            userInterests: true,
-                            rentalType: true,
-                            categories: {
-                              include: {
-                                category: {
-                                  include: {
-                                    icon: true,
-                                  },
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                spaceReviews: true,
-              },
+              include: ReservationDTO.generateReservationInclude(),
             },
           },
         },

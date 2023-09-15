@@ -3,7 +3,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 import { LUPIN_CHARGE } from '@/common/constants';
-import { checkIsSameDate } from '@/common/date';
+import { checkIsSameDate, getDateDiff } from '@/common/date';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { FCMEvent } from '@/event/fcm';
@@ -131,7 +131,7 @@ export class PaymentService {
 
         if (data.userCouponIds)
           await Promise.all(
-            data.userCouponIds?.map(async (couponId) => {
+            data.userCouponIds.map(async (couponId) => {
               await this.couponRepository.findUserCoupon(couponId);
               await this.couponRepository.deleteUserCoupon(couponId);
             })
@@ -244,8 +244,11 @@ export class PaymentService {
     const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
     const now = new Date();
 
-    const diffTime = reservationDate.getTime() - now.getTime();
-    const refundTargetDate = diffTime / (1000 * 60 * 60 * 24);
+    const diffTime = getDateDiff(reservationDate, now);
+    const refundTargetDate = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    if (refundTargetDate <= 0) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+    }
 
     const refundPolicy = refundPolicies
       .sort((a, b) => a.daysBefore - b.daysBefore)
@@ -421,11 +424,18 @@ export class PaymentService {
 
           //INFO: 대여하려는 시간이 예약 불가할 때
           (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.forEach((time) => {
-            if (itemStartAt <= time.time && time.time <= itemEndAt && !time.isPossible) {
+            if (
+              itemStartAt <= time.time &&
+              time.time <= itemEndAt &&
+              !time.isPossible &&
+              (!data.reservationId ||
+                (Boolean(data.reservationId) &&
+                  !space.isImmediateReservation &&
+                  possibleRentalType.id !== item.rentalTypeId))
+            ) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
           });
-          // 15 ~ 18
 
           const cost = (possibleRentalType as PossibleRentalTypeDTO).timeCostInfos.reduce<number>((acc, next) => {
             const targetTime = next.time;
@@ -442,8 +452,15 @@ export class PaymentService {
           if (itemStartAt !== possibleStartAt || itemEndAt !== possibleEndAt) {
             throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
           }
+
           //INFO: 대여하려는 시간이 예약 불가할 때
-          if (!(possibleRentalType as PossiblePackageDTO).isPossible) {
+          if (
+            !(possibleRentalType as PossiblePackageDTO).isPossible &&
+            (!data.reservationId ||
+              (Boolean(data.reservationId) &&
+                !space.isImmediateReservation &&
+                possibleRentalType.id !== item.rentalTypeId))
+          ) {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }
           validatedRentalTypes.increaseCost(rentalType.baseCost);

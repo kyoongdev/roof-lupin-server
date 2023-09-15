@@ -211,7 +211,6 @@ export class ReservationDTO extends BaseReservationDTO {
           },
         },
       },
-
       spaceReviews: userId
         ? {
             where: {
