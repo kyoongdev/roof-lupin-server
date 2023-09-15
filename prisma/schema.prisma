@@ -160,18 +160,19 @@ model Space {
   //NOTE: 공간 소개글
   description String @db.MediumText
 
-  buildingType      Int?   @db.TinyInt //TODO: 추후 정리
+  buildingType      Int?    @db.TinyInt //TODO: 추후 정리
   thumbnail         String
   //NOTE: 최소 인원
-  minUser           Int    @db.TinyInt
+  minUser           Int     @db.TinyInt
   //NOTE: 최대 인원
-  maxUser           Int    @db.TinyInt
+  maxUser           Int     @db.TinyInt
   //NOTE: 초과 인원당 추가 비용
-  overflowUserCost  Int    @db.MediumInt
+  overflowUserCost  Int     @db.MediumInt
   //NOTE: 초과 인원 기준 인원
-  overflowUserCount Int    @db.TinyInt
-  minSize           Int    @default(0) @db.SmallInt
-  deposit           Int?   @db.MediumInt
+  overflowUserCount Int     @db.TinyInt
+  minSize           Int     @default(0) @db.SmallInt
+  deposit           Int?    @db.MediumInt
+  link              String? @db.VarChar(255)
 
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)

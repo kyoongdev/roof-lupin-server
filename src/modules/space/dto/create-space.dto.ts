@@ -31,6 +31,7 @@ export interface CreateSpaceDTOProps {
   overflowUserCount: number;
   isImmediateReservation?: boolean;
   deposit?: number;
+  link?: string;
   images: string[];
   refundPolicies: CreateRefundPolicyDTOProps[];
   cautions: CreateCautionDTOProps[];
@@ -82,6 +83,9 @@ export class CreateSpaceDTO {
 
   @Property({ apiProperty: { type: 'string', isArray: true, description: '생성된 이미지 url' } })
   images: string[];
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 링크' } })
+  link?: string;
 
   @Property({ apiProperty: { type: CreateRefundPolicyDTO, isArray: true, description: '환불 정책' } })
   refundPolicies: CreateRefundPolicyDTO[];
@@ -136,6 +140,7 @@ export class CreateSpaceDTO {
       this.deposit = props.deposit;
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
+      this.link = props.link;
       this.isImmediateReservation = props.isImmediateReservation;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);

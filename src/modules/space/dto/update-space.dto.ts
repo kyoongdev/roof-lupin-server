@@ -91,6 +91,9 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '카테고리' } })
   categories?: string[];
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 링크' } })
+  link?: string;
+
   @Property({ apiProperty: { type: UpdateHashTagDTO, nullable: true, isArray: true, description: '해시태그' } })
   hashTags?: UpdateHashTagDTO[];
 
