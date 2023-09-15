@@ -73,16 +73,16 @@ export class ReservationDTO extends BaseReservationDTO {
   setReservationStatus() {
     if (this.checkIsUsed()) {
       this.status = RESERVATION_STATUS.USED;
-    } else if (!this.space.isImmediateReservation && !this.isApproved) {
-      this.status = RESERVATION_STATUS.APPROVED_PENDING;
-    } else if (!this.space.isImmediateReservation && this.isApproved && !this.payedAt) {
-      this.status = RESERVATION_STATUS.APPROVED;
     } else if (this.cancel) {
       if (this.cancel.refundCost) {
         this.status = RESERVATION_STATUS.REFUND;
       } else {
         this.status = RESERVATION_STATUS.CANCELED;
       }
+    } else if (!this.space.isImmediateReservation && !this.isApproved) {
+      this.status = RESERVATION_STATUS.APPROVED_PENDING;
+    } else if (!this.space.isImmediateReservation && this.isApproved && !this.payedAt) {
+      this.status = RESERVATION_STATUS.APPROVED;
     } else {
       this.status = RESERVATION_STATUS.BEFORE_USAGE;
     }

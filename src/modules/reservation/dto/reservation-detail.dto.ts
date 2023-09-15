@@ -54,7 +54,6 @@ export class ReservationDetailDTO extends ReservationDTO {
       9
     );
 
-    const startAt = Math.min(...reservation.rentalTypes.map((rentalType) => rentalType.startAt));
     return {
       ...rest,
       year: rest.year,
