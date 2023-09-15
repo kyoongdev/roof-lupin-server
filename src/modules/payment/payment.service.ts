@@ -84,7 +84,7 @@ export class PaymentService {
 
       data.validateProperties(reservation);
 
-      if (space.isImmediateReservation && !reservation.isApproved) {
+      if (!space.isImmediateReservation && !reservation.isApproved) {
         throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_NOT_APPROVED));
       }
 
