@@ -1,13 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
-import {
-  IsNumber,
-  type ValidationArguments,
-  ValidatorConstraint,
-  type ValidatorConstraintInterface,
-} from 'class-validator';
+import { type ValidationArguments, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
 
 import { BaseValidator } from '@/utils/validation';

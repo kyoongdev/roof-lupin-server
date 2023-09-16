@@ -60,6 +60,7 @@ export interface SendAlarm {
   link?: string;
   spaceId?: string;
   exhibitionId?: string;
+  alarmType?: number;
 }
 export interface SendScheduleAlarm extends SendAlarm {
   targetDate: Date;

@@ -55,7 +55,7 @@ export class AlarmRepository {
   }
 
   async createAlarm(data: CreateAlarmDTO) {
-    const { spaceId, exhibitionId, userId, ...rest } = data;
+    const { userId, ...rest } = data;
     const alarm = await this.database.userAlarm.create({
       data: {
         ...rest,
@@ -64,28 +64,6 @@ export class AlarmRepository {
             id: userId,
           },
         },
-        ...(spaceId && {
-          alarmSpace: {
-            create: {
-              space: {
-                connect: {
-                  id: spaceId,
-                },
-              },
-            },
-          },
-        }),
-        ...(exhibitionId && {
-          alarmExhibition: {
-            create: {
-              exhibition: {
-                connect: {
-                  id: exhibitionId,
-                },
-              },
-            },
-          },
-        }),
       },
       include: {
         user: {

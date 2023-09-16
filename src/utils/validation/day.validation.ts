@@ -108,11 +108,11 @@ export const dayNumberToString = (day: number) => {
   }
 };
 
-export const DayRequestTransForm = () => Transform(({ value }) => dayStringToNumber(value));
-export const DayResponseTransForm = () => Transform(({ value }) => dayNumberToString(value));
+export const DayRequestTransform = () => Transform(({ value }) => dayStringToNumber(value));
+export const DayResponseTransform = () => Transform(({ value }) => dayNumberToString(value));
 export const DayResDecorator = (nullable = false) =>
   applyDecorators(
-    DayResponseTransForm(),
+    DayResponseTransform(),
     Property({
       apiProperty: {
         description: '요일',
@@ -126,7 +126,7 @@ export const DayResDecorator = (nullable = false) =>
 
 export const DayReqDecorator = (nullable = false) =>
   applyDecorators(
-    DayRequestTransForm(),
+    DayRequestTransform(),
     DayValidation(),
     ApiProperty({
       description: '요일',

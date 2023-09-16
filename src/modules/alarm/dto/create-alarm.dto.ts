@@ -7,8 +7,7 @@ export interface CreateAlarmDTOProps {
   alarmAt?: Date;
   isPush?: boolean;
   userId?: string;
-  spaceId?: string;
-  exhibitionId?: string;
+  alarmType: number;
 }
 
 export class CreateAlarmDTO {
@@ -30,11 +29,8 @@ export class CreateAlarmDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '유저 id' } })
   userId?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 id' } })
-  spaceId?: string;
-
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 id' } })
-  exhibitionId?: string;
+  @Property({ apiProperty: { type: 'number', description: '알람 타입' } })
+  alarmType: number;
 
   constructor(props?: CreateAlarmDTOProps) {
     if (props) {
@@ -44,8 +40,7 @@ export class CreateAlarmDTO {
       this.alarmAt = props.alarmAt;
       this.isPush = props.isPush;
       this.userId = props.userId;
-      this.spaceId = props.spaceId;
-      this.exhibitionId = props.exhibitionId;
+      this.alarmType = props.alarmType;
     }
   }
 }

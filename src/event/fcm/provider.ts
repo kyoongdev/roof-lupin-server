@@ -18,6 +18,7 @@ import {
 } from '@/interface/fcm.interface';
 import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
+import { ALARM_TYPE } from '@/modules/alarm/dto/validation/alarm-type.validation';
 import { PushTokenDTO } from '@/modules/user/dto';
 import { FCMProvider } from '@/utils/fcm';
 
@@ -41,12 +42,7 @@ export class FCMEventProvider {
       isPush: true,
       userId: user.userId,
       alarmAt: new Date(),
-      ...(data.spaceId && {
-        spaceId: data.spaceId,
-      }),
-      ...(data.exhibitionId && {
-        exhibitionId: data.exhibitionId,
-      }),
+      alarmType: data.alarmType,
     });
     await this.fcmService.sendMessage({
       ...data,
@@ -73,12 +69,7 @@ export class FCMEventProvider {
       isPush: true,
       userId: user.userId,
       alarmAt: data.targetDate,
-      ...(data.spaceId && {
-        spaceId: data.spaceId,
-      }),
-      ...(data.exhibitionId && {
-        exhibitionId: data.exhibitionId,
-      }),
+      alarmType: data.alarmType,
     });
     this.schedulerEvent.createSchedule(`${user.userId}_${date.getTime()}_${nanoid(2)}`, data.targetDate, async () => {
       await this.fcmService.sendMessage({
@@ -113,6 +104,7 @@ export class FCMEventProvider {
       isPush: true,
       userId: data.userId,
       alarmAt: targetDate,
+      alarmType: ALARM_TYPE.SPACE_TIME,
     });
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
@@ -140,6 +132,7 @@ export class FCMEventProvider {
       isPush: true,
       userId: data.userId,
       alarmAt: targetDate,
+      alarmType: ALARM_TYPE.REVIEW_RECOMMEND,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
       const user = await this.getUser(data.userId);
@@ -169,6 +162,7 @@ export class FCMEventProvider {
       isPush: true,
       userId: data.userId,
       alarmAt: targetDate,
+      alarmType: ALARM_TYPE.COUPON_DURATION,
     });
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
       const user = await this.getUser(data.userId);
@@ -199,6 +193,7 @@ export class FCMEventProvider {
         isPush: true,
         userId: data.userId,
         alarmAt: new Date(),
+        alarmType: ALARM_TYPE.QNA,
       });
       await this.fcmService.sendMessage(alarmData);
       await this.updatePushedAlarm(alarm.id);
@@ -225,7 +220,7 @@ export class FCMEventProvider {
       content: alarmData.body,
       isPush: true,
       userId: data.userId,
-      exhibitionId: data.exhibitionId,
+      alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
       alarmAt: dateDiff <= 1 ? new Date() : targetDate,
     });
 
@@ -264,7 +259,7 @@ export class FCMEventProvider {
   }
 
   async createAlarm(data: CreateAlarmDTO) {
-    const { userId, spaceId, exhibitionId, ...rest } = data;
+    const { userId, ...rest } = data;
     return await this.database.userAlarm.create({
       data: {
         ...rest,
@@ -273,28 +268,6 @@ export class FCMEventProvider {
             id: userId,
           },
         },
-        ...(spaceId && {
-          alarmSpace: {
-            create: {
-              space: {
-                connect: {
-                  id: spaceId,
-                },
-              },
-            },
-          },
-        }),
-        ...(exhibitionId && {
-          alarmExhibition: {
-            create: {
-              exhibition: {
-                connect: {
-                  id: exhibitionId,
-                },
-              },
-            },
-          },
-        }),
       },
     });
   }
