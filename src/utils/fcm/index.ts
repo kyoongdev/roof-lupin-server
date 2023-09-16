@@ -7,7 +7,7 @@ import { SendMessage } from '@/interface/fcm.interface';
 import { fcmConfig } from './fcm.config';
 
 @Injectable()
-export class FCMProvider {
+export class MessageProvider {
   private readonly firebaseApp = Firebase.initializeApp({
     credential: Firebase.credential.cert(fcmConfig),
   });

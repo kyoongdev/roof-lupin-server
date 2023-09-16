@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
 
@@ -9,8 +9,8 @@ import { AdminCouponRepository } from './coupon.repository';
 import { AdminCouponService } from './coupon.service';
 
 @Module({
-  providers: [AdminCouponService, AdminCouponRepository, CouponRepository, FCMEvent],
+  providers: [AdminCouponService, AdminCouponRepository, CouponRepository, MessageEvent],
   controllers: [AdminCouponController],
-  exports: [AdminCouponService, AdminCouponRepository, CouponRepository, FCMEvent],
+  exports: [AdminCouponService, AdminCouponRepository, CouponRepository, MessageEvent],
 })
 export class AdminCouponModule {}

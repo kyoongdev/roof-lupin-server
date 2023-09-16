@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
 import { FileService } from '@/modules/file/file.service';
 
@@ -8,8 +8,8 @@ import { AdminExhibitionController } from './exhibition.controller';
 import { AdminExhibitionService } from './exhibition.service';
 
 @Module({
-  providers: [AdminExhibitionService, FileService, ExhibitionRepository, FCMEvent],
+  providers: [AdminExhibitionService, FileService, ExhibitionRepository, MessageEvent],
   controllers: [AdminExhibitionController],
-  exports: [AdminExhibitionService, FileService, ExhibitionRepository, FCMEvent],
+  exports: [AdminExhibitionService, FileService, ExhibitionRepository, MessageEvent],
 })
 export class AdminExhibitionModule {}

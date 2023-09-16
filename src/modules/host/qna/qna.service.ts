@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateQnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO } from '@/modules/qna/dto';
 import { QnARepository } from '@/modules/qna/qna.repository';
@@ -18,7 +18,7 @@ import { HostException } from '../exception/host.exception';
 export class HostQnAService {
   constructor(
     private readonly qnaRepository: QnARepository,
-    private readonly fcmEvent: FCMEvent,
+    private readonly messageEvent: MessageEvent,
     private readonly database: PrismaService,
     private readonly historyRepository: HistoryRepository,
     private readonly userRepository: UserRepository
@@ -64,7 +64,7 @@ export class HostQnAService {
 
     const user = await this.userRepository.findUserPushToken(qna.user.id);
 
-    this.fcmEvent.createQnAAnswerAlarm({
+    this.messageEvent.createQnAAnswerAlarm({
       userId: user.id,
       pushToken: user.pushToken,
       spaceName: qna.space.title,

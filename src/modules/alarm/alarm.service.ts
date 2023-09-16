@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 
 import { UserRepository } from '../user/user.repository';
 

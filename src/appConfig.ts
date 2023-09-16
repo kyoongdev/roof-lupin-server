@@ -8,7 +8,7 @@ import scheduler from 'node-schedule';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { FCMProvider } from './utils/fcm';
+import { MessageProvider } from './utils/fcm';
 
 class AppConfig {
   private app: INestApplication;
@@ -42,7 +42,7 @@ class AppConfig {
 
   async initAlarm() {
     const database = this.app.get(PrismaService);
-    const fcmProvider = this.app.get(FCMProvider);
+    const messageProvider = this.app.get(MessageProvider);
 
     const alarms = await database.userAlarm.findMany({
       where: {
@@ -65,7 +65,7 @@ class AppConfig {
         const alarmAt = alarm.alarmAt;
 
         if (currentDate >= alarmAt) {
-          await fcmProvider.sendMessage({
+          await messageProvider.sendMessage({
             token: alarm.user.pushToken,
             title: alarm.title,
             body: alarm.content,
@@ -80,7 +80,7 @@ class AppConfig {
           });
         } else {
           scheduler.scheduleJob(alarmAt, async () => {
-            await fcmProvider.sendMessage({
+            await messageProvider.sendMessage({
               token: alarm.user.pushToken,
               title: alarm.title,
               body: alarm.content,

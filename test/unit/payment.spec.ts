@@ -1,6 +1,6 @@
 import { PrismaModule } from '@/database/prisma.module';
 import { PrismaService } from '@/database/prisma.service';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
@@ -37,7 +37,7 @@ describe('The AuthenticationService', () => {
         RentalTypeService,
         SpaceRepository,
         HolidayService,
-        FCMEvent,
+        MessageEvent,
         HostSettlementRepository,
         FinanceProvider,
         HostOpenHourRepository,

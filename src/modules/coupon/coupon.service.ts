@@ -3,7 +3,7 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { RequestUser } from '@/interface/role.interface';
 
 import { CouponRepository } from './coupon.repository';
@@ -13,7 +13,7 @@ import { RegisterCouponByCodeDTO, UserCouponCountDTO, UserCouponDTO } from './dt
 export class CouponService {
   constructor(
     private readonly couponRepository: CouponRepository,
-    private readonly fcmEvent: FCMEvent,
+    private readonly messageEvent: MessageEvent,
     private readonly database: PrismaService
   ) {}
 
@@ -76,7 +76,7 @@ export class CouponService {
     });
 
     if (userCoupon.user.setting.checkIsPushAlarmAccepted() && user.pushToken) {
-      this.fcmEvent.createCouponDurationAlarm({
+      this.messageEvent.createCouponDurationAlarm({
         dueDate: usageDateEndAt,
         jobId: `${user.id}_${userCouponId}`,
         userId: user.id,

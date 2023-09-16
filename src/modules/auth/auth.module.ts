@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { SocialLoginModule } from 'cumuco-nestjs';
 
 import { EncryptProvider } from '@/common/encrypt';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { AdminRepository } from '@/modules/admin/admin.repository';
 import { HostRepository } from '@/modules/host/host.repository';
 import { UserRepository } from '@/modules/user/user.repository';
@@ -43,7 +43,7 @@ const config = new ConfigService();
       },
     }),
   ],
-  providers: [AuthService, UserRepository, Jsonwebtoken, CouponRepository, FCMEvent],
+  providers: [AuthService, UserRepository, Jsonwebtoken, CouponRepository, MessageEvent],
   controllers: [AuthController],
 })
 export class AuthModule {}

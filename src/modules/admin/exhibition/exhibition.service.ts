@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import {
   CreateExhibitionDTO,
   CreateExhibitionSpaceDTO,
@@ -20,7 +20,7 @@ export class AdminExhibitionService {
   constructor(
     private readonly exhibitionRepository: ExhibitionRepository,
     private readonly fileService: FileService,
-    private readonly fcmEvent: FCMEvent,
+    private readonly messageEvent: MessageEvent,
     private readonly database: PrismaService
   ) {}
 
@@ -74,7 +74,7 @@ export class AdminExhibitionService {
         userId: user.id,
       }))
       .map((user) => {
-        this.fcmEvent.createMarketingAlarm({
+        this.messageEvent.createMarketingAlarm({
           ...user,
           title: data.title,
           exhibitionId,

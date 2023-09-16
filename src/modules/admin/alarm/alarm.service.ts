@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { AlarmRepository } from '@/modules/alarm/alarm.repository';
 import { AlarmDTO } from '@/modules/alarm/dto';
 import {
@@ -23,7 +23,7 @@ export class AdminAlarmService {
   constructor(
     private readonly alarmRepository: AlarmRepository,
     private readonly userRepository: UserRepository,
-    private readonly fcmEvent: FCMEvent
+    private readonly messageEvent: MessageEvent
   ) {}
 
   async sendAlarm(data: SendMessageDTO) {
@@ -33,7 +33,7 @@ export class AdminAlarmService {
     if (!pushToken) {
       throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_PUSH_TOKEN_NOT_FOUND));
     }
-    this.fcmEvent.sendAlarm(
+    this.messageEvent.sendAlarm(
       {
         pushToken,
         userId,
@@ -60,7 +60,7 @@ export class AdminAlarmService {
         .filter(Boolean)
     );
 
-    users.forEach((user) => this.fcmEvent.sendAlarm(user, message));
+    users.forEach((user) => this.messageEvent.sendAlarm(user, message));
 
     return new AlarmResultsDTO({ userIds });
   }
@@ -73,7 +73,7 @@ export class AdminAlarmService {
       throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_PUSH_TOKEN_NOT_FOUND));
     }
 
-    this.fcmEvent.sendScheduleAlarm({ pushToken, userId }, message);
+    this.messageEvent.sendScheduleAlarm({ pushToken, userId }, message);
     return new AlarmResultDTO({ userId });
   }
 
@@ -94,7 +94,7 @@ export class AdminAlarmService {
         .filter(Boolean)
     );
 
-    users.forEach((user) => this.fcmEvent.sendScheduleAlarm(user, message));
+    users.forEach((user) => this.messageEvent.sendScheduleAlarm(user, message));
     return new AlarmResultsDTO({ userIds });
   }
 
@@ -118,7 +118,7 @@ export class AdminAlarmService {
   }
 
   async deleteAlarm(id: string) {
-    this.fcmEvent.deleteAlarm(id);
+    this.messageEvent.deleteAlarm(id);
     await this.alarmRepository.deleteAlarm(id);
   }
 }

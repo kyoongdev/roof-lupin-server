@@ -10,6 +10,7 @@ import {
   CreateMarketingExhibitionAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationUsageAlarm,
+  CreateReviewAnswerAlarm,
   CreateReviewRecommendAlarm,
   SendAlarm,
   SendAlarmTarget,
@@ -21,22 +22,22 @@ import { CreateAlarmDTO } from '@/modules/alarm/dto';
 import { ALARM_TYPE } from '@/modules/alarm/dto/validation/alarm-type.validation';
 import { PushTokenDTO } from '@/modules/user/dto';
 import { DynamicLinkProvider } from '@/utils';
-import { FCMProvider } from '@/utils/fcm';
+import { MessageProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
 
-import { FCM_EVENT_NAME } from './constants';
+import { MESSAGE_EVENT_NAME } from './constants';
 
 @Injectable()
-export class FCMEventProvider {
+export class MessageEventProvider {
   constructor(
     private readonly database: PrismaService,
-    private readonly fcmService: FCMProvider,
+    private readonly fcmService: MessageProvider,
     private schedulerEvent: SchedulerEvent,
     private readonly dynamicLinkProvider: DynamicLinkProvider
   ) {}
 
-  @OnEvent(FCM_EVENT_NAME.SEND_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.SEND_ALARM)
   async sendAlarm(user: SendAlarmTarget, data: SendAlarm) {
     const alarm = await this.createAlarm({
       title: data.title,
@@ -53,7 +54,7 @@ export class FCMEventProvider {
     await this.updatePushedAlarm(alarm.id);
   }
 
-  @OnEvent(FCM_EVENT_NAME.SEND_ALARMS)
+  @OnEvent(MESSAGE_EVENT_NAME.SEND_ALARMS)
   async sendAlarms(users: SendAlarmTarget[], data: SendAlarm) {
     await Promise.all(
       users.map(async (user) => {
@@ -62,7 +63,7 @@ export class FCMEventProvider {
     );
   }
 
-  @OnEvent(FCM_EVENT_NAME.SEND_SCHEDULE_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.SEND_SCHEDULE_ALARM)
   async sendScheduleAlarm(user: SendAlarmTarget, data: SendScheduleAlarm) {
     const date = new Date();
     const alarm = await this.createAlarm({
@@ -82,7 +83,7 @@ export class FCMEventProvider {
     });
   }
 
-  @OnEvent(FCM_EVENT_NAME.SEND_SCHEDULE_ALARMS)
+  @OnEvent(MESSAGE_EVENT_NAME.SEND_SCHEDULE_ALARMS)
   async sendScheduleAlarms(users: SendAlarmTarget[], data: SendScheduleAlarm) {
     await Promise.all(
       users.map(async (user) => {
@@ -91,7 +92,7 @@ export class FCMEventProvider {
     );
   }
 
-  @OnEvent(FCM_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM)
   async createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
     const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), data.time - 1);
     const alarmData = {
@@ -120,7 +121,7 @@ export class FCMEventProvider {
     });
   }
 
-  @OnEvent(FCM_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM)
   async createReviewRecommendAlarm(data: CreateReviewRecommendAlarm) {
     const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), 4, 0, 0);
     const alarmData = {
@@ -147,7 +148,7 @@ export class FCMEventProvider {
     });
   }
 
-  @OnEvent(FCM_EVENT_NAME.CREATE_COUPON_DURATION_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_COUPON_DURATION_ALARM)
   async createCouponDurationAlarm(data: CreateCouponDurationAlarm) {
     const targetDate = new Date(data.dueDate);
     targetDate.setUTCDate(targetDate.getUTCDate() - 5);
@@ -177,7 +178,7 @@ export class FCMEventProvider {
     });
   }
 
-  @OnEvent(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_QNA_ANSWER_ALARM)
   async createQnAAnswerAlarm(data: CreateQnAAnswerAlarm) {
     const alarmData = {
       title: 'Q&A 관련 알림',
@@ -204,7 +205,7 @@ export class FCMEventProvider {
     }
   }
 
-  @OnEvent(FCM_EVENT_NAME.CREATE_MARKETING_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_MARKETING_ALARM)
   async createMarketIngAlarm(data: CreateMarketingExhibitionAlarm) {
     const currentDate = new Date();
     const targetDate = new Date(data.startAt);
@@ -247,7 +248,12 @@ export class FCMEventProvider {
     }
   }
 
-  @OnEvent(FCM_EVENT_NAME.DELETE_ALARM)
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_REVIEW_ANSWER_ALARM)
+  async createReviewAnswerAlarm(data: CreateReviewAnswerAlarm) {
+    const alarmData = {};
+  }
+
+  @OnEvent(MESSAGE_EVENT_NAME.DELETE_ALARM)
   async deleteAlarm(jobId: string) {
     this.schedulerEvent.deleteSchedule(jobId);
   }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 
 import { UserRepository } from '../user/user.repository';
 
@@ -10,6 +10,6 @@ import { AlarmService } from './alarm.service';
 
 @Module({
   controllers: [AlarmController],
-  providers: [AlarmService, AlarmRepository, FCMEvent, UserRepository],
+  providers: [AlarmService, AlarmRepository, MessageEvent, UserRepository],
 })
 export class AlarmModule {}

@@ -6,7 +6,7 @@ import { LUPIN_CHARGE } from '@/common/constants';
 import { checkIsSameDate, getDateDiff } from '@/common/date';
 import { getVatCost } from '@/common/vat';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { logger } from '@/log';
 import { PortOneProvider, TossPayProvider } from '@/utils';
 
@@ -64,7 +64,7 @@ export class PaymentService {
     private readonly tossPay: TossPayProvider,
     private readonly portOne: PortOneProvider,
     private readonly database: PrismaService,
-    private readonly fcmEvent: FCMEvent,
+    private readonly messageEvent: MessageEvent,
     private readonly settlementRepository: HostSettlementRepository
   ) {}
 
@@ -346,7 +346,7 @@ export class PaymentService {
   async sendMessage(reservation: ReservationDetailDTO) {
     if (reservation.user.setting.checkIsKakaoTalkAlarmAccepted())
       reservation.rentalTypes.forEach((rentalType) => {
-        this.fcmEvent.createReservationUsageAlarm({
+        this.messageEvent.createReservationUsageAlarm({
           year: reservation.year,
           month: reservation.month,
           day: reservation.day,
@@ -360,7 +360,7 @@ export class PaymentService {
       });
 
     if (reservation.user.setting.checkIsPushAlarmAccepted())
-      this.fcmEvent.createReviewRecommendAlarm({
+      this.messageEvent.createReviewRecommendAlarm({
         year: reservation.year,
         month: reservation.month,
         day: reservation.day + 7,

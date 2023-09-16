@@ -15,7 +15,7 @@ import { AdminModule, AdminModules } from './modules/admin/admin.module';
 import { GlobalModule } from './modules/global';
 import { HostModule, HostModules } from './modules/host/host.module';
 import { AOPProvider } from './utils/aop';
-import { FCMProvider } from './utils/fcm';
+import { MessageProvider } from './utils/fcm';
 import { DynamicLinkProvider } from './utils/link';
 
 const providers: Provider[] = [
@@ -25,7 +25,7 @@ const providers: Provider[] = [
   DiscoveryService,
   MetadataScanner,
   AOPProvider,
-  FCMProvider,
+  MessageProvider,
   DynamicLinkProvider,
 ];
 

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { ReportRepository } from '@/modules/report/report.repository';
 
 import { AdminUserRepository } from '../user/user.repository';

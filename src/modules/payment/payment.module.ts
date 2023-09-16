@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { FCMEvent } from '@/event/fcm';
+import { MessageEvent } from '@/event/message';
 import { PortOneProvider, TossPayProvider } from '@/utils';
 
 import { CouponRepository } from '../coupon/coupon.repository';
@@ -29,7 +29,7 @@ import { PaymentService } from './payment.service';
     RentalTypeService,
     SpaceRepository,
     HolidayService,
-    FCMEvent,
+    MessageEvent,
     HostSettlementRepository,
     HostOpenHourRepository,
     HostSpaceHolidayRepository,
@@ -46,7 +46,7 @@ import { PaymentService } from './payment.service';
     RentalTypeService,
     SpaceRepository,
     HolidayService,
-    FCMEvent,
+    MessageEvent,
     HostSettlementRepository,
     HostOpenHourRepository,
     HostSpaceHolidayRepository,
