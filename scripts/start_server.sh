@@ -12,4 +12,4 @@ pm2 kill
 pm2 flush
 
 
-pm2 start ./dist/main.js
+pm2 start ecosystem.config.js 
