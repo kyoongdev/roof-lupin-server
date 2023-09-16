@@ -79,6 +79,7 @@ export class AdminCouponService {
       dueDate: userCoupon.usageDateEndAt,
       jobId: `${data.userId}_${userCoupon.id}`,
       nickname: userCoupon.user.nickname,
+      setting: userCoupon.user.setting,
     });
 
     return userCoupon.id;

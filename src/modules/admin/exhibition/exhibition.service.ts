@@ -62,6 +62,7 @@ export class AdminExhibitionService {
       select: {
         id: true,
         pushToken: true,
+        setting: true,
       },
     });
 
@@ -72,6 +73,7 @@ export class AdminExhibitionService {
       .map((user) => ({
         pushToken: user.pushToken,
         userId: user.id,
+        setting: user.setting,
       }))
       .map((user) => {
         this.messageEvent.createMarketingAlarm({
@@ -79,6 +81,7 @@ export class AdminExhibitionService {
           title: data.title,
           exhibitionId,
           startAt: data.startAt,
+          setting: user.setting,
         });
       });
 

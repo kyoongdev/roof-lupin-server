@@ -1,20 +1,26 @@
-export interface SendPushMessage {
-  token?: string;
-  body: string;
+export interface BaseSendMessage {
   title: string;
+  body: string;
   link?: string;
-  isAlarmAccepted: boolean;
 }
-export interface SendMessage {
-  token?: string;
-  body: string;
-  title: string;
-  link?: string;
+
+export interface SendPushMessage extends BaseSendMessage {
+  token: string;
+}
+export interface SendMessage extends BaseSendMessage {
+  token: string;
+}
+
+export interface AlarmSetting {
+  isAlarmAccepted: boolean;
+  isKakaoTalkAccepted: boolean;
+  isPushAccepted: boolean;
 }
 
 export interface BaseAlarmProps {
   nickname?: string;
   userId: string;
+  setting: AlarmSetting;
 }
 
 export interface CreateReservationUsageAlarm extends BaseAlarmProps {
@@ -41,7 +47,6 @@ export interface CreateCouponDurationAlarm extends BaseAlarmProps {
 }
 export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
-  pushToken: string;
   isAlarmAccepted: boolean;
   spaceId: string;
 }
@@ -63,12 +68,28 @@ export interface CreateReservationHostCanceledAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
   productName: string;
+  reservationDate: string;
+  startAt: number;
+  userCount: number;
+  reservationId: string;
 }
 
 export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
   productName: string;
+}
+
+export interface CreateReservationGuestCanceledAlarm extends Omit<BaseAlarmProps, 'token'> {
+  nickname: string;
+  spaceName: string;
+  productName: string;
+  cancelReason: string;
+  reservationDate: string;
+  startAt: number;
+  userCount: number;
+  spaceId: string;
+  reservationId: string;
 }
 
 export interface CreateReservationRejectedAlarm extends BaseAlarmProps {

@@ -6,7 +6,7 @@ export interface CreateAlarmDTOProps {
   link?: string;
   alarmAt?: Date;
   isPush?: boolean;
-  userId?: string;
+  userId: string;
   alarmType: number;
 }
 
@@ -26,8 +26,8 @@ export class CreateAlarmDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '푸시 여부' } })
   isPush?: boolean;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '유저 id' } })
-  userId?: string;
+  @Property({ apiProperty: { type: 'string', description: '유저 id' } })
+  userId: string;
 
   @Property({ apiProperty: { type: 'number', description: '알람 타입' } })
   alarmType: number;

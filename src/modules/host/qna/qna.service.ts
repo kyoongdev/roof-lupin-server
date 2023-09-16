@@ -66,11 +66,11 @@ export class HostQnAService {
 
     this.messageEvent.createQnAAnswerAlarm({
       userId: user.id,
-      pushToken: user.pushToken,
       spaceName: qna.space.title,
       nickname: user.nickname || user.name,
       isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
       spaceId: qna.space.id,
+      setting: user.setting,
     });
 
     return qnaAnswerId;

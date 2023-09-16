@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
 import { PrismaService } from '@/database/prisma.service';
-import type { ReqUserType } from '@/interface/role.interface';
+import type { RequestUser, ReqUserType } from '@/interface/role.interface';
 import { Role, type TokenPayload } from '@/interface/token.interface';
 
 import { Jsonwebtoken } from '../jwt';
@@ -32,9 +32,15 @@ export class JwtAuthGuard implements CanActivate {
 
     if (decoded instanceof JsonWebTokenError) throw new UnauthorizedException('TOKEN_EXPIRED');
 
-    let isExist: User | Host | Admin | null = null;
+    let isExist: RequestUser | Host | Admin | null = null;
 
-    if (decoded.role === Role.USER) isExist = await this.database.user.findUnique({ where: { id: decoded.id } });
+    if (decoded.role === Role.USER)
+      isExist = (await this.database.user.findUnique({
+        where: { id: decoded.id },
+        include: {
+          setting: true,
+        },
+      })) as RequestUser;
     else if (decoded.role === Role.HOST) isExist = await this.database.host.findUnique({ where: { id: decoded.id } });
     else if (decoded.role === Role.ADMIN) isExist = await this.database.admin.findUnique({ where: { id: decoded.id } });
 

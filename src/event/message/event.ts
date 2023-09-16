@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import {
+import type {
   CreateCouponDurationAlarm,
   CreateMarketingExhibitionAlarm,
   CreateQnAAnswerAlarm,
+  CreateReservationAcceptedAlarm,
+  CreateReservationAutoCanceledAlarm,
+  CreateReservationGuestCanceledAlarm,
+  CreateReservationHostCanceledAlarm,
+  CreateReservationRejectedAlarm,
   CreateReservationUsageAlarm,
+  CreateReviewAnswerAlarm,
   CreateReviewRecommendAlarm,
   SendAlarm,
   SendAlarmTarget,
   SendScheduleAlarm,
-} from '@/interface/fcm.interface';
+} from '@/interface/message.interface';
 
 import { MESSAGE_EVENT_NAME } from './constants';
 
@@ -52,6 +58,30 @@ export class MessageEvent {
 
   createMarketingAlarm(data: CreateMarketingExhibitionAlarm) {
     this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_MARKETING_ALARM, data);
+  }
+
+  createReviewAnswerAlarm(data: CreateReviewAnswerAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_REVIEW_ANSWER_ALARM, data);
+  }
+
+  createReservationGuestCanceledAlarm(data: CreateReservationGuestCanceledAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_GUEST_CANCELED_ALARM, data);
+  }
+
+  createReservationHostCanceledAlarm(data: CreateReservationHostCanceledAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_HOST_CANCELED_ALARM, data);
+  }
+
+  createReservationAutoCanceledAlarm(data: CreateReservationAutoCanceledAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_AUTO_CANCELED_ALARM, data);
+  }
+
+  createReservationRejectedAlarm(data: CreateReservationRejectedAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_REJECTED_ALARM, data);
+  }
+
+  createReservationAcceptedAlarm(data: CreateReservationAcceptedAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_ACCEPTED_ALARM, data);
   }
 
   deleteAlarm(alarmId: string) {

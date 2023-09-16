@@ -81,6 +81,7 @@ export class CouponService {
         jobId: `${user.id}_${userCouponId}`,
         userId: user.id,
         nickname: user.nickname,
+        setting: user.setting,
       });
     }
 

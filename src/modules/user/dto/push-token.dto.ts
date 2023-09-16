@@ -21,13 +21,13 @@ export class PushTokenDTO {
   name?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '푸시 토큰' } })
-  pushToken: string | null;
+  pushToken?: string;
 
   @Property({ apiProperty: { type: UserSettingDTO, description: '유저 설정' } })
   setting: UserSettingDTO;
 
   constructor(props: PushTokenDTOProps) {
-    this.pushToken = props.pushToken ?? null;
+    this.pushToken = props.pushToken;
     this.id = props.id;
     this.nickname = props.nickname;
     this.name = props.name;
