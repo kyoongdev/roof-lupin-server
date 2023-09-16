@@ -20,6 +20,7 @@ import type {
   CreateReviewRecommendAlarm,
   SendAlarm,
   SendAlarmTarget,
+  SendMessage,
   SendPushMessage,
   SendScheduleAlarm,
 } from '@/interface/message.interface';
@@ -72,20 +73,25 @@ export class MessageEventProvider {
   @OnEvent(MESSAGE_EVENT_NAME.SEND_SCHEDULE_ALARM)
   async sendScheduleAlarm(user: SendAlarmTarget, data: SendScheduleAlarm) {
     const date = new Date();
-    const alarm = await this.createAlarm({
+    const alarmData: BaseSendMessage = {
       title: data.title,
-      content: data.body,
+      body: data.body,
+      link: data.link,
+    };
+    const alarm = await this.createAlarm({
+      title: alarmData.title,
+      content: alarmData.body,
+      link: alarmData.link,
       isPush: true,
       userId: user.userId,
       alarmAt: data.targetDate,
       alarmType: data.alarmType,
     });
     this.schedulerEvent.createSchedule(`${user.userId}_${date.getTime()}_${nanoid(2)}`, data.targetDate, async () => {
-      await this.fcmService.sendMessage({
-        ...data,
+      await this.sendAlarmWithUpdate(alarm.id, {
+        ...alarmData,
         token: user.pushToken,
       });
-      await this.updatePushedAlarm(alarm.id);
     });
   }
 
@@ -101,22 +107,23 @@ export class MessageEventProvider {
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM)
   async createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
     const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), data.time - 1);
-    const alarmData = {
+    const alarmData: BaseSendMessage = {
       title: '예약 사용 알림',
       body: `${data.nickname}님! 예약하신 ${data.spaceName} 사용 시작 시간 [${data.year}.${data.month}.${data.day} ${data.time}시] 까지 1시간 남았어요!`,
+      link: '',
     };
 
-    //TODO: 알람 링크 연결
-    const alarm = await this.createAlarm({
-      title: alarmData.title,
-      content: alarmData.body,
-      isPush: true,
-      userId: data.userId,
-      alarmAt: targetDate,
-      alarmType: ALARM_TYPE.SPACE_TIME,
-    });
-
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
+      //TODO: 알람 링크 연결
+      const alarm = await this.createAlarm({
+        title: alarmData.title,
+        content: alarmData.body,
+        isPush: true,
+        userId: data.userId,
+        alarmAt: targetDate,
+        alarmType: ALARM_TYPE.SPACE_TIME,
+        link: alarmData.link,
+      });
       const user = await this.getUser(data.userId);
       if (!user || !user.setting.checkIsPushAlarmAccepted()) return;
       await this.sendAlarmWithUpdate(alarm.id, {
@@ -129,20 +136,23 @@ export class MessageEventProvider {
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM)
   async createReviewRecommendAlarm(data: CreateReviewRecommendAlarm) {
     const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), 4, 0, 0);
-    const alarmData = {
+    const alarmData: BaseSendMessage = {
       title: '리뷰를 달아주세요!',
       body: `${data.nickname}님! ${data.spaceName}에서 즐거운 시간 보내셨나요? 리뷰를 남겨보세요!`,
+      link: '',
     };
-    //TODO: 알람 링크 연결
-    const alarm = await this.createAlarm({
-      title: alarmData.title,
-      content: alarmData.body,
-      isPush: true,
-      userId: data.userId,
-      alarmAt: targetDate,
-      alarmType: ALARM_TYPE.REVIEW_RECOMMEND,
-    });
+
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
+      //TODO: 알람 링크 연결
+      const alarm = await this.createAlarm({
+        title: alarmData.title,
+        content: alarmData.body,
+        isPush: true,
+        userId: data.userId,
+        alarmAt: targetDate,
+        alarmType: ALARM_TYPE.REVIEW_RECOMMEND,
+        link: alarmData.link,
+      });
       const user = await this.getUser(data.userId);
       if (!user || !user.setting.checkIsPushAlarmAccepted()) return;
       await this.sendAlarmWithUpdate(alarm.id, {
@@ -162,16 +172,18 @@ export class MessageEventProvider {
       //TODO: 쿠폰함 링크 연결
       link: '',
     };
-    //TODO: 알람 링크 연결
-    const alarm = await this.createAlarm({
-      title: alarmData.title,
-      content: alarmData.body,
-      isPush: true,
-      userId: data.userId,
-      alarmAt: targetDate,
-      alarmType: ALARM_TYPE.COUPON_DURATION,
-    });
+
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
+      //TODO: 알람 링크 연결
+      const alarm = await this.createAlarm({
+        title: alarmData.title,
+        content: alarmData.body,
+        isPush: true,
+        userId: data.userId,
+        alarmAt: targetDate,
+        alarmType: ALARM_TYPE.COUPON_DURATION,
+        link: alarmData.link,
+      });
       const user = await this.getUser(data.userId);
       if (!user || !user.setting.checkIsPushAlarmAccepted()) return;
       await this.sendAlarmWithUpdate(alarm.id, {
@@ -198,6 +210,7 @@ export class MessageEventProvider {
         userId: data.userId,
         alarmAt: new Date(),
         alarmType: ALARM_TYPE.QNA,
+        link: alarmData.link,
       });
       const user = await this.getUser(data.userId);
       if (user.pushToken && user.setting.isAlarmAccepted && user.setting.isPushAccepted) {
@@ -230,6 +243,7 @@ export class MessageEventProvider {
         title: alarmData.title,
         content: alarmData.body,
         isPush: true,
+        link: alarmData.link,
         userId: data.userId,
         alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
         alarmAt: dateDiff <= 1 ? new Date() : targetDate,
@@ -249,7 +263,10 @@ export class MessageEventProvider {
           userId: data.userId,
           alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
           alarmAt: dateDiff <= 1 ? new Date() : targetDate,
+          isPush: true,
+          link: alarmData.link,
         });
+
         const user = await this.getUser(data.userId);
         if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
 
@@ -275,14 +292,14 @@ export class MessageEventProvider {
       alarmAt: new Date(),
       content: alarmData.body,
       userId: data.userId,
+      isPush: true,
     });
     const user = await this.getUser(data.userId);
     if (user.pushToken && user.setting.checkIsPushAlarmAccepted()) {
-      await this.fcmService.sendMessage({
+      await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
       });
-      await this.updatePushedAlarm(alarm.id);
     }
   }
 
@@ -302,15 +319,16 @@ export class MessageEventProvider {
       예약 인원 : ${data.userCount}명
       취소 내역 확인 : `,
     };
+    const user = await this.getUser(data.userId);
     const alarm = await this.createAlarm({
       title: alarmData.title,
       content: alarmData.body,
       alarmType: ALARM_TYPE.RESERVATION_HOST_CANCELED,
       alarmAt: new Date(),
+      isPush: true,
       link: '',
       userId: data.userId,
     });
-    const user = await this.getUser(data.userId);
     if (user.pushToken) {
       if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
         //TODO: 카카오 알림
@@ -345,6 +363,8 @@ export class MessageEventProvider {
           userId: data.userId,
           alarmType: ALARM_TYPE.RESERVATION_AUTO_CANCELED,
           alarmAt: approvedAt,
+          isPush: true,
+          link: '',
         });
         const user = await this.getUser(data.userId);
         if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
