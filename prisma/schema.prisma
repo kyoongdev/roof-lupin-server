@@ -783,10 +783,11 @@ model UserAlarm {
   content String
   link    String?
 
-  alarmAt  DateTime?
-  isRead   Boolean   @default(false)
-  isPush   Boolean   @default(false)
-  isPushed Boolean   @default(false)
+  alarmAt   DateTime?
+  isRead    Boolean   @default(false)
+  isPush    Boolean   @default(false)
+  isPushed  Boolean   @default(false)
+  alarmType Int       @db.TinyInt
 
   createdAt       DateTime         @default(now())
   userId          String
