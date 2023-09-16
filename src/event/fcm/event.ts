@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
   CreateCouponDurationAlarm,
-  CreateMarketingAlarm,
+  CreateMarketingExhibitionAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationUsageAlarm,
   CreateReviewRecommendAlarm,
@@ -50,7 +50,7 @@ export class FCMEvent {
     this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_QNA_ANSWER_ALARM, data);
   }
 
-  createMarketingAlarm(data: CreateMarketingAlarm) {
+  createMarketingAlarm(data: CreateMarketingExhibitionAlarm) {
     this.eventEmitter.emit(FCM_EVENT_NAME.CREATE_MARKETING_ALARM, data);
   }
 

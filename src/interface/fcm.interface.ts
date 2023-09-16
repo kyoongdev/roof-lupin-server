@@ -24,6 +24,7 @@ export interface CreateReservationUsageAlarm extends BaseAlarmProps {
   day: number;
   time: number;
   spaceName: string;
+  reservationId: string;
 }
 export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   jobId: string;
@@ -31,6 +32,8 @@ export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   month: number;
   day: number;
   spaceName: string;
+  spaceId: string;
+  reviewId: string;
 }
 
 export interface CreateCouponDurationAlarm extends BaseAlarmProps {
@@ -41,12 +44,48 @@ export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
   pushToken: string;
   isAlarmAccepted: boolean;
+  spaceId: string;
 }
 
-export interface CreateMarketingAlarm extends BaseAlarmProps {
+export interface CreateMarketingExhibitionAlarm extends BaseAlarmProps {
   title: string;
   startAt: Date;
   exhibitionId: string;
+}
+
+export interface CreateReviewAnswerAlarm extends BaseAlarmProps {
+  nickname: string;
+  spaceName: string;
+  spaceId: string;
+  reviewId: string;
+}
+
+export interface CreateReservationHostCanceledAlarm extends BaseAlarmProps {
+  nickname: string;
+  spaceName: string;
+  productName: string;
+}
+
+export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
+  nickname: string;
+  spaceName: string;
+  productName: string;
+}
+
+export interface CreateReservationRejectedAlarm extends BaseAlarmProps {
+  nickname: string;
+  spaceName: string;
+  productName: string;
+  reservationDate: string;
+  startAt: number;
+  userCount: number;
+  reservationId: string;
+}
+
+export interface CreateReservationAcceptedAlarm extends BaseAlarmProps {
+  nickname: string;
+  spaceName: string;
+  productName: string;
 }
 
 export interface SendAlarmTarget {

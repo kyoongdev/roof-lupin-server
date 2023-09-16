@@ -7,7 +7,7 @@ import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
 import {
   CreateCouponDurationAlarm,
-  CreateMarketingAlarm,
+  CreateMarketingExhibitionAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationUsageAlarm,
   CreateReviewRecommendAlarm,
@@ -20,6 +20,7 @@ import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
 import { ALARM_TYPE } from '@/modules/alarm/dto/validation/alarm-type.validation';
 import { PushTokenDTO } from '@/modules/user/dto';
+import { DynamicLinkProvider } from '@/utils';
 import { FCMProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
@@ -31,7 +32,8 @@ export class FCMEventProvider {
   constructor(
     private readonly database: PrismaService,
     private readonly fcmService: FCMProvider,
-    private schedulerEvent: SchedulerEvent
+    private schedulerEvent: SchedulerEvent,
+    private readonly dynamicLinkProvider: DynamicLinkProvider
   ) {}
 
   @OnEvent(FCM_EVENT_NAME.SEND_ALARM)
@@ -203,7 +205,7 @@ export class FCMEventProvider {
   }
 
   @OnEvent(FCM_EVENT_NAME.CREATE_MARKETING_ALARM)
-  async createMarketIngAlarm(data: CreateMarketingAlarm) {
+  async createMarketIngAlarm(data: CreateMarketingExhibitionAlarm) {
     const currentDate = new Date();
     const targetDate = new Date(data.startAt);
     targetDate.setDate(targetDate.getDate() - 1);
