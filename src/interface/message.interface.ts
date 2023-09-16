@@ -78,6 +78,8 @@ export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
   productName: string;
+  approvedAt: Date;
+  reservationId: string;
 }
 
 export interface CreateReservationGuestCanceledAlarm extends Omit<BaseAlarmProps, 'token'> {

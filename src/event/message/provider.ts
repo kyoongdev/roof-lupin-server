@@ -5,14 +5,16 @@ import { nanoid } from 'nanoid';
 
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import {
-  BaseAlarmProps,
+import type {
   BaseSendMessage,
   CreateCouponDurationAlarm,
   CreateMarketingExhibitionAlarm,
   CreateQnAAnswerAlarm,
+  CreateReservationAcceptedAlarm,
+  CreateReservationAutoCanceledAlarm,
   CreateReservationGuestCanceledAlarm,
   CreateReservationHostCanceledAlarm,
+  CreateReservationRejectedAlarm,
   CreateReservationUsageAlarm,
   CreateReviewAnswerAlarm,
   CreateReviewRecommendAlarm,
@@ -223,16 +225,15 @@ export class MessageEventProvider {
     };
     const dateDiff = getDateDiff(currentDate, targetDate);
 
-    const alarm = await this.createAlarm({
-      title: alarmData.title,
-      content: alarmData.body,
-      isPush: true,
-      userId: data.userId,
-      alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
-      alarmAt: dateDiff <= 1 ? new Date() : targetDate,
-    });
-
     if (dateDiff <= 1) {
+      const alarm = await this.createAlarm({
+        title: alarmData.title,
+        content: alarmData.body,
+        isPush: true,
+        userId: data.userId,
+        alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
+        alarmAt: dateDiff <= 1 ? new Date() : targetDate,
+      });
       const user = await this.getUser(data.userId);
       if (!user) return;
       if (user.setting.checkIsPushAlarmAccepted())
@@ -242,8 +243,15 @@ export class MessageEventProvider {
         });
     } else {
       this.schedulerEvent.createSchedule(`${data.userId}_${data.exhibitionId}`, targetDate, async () => {
+        const alarm = await this.createAlarm({
+          title: alarmData.title,
+          content: alarmData.body,
+          userId: data.userId,
+          alarmType: ALARM_TYPE.MARKETING_EXHIBITION,
+          alarmAt: dateDiff <= 1 ? new Date() : targetDate,
+        });
         const user = await this.getUser(data.userId);
-        if (!user || !user.setting.checkIsPushAlarmAccepted()) return;
+        if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
 
         await this.sendAlarmWithUpdate(alarm.id, {
           ...alarmData,
@@ -314,6 +322,99 @@ export class MessageEventProvider {
         });
       }
     }
+  }
+
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_AUTO_CANCELED_ALARM)
+  async createReservationAutoCanceledAlarm(data: CreateReservationAutoCanceledAlarm) {
+    const alarmData: BaseSendMessage = {
+      title: '예약 취소 알림',
+      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 취소되었습니다.
+      취소 사유 : 12시간 내 결제 미진행
+      `,
+      link: '',
+    };
+    const approvedAt = data.approvedAt;
+    approvedAt.setHours(approvedAt.getHours() + 12);
+    this.schedulerEvent.createSchedule(
+      `${new Date().getTime()}_${data.reservationId}_${data.userId}`,
+      approvedAt,
+      async () => {
+        const alarm = await this.createAlarm({
+          title: alarmData.title,
+          content: alarmData.body,
+          userId: data.userId,
+          alarmType: ALARM_TYPE.RESERVATION_AUTO_CANCELED,
+          alarmAt: approvedAt,
+        });
+        const user = await this.getUser(data.userId);
+        if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
+        await this.sendAlarmWithUpdate(alarm.id, {
+          ...alarmData,
+          token: user.pushToken,
+        });
+      }
+    );
+  }
+
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_REJECTED_ALARM)
+  async createReservationRejectedAlarm(data: CreateReservationRejectedAlarm) {
+    const alarmData: BaseSendMessage = {
+      title: '예약 취소 알림',
+      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 취소되었습니다.
+      취소 사유 : 호스트의 예약 거절
+      상품명 : ${data.productName}
+      예약 날짜 : ${data.reservationDate}
+      예약 시간 : ${data.startAt}
+      예약 인원 : ${data.userCount}명
+      취소 내역 확인 : 
+      `,
+      link: '',
+    };
+    const alarm = await this.createAlarm({
+      title: alarmData.title,
+      content: alarmData.body,
+      userId: data.userId,
+      alarmType: ALARM_TYPE.RESERVATION_REJECTED,
+      alarmAt: new Date(),
+      isPush: true,
+      link: '',
+    });
+    const user = await this.getUser(data.userId);
+    //TODO: 카카오 알림
+    if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
+
+    await this.sendAlarmWithUpdate(alarm.id, {
+      ...alarmData,
+      token: user.pushToken,
+    });
+  }
+
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_ACCEPTED_ALARM)
+  async createReservationAcceptedAlarm(data: CreateReservationAcceptedAlarm) {
+    const alarmData: BaseSendMessage = {
+      title: '예약 신청 승인 알림',
+      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 승인되었어요. 결제까지 진행되어야 예약이 확정돼요!`,
+      link: '',
+    };
+
+    const alarm = await this.createAlarm({
+      title: alarmData.title,
+      content: alarmData.body,
+      alarmType: ALARM_TYPE.RESERVATION_APPROVED,
+      userId: data.userId,
+      alarmAt: new Date(),
+      isPush: true,
+      link: '',
+    });
+
+    const user = await this.getUser(data.userId);
+    //TODO: 카카오 알림
+    if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
+
+    await this.sendAlarmWithUpdate(alarm.id, {
+      ...alarmData,
+      token: user.pushToken,
+    });
   }
 
   @OnEvent(MESSAGE_EVENT_NAME.DELETE_ALARM)
