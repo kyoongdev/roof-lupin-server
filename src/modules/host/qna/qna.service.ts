@@ -70,6 +70,7 @@ export class HostQnAService {
       spaceName: qna.space.title,
       nickname: user.nickname || user.name,
       isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
+      spaceId: qna.space.id,
     });
 
     return qnaAnswerId;

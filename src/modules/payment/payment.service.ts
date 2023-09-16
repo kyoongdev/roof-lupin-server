@@ -355,6 +355,7 @@ export class PaymentService {
           spaceName: reservation.space.title,
           time: rentalType.startAt,
           userId: reservation.user.id,
+          reservationId: reservation.id,
         });
       });
 
@@ -367,6 +368,7 @@ export class PaymentService {
         spaceName: reservation.space.title,
         userId: reservation.user.id,
         nickname: reservation.user.nickname,
+        spaceId: reservation.space.id,
       });
   }
 

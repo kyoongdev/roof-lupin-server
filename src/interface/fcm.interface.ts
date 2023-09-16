@@ -33,7 +33,6 @@ export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   day: number;
   spaceName: string;
   spaceId: string;
-  reviewId: string;
 }
 
 export interface CreateCouponDurationAlarm extends BaseAlarmProps {
