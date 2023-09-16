@@ -82,6 +82,22 @@ export const seedDatabase = async (database: PrismaClient) => {
           },
         },
       });
+
+      await Promise.all(
+        range(1, 50).map(async (i) => {
+          await database.userAlarm.create({
+            data: {
+              title: `테스트유저${i}의 알림`,
+              content: `테스트유저${i}의 알림 내용`,
+              user: {
+                connect: {
+                  id: user.id,
+                },
+              },
+            },
+          });
+        })
+      );
       await database.fAQ.create({
         data: {
           question: `테스트유저${i}의 질문`,
