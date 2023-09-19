@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 
 import { nanoid } from 'nanoid';
+import { SolapiMessageService } from 'solapi';
 
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
@@ -37,11 +39,16 @@ import { MESSAGE_EVENT_NAME } from './constants';
 
 @Injectable()
 export class MessageEventProvider {
+  private readonly solaapi = new SolapiMessageService(
+    this.configService.get('SOLAPI_API_KEY'),
+    this.configService.get('SOLAPI_API_SECRET')
+  );
   constructor(
     private readonly database: PrismaService,
     private readonly fcmService: MessageProvider,
     private schedulerEvent: SchedulerEvent,
-    private readonly dynamicLinkProvider: DynamicLinkProvider
+    private readonly dynamicLinkProvider: DynamicLinkProvider,
+    private readonly configService: ConfigService
   ) {}
 
   @OnEvent(MESSAGE_EVENT_NAME.SEND_ALARM)
@@ -440,6 +447,17 @@ export class MessageEventProvider {
   @OnEvent(MESSAGE_EVENT_NAME.DELETE_ALARM)
   async deleteAlarm(jobId: string) {
     this.schedulerEvent.deleteSchedule(jobId);
+  }
+
+  async sendKakaoMessage<T>(targetPhoneNumber: string, templateId: string, variables?: T) {
+    await this.solaapi.send({
+      to: targetPhoneNumber,
+      kakaoOptions: {
+        pfId: this.configService.get('SOLAPI_PFID'),
+        templateId,
+        variables: variables ?? {},
+      },
+    });
   }
 
   async sendAlarmWithUpdate(alarmId: string, data: SendPushMessage) {
