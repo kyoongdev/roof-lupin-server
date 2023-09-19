@@ -1,3 +1,5 @@
+import { PaymentSuccessAlarmTalk } from './alarm-talk.interface';
+
 export interface BaseSendMessage {
   title: string;
   body: string;
@@ -108,6 +110,11 @@ export interface CreateReservationAcceptedAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
   productName: string;
+}
+
+export interface CreatePaymentSuccessAlarm extends Omit<PaymentSuccessAlarmTalk, 'link' | 'endpoint'> {
+  userId: string;
+  phoneNumber: string;
 }
 
 export interface SendAlarmTarget {

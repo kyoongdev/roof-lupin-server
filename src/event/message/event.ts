@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import { PaymentSuccessAlarmTalk } from '@/interface/alarm-talk.interface';
 import type {
   CreateCouponDurationAlarm,
   CreateMarketingExhibitionAlarm,
+  CreatePaymentSuccessAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationAcceptedAlarm,
   CreateReservationAutoCanceledAlarm,
@@ -82,6 +84,10 @@ export class MessageEvent {
 
   createReservationAcceptedAlarm(data: CreateReservationAcceptedAlarm) {
     this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_RESERVATION_ACCEPTED_ALARM, data);
+  }
+
+  createPaymentSuccessAlarm(data: CreatePaymentSuccessAlarm) {
+    this.eventEmitter.emit(MESSAGE_EVENT_NAME.CREATE_PAYMENT_SUCCESS_ALARM, data);
   }
 
   deleteAlarm(alarmId: string) {

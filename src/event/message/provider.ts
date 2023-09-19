@@ -7,10 +7,12 @@ import { SolapiMessageService } from 'solapi';
 
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
+import { PaymentSuccessAlarmTalk, PaymentSuccessAlarmTalkPayload } from '@/interface/alarm-talk.interface';
 import type {
   BaseSendMessage,
   CreateCouponDurationAlarm,
   CreateMarketingExhibitionAlarm,
+  CreatePaymentSuccessAlarm,
   CreateQnAAnswerAlarm,
   CreateReservationAcceptedAlarm,
   CreateReservationAutoCanceledAlarm,
@@ -35,7 +37,7 @@ import { MessageProvider } from '@/utils/fcm';
 
 import { SchedulerEvent } from '../scheduler';
 
-import { MESSAGE_EVENT_NAME } from './constants';
+import { ALARM_TALK_ID, MESSAGE_EVENT_NAME } from './constants';
 
 @Injectable()
 export class MessageEventProvider {
@@ -449,6 +451,16 @@ export class MessageEventProvider {
     this.schedulerEvent.deleteSchedule(jobId);
   }
 
+  @OnEvent(MESSAGE_EVENT_NAME.CREATE_PAYMENT_SUCCESS_ALARM)
+  async createPaymentSuccessAlarm(data: CreatePaymentSuccessAlarm) {
+    this.sendKakaoMessage<PaymentSuccessAlarmTalkPayload>(data.phoneNumber, ALARM_TALK_ID.PAYMENT_SUCCESS, {
+      '#{endpoint}': '',
+      '#{link}': '',
+      '#{nickname}': data.nickname,
+      '#{productName}': data.productName,
+      '#{spaceName}': data.spaceName,
+    });
+  }
   async sendKakaoMessage<T>(targetPhoneNumber: string, templateId: string, variables?: T) {
     await this.solaapi.send({
       to: targetPhoneNumber,
