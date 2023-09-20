@@ -33,7 +33,7 @@ export class SpaceRepository {
     return spaces.map((space) => new SpaceIdsDTO(space));
   }
 
-  async findSpacesWithSQL(sql: Prisma.Sql, userId?: string) {
+  async findSpacesWithSQL(sql: Prisma.Sql) {
     const spaces: SqlSpace[] = await this.database.$queryRaw(sql);
     const count: {
       'FOUND_ROWS()': number;
@@ -79,6 +79,7 @@ export class SpaceRepository {
             lng: space.lng,
             roadAddress: space.roadAddress,
             jibunAddress: space.jibunAddress,
+            detailAddress: space.detailAddress,
           },
           publicTransportations,
           rentalType,

@@ -64,7 +64,7 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'string', description: '썸네일' } })
   thumbnail: string;
 
-  @Property({ apiProperty: { type: 'string', description: '전화번호' } })
+  @Property({ apiProperty: { type: 'string', maxLength: 11, minLength: 11, description: '전화번호' } })
   phoneNumber: string;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })

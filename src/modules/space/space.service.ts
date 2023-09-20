@@ -82,7 +82,7 @@ export class SpaceService {
       isHoliday: isHoliday ? isHoliday.isHoliday : false,
     });
 
-    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(spaceSql.getSQLQuery(), userId);
+    const { spaces, count } = await this.spaceRepository.findSpacesWithSQL(spaceSql.getSQLQuery());
 
     return new PaginationDTO<SpaceDTO>(spaces, { count, paging });
   }

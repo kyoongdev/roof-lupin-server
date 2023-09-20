@@ -51,7 +51,7 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 인원' } })
   maxUser?: number;
 
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '전화번호' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, maxLength: 11, minLength: 11, description: '전화번호' } })
   phoneNumber?: string;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '초과 인원 당 추가 금액' } })

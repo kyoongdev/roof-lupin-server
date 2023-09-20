@@ -35,6 +35,7 @@ export interface SqlSpace {
   lng: string;
   roadAddress: string;
   jibunAddress: string;
+  detailAddress: string;
   reviewCount: number;
   averageScore: number | null;
   interestCount: number;

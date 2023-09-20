@@ -452,6 +452,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           create: {
             roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
             jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
+            detailAddress: '',
             lng: '127.07668323717',
             lat: '37.545277604771',
           },
@@ -1091,6 +1092,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           jibunAddress: '서울특별시 영등포구 양평동1가 219-17',
           lng: '126.8883343',
           lat: '37.5244953',
+          detailAddress: '',
         },
       },
       buildings: {
@@ -1451,6 +1453,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           jibunAddress: '인천광역시 연수구 동춘동 937-6 금송빌딩',
           lng: '126.6704665',
           lat: '37.4075654',
+          detailAddress: '',
         },
       },
       buildings: {
@@ -1787,6 +1790,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           jibunAddress: '서울특별시 중구 초동 17-4',
           lng: '126.9929866',
           lat: '37.5651794',
+          detailAddress: '',
         },
       },
       buildings: {
@@ -2126,6 +2130,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         create: {
           roadAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
           jibunAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
+          detailAddress: '',
           lng: '126.8875',
           lat: '37.5215',
         },
