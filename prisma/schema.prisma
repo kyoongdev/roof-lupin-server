@@ -173,6 +173,7 @@ model Space {
   minSize           Int     @default(0) @db.SmallInt
   deposit           Int?    @db.MediumInt
   link              String? @db.VarChar(255)
+  phoneNumber       String  @db.VarChar(11)
 
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)

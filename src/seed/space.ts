@@ -140,7 +140,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         overflowUserCost: 15000,
         buildingType: 1,
         minSize: 80,
-
+        phoneNumber: '01012341234',
         isPublic: true,
         isApproved: true,
         isImmediateReservation: true,
@@ -827,6 +827,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const space1 = await database.space.create({
     data: {
       title: `루프탑 노을 공원`,
+      phoneNumber: '01012341234',
       description:
         '루프탑 노을공원 ( 구 루프탑 공간 휴 )은 멀리 여행을 가서 할수 있는 캠핑을 도심에서 간편하게 즐길수 있는 공간이 있어 숯불 바베큐를 구워먹으며 빔프로젝터를 통해 영화도 볼수 있습니다. 또한 옥상캠핑, 생일파티, 소모임, 이벤트, 촬영 등 다양한 목적으로 이용 가능합니다.',
       thumbnail: 'https://dev-image.rooflupin.com/1688632155577áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
@@ -1232,6 +1233,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       thumbnail: 'https://dev-image.rooflupin.com/1688632809745áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
       minUser: 1,
       maxUser: 20,
+      phoneNumber: '01012341234',
       overflowUserCost: 10000,
       overflowUserCount: 5,
       buildingType: 1,
@@ -1582,6 +1584,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       isPublic: true,
       isApproved: true,
       isImmediateReservation: true,
+      phoneNumber: '01012341234',
       openHours: {
         create: [
           {
@@ -1898,6 +1901,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
   const space4 = await database.space.create({
     data: {
       title: `루프탑 옥상 아무`,
+      phoneNumber: '01012341234',
       description: `
       도시 한복판에서 하늘과 바람과 꽃 사이에서 한가로운 휴식과 피크닉을 즐겨보세요. 
       5호선 양평역, 2호선 문래역 근처에 단 한 팀만을 위한 휴식 공간이 마련되어 있습니다. 

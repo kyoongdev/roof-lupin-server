@@ -25,7 +25,11 @@ class AppConfig {
     await this.app.listen(8000, () => {
       console.info('🔥 루프루팡 서버 시작!! 8000 🔥');
     });
-    await this.initAlarm();
+    try {
+      await this.initAlarm();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   revalidate() {

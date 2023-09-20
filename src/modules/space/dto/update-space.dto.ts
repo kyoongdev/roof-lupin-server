@@ -51,6 +51,9 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '최대 인원' } })
   maxUser?: number;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '전화번호' } })
+  phoneNumber?: string;
+
   @Property({ apiProperty: { type: 'number', nullable: true, description: '초과 인원 당 추가 금액' } })
   overflowUserCost?: number;
 
@@ -128,6 +131,7 @@ export class UpdateSpaceDTO {
       this.isImmediateReservation = props.isImmediateReservation;
       this.isApproved = props.isApproved;
       this.isPublic = props.isPublic;
+      this.phoneNumber = props.phoneNumber;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));

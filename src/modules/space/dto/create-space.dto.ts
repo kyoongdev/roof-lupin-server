@@ -25,6 +25,7 @@ export interface CreateSpaceDTOProps {
   spaceType?: number;
   buildingType?: number;
   thumbnail: string;
+  phoneNumber: string;
   minUser: number;
   maxUser: number;
   overflowUserCost: number;
@@ -62,6 +63,9 @@ export class CreateSpaceDTO {
 
   @Property({ apiProperty: { type: 'string', description: '썸네일' } })
   thumbnail: string;
+
+  @Property({ apiProperty: { type: 'string', description: '전화번호' } })
+  phoneNumber: string;
 
   @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })
   deposit?: number;
@@ -140,6 +144,7 @@ export class CreateSpaceDTO {
       this.deposit = props.deposit;
       this.refundPolicies = props.refundPolicies;
       this.cautions = props.cautions;
+      this.phoneNumber = props.phoneNumber;
       this.link = props.link;
       this.isImmediateReservation = props.isImmediateReservation;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
