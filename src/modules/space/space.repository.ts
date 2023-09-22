@@ -52,20 +52,23 @@ export class SpaceRepository {
           WHERE rt.spaceId = ${space.id}
         `);
 
-        const categories = await this.database.category.findMany({
+        const categories = await this.database.spaceCategory.findMany({
           where: {
-            spaceUsageCategories: {
-              some: {
-                spaceId: space.id,
+            spaceId: space.id,
+          },
+          include: {
+            category: {
+              include: {
+                icons: {
+                  include: {
+                    icon: true,
+                  },
+                },
               },
             },
           },
-          include: {
-            icons: {
-              include: {
-                icon: true,
-              },
-            },
+          orderBy: {
+            orderNo: 'asc',
           },
         });
 
@@ -92,7 +95,7 @@ export class SpaceRepository {
           },
           publicTransportations,
           rentalType,
-          categories,
+          categories: categories.map((category) => category.category),
           refundPolicies,
         });
       })
