@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, PublicTransportation, RefundPolicy, RentalType } from '@prisma/client';
 
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
-import { SQLCategory, SqlSpace } from '@/interface/space.interface';
+import { SqlSpace } from '@/interface/space.interface';
 
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { ReviewDTO } from '../review/dto';
