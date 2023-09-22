@@ -255,7 +255,7 @@ export class SpaceRepository {
       where: {
         id,
       },
-      include: SpaceDTO.getSpacesIncludeOption(),
+      include: SpaceDTO.generateSpaceInclude(),
     });
     if (!space) {
       throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
@@ -278,7 +278,7 @@ export class SpaceRepository {
     const spaces = await this.database.space.findMany({
       ...args,
       where: args.where,
-      include: SpaceDTO.getSpacesIncludeOption(),
+      include: SpaceDTO.generateSpaceInclude(),
       orderBy: {
         ...args.orderBy,
       },

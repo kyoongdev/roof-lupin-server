@@ -76,7 +76,7 @@ export class CategoryRepository {
         spaces: {
           include: {
             space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
+              include: SpaceDTO.generateSpaceInclude(),
             },
           },
           orderBy: {
@@ -108,7 +108,7 @@ export class CategoryRepository {
         spaces: {
           include: {
             space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
+              include: SpaceDTO.generateSpaceInclude(),
             },
           },
           orderBy: {

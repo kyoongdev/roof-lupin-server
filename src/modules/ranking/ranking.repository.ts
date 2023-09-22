@@ -40,7 +40,7 @@ export class RankingRepository {
           ...args,
           include: {
             space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
+              include: SpaceDTO.generateSpaceInclude(),
             },
           },
           orderBy: {
@@ -79,7 +79,7 @@ export class RankingRepository {
         spaces: {
           include: {
             space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
+              include: SpaceDTO.generateSpaceInclude(),
             },
           },
           orderBy: {

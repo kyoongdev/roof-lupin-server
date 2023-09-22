@@ -204,7 +204,7 @@ export class ReservationDTO extends BaseReservationDTO {
             include: {
               timeCostInfos: true,
               space: {
-                include: SpaceDTO.getSpacesIncludeOption(),
+                include: SpaceDTO.generateSpaceInclude(),
               },
               additionalServices: true,
             },

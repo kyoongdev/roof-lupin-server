@@ -1,6 +1,7 @@
 import { Prisma, RentalType } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
+import { CategoryInclude } from '@/interface/category.interface';
 import { CommonSpace } from '@/interface/space.interface';
 import { LocationDTO, type LocationDTOProps } from '@/modules/location/dto';
 
@@ -24,7 +25,7 @@ export interface SpaceDTOProps {
   publicTransportations?: TransportationDTOProps[]; //대중 교통
   location: LocationDTOProps;
   rentalType: RentalType[];
-  categories?: SpaceCategoryDTOProps[];
+  categories: SpaceCategoryDTOProps[];
   orderNo: number;
   overflowUserCost: number;
   overflowUserCount: number;
@@ -116,7 +117,7 @@ export class SpaceDTO {
     this.packageCost =
       packageRentals.length === 0 ? null : Math.min(...packageRentals.map((target) => target.baseCost));
     this.orderNo = props.orderNo ?? null;
-    this.categories = props.categories ? props.categories?.map((category) => new SpaceCategoryDTO(category)) : [];
+    this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
@@ -135,7 +136,7 @@ export class SpaceDTO {
     };
   }
 
-  static getSpacesIncludeOption() {
+  static generateSpaceInclude() {
     return {
       location: true,
       reviews: {
@@ -158,7 +159,10 @@ export class SpaceDTO {
             },
           },
         },
-      },
+        orderBy: {
+          orderNo: 'asc',
+        },
+      } as CategoryInclude,
       reports: {
         where: {
           spaceId: {

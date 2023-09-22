@@ -41,7 +41,7 @@ export class ExhibitionRepository {
         spaces: {
           include: {
             space: {
-              include: SpaceDTO.getSpacesIncludeOption(),
+              include: SpaceDTO.generateSpaceInclude(),
             },
           },
           orderBy: {

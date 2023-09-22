@@ -41,7 +41,7 @@ export class AdminHomeService {
             spaces: {
               include: {
                 space: {
-                  include: SpaceDTO.getSpacesIncludeOption(),
+                  include: SpaceDTO.generateSpaceInclude(),
                 },
               },
               orderBy: {
@@ -56,7 +56,7 @@ export class AdminHomeService {
             spaces: {
               include: {
                 space: {
-                  include: SpaceDTO.getSpacesIncludeOption(),
+                  include: SpaceDTO.generateSpaceInclude(),
                 },
               },
               orderBy: {

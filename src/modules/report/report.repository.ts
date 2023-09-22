@@ -33,7 +33,7 @@ export class ReportRepository {
           },
         },
         space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
+          include: SpaceDTO.generateSpaceInclude(),
         },
         spaceReview: {
           include: ReviewDTO.generateInclude(),
@@ -81,7 +81,7 @@ export class ReportRepository {
           },
         },
         space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
+          include: SpaceDTO.generateSpaceInclude(),
         },
         spaceReview: {
           include: ReviewDTO.generateInclude(),

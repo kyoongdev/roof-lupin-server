@@ -33,7 +33,7 @@ export class QnARepository {
           },
         },
         space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
+          include: SpaceDTO.generateSpaceInclude(),
         },
       },
       orderBy: {
@@ -65,7 +65,7 @@ export class QnARepository {
       },
       include: {
         space: {
-          include: SpaceDTO.getSpacesIncludeOption(),
+          include: SpaceDTO.generateSpaceInclude(),
         },
         answers: {
           include: {

@@ -62,7 +62,7 @@ export class QnADTO {
         },
       },
       space: {
-        include: SpaceDTO.getSpacesIncludeOption(),
+        include: SpaceDTO.generateSpaceInclude(),
       },
     };
   }
