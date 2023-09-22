@@ -13,9 +13,14 @@ phases:
       - yarn prisma db push --force-reset
       - yarn prisma generate
       - yarn seed
+  build:
+    commands:
+      - yarn build
 artifacts:
   exclude-paths:
-    - ./src
+    - ./test
+    - ./docker
+    - ./.husky
     - ./logs
   files:
     - '**/*'
