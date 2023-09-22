@@ -128,15 +128,20 @@ export class CategoryRepository {
   }
 
   async createCategory(data: CreateCategoryDTO) {
-    const { iconId, ...rest } = data;
+    const { icons, ...rest } = data;
     const category = await this.database.category.create({
       data: {
         ...rest,
-        ...(iconId && {
-          icon: {
-            connect: {
-              id: iconId,
-            },
+        ...(icons && {
+          icons: {
+            create: icons.map((icon) => ({
+              isMapIcon: icon.isMapIcon,
+              icon: {
+                connect: {
+                  id: icon.iconId,
+                },
+              },
+            })),
           },
         }),
       },
@@ -200,19 +205,24 @@ export class CategoryRepository {
   }
 
   async updateCategory(id: string, data: UpdateCategoryDTO) {
-    const { iconId, ...rest } = data;
+    const { icons, ...rest } = data;
     await this.database.category.update({
       where: {
         id,
       },
       data: {
         ...rest,
-        ...(iconId && {
-          icon: {
-            delete: true,
-            connect: {
-              id: iconId,
-            },
+        ...(icons && {
+          icons: {
+            deleteMany: {},
+            create: icons.map((icon) => ({
+              isMapIcon: icon.isMapIcon,
+              icon: {
+                connect: {
+                  id: icon.iconId,
+                },
+              },
+            })),
           },
         }),
       },

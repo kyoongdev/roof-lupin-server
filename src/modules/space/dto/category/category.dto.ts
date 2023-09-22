@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { CategoryIconDTO, CategoryIconDTOProps } from './category-icon.dto';
+import { CategoryIconDTO, CategoryIconDTOProps } from '@/modules/category/dto/category-icon.dto';
 
 export interface SpaceCategoryDTOProps {
   id: string;

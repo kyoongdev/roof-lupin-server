@@ -1,8 +1,10 @@
 import { Property } from 'cumuco-nestjs';
 
+import { UpdateCategoryIconDTO, UpdateCategoryIconDTOProps } from './update-category-icon.dto';
+
 export interface UpdateCategoryDTOProps {
   name?: string;
-  iconId?: string;
+  icons: UpdateCategoryIconDTOProps[];
   isHome?: boolean;
   isRecommended?: boolean;
 }
@@ -11,9 +13,14 @@ export class UpdateCategoryDTO {
   name: string;
 
   @Property({
-    apiProperty: { type: 'string', nullable: true, description: '아이콘 경로, 홈 카테고리라면 아이콘 필수' },
+    apiProperty: {
+      type: UpdateCategoryIconDTO,
+      nullable: true,
+      isArray: true,
+      description: '아이콘,홈 카테고리라면 아이콘 필수',
+    },
   })
-  iconId?: string;
+  icons?: UpdateCategoryIconDTO[];
 
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '홈 카테고리 여부' } })
   isHome?: boolean;
@@ -24,7 +31,7 @@ export class UpdateCategoryDTO {
   constructor(props?: UpdateCategoryDTOProps) {
     if (props) {
       this.name = props.name;
-      this.iconId = props.iconId;
+      this.icons = props.icons.map((icon) => new UpdateCategoryIconDTO(icon));
       this.isHome = props.isHome;
       this.isRecommended = props.isRecommended;
     }

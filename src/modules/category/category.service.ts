@@ -48,7 +48,7 @@ export class CategoryService {
       throw new CategoryException(CATEGORY_ERROR_CODE.CONFLICT(HOME_CATEGORY_COUNT));
     }
 
-    if (data.isHome === true && !data.iconId) {
+    if (data.isHome === true && (!data.icons || data.icons.length === 0)) {
       throw new CategoryException(CATEGORY_ERROR_CODE.BAD_REQUEST(HOME_CATEGORY_ICON_PATH_BAD_REQUEST));
     }
 
@@ -59,7 +59,7 @@ export class CategoryService {
     await this.findCategory(id);
 
     if (data.isHome === true) {
-      if (!data.iconId) {
+      if (!data.icons || data.icons.length === 0) {
         throw new CategoryException(CATEGORY_ERROR_CODE.BAD_REQUEST(HOME_CATEGORY_ICON_PATH_BAD_REQUEST));
       }
       const homeCategoryCount = await this.categoryRepository.countCategories({
