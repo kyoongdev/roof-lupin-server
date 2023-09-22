@@ -652,6 +652,8 @@ model SpaceCategory {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  orderNo Int? @db.TinyInt
+
   @@id([spaceId, categoryId])
 }
 

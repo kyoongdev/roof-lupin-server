@@ -12,6 +12,7 @@ import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE 
 import { SpaceException } from '../exception/space.exception';
 
 import { CreateBuildingDTO } from './building';
+import { UpdateSpaceCategoryDTO } from './category';
 import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
 import { UpdateHashTagDTO } from './hashTag';
@@ -91,8 +92,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '서비스' } })
   services?: string[];
 
-  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '카테고리' } })
-  categories?: string[];
+  @Property({ apiProperty: { type: UpdateSpaceCategoryDTO, nullable: true, isArray: true, description: '카테고리' } })
+  categories?: UpdateSpaceCategoryDTO[];
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 링크' } })
   link?: string;
@@ -136,7 +137,7 @@ export class UpdateSpaceDTO {
       this.location = new CreateLocationDTO(props.location);
       this.buildings = props.buildings.map((facility) => new CreateBuildingDTO(facility));
       this.services = props.services;
-      this.categories = props.categories;
+      this.categories = props.categories.map((category) => new UpdateSpaceCategoryDTO(category));
       this.hashTags = props.hashTags.map((hashtag) => new UpdateHashTagDTO(hashtag));
       this.publicTransportations = props.publicTransportations.map(
         (transportation) => new CreateTransportationDTO(transportation)

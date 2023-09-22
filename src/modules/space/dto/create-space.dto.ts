@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Property } from 'cumuco-nestjs';
 import { range } from 'lodash';
 
+import { CreateCategoryDTO, CreateCategoryDTOProps } from '@/modules/category/dto';
 import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
@@ -12,6 +13,7 @@ import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE 
 import { SpaceException } from '../exception/space.exception';
 
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './building';
+import { CreateSpaceCategoryDTO, CreateSpaceCategoryDTOProps } from './category';
 import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
@@ -40,7 +42,7 @@ export interface CreateSpaceDTOProps {
   location: CreateLocationDTOProps;
   buildings: CreateBuildingDTOProps[];
   services: string[];
-  categories: string[];
+  categories: CreateSpaceCategoryDTOProps[];
   hashTags: CreateHashTagDTOProps[];
   publicTransportations: CreateTransportationDTOProps[];
   sizes: CreateSizeDTOProps[];
@@ -110,8 +112,8 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'string', isArray: true, description: '서비스 id 들' } })
   services: string[];
 
-  @Property({ apiProperty: { type: 'string', isArray: true, description: '카테고리 ids' } })
-  categories: string[];
+  @Property({ apiProperty: { type: CreateSpaceCategoryDTO, isArray: true, description: '카테고리 ids' } })
+  categories: CreateSpaceCategoryDTO[];
 
   @Property({ apiProperty: { type: CreateHashTagDTO, isArray: true, description: '해시태그' } })
   hashTags: CreateHashTagDTO[];

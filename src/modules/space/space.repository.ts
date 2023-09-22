@@ -365,9 +365,7 @@ export class SpaceRepository {
             })),
           },
           categories: {
-            create: categoryProps.map((category) => ({
-              categoryId: category,
-            })),
+            create: categoryProps.map((category) => category),
           },
           hashTags: {
             create: hashTags.map((hashTag) => ({
@@ -539,9 +537,7 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           categories: {
-            create: categoryProps.map((category) => ({
-              categoryId: category,
-            })),
+            create: categoryProps.map((category) => category),
             deleteMany: {},
           },
         };
