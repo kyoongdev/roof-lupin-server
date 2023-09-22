@@ -150,7 +150,11 @@ export class SpaceDTO {
         include: {
           category: {
             include: {
-              icon: true,
+              icons: {
+                include: {
+                  icon: true,
+                },
+              },
             },
           },
         },

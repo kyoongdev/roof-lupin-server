@@ -52,13 +52,22 @@ export class SpaceRepository {
           WHERE rt.spaceId = ${space.id}
         `);
 
-        const categories: SQLCategory[] = await this.database.$queryRaw(Prisma.sql`
-          SELECT *, ic.id as iconId, ic.url as iconUrl, ic.name as iconName
-          FROM Category c
-          LEFT JOIN SpaceCategory sc ON sc.categoryId = c.id
-          LEFT JOIN Icon ic ON ic.id = c.iconId
-          WHERE sc.spaceId = ${space.id}
-        `);
+        const categories = await this.database.category.findMany({
+          where: {
+            spaceUsageCategories: {
+              some: {
+                spaceId: space.id,
+              },
+            },
+          },
+          include: {
+            icons: {
+              include: {
+                icon: true,
+              },
+            },
+          },
+        });
 
         const refundPolicies: RefundPolicy[] = await this.database.$queryRaw(Prisma.sql`
           SELECT * 
@@ -83,14 +92,7 @@ export class SpaceRepository {
           },
           publicTransportations,
           rentalType,
-          categories: categories.map((category) => ({
-            ...category,
-            icon: {
-              id: category.iconId,
-              url: category.iconUrl,
-              name: category.iconName,
-            },
-          })),
+          categories,
           refundPolicies,
         });
       })
@@ -142,7 +144,11 @@ export class SpaceRepository {
           include: {
             category: {
               include: {
-                icon: true,
+                icons: {
+                  include: {
+                    icon: true,
+                  },
+                },
               },
             },
           },

@@ -43,11 +43,17 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
 
       isHome: true,
       isRecommended: true,
-      icon: {
-        create: {
-          name: `바베큐`,
-          url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
-        },
+      icons: {
+        create: [
+          {
+            icon: {
+              create: {
+                name: `바베큐`,
+                url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+              },
+            },
+          },
+        ],
       },
     },
   });
@@ -57,11 +63,17 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       name: `글램핑`,
       isHome: true,
       isRecommended: false,
-      icon: {
-        create: {
-          name: `글램핑`,
-          url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
-        },
+      icons: {
+        create: [
+          {
+            icon: {
+              create: {
+                name: `글램핑`,
+                url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
+              },
+            },
+          },
+        ],
       },
     },
   });
@@ -71,11 +83,17 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       name: `파티룸`,
       isHome: true,
       isRecommended: false,
-      icon: {
-        create: {
-          name: `파티룸`,
-          url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
-        },
+      icons: {
+        create: [
+          {
+            icon: {
+              create: {
+                name: `파티룸`,
+                url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
+              },
+            },
+          },
+        ],
       },
     },
   });
@@ -85,11 +103,14 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       name: `촬영`,
       isHome: true,
       isRecommended: false,
-      icon: {
-        create: {
-          name: `촬영`,
-          url: 'https://dev-image.rooflupin.com/1690960264699film.svg',
-        },
+      icons: {
+        create: [
+          {
+            icon: {
+              create: { name: `촬영`, url: 'https://dev-image.rooflupin.com/1690960264699film.svg' },
+            },
+          },
+        ],
       },
     },
   });

@@ -67,23 +67,8 @@ class AppConfig {
       alarms.map(async (alarm) => {
         const currentDate = new Date();
         const alarmAt = alarm.alarmAt;
-
-        if (currentDate >= alarmAt) {
-          await messageProvider.sendMessage({
-            token: alarm.user.pushToken,
-            title: alarm.title,
-            body: alarm.content,
-          });
-          await database.userAlarm.update({
-            where: {
-              id: alarm.id,
-            },
-            data: {
-              isPushed: true,
-            },
-          });
-        } else {
-          scheduler.scheduleJob(alarmAt, async () => {
+        if (alarm.user.pushToken) {
+          if (currentDate >= alarmAt) {
             await messageProvider.sendMessage({
               token: alarm.user.pushToken,
               title: alarm.title,
@@ -97,7 +82,23 @@ class AppConfig {
                 isPushed: true,
               },
             });
-          });
+          } else {
+            scheduler.scheduleJob(alarmAt, async () => {
+              await messageProvider.sendMessage({
+                token: alarm.user.pushToken,
+                title: alarm.title,
+                body: alarm.content,
+              });
+              await database.userAlarm.update({
+                where: {
+                  id: alarm.id,
+                },
+                data: {
+                  isPushed: true,
+                },
+              });
+            });
+          }
         }
       })
     );

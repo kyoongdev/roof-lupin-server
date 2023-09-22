@@ -23,7 +23,11 @@ export const reservationInclude: Prisma.ReservationInclude = {
                 include: {
                   category: {
                     include: {
-                      icon: true,
+                      icons: {
+                        include: {
+                          icon: true,
+                        },
+                      },
                     },
                   },
                 },

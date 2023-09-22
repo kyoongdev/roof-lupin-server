@@ -1,5 +1,6 @@
 import {
   Category,
+  CategoryIcon,
   Icon,
   PublicTransportation,
   RefundPolicy,
@@ -60,7 +61,9 @@ export interface CommonSpace extends Space {
   refundPolicies: RefundPolicy[];
   categories?: (SpaceCategory & {
     category: Category & {
-      icon: Icon;
+      icons: (CategoryIcon & {
+        icon: Icon;
+      })[];
     };
   })[];
   reports: UserReport[];

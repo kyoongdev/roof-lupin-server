@@ -35,9 +35,9 @@ model Icon {
   name String @db.VarChar(120)
   url  String
 
-  building Building[]
-  service  Service[]
-  category Category[]
+  building     Building[]
+  service      Service[]
+  categoryIcon CategoryIcon[]
 }
 
 model FrequentQuestion {
@@ -894,8 +894,18 @@ model Category {
 
   spaceUsageCategories SpaceCategory[]
 
-  icon   Icon?   @relation(fields: [iconId], references: [id], onDelete: SetNull, onUpdate: SetNull)
-  iconId String?
+  icons CategoryIcon[]
+}
+
+model CategoryIcon {
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  iconId     String
+  icon       Icon     @relation(fields: [iconId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  isMapIcon Boolean @default(false)
+
+  @@id([categoryId, iconId])
 }
 
 model ContentCategory {

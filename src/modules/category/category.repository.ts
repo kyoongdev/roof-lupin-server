@@ -34,14 +34,18 @@ export class CategoryRepository {
         id,
       },
       include: {
-        icon: true,
+        icons: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
 
     if (!category) {
       throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CATEGORY_NOT_FOUND));
     }
-    return new CategoryDTO({ ...category, iconPath: category.icon?.url ?? null });
+    return new CategoryDTO(category);
   }
 
   async countCategories(args = {} as Prisma.CategoryCountArgs) {
@@ -52,17 +56,15 @@ export class CategoryRepository {
     const categories = await this.database.category.findMany({
       ...args,
       include: {
-        icon: true,
+        icons: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
 
-    return categories.map(
-      (category) =>
-        new CategoryDTO({
-          ...category,
-          iconPath: category.icon?.url ?? null,
-        })
-    );
+    return categories.map((category) => new CategoryDTO(category));
   }
 
   async findContentCategory(id: string) {
