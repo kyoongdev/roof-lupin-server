@@ -156,7 +156,6 @@ export class SpaceRepository {
             },
           },
         },
-        cautions: true,
         buildings: {
           include: {
             building: {
@@ -208,7 +207,6 @@ export class SpaceRepository {
     }
 
     const {
-      cautions,
       categories,
       buildings,
       host,
@@ -236,7 +234,6 @@ export class SpaceRepository {
     return new SpaceDetailDTO({
       ...space,
       reviewCount: space._count.reviews,
-      cautions: cautions.map((caution) => caution),
       categories: categories.map(({ category }) => category),
       buildings: buildings.map(({ building }) => building),
       host,
@@ -311,7 +308,6 @@ export class SpaceRepository {
     const {
       images,
       refundPolicies,
-      cautions,
       rentalTypes,
       location: locationProps,
       buildings: buildingProps,
@@ -356,9 +352,6 @@ export class SpaceRepository {
 
           refundPolicies: {
             create: refundPolicies.map((refundPolicy) => refundPolicy),
-          },
-          cautions: {
-            create: cautions.map((caution) => caution),
           },
 
           buildings: {
@@ -412,7 +405,6 @@ export class SpaceRepository {
     const {
       images,
       refundPolicies,
-      cautions,
       rentalTypes,
       location: locationProps,
       buildings: buildingProps,
@@ -478,16 +470,6 @@ export class SpaceRepository {
           ...updateArgs.data,
           refundPolicies: {
             create: refundPolicies.map((refundPolicy) => refundPolicy),
-            deleteMany: {},
-          },
-        };
-      }
-
-      if (cautions) {
-        updateArgs.data = {
-          ...updateArgs.data,
-          cautions: {
-            create: cautions.map((caution) => caution),
             deleteMany: {},
           },
         };

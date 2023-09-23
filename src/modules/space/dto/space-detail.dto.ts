@@ -10,7 +10,6 @@ import { ReviewDTO, ReviewDTOProps } from '@/modules/review/dto/review.dto';
 
 import { BuildingDTO, type BuildingDTOProps } from './building';
 import { SpaceCategoryDTO, SpaceCategoryDTOProps } from './category';
-import { CautionDTO, type CautionDTOProps } from './caution';
 import { SpaceHolidayDTO, SpaceHolidayDTOProps } from './holiday';
 import { RefundPolicyDTO, type RefundPolicyDTOProps } from './refund';
 import { ServiceDTO, ServiceDTOProps } from './service';
@@ -42,7 +41,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   isImmediateReservation: boolean;
   images: ImageDTO[];
   refundPolicies: RefundPolicyDTOProps[];
-  cautions: CautionDTOProps[];
+  caution: string;
   buildings: BuildingDTOProps[];
   services: ServiceDTOProps[];
   categories: SpaceCategoryDTOProps[];
@@ -130,8 +129,8 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: ReviewDTO, isArray: true, description: '리뷰 목록' } })
   reviews: ReviewDTO[];
 
-  @Property({ apiProperty: { type: CautionDTO, isArray: true, description: '주의 사항 목록' } })
-  cautions: CautionDTO[];
+  @Property({ apiProperty: { type: 'string', description: '주의 사항' } })
+  caution: string;
 
   @Property({ apiProperty: { type: BuildingDTO, isArray: true, description: '시설 목록' } })
   buildings: BuildingDTO[];
@@ -179,10 +178,10 @@ export class SpaceDetailDTO {
     this.isInterested = props.isInterested ?? false;
     this.isImmediateReservation = props.isImmediateReservation;
     this.link = props.link;
+    this.caution = props.caution;
     this.host = new HostDTO(props.host);
     this.images = props.images.map((image) => new ImageDTO(image));
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
-    this.cautions = props.cautions.map((caution) => new CautionDTO(caution));
     this.buildings = props.buildings.map((building) => new BuildingDTO(building));
     this.services = props.services.map((service) => new ServiceDTO(service));
     this.categories = props.categories.map((category) => new SpaceCategoryDTO(category));

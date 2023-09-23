@@ -175,6 +175,7 @@ model Space {
   deposit           Int?    @db.MediumInt
   link              String? @db.VarChar(255)
   phoneNumber       String  @db.VarChar(11)
+  caution           String  @db.MediumText
 
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)
@@ -189,12 +190,12 @@ model Space {
   hostId String @db.VarChar(120)
   host   Host   @relation(fields: [hostId], references: [id])
 
-  reviews               SpaceReview[]
-  reports               UserReport[]
-  userInterests         SpaceInterest[]
-  images                SpaceImage[]
-  refundPolicies        RefundPolicy[]
-  cautions              SpaceCaution[]
+  reviews        SpaceReview[]
+  reports        UserReport[]
+  userInterests  SpaceInterest[]
+  images         SpaceImage[]
+  refundPolicies RefundPolicy[]
+
   rentalType            RentalType[]
   location              SpaceLocation?
   buildings             SpaceBuilding[]
@@ -618,13 +619,6 @@ model RefundPolicy {
   daysBefore Int @db.TinyInt
   refundRate Int @db.TinyInt
 
-  spaceId String
-  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model SpaceCaution {
-  id      String @id @default(uuid())
-  content String
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

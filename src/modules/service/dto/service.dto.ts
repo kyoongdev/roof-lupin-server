@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { IconDTOProps } from '@/modules/admin/dto/icon';
-
 import { ServiceIconDTO, ServiceIconDTOProps } from './service-icon.dto';
 
 export interface ServiceDTOProps {

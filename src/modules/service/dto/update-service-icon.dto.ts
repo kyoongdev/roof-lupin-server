@@ -1,7 +1,5 @@
 import { Property } from 'cumuco-nestjs';
 
-import { IconDTO, IconDTOProps } from '@/modules/admin/dto/icon';
-
 export interface UpdateServiceIconDTOProps {
   iconId: string;
   isSelected: boolean;

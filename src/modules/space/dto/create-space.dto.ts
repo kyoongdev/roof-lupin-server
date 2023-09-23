@@ -3,7 +3,6 @@ import { BadRequestException } from '@nestjs/common';
 import { Property } from 'cumuco-nestjs';
 import { range } from 'lodash';
 
-import { CreateCategoryDTO, CreateCategoryDTOProps } from '@/modules/category/dto';
 import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
 import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
@@ -14,7 +13,6 @@ import { SpaceException } from '../exception/space.exception';
 
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './building';
 import { CreateSpaceCategoryDTO, CreateSpaceCategoryDTOProps } from './category';
-import { CreateCautionDTO, type CreateCautionDTOProps } from './caution';
 import { CreateHashTagDTO, type CreateHashTagDTOProps } from './hashTag';
 import { CreateSpaceHolidayDTO, CreateSpaceHolidayDTOProps } from './holiday';
 import { CreateRefundPolicyDTO, type CreateRefundPolicyDTOProps } from './refund';
@@ -37,7 +35,7 @@ export interface CreateSpaceDTOProps {
   link?: string;
   images: string[];
   refundPolicies: CreateRefundPolicyDTOProps[];
-  cautions: CreateCautionDTOProps[];
+  caution: string;
   rentalTypes: CreateRentalTypeDTOProps[];
   location: CreateLocationDTOProps;
   buildings: CreateBuildingDTOProps[];
@@ -96,8 +94,8 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: CreateRefundPolicyDTO, isArray: true, description: '환불 정책' } })
   refundPolicies: CreateRefundPolicyDTO[];
 
-  @Property({ apiProperty: { type: CreateCautionDTO, isArray: true, description: '주의 사항' } })
-  cautions: CreateCautionDTO[];
+  @Property({ apiProperty: { type: 'string', description: '주의 사항' } })
+  caution: string;
 
   @PeriodsValidation()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, isArray: true, description: '대여 유형' } })
@@ -145,7 +143,7 @@ export class CreateSpaceDTO {
       this.images = props.images;
       this.deposit = props.deposit;
       this.refundPolicies = props.refundPolicies;
-      this.cautions = props.cautions;
+      this.caution = props.caution;
       this.phoneNumber = props.phoneNumber;
       this.link = props.link;
       this.isImmediateReservation = props.isImmediateReservation;

@@ -13,7 +13,6 @@ import { SpaceException } from '../exception/space.exception';
 
 import { CreateBuildingDTO } from './building';
 import { UpdateSpaceCategoryDTO } from './category';
-import { CreateCautionDTO } from './caution';
 import { CreateSpaceDTOProps } from './create-space.dto';
 import { UpdateHashTagDTO } from './hashTag';
 import { UpdateSpaceHolidayDTO, UpdateSpaceHolidayDTOProps } from './holiday';
@@ -76,8 +75,8 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: CreateRefundPolicyDTO, nullable: true, isArray: true, description: '환불 정책' } })
   refundPolicies?: CreateRefundPolicyDTO[];
 
-  @Property({ apiProperty: { type: CreateCautionDTO, nullable: true, isArray: true, description: '주의 사항' } })
-  cautions?: CreateCautionDTO[];
+  @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '주의 사항' } })
+  caution?: string;
 
   @PeriodsValidation()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, nullable: true, isArray: true, description: '대여 유형' } })
@@ -128,7 +127,7 @@ export class UpdateSpaceDTO {
       this.overflowUserCount = props.overflowUserCount;
       this.images = props.images;
       this.refundPolicies = props.refundPolicies;
-      this.cautions = props.cautions;
+      this.caution = props.caution;
       this.isImmediateReservation = props.isImmediateReservation;
       this.isApproved = props.isApproved;
       this.isPublic = props.isPublic;
