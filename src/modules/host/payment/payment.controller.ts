@@ -1,10 +1,12 @@
-import { Get, Query } from '@nestjs/common';
+import { Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { RequestApi, ResponseApi } from 'cumuco-nestjs';
 
+import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { BANK_CODE } from '@/common/constants';
+import { RequestHost } from '@/interface/role.interface';
 import { BankCodeDTO, ValidateAccountQuery, ValidatedAccountDTO } from '@/modules/payment/dto';
-import { ApiController } from '@/utils';
+import { ApiController, ReqUser, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
 
 import { HostPaymentService } from './payment.service';
 
@@ -44,5 +46,20 @@ export class HostPaymentController {
         name: value,
       });
     });
+  }
+
+  @Post(':reservationId/refund')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      summary: '결제 환불하기 ',
+      description: '결제 환불하기',
+    },
+  })
+  @ResponseApi({
+    type: ResponseWithIdDTO,
+  })
+  async refundPayment(@Param('reservationId') id: string, @ReqUser() user: RequestHost) {
+    return await this.paymentService.refundPayment(id, user.id);
   }
 }
