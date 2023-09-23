@@ -177,6 +177,8 @@ model Space {
   phoneNumber       String  @db.VarChar(11)
   caution           String  @db.MediumText
 
+  isRoofOnly Boolean @default(false)
+
   isImmediateReservation Boolean @default(false)
   isPublic               Boolean @default(false)
   isApproved             Boolean @default(true)

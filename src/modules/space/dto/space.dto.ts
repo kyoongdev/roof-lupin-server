@@ -19,6 +19,7 @@ export interface SpaceDTOProps {
   isImmediateReservation: boolean;
   isPublic: boolean;
   isApproved: boolean;
+  isRoofOnly: boolean;
   thumbnail: string;
   reportCount: number;
   hostId: string;
@@ -62,6 +63,9 @@ export class SpaceDTO {
 
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '옥상 유일 여부' } })
+  isRoofOnly: boolean;
 
   @Property({ apiProperty: { type: 'number', description: '찜 개수' } })
   interestCount: number;
@@ -107,8 +111,9 @@ export class SpaceDTO {
     this.isInterested = props.isInterested ?? false;
     this.reportCount = props.reportCount ?? 0;
     this.isImmediateReservation = props.isImmediateReservation;
-    this.isPublic = typeof props.isPublic === 'boolean' ? props.isPublic : props.isPublic === 1;
-    this.isApproved = typeof props.isApproved === 'boolean' ? props.isApproved : props.isApproved === 1;
+    this.isPublic = props.isPublic;
+    this.isApproved = props.isApproved;
+    this.isRoofOnly = props.isRoofOnly;
     this.thumbnail = props.thumbnail;
     this.interestCount = props.interestCount ?? 0;
     this.publicTransportations = props.publicTransportations.map((target) => new TransportationDTO(target));

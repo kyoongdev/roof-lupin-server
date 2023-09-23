@@ -66,6 +66,9 @@ export class UpdateSpaceDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '승인 여부' } })
   isApproved?: boolean;
 
+  @Property({ apiProperty: { type: 'boolean', nullable: true, description: '옥상 유일 여부' } })
+  isRoofOnly?: boolean;
+
   @Property({ apiProperty: { type: 'string', nullable: true, isArray: true, description: '생성된 이미지 url' } })
   images?: string[];
 
@@ -131,6 +134,7 @@ export class UpdateSpaceDTO {
       this.isImmediateReservation = props.isImmediateReservation;
       this.isApproved = props.isApproved;
       this.isPublic = props.isPublic;
+      this.isRoofOnly = props.isRoofOnly;
       this.phoneNumber = props.phoneNumber;
       this.rentalTypes = props.rentalTypes.map((rentalType) => new CreateRentalTypeDTO(rentalType));
       this.location = new CreateLocationDTO(props.location);

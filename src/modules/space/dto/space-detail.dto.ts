@@ -75,6 +75,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: 'boolean', description: '공간 베스트 여부' } })
   isBest?: boolean;
 
+  @Property({ apiProperty: { type: 'boolean', description: '옥상 유일 여부' } })
+  isRoofOnly: boolean;
+
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
 

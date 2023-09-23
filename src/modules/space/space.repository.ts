@@ -84,6 +84,7 @@ export class SpaceRepository {
           isPublic: space.isPublic === 1,
           isImmediateReservation: space.isImmediateReservation === 1,
           isInterested: space.isInterest && Number(space.isInterest) === 1,
+          isRoofOnly: space.isRoofOnly === 1,
           interestCount: space.interestCount,
           location: {
             id: space.slId,

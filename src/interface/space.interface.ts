@@ -25,6 +25,7 @@ export interface SqlSpace {
   overflowUserCount: number;
   minSize: number;
   isImmediateReservation: number;
+  isRoofOnly: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
