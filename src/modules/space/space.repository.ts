@@ -183,7 +183,11 @@ export class SpaceRepository {
           include: {
             service: {
               include: {
-                icon: true,
+                icons: {
+                  include: {
+                    icon: true,
+                  },
+                },
               },
             },
           },

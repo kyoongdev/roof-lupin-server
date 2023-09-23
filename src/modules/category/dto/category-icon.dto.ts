@@ -19,13 +19,13 @@ export class CategoryIconDTO {
   @Property({ apiProperty: { type: 'boolean', description: '맵 아이콘 여부' } })
   isMapIcon: boolean;
 
-  @Property({ apiProperty: { type: IconDTO, description: '아이콘 정보' } })
-  icon: IconDTO;
+  @Property({ apiProperty: { type: 'string', description: '아이콘 경로' } })
+  iconPath: string;
 
   constructor(props: CategoryIconDTOProps) {
     this.categoryId = props.categoryId;
     this.iconId = props.iconId;
-    this.icon = new IconDTO(props.icon);
+    this.iconPath = props.icon.url;
     this.isMapIcon = props.isMapIcon;
   }
 }

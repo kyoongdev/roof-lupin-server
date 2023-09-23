@@ -21,7 +21,11 @@ export class ServiceRepository {
         id,
       },
       include: {
-        icon: true,
+        icons: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
 
@@ -36,7 +40,11 @@ export class ServiceRepository {
     const services = await this.database.service.findMany({
       ...args,
       include: {
-        icon: true,
+        icons: {
+          include: {
+            icon: true,
+          },
+        },
       },
     });
     return services.map((service) => new ServiceDTO(service));
@@ -50,7 +58,11 @@ export class ServiceRepository {
       include: {
         services: {
           include: {
-            icon: true,
+            icons: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
       },
@@ -69,7 +81,11 @@ export class ServiceRepository {
       include: {
         services: {
           include: {
-            icon: true,
+            icons: {
+              include: {
+                icon: true,
+              },
+            },
           },
         },
       },

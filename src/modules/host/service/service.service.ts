@@ -9,4 +9,8 @@ export class HostServiceService {
   async findServiceTitles() {
     return this.serviceRepository.findServiceTitles();
   }
+
+  async findServices() {
+    return this.serviceRepository.findServices();
+  }
 }

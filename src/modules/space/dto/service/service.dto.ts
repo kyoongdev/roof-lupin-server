@@ -1,10 +1,11 @@
 import { Property } from 'cumuco-nestjs';
 
 import { IconDTOProps } from '@/modules/admin/dto/icon';
+import { ServiceIconDTO, ServiceIconDTOProps } from '@/modules/service/dto/service-icon.dto';
 
 export interface ServiceDTOProps {
   id: string;
-  icon: IconDTOProps;
+  icons: ServiceIconDTOProps[];
   name: string;
 }
 
@@ -12,15 +13,15 @@ export class ServiceDTO {
   @Property({ apiProperty: { type: 'string', description: '시설 id' } })
   id: string;
 
-  @Property({ apiProperty: { type: 'string', description: '시설 아이콘 경로' } })
-  iconPath: string;
+  @Property({ apiProperty: { type: ServiceIconDTO, isArray: true, description: '아이콘' } })
+  icons: ServiceIconDTO[];
 
   @Property({ apiProperty: { type: 'string', description: '시설 이름' } })
   name: string;
 
   constructor(props: ServiceDTOProps) {
     this.id = props.id;
-    this.iconPath = props.icon.url;
+    this.icons = props.icons.map((icon) => new ServiceIconDTO(icon));
     this.name = props.name;
   }
 }

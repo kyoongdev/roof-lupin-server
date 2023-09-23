@@ -40,14 +40,13 @@ export class LocationService {
     try {
       const response = await this.socialLocationService.getKakaoLocationByKeyword({
         keyword: query.keyword,
-
         category_group_code: '지하철역',
         page: query.page,
         limit: query.limit,
       });
       return response;
     } catch (err) {
-      throw new Error(err);
+      console.log(err);
     }
   }
 

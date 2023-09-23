@@ -2,12 +2,39 @@ import { PrismaClient } from '@prisma/client';
 
 export const seedService = async (database: PrismaClient) => {
   const iconPath = 'https://dev-image.rooflupin.com/1691221976548bluetooth.svg';
+  const selectedIconPath = 'https://dev-image.rooflupin.com/bar_selected.svg';
   const baseIcon = await database.icon.create({
     data: {
       url: iconPath,
       name: '기본 아이콘',
     },
   });
+  const selectedIcon = await database.icon.create({
+    data: {
+      url: selectedIconPath,
+      name: '선택된 아이콘',
+    },
+  });
+  const icons = {
+    create: [
+      {
+        icon: {
+          connect: {
+            id: baseIcon.id,
+          },
+        },
+        isSelected: false,
+      },
+      {
+        icon: {
+          connect: {
+            id: selectedIcon.id,
+          },
+        },
+        isSelected: true,
+      },
+    ],
+  };
   await database.serviceTitle.create({
     data: {
       name: '편의시설',
@@ -15,43 +42,23 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '주류반입가능',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '음식물반입가능',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '반려동물동반가능',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '금연',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '흡연가능',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },
@@ -64,43 +71,23 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '포토존',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '촬영용 카메라',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '촬영용 조명',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '촬영 소품',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '삼각대',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },
@@ -114,27 +101,15 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '노래방 기기',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '음향/마이크',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '블루투스 스피커',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },
@@ -147,35 +122,19 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '바베큐시설',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '취사시설',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '공용주방',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '정수기',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },
@@ -189,27 +148,15 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '근처 마트/편의점',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '주차장',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '엘리베이터',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },
@@ -223,115 +170,59 @@ export const seedService = async (database: PrismaClient) => {
         create: [
           {
             name: '전기 사용 가능',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '인터넷/WIFI',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '벌레퇴치제',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: 'TV/프로젝터',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '내부 화장실',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '샤워시설',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '탈의실',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '화장대',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '파티용 소품',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '야외조명',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '의자/테이블',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '텐트',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '파라솔',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
           {
             name: '공용라운지',
-            icon: {
-              connect: {
-                id: baseIcon.id,
-              },
-            },
+            icons,
           },
         ],
       },

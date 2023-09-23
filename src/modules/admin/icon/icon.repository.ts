@@ -23,7 +23,7 @@ export class IconRepository {
           select: {
             building: true,
             categoryIcon: true,
-            service: true,
+            serviceIcons: true,
           },
         },
       },
@@ -35,7 +35,7 @@ export class IconRepository {
 
     return new IconDetailDTO({
       ...icon,
-      inUse: icon._count.building > 0 || icon._count.categoryIcon > 0 || icon._count.service > 0,
+      inUse: icon._count.building > 0 || icon._count.categoryIcon > 0 || icon._count.serviceIcons > 0,
     });
   }
 
@@ -51,7 +51,7 @@ export class IconRepository {
           select: {
             building: true,
             categoryIcon: true,
-            service: true,
+            serviceIcons: true,
           },
         },
       },
@@ -62,7 +62,7 @@ export class IconRepository {
         async (icon) =>
           new IconDTO({
             ...icon,
-            inUse: icon._count.building > 0 || icon._count.categoryIcon > 0 || icon._count.service > 0,
+            inUse: icon._count.building > 0 || icon._count.categoryIcon > 0 || icon._count.serviceIcons > 0,
           })
       )
     );
@@ -91,7 +91,7 @@ export class IconRepository {
         categoryIcon: {
           set: [],
         },
-        service: {
+        serviceIcons: {
           set: [],
         },
       },
