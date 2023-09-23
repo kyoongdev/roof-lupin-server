@@ -3,20 +3,25 @@ import { Property } from 'cumuco-nestjs';
 import { CreateServiceIconDTO, CreateServiceIconDTOProps } from './create-service-icon.dto';
 
 export interface CreateServiceDTOProps {
-  icons: CreateServiceIconDTOProps[];
+  selectedIcon: CreateServiceIconDTOProps;
+  notSelectedIcon: CreateServiceIconDTOProps;
   name: string;
 }
 
 export class CreateServiceDTO {
-  @Property({ apiProperty: { type: CreateServiceIconDTO, isArray: true, description: '아이콘 id' } })
-  icons: CreateServiceIconDTO[];
+  @Property({ apiProperty: { type: CreateServiceIconDTO, description: '선택 아이콘' } })
+  selectedIcon: CreateServiceIconDTO;
+
+  @Property({ apiProperty: { type: CreateServiceIconDTO, description: '미선택 아이콘' } })
+  notSelectedIcon: CreateServiceIconDTO;
 
   @Property({ apiProperty: { type: 'string', description: '이름' } })
   name: string;
 
   constructor(props?: CreateServiceDTOProps) {
     if (props) {
-      this.icons = props.icons.map((icon) => new CreateServiceIconDTO(icon));
+      this.selectedIcon = new CreateServiceIconDTO(props.selectedIcon);
+      this.notSelectedIcon = new CreateServiceIconDTO(props.notSelectedIcon);
       this.name = props.name;
     }
   }

@@ -30,11 +30,7 @@ export class AdminIconService {
   }
 
   async deleteIcon(id: string) {
-    const icon = await this.findIcon(id);
-
-    if (icon.inUse) {
-      throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_ICON_IN_USE));
-    }
+    await this.findIcon(id);
 
     return await this.iconRepository.deleteIcon(id);
   }

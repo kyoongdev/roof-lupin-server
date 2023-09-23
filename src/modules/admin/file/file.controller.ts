@@ -44,7 +44,6 @@ export class AdminFileController {
     return await this.fileService.getAllFiles();
   }
 
-  // @Auth([JwtAuthGuard])
   @Post('/image')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(

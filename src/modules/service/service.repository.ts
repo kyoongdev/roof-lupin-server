@@ -54,14 +54,24 @@ export class ServiceRepository {
       data: {
         name: data.name,
         icons: {
-          create: data.icons.map((icon) => ({
-            icon: {
-              connect: {
-                id: icon.iconId,
+          create: [
+            {
+              isSelected: true,
+              icon: {
+                connect: {
+                  id: data.selectedIcon.iconId,
+                },
               },
             },
-            isSelected: icon.isSelected,
-          })),
+            {
+              isSelected: false,
+              icon: {
+                connect: {
+                  id: data.notSelectedIcon.iconId,
+                },
+              },
+            },
+          ],
         },
       },
     });
@@ -74,17 +84,34 @@ export class ServiceRepository {
       },
       data: {
         name: data.name,
-        icons: data.icons && {
-          create: data.icons.map((icon) => ({
-            icon: {
-              connect: {
-                id: icon.iconId,
+        icons: {
+          create: [
+            data.selectedIcon && {
+              icon: {
+                connect: {
+                  id: data.selectedIcon.iconId,
+                },
               },
+              isSelected: true,
             },
-            isSelected: icon.isSelected,
-          })),
-          deleteMany: {},
+            data.notSelectedIcon && {
+              icon: {
+                connect: {
+                  id: data.notSelectedIcon.iconId,
+                },
+              },
+              isSelected: false,
+            },
+          ],
         },
+      },
+    });
+  }
+
+  async deleteService(id: string) {
+    await this.database.service.delete({
+      where: {
+        id,
       },
     });
   }
@@ -140,14 +167,24 @@ export class ServiceRepository {
           create: data.services.map((service) => ({
             name: service.name,
             icons: {
-              create: service.icons.map((icon) => ({
-                icon: {
-                  connect: {
-                    id: icon.iconId,
+              create: [
+                {
+                  isSelected: true,
+                  icon: {
+                    connect: {
+                      id: service.selectedIcon.iconId,
+                    },
                   },
                 },
-                isSelected: icon.isSelected,
-              })),
+                {
+                  isSelected: false,
+                  icon: {
+                    connect: {
+                      id: service.notSelectedIcon.iconId,
+                    },
+                  },
+                },
+              ],
             },
           })),
         },
@@ -164,19 +201,28 @@ export class ServiceRepository {
       },
       data: {
         name: data.name,
-
         services: data.services && {
           create: data.services.map((service) => ({
             name: service.name,
             icons: {
-              create: service.icons.map((icon) => ({
-                icon: {
-                  connect: {
-                    id: icon.iconId,
+              create: [
+                {
+                  isSelected: true,
+                  icon: {
+                    connect: {
+                      id: service.selectedIcon.iconId,
+                    },
                   },
                 },
-                isSelected: icon.isSelected,
-              })),
+                {
+                  isSelected: false,
+                  icon: {
+                    connect: {
+                      id: service.notSelectedIcon.iconId,
+                    },
+                  },
+                },
+              ],
             },
           })),
           deleteMany: {},

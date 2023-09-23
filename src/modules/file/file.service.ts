@@ -245,6 +245,23 @@ export class FileService {
     const icon = await this.database.icon.findFirst({
       where: {
         url,
+        OR: [
+          {
+            building: {
+              some: {},
+            },
+          },
+          {
+            categoryIcon: {
+              some: {},
+            },
+          },
+          {
+            serviceIcons: {
+              some: {},
+            },
+          },
+        ],
       },
     });
 

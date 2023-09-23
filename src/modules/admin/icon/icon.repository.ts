@@ -6,6 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { IconDetailDTO, IconDTO } from '../dto/icon';
 import { CreateIconDTO } from '../dto/icon/create-icon.dto';
+import { UpdateIconDTO } from '../dto/icon/update-icon.dto';
 import { AdminException } from '../exception/admin.exception';
 import { ADMIN_ERROR_CODE, ADMIN_ICON_NOT_FOUND } from '../exception/errorCode';
 
