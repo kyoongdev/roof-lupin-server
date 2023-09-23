@@ -2,7 +2,6 @@ import { Property } from 'cumuco-nestjs';
 
 export interface CreateServiceIconDTOProps {
   iconId: string;
-
   isSelected: boolean;
 }
 

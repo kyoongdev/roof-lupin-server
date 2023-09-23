@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { ServiceDTO } from './dto';
+import { CreateServiceDTO, ServiceDTO, UpdateServiceDTO } from './dto';
 import { CreateServiceTitleDTO } from './dto/create-service-title.dto';
 import { ServiceTitleDTO } from './dto/service-title.dto';
 import { UpdateServiceTitleDTO } from './dto/update-service-title.dto';
@@ -48,6 +48,45 @@ export class ServiceRepository {
       },
     });
     return services.map((service) => new ServiceDTO(service));
+  }
+  async createService(data: CreateServiceDTO) {
+    await this.database.service.create({
+      data: {
+        name: data.name,
+        icons: {
+          create: data.icons.map((icon) => ({
+            icon: {
+              connect: {
+                id: icon.iconId,
+              },
+            },
+            isSelected: icon.isSelected,
+          })),
+        },
+      },
+    });
+  }
+
+  async updateService(id: string, data: UpdateServiceDTO) {
+    await this.database.service.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        icons: data.icons && {
+          create: data.icons.map((icon) => ({
+            icon: {
+              connect: {
+                id: icon.iconId,
+              },
+            },
+            isSelected: icon.isSelected,
+          })),
+          deleteMany: {},
+        },
+      },
+    });
   }
 
   async findServiceTitle(id: string) {
@@ -100,10 +139,15 @@ export class ServiceRepository {
         services: {
           create: data.services.map((service) => ({
             name: service.name,
-            icon: {
-              connect: {
-                id: service.iconId,
-              },
+            icons: {
+              create: service.icons.map((icon) => ({
+                icon: {
+                  connect: {
+                    id: icon.iconId,
+                  },
+                },
+                isSelected: icon.isSelected,
+              })),
             },
           })),
         },
@@ -114,25 +158,29 @@ export class ServiceRepository {
   }
 
   async updateServiceTitle(id: string, data: UpdateServiceTitleDTO) {
-    const serviceTitle = await this.database.serviceTitle.update({
+    await this.database.serviceTitle.update({
       where: {
         id,
       },
       data: {
         name: data.name,
-        ...(data.services && {
-          services: {
-            deleteMany: {},
-            create: data.services.map((service) => ({
-              name: service.name,
-              icon: {
-                connect: {
-                  id: service.iconId,
+
+        services: data.services && {
+          create: data.services.map((service) => ({
+            name: service.name,
+            icons: {
+              create: service.icons.map((icon) => ({
+                icon: {
+                  connect: {
+                    id: icon.iconId,
+                  },
                 },
-              },
-            })),
-          },
-        }),
+                isSelected: icon.isSelected,
+              })),
+            },
+          })),
+          deleteMany: {},
+        },
       },
     });
   }

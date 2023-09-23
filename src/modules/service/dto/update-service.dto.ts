@@ -1,20 +1,22 @@
 import { Property } from 'cumuco-nestjs';
 
+import { UpdateServiceIconDTO, UpdateServiceIconDTOProps } from './update-service-icon.dto';
+
 export interface UpdateServiceDTOProps {
-  iconPath: string;
-  name: string;
+  icons?: UpdateServiceIconDTOProps[];
+  name?: string;
 }
 
 export class UpdateServiceDTO {
-  @Property({ apiProperty: { type: 'string', description: '아이콘 경로' } })
-  iconPath: string;
+  @Property({ apiProperty: { type: UpdateServiceIconDTO, nullable: true, isArray: true, description: '아이콘 id' } })
+  icons?: UpdateServiceIconDTO[];
 
-  @Property({ apiProperty: { type: 'string', description: '이름' } })
-  name: string;
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '이름' } })
+  name?: string;
 
   constructor(props?: UpdateServiceDTOProps) {
     if (props) {
-      this.iconPath = props.iconPath;
+      this.icons = props.icons?.map((icon) => new UpdateServiceIconDTO(icon));
       this.name = props.name;
     }
   }

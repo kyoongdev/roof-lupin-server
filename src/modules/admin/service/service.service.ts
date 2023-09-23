@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { CreateServiceDTO } from '@/modules/service/dto';
 import { CreateServiceTitleDTO } from '@/modules/service/dto/create-service-title.dto';
 import { UpdateServiceTitleDTO } from '@/modules/service/dto/update-service-title.dto';
 import { ServiceRepository } from '@/modules/service/service.repository';
@@ -10,6 +11,10 @@ export class AdminServiceService {
 
   async findServiceTitle(id: string) {
     return await this.serviceRepository.findServiceTitle(id);
+  }
+
+  async createService(data: CreateServiceDTO) {
+    return await this.serviceRepository.createService(data);
   }
 
   async findServiceTitles() {
