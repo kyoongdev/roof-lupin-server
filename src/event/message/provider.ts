@@ -119,7 +119,7 @@ export class MessageEventProvider {
     const alarmData: BaseSendMessage = {
       title: '예약 사용 알림',
       body: `${data.nickname}님! 예약하신 ${data.spaceName} 사용 시작 시간 [${data.year}.${data.month}.${data.day} ${data.time}시] 까지 1시간 남았어요!`,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}`, ''),
     };
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {

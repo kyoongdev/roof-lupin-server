@@ -94,7 +94,7 @@ export const seedDatabase = async (database: PrismaClient) => {
                   id: user.id,
                 },
               },
-              alarmType: 1,
+              alarmType: (i % 10) + 1,
             },
           });
         })

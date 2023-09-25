@@ -2,6 +2,8 @@ import { Property } from 'cumuco-nestjs';
 
 import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
 
+import { AlarmTypeResDecorator } from './validation/alarm-type.validation';
+
 export interface AlarmDTOProps {
   id: string;
   title: string;
@@ -11,6 +13,7 @@ export interface AlarmDTOProps {
   isRead: boolean;
   isPush: boolean;
   isPushed: boolean;
+  alarmType: number;
   user: CommonUserDTOProps;
 }
 
@@ -42,6 +45,9 @@ export class AlarmDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
+  @AlarmTypeResDecorator()
+  alarmType: number;
+
   constructor(props: AlarmDTOProps) {
     this.id = props.id;
     this.title = props.title;
@@ -51,6 +57,7 @@ export class AlarmDTO {
     this.isRead = props.isRead;
     this.isPush = props.isPush;
     this.isPushed = props.isPushed;
+    this.alarmType = props.alarmType;
     this.user = new CommonUserDTO(props.user);
   }
 }
