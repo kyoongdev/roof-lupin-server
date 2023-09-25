@@ -27,6 +27,7 @@ export const PAYMENT_IMMEDIATE_PAYMENT_REQUIRED = '즉시 결제가 필요한 �
 export const PAYMENT_NOT_APPROVED = '아직 예약 승인이 되지 않았습니다.' as const;
 export const PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT = '추가 서비스는 최대 개수가 넘었습니다.' as const;
 export const PAYMENT_MAX_RESERVATION_DATE = '2시간 전 예약만 가능합니다.' as const;
+export const PAYMENT_REFUND_AMOUNT = '환불 금액을 다시 확인해주세요.' as const;
 
 export const PAYMENT_ERROR_CODE: ErrorCode<'BAD_REQUEST' | 'INTERNAL_SERVER_ERROR' | 'CONFLICT' | 'FORBIDDEN'> = {
   BAD_REQUEST: (message = 'BAD_REQUEST') => ({

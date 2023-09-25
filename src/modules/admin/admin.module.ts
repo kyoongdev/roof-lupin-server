@@ -20,6 +20,7 @@ import { AdminHomeModule } from './home/home.module';
 import { AdminHostModule } from './host/host.module';
 import { AdminIconModule } from './icon/icon.module';
 import { AdminLocationFilterModule } from './location-filter/location-filter.module';
+import { AdminPaymentModule } from './payment/payment.module';
 import { AdminQnAModule } from './qna/qna.module';
 import { AdminRankingModule } from './ranking/ranking.module';
 import { AdminRentalTypeModule } from './rental-type/rental-type.module';
@@ -63,6 +64,7 @@ export const AdminModules = [
   AdminFileModule,
   AdminTaxReturnModule,
   AdminRentalTypeModule,
+  AdminPaymentModule,
 ];
 
 @Module({
