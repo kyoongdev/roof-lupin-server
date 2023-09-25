@@ -98,11 +98,10 @@ export class RentalTypeController {
   }
 
   @Get(':spaceId/possible/month/paging')
-  @Auth([JwtAuthGuard, RoleGuard('USER')])
   @RequestApi({
     summary: {
       description: '공간 및 날짜별 가능한 대여 타입  조회하기',
-      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 -유저만 사용 가능',
+      summary: '공간 및 날짜별 가능한 대여 타입  조회하기 ',
     },
   })
   @ResponseApi({
