@@ -10,10 +10,10 @@ export class DynamicLinkProvider {
   });
   constructor(private readonly configService: ConfigService) {}
 
-  createDynamicLink(endPoint: string, link: string) {
-    return `${this.configService.get(
-      'DYNAMIC_LINK'
-    )}/?redirect=${endPoint}&link=${link}&apn=com.cumuco.rooflupin&isi=6450448648&ibi=com.cumuco.rooflupin&efr=1`;
+  createDynamicLink(endPoint: string) {
+    return `${this.configService.get('DYNAMIC_LINK')}/?redirect=${endPoint}&link=${this.configService.get(
+      'CLIENT_URL'
+    )}&apn=com.cumuco.rooflupin&isi=6450448648&ibi=com.cumuco.rooflupin&efr=1`;
   }
 
   //TODO: createDynamicLink

@@ -7,7 +7,17 @@ import { SolapiMessageService } from 'solapi';
 
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import { PaymentSuccessAlarmTalk, PaymentSuccessAlarmTalkPayload } from '@/interface/alarm-talk.interface';
+import {
+  PaymentSuccessAlarmTalk,
+  PaymentSuccessAlarmTalkPayload,
+  QnAAnswerAlarmTalkPayload,
+  ReservationApprovedAlarmTalkPayload,
+  ReservationAutoCanceledAlarmTalkPayload,
+  ReservationGuestCanceledAlarmTalkPayload,
+  ReservationHostCanceledAlarmTalkPayload,
+  ReservationRejectedAlarmTalkPayload,
+  ReservationUsageAlarmTalkPayload,
+} from '@/interface/alarm-talk.interface';
 import type {
   BaseSendMessage,
   CreateCouponDurationAlarm,
@@ -31,6 +41,7 @@ import type {
 import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
 import { ALARM_TYPE } from '@/modules/alarm/dto/validation/alarm-type.validation';
+import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { PushTokenDTO } from '@/modules/user/dto';
 import { DynamicLinkProvider } from '@/utils';
 import { MessageProvider } from '@/utils/fcm';
@@ -48,6 +59,7 @@ export class MessageEventProvider {
   constructor(
     private readonly database: PrismaService,
     private readonly fcmService: MessageProvider,
+
     private schedulerEvent: SchedulerEvent,
     private readonly dynamicLinkProvider: DynamicLinkProvider,
     private readonly configService: ConfigService
@@ -119,7 +131,7 @@ export class MessageEventProvider {
     const alarmData: BaseSendMessage = {
       title: '예약 사용 알림',
       body: `${data.nickname}님! 예약하신 ${data.spaceName} 사용 시작 시간 [${data.year}.${data.month}.${data.day} ${data.time}시] 까지 1시간 남았어요!`,
-      link: this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}`, ''),
+      link: this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}`),
     };
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
@@ -134,11 +146,32 @@ export class MessageEventProvider {
         link: alarmData.link,
       });
       const user = await this.getUser(data.userId);
-      if (!user || !user.setting.checkIsPushAlarmAccepted()) return;
-      await this.sendAlarmWithUpdate(alarm.id, {
-        ...alarmData,
-        token: user.pushToken,
-      });
+      if (!user) return;
+      if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
+        const reservation = await this.getReservation(data.reservationId);
+        if (reservation)
+          await this.sendKakaoMessage<ReservationUsageAlarmTalkPayload>(
+            user.phoneNumber,
+            ALARM_TALK_ID.RESERVATION_USAGE,
+            {
+              '#{endpoint}': '/my-page/reservations',
+              '#{link}': this.configService.get('CLIENT_URL'),
+              '#{nickname}': data.nickname,
+              '#{price}': reservation.totalCost,
+              '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
+              '#{spaceName}': reservation.space.title,
+              '#{startAt}': reservation.rentalTypes[0].startAt,
+              '#{userCount}': reservation.userCount,
+            }
+          );
+      }
+
+      if (user.setting.checkIsPushAlarmAccepted()) {
+        await this.sendAlarmWithUpdate(alarm.id, {
+          ...alarmData,
+          token: user.pushToken,
+        });
+      }
     });
   }
 
@@ -148,11 +181,10 @@ export class MessageEventProvider {
     const alarmData: BaseSendMessage = {
       title: '리뷰를 달아주세요!',
       body: `${data.nickname}님! ${data.spaceName}에서 즐거운 시간 보내셨나요? 리뷰를 남겨보세요!`,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}/write-review`),
     };
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      //TODO: 알람 링크 연결
       const alarm = await this.createAlarm({
         title: alarmData.title,
         content: alarmData.body,
@@ -178,12 +210,10 @@ export class MessageEventProvider {
     const alarmData = {
       title: '쿠폰 기한 만료 전 알림',
       body: `${data.nickname}님! 사용 만료까지 얼마 안남은 쿠폰이 있어요! 쿠폰함에서 확인해보세요!`,
-      //TODO: 쿠폰함 링크 연결
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/my-page/coupons`),
     };
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
-      //TODO: 알람 링크 연결
       const alarm = await this.createAlarm({
         title: alarmData.title,
         content: alarmData.body,
@@ -207,11 +237,10 @@ export class MessageEventProvider {
     const alarmData: BaseSendMessage = {
       title: 'Q&A 관련 알림',
       body: `${data.nickname}님! ${data.spaceName}에 문의하신 내용에 대한 답변이 올라왔어요! 확인해보세요.!`,
-      link: 'https://rooflupin.page.link/5kaA',
+      link: this.dynamicLinkProvider.createDynamicLink(`/spaces/${data.spaceId}/qnas`),
     };
 
     try {
-      //TODO: 알람 링크 연결
       const alarm = await this.createAlarm({
         title: alarmData.title,
         content: alarmData.body,
@@ -222,12 +251,21 @@ export class MessageEventProvider {
         link: alarmData.link,
       });
       const user = await this.getUser(data.userId);
-      if (user.pushToken && user.setting.isAlarmAccepted && user.setting.isPushAccepted) {
+      if (!user) return;
+      if (user.setting.checkIsPushAlarmAccepted()) {
         await this.fcmService.sendMessage({
           ...alarmData,
           token: user.pushToken,
         });
         await this.updatePushedAlarm(alarm.id);
+      }
+      if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
+        await this.sendKakaoMessage<QnAAnswerAlarmTalkPayload>(user.phoneNumber, ALARM_TALK_ID.QNA_ANSWER, {
+          '#{endpoint}': `/spaces/${data.spaceId}/qnas`,
+          '#{link}': this.configService.get('CLIENT_URL'),
+          '#{nickname}': data.nickname,
+          '#{spaceName}': data.spaceName,
+        });
       }
     } catch (err) {
       logger.error(err);
@@ -243,7 +281,8 @@ export class MessageEventProvider {
     const alarmData = {
       title: `루프루팡과 함께 ${data.title}을 즐겨봐요`,
       body: data.title,
-      link: '',
+      //TODO: 기획전 페이지
+      link: 'this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}`)',
     };
     const dateDiff = getDateDiff(currentDate, targetDate);
 
@@ -292,7 +331,7 @@ export class MessageEventProvider {
     const alarmData: BaseSendMessage = {
       title: '등록하신 리뷰에 답변이 등록됐어요!',
       body: `${data.nickname}님! ${data.spaceName}에 등록하신 리뷰에 답변이 올라왔어요! 확인해보세요!`,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/spaces/${data.spaceId}/reviews`),
     };
     const alarm = await this.createAlarm({
       title: alarmData.title,
@@ -304,7 +343,7 @@ export class MessageEventProvider {
       isPush: true,
     });
     const user = await this.getUser(data.userId);
-    if (user.pushToken && user.setting.checkIsPushAlarmAccepted()) {
+    if (user && user.setting.checkIsPushAlarmAccepted()) {
       await this.sendAlarmWithUpdate(alarm.id, {
         ...alarmData,
         token: user.pushToken,
@@ -314,18 +353,40 @@ export class MessageEventProvider {
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_GUEST_CANCELED_ALARM)
   async createReservationGuestCanceledAlarm(data: CreateReservationGuestCanceledAlarm) {
-    //TODO: kakao 알림만
+    const user = await this.getUser(data.userId);
+    if (user && user.setting.checkIsKakaoTalkAlarmAccepted()) {
+      const reservation = await this.getReservation(data.reservationId);
+      if (!reservation) return;
+
+      this.sendKakaoMessage<ReservationGuestCanceledAlarmTalkPayload>(
+        user.phoneNumber,
+        ALARM_TALK_ID.RESERVATION_GUEST_CANCELED,
+        {
+          '#{endpoint}': '/my-page/reservations',
+          '#{link}': this.configService.get('CLIENT_URL'),
+          '#{nickname}': data.nickname,
+          '#{productName}': reservation.rentalTypes[0].rentalType.name,
+          '#{reason}': data.reason,
+          '#{reservationDate}': data.reservationDate,
+          '#{spaceName}': data.spaceName,
+          '#{startAt}': data.startAt,
+          '#{userCount}': data.userCount,
+        }
+      );
+    }
   }
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_HOST_CANCELED_ALARM)
   async createReservationHostCanceledAlarm(data: CreateReservationHostCanceledAlarm) {
+    const reservation = await this.getReservation(data.reservationId);
+    if (!reservation) return;
     const alarmData: BaseSendMessage = {
       title: '예약 취소 알림',
-      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 취소되었습니다.
-      취소사유 : 호스트의 예약 거절 상품명 : ${data.productName}
-      예약 날짜 : ${data.reservationDate}
-      예약 시간 : ${data.startAt}
-      예약 인원 : ${data.userCount}명
+      body: `${data.nickname}님! ${data.spaceName} ${reservation.rentalTypes[0].rentalType.name} 예약이 취소되었습니다.
+      취소사유 : 호스트의 예약 거절 상품명 : ${reservation.rentalTypes[0].rentalType.name},
+      예약 날짜 : ${reservation.year}.${reservation.month}.${reservation.day},
+      예약 시간 : ${reservation.rentalTypes[0].startAt},
+      예약 인원 : ${reservation.userCount}명
       취소 내역 확인 : `,
     };
     const user = await this.getUser(data.userId);
@@ -335,12 +396,25 @@ export class MessageEventProvider {
       alarmType: ALARM_TYPE.RESERVATION_HOST_CANCELED,
       alarmAt: new Date(),
       isPush: true,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/my-page/reservations`),
       userId: data.userId,
     });
-    if (user.pushToken) {
+    if (user) {
       if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
-        //TODO: 카카오 알림
+        await this.sendKakaoMessage<ReservationHostCanceledAlarmTalkPayload>(
+          user.phoneNumber,
+          ALARM_TALK_ID.RESERVATION_HOST_CANCELED,
+          {
+            '#{endpoint}': '/my-page/reservations',
+            '#{link}': this.configService.get('CLIENT_URL'),
+            '#{nickname}': data.nickname,
+            '#{productName}': reservation.rentalTypes[0].rentalType.name,
+            '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
+            '#{spaceName}': data.spaceName,
+            '#{startAt}': reservation.rentalTypes[0].startAt,
+            '#{userCount}': reservation.userCount,
+          }
+        );
       }
       if (user.setting.checkIsPushAlarmAccepted()) {
         await this.sendAlarmWithUpdate(alarm.id, {
@@ -353,12 +427,15 @@ export class MessageEventProvider {
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_AUTO_CANCELED_ALARM)
   async createReservationAutoCanceledAlarm(data: CreateReservationAutoCanceledAlarm) {
+    const reservation = await this.getReservation(data.reservationId);
+
+    if (!reservation) return;
     const alarmData: BaseSendMessage = {
       title: '예약 취소 알림',
-      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 취소되었습니다.
+      body: `${data.nickname}님! ${data.spaceName} ${reservation.rentalTypes[0].rentalType.name} 예약이 취소되었습니다.
       취소 사유 : 12시간 내 결제 미진행
       `,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/my-page/reservations`),
     };
     const approvedAt = data.approvedAt;
     approvedAt.setHours(approvedAt.getHours() + 12);
@@ -373,31 +450,51 @@ export class MessageEventProvider {
           alarmType: ALARM_TYPE.RESERVATION_AUTO_CANCELED,
           alarmAt: approvedAt,
           isPush: true,
-          link: '',
+          link: alarmData.link,
         });
         const user = await this.getUser(data.userId);
-        if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
-        await this.sendAlarmWithUpdate(alarm.id, {
-          ...alarmData,
-          token: user.pushToken,
-        });
+        if (!user) return;
+        if (user.setting.checkIsPushAlarmAccepted()) {
+          await this.sendAlarmWithUpdate(alarm.id, {
+            ...alarmData,
+            token: user.pushToken,
+          });
+        }
+        if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
+          await this.sendKakaoMessage<ReservationAutoCanceledAlarmTalkPayload>(
+            user.phoneNumber,
+            ALARM_TALK_ID.RESERVATION_AUTO_CANCELED,
+            {
+              '#{endpoint}': '/my-page/reservations',
+              '#{link}': this.configService.get('CLIENT_URL'),
+              '#{nickname}': data.nickname,
+              '#{productName}': reservation.rentalTypes[0].rentalType.name,
+              '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
+              '#{spaceName}': data.spaceName,
+              '#{startAt}': reservation.rentalTypes[0].startAt,
+              '#{userCount}': reservation.userCount,
+            }
+          );
+        }
       }
     );
   }
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_REJECTED_ALARM)
   async createReservationRejectedAlarm(data: CreateReservationRejectedAlarm) {
+    const reservation = await this.getReservation(data.reservationId);
+    if (!reservation) return;
     const alarmData: BaseSendMessage = {
       title: '예약 취소 알림',
-      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 취소되었습니다.
+      body: `${data.nickname}님! ${data.spaceName} ${reservation.rentalTypes[0].rentalType.name} 예약이 취소되었습니다.
       취소 사유 : 호스트의 예약 거절
-      상품명 : ${data.productName}
-      예약 날짜 : ${data.reservationDate}
-      예약 시간 : ${data.startAt}
-      예약 인원 : ${data.userCount}명
+      상품명 : ${reservation.rentalTypes[0].rentalType.name}
+      예약 날짜 : ${reservation.year}.${reservation.month}.${reservation.day}
+      예약 시간 : ${reservation.rentalTypes[0].startAt}
+      예약 인원 : ${reservation.userCount}명
       취소 내역 확인 : 
       `,
-      link: '',
+      link: this.dynamicLinkProvider.createDynamicLink(`/my-page/reservations`),
     };
     const alarm = await this.createAlarm({
       title: alarmData.title,
@@ -409,21 +506,43 @@ export class MessageEventProvider {
       link: '',
     });
     const user = await this.getUser(data.userId);
-    //TODO: 카카오 알림
-    if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
 
-    await this.sendAlarmWithUpdate(alarm.id, {
-      ...alarmData,
-      token: user.pushToken,
-    });
+    if (!user) return;
+
+    if (user.setting.checkIsPushAlarmAccepted()) {
+      await this.sendAlarmWithUpdate(alarm.id, {
+        ...alarmData,
+        token: user.pushToken,
+      });
+    }
+
+    if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
+      await this.sendKakaoMessage<ReservationRejectedAlarmTalkPayload>(
+        user.phoneNumber,
+        ALARM_TALK_ID.RESERVATION_REJECTED,
+        {
+          '#{endpoint}': '/my-page/reservations',
+          '#{link}': this.configService.get('CLIENT_URL'),
+          '#{nickname}': data.nickname,
+          '#{productName}': reservation.rentalTypes[0].rentalType.name,
+          '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
+          '#{spaceName}': data.spaceName,
+          '#{startAt}': reservation.rentalTypes[0].startAt,
+          '#{userCount}': reservation.userCount,
+        }
+      );
+    }
   }
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_ACCEPTED_ALARM)
   async createReservationAcceptedAlarm(data: CreateReservationAcceptedAlarm) {
+    const reservation = await this.getReservation(data.reservationId);
+    if (!reservation) return;
+
     const alarmData: BaseSendMessage = {
       title: '예약 신청 승인 알림',
-      body: `${data.nickname}님! ${data.spaceName} ${data.productName} 예약이 승인되었어요. 결제까지 진행되어야 예약이 확정돼요!`,
-      link: '',
+      body: `${data.nickname}님! ${data.spaceName} ${reservation.rentalTypes[0].rentalType.name} 예약이 승인되었어요. 결제까지 진행되어야 예약이 확정돼요!`,
+      link: this.dynamicLinkProvider.createDynamicLink(`/my-page/reservations`),
     };
 
     const alarm = await this.createAlarm({
@@ -433,17 +552,37 @@ export class MessageEventProvider {
       userId: data.userId,
       alarmAt: new Date(),
       isPush: true,
-      link: '',
+      link: alarmData.link,
     });
 
     const user = await this.getUser(data.userId);
-    //TODO: 카카오 알림
-    if (!user || !user.pushToken || !user.setting.checkIsPushAlarmAccepted()) return;
 
-    await this.sendAlarmWithUpdate(alarm.id, {
-      ...alarmData,
-      token: user.pushToken,
-    });
+    if (!user) return;
+
+    if (user.setting.checkIsPushAlarmAccepted()) {
+      await this.sendAlarmWithUpdate(alarm.id, {
+        ...alarmData,
+        token: user.pushToken,
+      });
+    }
+
+    if (user.setting.checkIsKakaoTalkAlarmAccepted()) {
+      await this.sendKakaoMessage<ReservationApprovedAlarmTalkPayload>(
+        user.phoneNumber,
+        ALARM_TALK_ID.RESERVATION_APPROVED,
+        {
+          '#{endpoint}': '/my-page/reservations',
+          '#{link}': this.configService.get('CLIENT_URL'),
+          '#{nickname}': data.nickname,
+          '#{price}': reservation.totalCost,
+          '#{productName}': reservation.rentalTypes[0].rentalType.name,
+          '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
+          '#{spaceName}': data.spaceName,
+          '#{startAt}': reservation.rentalTypes[0].startAt,
+          '#{userCount}': reservation.userCount,
+        }
+      );
+    }
   }
 
   @OnEvent(MESSAGE_EVENT_NAME.DELETE_ALARM)
@@ -453,11 +592,14 @@ export class MessageEventProvider {
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_PAYMENT_SUCCESS_ALARM)
   async createPaymentSuccessAlarm(data: CreatePaymentSuccessAlarm) {
+    const reservation = await this.getReservation(data.reservationId);
+    if (!reservation) return;
+
     this.sendKakaoMessage<PaymentSuccessAlarmTalkPayload>(data.phoneNumber, ALARM_TALK_ID.PAYMENT_SUCCESS, {
-      '#{endpoint}': '',
-      '#{link}': '',
+      '#{endpoint}': '/my-page/reservations',
+      '#{link}': this.configService.get('CLIENT_URL'),
       '#{nickname}': data.nickname,
-      '#{productName}': data.productName,
+      '#{productName}': reservation.rentalTypes[0].rentalType.name,
       '#{spaceName}': data.spaceName,
     });
   }
@@ -515,5 +657,23 @@ export class MessageEventProvider {
       },
     });
     return new PushTokenDTO(user);
+  }
+
+  async getReservation(id: string) {
+    const reservation = await this.database.reservation.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        space: true,
+        rentalTypes: {
+          include: {
+            rentalType: true,
+          },
+        },
+      },
+    });
+    return reservation;
   }
 }

@@ -7,6 +7,7 @@ export interface PushTokenDTOProps {
   nickname?: string;
   name?: string;
   pushToken?: string;
+  phoneNumber: string;
   setting: UserSettingDTOProps;
 }
 
@@ -23,6 +24,9 @@ export class PushTokenDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '푸시 토큰' } })
   pushToken?: string;
 
+  @Property({ apiProperty: { type: 'string', description: '유저 전화번호' } })
+  phoneNumber: string;
+
   @Property({ apiProperty: { type: UserSettingDTO, description: '유저 설정' } })
   setting: UserSettingDTO;
 
@@ -31,6 +35,7 @@ export class PushTokenDTO {
     this.id = props.id;
     this.nickname = props.nickname;
     this.name = props.name;
+    this.phoneNumber = props.phoneNumber;
     this.setting = new UserSettingDTO(props.setting);
   }
 }

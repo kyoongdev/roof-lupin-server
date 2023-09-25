@@ -77,6 +77,16 @@ export interface QnAAnswerAlarmTalk extends AlarmTalkLinkProps {
   spaceName: string;
 }
 
+export interface ReservationUsageAlarmTalk extends AlarmTalkLinkProps {
+  nickname: string;
+  spaceName: string;
+  reservationDate: string;
+  startAt: number;
+  userCount: number;
+  price: number;
+}
+
+export type ReservationUsageAlarmTalkPayload = AlarmTalkVariable<ReservationUsageAlarmTalk>;
 export type ReservationSuccessAlarmTalkPayload = AlarmTalkVariable<ReservationSuccessAlarmTalk>;
 export type PaymentSuccessAlarmTalkPayload = AlarmTalkVariable<PaymentSuccessAlarmTalk>;
 export type ReservationApprovedAlarmTalkPayload = AlarmTalkVariable<ReservationApprovedAlarmTalk>;

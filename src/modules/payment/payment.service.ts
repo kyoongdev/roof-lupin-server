@@ -371,6 +371,7 @@ export class PaymentService {
         nickname: reservation.user.nickname,
         spaceId: reservation.space.id,
         setting: reservation.user.setting,
+        reservationId: reservation.id,
       });
   }
 

@@ -41,6 +41,7 @@ export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   day: number;
   spaceName: string;
   spaceId: string;
+  reservationId: string;
 }
 
 export interface CreateCouponDurationAlarm extends BaseAlarmProps {
@@ -69,17 +70,12 @@ export interface CreateReviewAnswerAlarm extends BaseAlarmProps {
 export interface CreateReservationHostCanceledAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
-  productName: string;
-  reservationDate: string;
-  startAt: number;
-  userCount: number;
   reservationId: string;
 }
 
 export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
-  productName: string;
   approvedAt: Date;
   reservationId: string;
 }
@@ -87,34 +83,31 @@ export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
 export interface CreateReservationGuestCanceledAlarm extends Omit<BaseAlarmProps, 'token'> {
   nickname: string;
   spaceName: string;
-  productName: string;
   cancelReason: string;
   reservationDate: string;
   startAt: number;
   userCount: number;
   spaceId: string;
   reservationId: string;
+  reason: string;
 }
 
 export interface CreateReservationRejectedAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
-  productName: string;
-  reservationDate: string;
-  startAt: number;
-  userCount: number;
   reservationId: string;
 }
 
 export interface CreateReservationAcceptedAlarm extends BaseAlarmProps {
   nickname: string;
   spaceName: string;
-  productName: string;
+  reservationId: string;
 }
 
-export interface CreatePaymentSuccessAlarm extends Omit<PaymentSuccessAlarmTalk, 'link' | 'endpoint'> {
+export interface CreatePaymentSuccessAlarm extends Omit<PaymentSuccessAlarmTalk, 'link' | 'endpoint' | 'productName'> {
   userId: string;
   phoneNumber: string;
+  reservationId: string;
 }
 
 export interface SendAlarmTarget {
