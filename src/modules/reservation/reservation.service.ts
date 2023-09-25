@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { MessageEvent } from '@/event/message';
+
 import { ReservationDTO } from './dto';
 import { FindReservationQuery } from './dto/query';
 import {
@@ -15,7 +17,10 @@ import { ReservationRepository } from './reservation.repository';
 
 @Injectable()
 export class ReservationService {
-  constructor(private readonly reservationRepository: ReservationRepository) {}
+  constructor(
+    private readonly reservationRepository: ReservationRepository,
+    private readonly messageEvent: MessageEvent
+  ) {}
 
   async findMyPagingReservations(paging: PagingDTO, userId: string, args = {} as Prisma.ReservationFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
@@ -77,6 +82,14 @@ export class ReservationService {
     }
 
     if (reason) {
+      this.messageEvent.createReservationGuestCanceledAlarm({
+        nickname: reservation.user.nickname || reservation.user.name,
+        reason,
+        reservationId: reservation.id,
+        spaceId: reservation.space.id,
+        spaceName: reservation.space.title,
+        userId,
+      });
       await this.reservationRepository.updateReservation(id, {
         cancel: {
           reason,

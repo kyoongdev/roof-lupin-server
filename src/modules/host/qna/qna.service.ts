@@ -62,15 +62,11 @@ export class HostQnAService {
     const qna = await this.findQnA(data.qnaId);
     const qnaAnswerId = await this.qnaRepository.createQnAAnswer(hostId, data);
 
-    const user = await this.userRepository.findUserPushToken(qna.user.id);
-
     this.messageEvent.createQnAAnswerAlarm({
-      userId: user.id,
+      userId: qna.user.id,
       spaceName: qna.space.title,
-      nickname: user.nickname || user.name,
-      isAlarmAccepted: user.setting.checkIsPushAlarmAccepted(),
+      nickname: qna.user.nickname || qna.user.name,
       spaceId: qna.space.id,
-      setting: user.setting,
     });
 
     return qnaAnswerId;

@@ -53,6 +53,15 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               },
             },
           },
+          {
+            icon: {
+              create: {
+                name: `바베큐`,
+                url: 'https://dev-image.rooflupin.com/1690960289881barbeque.svg',
+              },
+            },
+            isMapIcon: true,
+          },
         ],
       },
     },
@@ -72,6 +81,15 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
               },
             },
+          },
+          {
+            icon: {
+              create: {
+                name: `글램핑`,
+                url: 'https://dev-image.rooflupin.com/1690960276381glamping.svg',
+              },
+            },
+            isMapIcon: true,
           },
         ],
       },
@@ -93,6 +111,15 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
               },
             },
           },
+          {
+            icon: {
+              create: {
+                name: `파티룸`,
+                url: 'https://dev-image.rooflupin.com/1690960282465party-room.svg',
+              },
+            },
+            isMapIcon: true,
+          },
         ],
       },
     },
@@ -109,6 +136,12 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             icon: {
               create: { name: `촬영`, url: 'https://dev-image.rooflupin.com/1690960264699film.svg' },
             },
+          },
+          {
+            icon: {
+              create: { name: `촬영`, url: 'https://dev-image.rooflupin.com/1690960264699film.svg' },
+            },
+            isMapIcon: true,
           },
         ],
       },

@@ -22,7 +22,6 @@ export interface AlarmSetting {
 export interface BaseAlarmProps {
   nickname?: string;
   userId: string;
-  setting: AlarmSetting;
 }
 
 export interface CreateReservationUsageAlarm extends BaseAlarmProps {
@@ -30,9 +29,9 @@ export interface CreateReservationUsageAlarm extends BaseAlarmProps {
   year: number;
   month: number;
   day: number;
-  time: number;
   spaceName: string;
   reservationId: string;
+  startAt: number;
 }
 export interface CreateReviewRecommendAlarm extends BaseAlarmProps {
   jobId: string;
@@ -50,7 +49,6 @@ export interface CreateCouponDurationAlarm extends BaseAlarmProps {
 }
 export interface CreateQnAAnswerAlarm extends BaseAlarmProps {
   spaceName: string;
-  isAlarmAccepted: boolean;
   spaceId: string;
 }
 
@@ -83,10 +81,6 @@ export interface CreateReservationAutoCanceledAlarm extends BaseAlarmProps {
 export interface CreateReservationGuestCanceledAlarm extends Omit<BaseAlarmProps, 'token'> {
   nickname: string;
   spaceName: string;
-  cancelReason: string;
-  reservationDate: string;
-  startAt: number;
-  userCount: number;
   spaceId: string;
   reservationId: string;
   reason: string;

@@ -56,7 +56,6 @@ export class AuthService {
       userId,
       jobId: nanoid(),
       nickname: user.nickname,
-      setting: user.setting,
     });
 
     await this.couponRepository.createUserCoupon(coupon.id, {

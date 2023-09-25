@@ -81,7 +81,6 @@ export class AdminExhibitionService {
           title: data.title,
           exhibitionId,
           startAt: data.startAt,
-          setting: user.setting,
         });
       });
 

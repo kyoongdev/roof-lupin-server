@@ -279,6 +279,14 @@ export class PaymentService {
       settlement.getNewSettlementCostInfo(oldTotalCost, newTotalCost, refundCost)
     );
 
+    this.messageEvent.createReservationGuestCanceledAlarm({
+      nickname: reservation.user.nickname || reservation.user.name,
+      reason: '사용자 환불 요청',
+      reservationId: reservation.id,
+      spaceId: reservation.space.id,
+      spaceName: reservation.space.title,
+      userId,
+    });
     return reservation.id;
   }
 
@@ -344,35 +352,39 @@ export class PaymentService {
   }
 
   async sendMessage(reservation: ReservationDetailDTO) {
-    if (reservation.user.setting.checkIsKakaoTalkAlarmAccepted())
-      reservation.rentalTypes.forEach((rentalType) => {
-        this.messageEvent.createReservationUsageAlarm({
-          year: reservation.year,
-          month: reservation.month,
-          day: reservation.day,
-          jobId: reservation.id,
-          nickname: reservation.user.nickname,
-          spaceName: reservation.space.title,
-          time: rentalType.startAt,
-          userId: reservation.user.id,
-          reservationId: reservation.id,
-          setting: reservation.user.setting,
-        });
-      });
-
-    if (reservation.user.setting.checkIsPushAlarmAccepted())
-      this.messageEvent.createReviewRecommendAlarm({
+    reservation.rentalTypes.forEach((rentalType) => {
+      this.messageEvent.createReservationUsageAlarm({
         year: reservation.year,
         month: reservation.month,
-        day: reservation.day + 7,
-        jobId: `${reservation.id}_${reservation.user.id}`,
-        spaceName: reservation.space.title,
-        userId: reservation.user.id,
+        day: reservation.day,
+        jobId: reservation.id,
         nickname: reservation.user.nickname,
-        spaceId: reservation.space.id,
-        setting: reservation.user.setting,
+        spaceName: reservation.space.title,
+        startAt: rentalType.startAt,
+        userId: reservation.user.id,
         reservationId: reservation.id,
       });
+    });
+
+    this.messageEvent.createPaymentSuccessAlarm({
+      nickname: reservation.user.nickname,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+      phoneNumber: reservation.user.phoneNumber,
+    });
+
+    this.messageEvent.createReviewRecommendAlarm({
+      year: reservation.year,
+      month: reservation.month,
+      day: reservation.day + 7,
+      jobId: `${reservation.id}_${reservation.user.id}`,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+      nickname: reservation.user.nickname,
+      spaceId: reservation.space.id,
+      reservationId: reservation.id,
+    });
   }
 
   createOrderId() {

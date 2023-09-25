@@ -8,7 +8,6 @@ import { SolapiMessageService } from 'solapi';
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
 import {
-  PaymentSuccessAlarmTalk,
   PaymentSuccessAlarmTalkPayload,
   QnAAnswerAlarmTalkPayload,
   ReservationApprovedAlarmTalkPayload,
@@ -34,14 +33,12 @@ import type {
   CreateReviewRecommendAlarm,
   SendAlarm,
   SendAlarmTarget,
-  SendMessage,
   SendPushMessage,
   SendScheduleAlarm,
 } from '@/interface/message.interface';
 import { logger } from '@/log';
 import { CreateAlarmDTO } from '@/modules/alarm/dto';
 import { ALARM_TYPE } from '@/modules/alarm/dto/validation/alarm-type.validation';
-import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { PushTokenDTO } from '@/modules/user/dto';
 import { DynamicLinkProvider } from '@/utils';
 import { MessageProvider } from '@/utils/fcm';
@@ -127,10 +124,10 @@ export class MessageEventProvider {
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_RESERVATION_USAGE_ALARM)
   async createReservationUsageAlarm(data: CreateReservationUsageAlarm) {
-    const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), data.time - 1);
+    const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), data.startAt - 1);
     const alarmData: BaseSendMessage = {
       title: '예약 사용 알림',
-      body: `${data.nickname}님! 예약하신 ${data.spaceName} 사용 시작 시간 [${data.year}.${data.month}.${data.day} ${data.time}시] 까지 1시간 남았어요!`,
+      body: `${data.nickname}님! 예약하신 ${data.spaceName} 사용 시작 시간 [${data.year}.${data.month}.${data.day} ${data.startAt}시] 까지 1시간 남았어요!`,
       link: this.dynamicLinkProvider.createDynamicLink(`/reservations/${data.reservationId}`),
     };
 
@@ -160,7 +157,7 @@ export class MessageEventProvider {
               '#{price}': reservation.totalCost,
               '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
               '#{spaceName}': reservation.space.title,
-              '#{startAt}': reservation.rentalTypes[0].startAt,
+              '#{startAt}': data.startAt,
               '#{userCount}': reservation.userCount,
             }
           );
@@ -367,10 +364,10 @@ export class MessageEventProvider {
           '#{nickname}': data.nickname,
           '#{productName}': reservation.rentalTypes[0].rentalType.name,
           '#{reason}': data.reason,
-          '#{reservationDate}': data.reservationDate,
+          '#{reservationDate}': `${reservation.year}.${reservation.month}.${reservation.day}`,
           '#{spaceName}': data.spaceName,
-          '#{startAt}': data.startAt,
-          '#{userCount}': data.userCount,
+          '#{startAt}': reservation.rentalTypes[0].startAt,
+          '#{userCount}': reservation.userCount,
         }
       );
     }

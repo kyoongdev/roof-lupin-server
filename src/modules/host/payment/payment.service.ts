@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { MessageEvent } from '@/event/message';
 import { ValidateAccountQuery, ValidatedAccountDTO } from '@/modules/payment/dto';
 import { PAYMENT_ERROR_CODE, PAYMENT_REFUND_FORBIDDEN } from '@/modules/payment/exception/errorCode';
 import { PaymentException } from '@/modules/payment/exception/payment.exception';
-import { RESERVATION_ERROR_CODE, RESERVATION_HOST_REFUND_FORBIDDEN } from '@/modules/reservation/exception/errorCode';
-import { ReservationException } from '@/modules/reservation/exception/reservation.exception';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { PortOneProvider, TossPayProvider } from '@/utils';
 
@@ -16,7 +15,8 @@ export class HostPaymentService {
     private readonly portOne: PortOneProvider,
     private readonly reservationRepository: ReservationRepository,
     private readonly tossPayProvider: TossPayProvider,
-    private readonly settlementRepository: HostSettlementRepository
+    private readonly settlementRepository: HostSettlementRepository,
+    private readonly messageEvent: MessageEvent
   ) {}
 
   async validateAccount(data: ValidateAccountQuery) {
@@ -62,6 +62,13 @@ export class HostPaymentService {
       settlement.id,
       settlement.getNewSettlementCostInfo(oldTotalCost, newTotalCost, reservation.totalCost)
     );
+
+    this.messageEvent.createReservationHostCanceledAlarm({
+      nickname: reservation.user.nickname || reservation.user.name,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+    });
 
     return reservation.id;
   }

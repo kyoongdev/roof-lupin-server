@@ -11,11 +11,7 @@ import { RegisterCouponByCodeDTO, UserCouponCountDTO, UserCouponDTO } from './dt
 
 @Injectable()
 export class CouponService {
-  constructor(
-    private readonly couponRepository: CouponRepository,
-    private readonly messageEvent: MessageEvent,
-    private readonly database: PrismaService
-  ) {}
+  constructor(private readonly couponRepository: CouponRepository, private readonly messageEvent: MessageEvent) {}
 
   async findUserCoupon(id: string) {
     return await this.couponRepository.findUserCoupon(id);
@@ -75,15 +71,12 @@ export class CouponService {
       usageDateEndAt,
     });
 
-    if (userCoupon.user.setting.checkIsPushAlarmAccepted() && user.pushToken) {
-      this.messageEvent.createCouponDurationAlarm({
-        dueDate: usageDateEndAt,
-        jobId: `${user.id}_${userCouponId}`,
-        userId: user.id,
-        nickname: user.nickname,
-        setting: user.setting,
-      });
-    }
+    this.messageEvent.createCouponDurationAlarm({
+      dueDate: usageDateEndAt,
+      jobId: `${user.id}_${userCouponId}`,
+      userId: user.id,
+      nickname: user.nickname,
+    });
 
     return userCouponId;
   }

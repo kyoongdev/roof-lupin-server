@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { MessageEvent } from '@/event/message';
 import { ReservationDTO } from '@/modules/reservation/dto';
 import {
   RESERVATION_ALREADY_APPROVED,
@@ -20,7 +21,8 @@ import { HostCancelReservationDTO } from '../dto/reservation';
 export class HostReservationService {
   constructor(
     private readonly reservationRepository: ReservationRepository,
-    private readonly tossPay: TossPayProvider
+    private readonly tossPay: TossPayProvider,
+    private readonly messageEvent: MessageEvent
   ) {}
 
   async findReservation(id: string, hostId: string) {
@@ -87,6 +89,20 @@ export class HostReservationService {
     await this.reservationRepository.updateReservation(id, {
       isApproved: true,
     });
+
+    this.messageEvent.createReservationAutoCanceledAlarm({
+      approvedAt: new Date(),
+      nickname: reservation.user.nickname || reservation.user.name,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+    });
+    this.messageEvent.createReservationAcceptedAlarm({
+      nickname: reservation.user.nickname || reservation.user.name,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+    });
   }
 
   async rejectReservation(id: string, hostId: string, data: HostCancelReservationDTO) {
@@ -104,6 +120,13 @@ export class HostReservationService {
       cancel: {
         reason: data.cancelReason,
       },
+    });
+
+    this.messageEvent.createReservationRejectedAlarm({
+      nickname: reservation.user.nickname || reservation.user.name,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
     });
   }
 

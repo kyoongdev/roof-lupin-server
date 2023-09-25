@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
+import { MessageEvent } from '@/event/message';
 import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
@@ -22,7 +23,8 @@ import { ReviewRepository } from '@/modules/review/review.repository';
 export class HostReviewService {
   constructor(
     private readonly reviewRepository: ReviewRepository,
-    private readonly historyRepository: HistoryRepository
+    private readonly historyRepository: HistoryRepository,
+    private readonly messageEvent: MessageEvent
   ) {}
 
   async findReview(id: string) {
@@ -65,6 +67,14 @@ export class HostReviewService {
     if (review.space.hostId !== hostId) {
       throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_MUTATION_FORBIDDEN));
     }
+
+    this.messageEvent.createReviewAnswerAlarm({
+      nickname: review.user.nickname || review.user.name,
+      reviewId: review.id,
+      spaceId: review.space.id,
+      spaceName: review.space.title,
+      userId: review.user.id,
+    });
 
     return await this.reviewRepository.createReviewAnswer(reviewId, hostId, data);
   }
