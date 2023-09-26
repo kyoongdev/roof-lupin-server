@@ -70,6 +70,6 @@ export const AdminModules = [
 @Module({
   providers: [AdminService, AdminRepository, EncryptProvider],
   controllers: [AdminController],
-  imports: [...AdminModules],
+  imports: AdminModules,
 })
 export class AdminModule {}

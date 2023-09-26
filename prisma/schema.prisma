@@ -161,6 +161,7 @@ model Space {
   //NOTE: 공간 소개글
   description String @db.MediumText
 
+  //NOTE: 건물 타입 -> 상가 ~~
   buildingType      Int?    @db.TinyInt //TODO: 추후 정리
   thumbnail         String
   //NOTE: 최소 인원
@@ -171,12 +172,18 @@ model Space {
   overflowUserCost  Int     @db.MediumInt
   //NOTE: 초과 인원 기준 인원
   overflowUserCount Int     @db.TinyInt
+  //NOTE:  최소 면적
   minSize           Int     @default(0) @db.SmallInt
+  //NOTE: 보증금
   deposit           Int?    @db.MediumInt
+  //NOTE: 링크
   link              String? @db.VarChar(255)
+  //NOTE: 전화번호
   phoneNumber       String  @db.VarChar(11)
+  //NOTE: 주의사항
   caution           String  @db.MediumText
 
+  //NOTE: 옥상만 있는지
   isRoofOnly Boolean @default(false)
 
   isImmediateReservation Boolean @default(false)
@@ -199,6 +206,7 @@ model Space {
   refundPolicies RefundPolicy[]
 
   rentalType            RentalType[]
+  //NOTE: 위치
   location              SpaceLocation?
   buildings             SpaceBuilding[]
   services              SpaceService[]
@@ -206,6 +214,7 @@ model Space {
   hashTags              SpaceHashTag[]
   spaceQnAs             SpaceQnA[]
   publicTransportations PublicTransportation[]
+  //NOTE: 층별 면적
   sizes                 SpaceSize[]
   recentSpaces          RecentSpace[]
   blockedTimes          BlockedTime[]

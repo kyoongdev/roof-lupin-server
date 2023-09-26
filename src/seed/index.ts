@@ -81,6 +81,9 @@ export const seedDatabase = async (database: PrismaClient) => {
             create: {},
           },
         },
+        include: {
+          setting: true,
+        },
       });
 
       await Promise.all(
@@ -168,6 +171,9 @@ export const seedDatabase = async (database: PrismaClient) => {
   const testUser = await database.user.create({
     data: {
       nickname: 'testUser',
+      setting: {
+        create: {},
+      },
     },
   });
 
@@ -176,6 +182,9 @@ export const seedDatabase = async (database: PrismaClient) => {
       nickname: 'testUser2',
       name: '테스트유저',
       gender: 1,
+      setting: {
+        create: {},
+      },
     },
   });
 

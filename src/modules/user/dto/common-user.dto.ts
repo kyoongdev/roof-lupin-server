@@ -50,6 +50,7 @@ export class CommonUserDTO extends BaseUserDTO {
 
   constructor(props: CommonUserDTOProps) {
     super();
+    console.log(props);
     this.id = props.id;
     this.name = props.name;
     this.nickname = props.nickname;
