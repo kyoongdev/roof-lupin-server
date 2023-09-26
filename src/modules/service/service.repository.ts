@@ -73,6 +73,11 @@ export class ServiceRepository {
             },
           ],
         },
+        serviceTitle: {
+          connect: {
+            id: data.titleId,
+          },
+        },
       },
     });
   }
@@ -104,6 +109,14 @@ export class ServiceRepository {
             },
           ],
         },
+        ...(data.titleId && {
+          serviceTitle: {
+            disconnect: true,
+            connect: {
+              id: data.titleId,
+            },
+          },
+        }),
       },
     });
   }

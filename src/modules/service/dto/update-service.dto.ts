@@ -3,9 +3,10 @@ import { Property } from 'cumuco-nestjs';
 import { UpdateServiceIconDTO, UpdateServiceIconDTOProps } from './update-service-icon.dto';
 
 export interface UpdateServiceDTOProps {
-  selectedIcon: UpdateServiceIconDTOProps;
-  notSelectedIcon: UpdateServiceIconDTOProps;
+  selectedIcon?: UpdateServiceIconDTOProps;
+  notSelectedIcon?: UpdateServiceIconDTOProps;
   name?: string;
+  titleId?: string;
 }
 
 export class UpdateServiceDTO {
@@ -17,6 +18,9 @@ export class UpdateServiceDTO {
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '이름' } })
   name?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '타이틀 id' } })
+  titleId?: string;
 
   constructor(props?: UpdateServiceDTOProps) {
     if (props) {
