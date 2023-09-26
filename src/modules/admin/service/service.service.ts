@@ -14,6 +14,10 @@ export class AdminServiceService {
     return await this.serviceRepository.findService(id);
   }
 
+  async findServices() {
+    return await this.serviceRepository.findServices();
+  }
+
   async findServiceTitle(id: string) {
     return await this.serviceRepository.findServiceTitle(id);
   }
@@ -42,6 +46,24 @@ export class AdminServiceService {
     }
 
     return await this.serviceRepository.updateService(id, data);
+  }
+
+  async deleteService(id: string) {
+    const service = await this.findService(id);
+
+    const selectedIcon = service.icons.find((icon) => icon.isSelected);
+    const notSelectedIcon = service.icons.find((icon) => !icon.isSelected);
+    if (selectedIcon) {
+      const icon = await this.iconRepository.findIcon(selectedIcon.iconId);
+      await this.iconRepository.deleteIcon(icon.id);
+    }
+
+    if (notSelectedIcon) {
+      const icon = await this.iconRepository.findIcon(notSelectedIcon.iconId);
+      await this.iconRepository.deleteIcon(icon.id);
+    }
+
+    await this.serviceRepository.deleteService(id);
   }
 
   async findServiceTitles() {
