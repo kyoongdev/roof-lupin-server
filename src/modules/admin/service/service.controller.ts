@@ -33,6 +33,20 @@ export class AdminServiceController {
     return this.serviceService.findServices();
   }
 
+  @Get(':service/detail')
+  @RequestApi({
+    summary: {
+      summary: '서비스 단일 조회',
+      description: '서비스 단일 조회',
+    },
+  })
+  @ResponseApi({
+    type: ServiceDTO,
+  })
+  async findService(@Param('serviceId') id: string) {
+    return this.serviceService.findService(id);
+  }
+
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -98,6 +112,20 @@ export class AdminServiceController {
   })
   async findServiceTitles() {
     return this.serviceService.findServiceTitles();
+  }
+
+  @Get('titles/:serviceTitleId/detail')
+  @RequestApi({
+    summary: {
+      description: '서비스 타이틀 단일 조회',
+      summary: '서비스 타이틀 단일 조회 ',
+    },
+  })
+  @ResponseApi({
+    type: ServiceTitleDTO,
+  })
+  async findServiceTitle(@Param('serviceTitleId') id: string) {
+    return this.serviceService.findServiceTitle(id);
   }
 
   @Post('titles')
