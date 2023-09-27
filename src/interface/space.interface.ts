@@ -44,6 +44,7 @@ export interface SqlSpace {
   baseCost: number;
   reportCount: number;
   isInterest: number;
+  isOfficialHolidayRest: number;
   hostId: string;
 }
 

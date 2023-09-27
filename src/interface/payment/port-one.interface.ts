@@ -19,11 +19,22 @@ export interface PortOneToken {
   now: number;
 }
 export interface PortOneCertification {
+  imp_uid: string;
+  merchant_uid: string;
+  pg_tid: string;
+  pg_provider: string;
   name: string;
   gender: string;
-  birth: string;
+  birthday: string;
+  foreigner: boolean;
+  phone: string;
+  carrier: string;
+  certified: boolean;
+  certified_at: number;
   unique_key: string;
   unique_in_site: string;
+  origin: string;
+  foreigner_v2: boolean;
 }
 
 export interface CancelPortOnePayment {

@@ -36,6 +36,7 @@ export interface SpaceDetailDTOProps extends DateProps {
   qnaCount: number;
   orderNo: number;
   isInterested?: boolean;
+  isOfficialHolidayRest: boolean;
   link?: string;
   host: HostDTOProps;
   isImmediateReservation: boolean;
@@ -77,6 +78,9 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'boolean', description: '옥상 유일 여부' } })
   isRoofOnly: boolean;
+
+  @Property({ apiProperty: { type: 'boolean', description: '공휴일 휴무 여부' } })
+  isOfficialHolidayRest: boolean;
 
   @Property({ apiProperty: { type: 'string', description: '공간 썸네일' } })
   thumbnail: string;
@@ -180,6 +184,7 @@ export class SpaceDetailDTO {
     this.qnaCount = props.qnaCount;
     this.isInterested = props.isInterested ?? false;
     this.isImmediateReservation = props.isImmediateReservation;
+    this.isOfficialHolidayRest = props.isOfficialHolidayRest;
     this.link = props.link;
     this.caution = props.caution;
     this.host = new HostDTO(props.host);

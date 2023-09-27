@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Patch } from '@nestjs/common';
+import { Body, Delete, Get, Patch, Post } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CountInfoDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { CertificatePhoneDTO } from './dto/certificate-phone.dto';
 import { CommonUserDTO } from './dto/common-user.dto';
 import { UserService } from './user.service';
 
@@ -108,5 +109,19 @@ export class UserController {
   )
   async deleteMe(@ReqUser() user: RequestUser) {
     await this.userService.deleteUser(user.id);
+  }
+
+  @Post('certificate/phone')
+  @RequestApi({
+    summary: {
+      description: '휴대폰 인증',
+      summary: '휴대폰 인증',
+    },
+  })
+  @ResponseApi({
+    type: CommonUserDTO,
+  })
+  async certificatePhone(@ReqUser() user: RequestUser, @Body() body: CertificatePhoneDTO) {
+    return await this.userService.certificateUser(user.id, body);
   }
 }

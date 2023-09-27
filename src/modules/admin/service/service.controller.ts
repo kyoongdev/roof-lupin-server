@@ -33,7 +33,7 @@ export class AdminServiceController {
     return this.serviceService.findServices();
   }
 
-  @Get(':service/detail')
+  @Get(':serviceId/detail')
   @RequestApi({
     summary: {
       summary: '서비스 단일 조회',

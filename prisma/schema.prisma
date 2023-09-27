@@ -190,6 +190,7 @@ model Space {
   isPublic               Boolean @default(false)
   isApproved             Boolean @default(true)
   isMain                 Boolean @default(false)
+  isOfficialHolidayRest  Boolean @default(false)
   orderNo                Int?    @db.TinyInt
 
   createdAt DateTime  @default(now())
@@ -243,8 +244,10 @@ model OpenHour {
 model SpaceHoliday {
   id String @id @default(uuid())
 
-  day      Int @db.TinyInt
-  interval Int @db.TinyInt //INFO: 1, 2, 3은 주 단위, 4는 월 단위
+  year     Int? @db.SmallInt
+  month    Int? @db.TinyInt
+  day      Int  @db.TinyInt
+  interval Int? @db.TinyInt //INFO: 1, 2, 3은 주 단위, 4는 월 단위
 
   spaceId String
   space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)

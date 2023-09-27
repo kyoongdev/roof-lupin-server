@@ -20,12 +20,12 @@ export class CategoryIconDTO {
   isMapIcon: boolean;
 
   @Property({ apiProperty: { type: 'string', description: '아이콘 경로' } })
-  url: string;
+  iconPath: string;
 
   constructor(props: CategoryIconDTOProps) {
     this.categoryId = props.categoryId;
     this.iconId = props.iconId;
-    this.url = props.icon.url;
+    this.iconPath = props.icon.url;
     this.isMapIcon = props.isMapIcon;
   }
 }

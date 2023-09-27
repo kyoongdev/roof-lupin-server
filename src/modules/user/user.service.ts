@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
+import { PortOneProvider } from '@/utils';
+
 import { CouponRepository } from '../coupon/coupon.repository';
 import { QnARepository } from '../qna/qna.repository';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewRepository } from '../review/review.repository';
 
 import { CountInfoDTO, UpdateUserDTO } from './dto';
+import { CertificatePhoneDTO } from './dto/certificate-phone.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { UserRepository } from './user.repository';
 
@@ -16,8 +19,17 @@ export class UserService {
     private readonly qnaRepository: QnARepository,
     private readonly reservationRepository: ReservationRepository,
     private readonly couponRepository: CouponRepository,
-    private readonly reviewRepository: ReviewRepository
+    private readonly reviewRepository: ReviewRepository,
+    private readonly portOneProvider: PortOneProvider
   ) {}
+
+  async validateUser(userId: string, data: CertificatePhoneDTO) {
+    const result = await this.portOneProvider.validateCertification(data.imp_uid);
+
+    if (result.phone) {
+      await this.userRepository.updateUser(userId, { phoneNumber: result.phone });
+    }
+  }
 
   async getCountInfo(userId: string) {
     const qnaCount = await this.qnaRepository.countQna({

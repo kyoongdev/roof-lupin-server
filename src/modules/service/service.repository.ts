@@ -28,7 +28,7 @@ export class ServiceRepository {
         },
       },
     });
-
+    console.log(service);
     if (!service) {
       throw new ServiceException(SERVICE_ERROR_CODE.NOT_FOUND(SERVICE_NOT_FOUND));
     }

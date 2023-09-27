@@ -86,6 +86,7 @@ export class SpaceRepository {
           isInterested: space.isInterest && Number(space.isInterest) === 1,
           isRoofOnly: space.isRoofOnly === 1,
           interestCount: space.interestCount,
+          isOfficialHolidayRest: space.isOfficialHolidayRest === 1,
           location: {
             id: space.slId,
             lat: space.lat,
