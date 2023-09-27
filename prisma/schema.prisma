@@ -190,7 +190,6 @@ model Space {
   isPublic               Boolean @default(false)
   isApproved             Boolean @default(true)
   isMain                 Boolean @default(false)
-  isOfficialHolidayRest  Boolean @default(false)
   orderNo                Int?    @db.TinyInt
 
   createdAt DateTime  @default(now())
@@ -244,8 +243,6 @@ model OpenHour {
 model SpaceHoliday {
   id String @id @default(uuid())
 
-  year     Int? @db.SmallInt
-  month    Int? @db.TinyInt
   day      Int  @db.TinyInt
   interval Int? @db.TinyInt //INFO: 1, 2, 3은 주 단위, 4는 월 단위
 
@@ -791,9 +788,10 @@ model UserSetting {
 model UserAlarm {
   id String @id @default(uuid())
 
-  title   String  @db.VarChar(50)
-  content String
-  link    String?
+  title     String  @db.VarChar(50)
+  content   String
+  link      String?
+  thumbnail String?
 
   alarmAt   DateTime?
   isRead    Boolean   @default(false)

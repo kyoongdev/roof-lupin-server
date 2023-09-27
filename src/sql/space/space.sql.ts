@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Sql } from '@prisma/client/runtime';
 import { range } from 'lodash';
 
@@ -233,7 +233,8 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
         LEFT JOIN SpaceHoliday sh ON hsp.id = sh.spaceId
         LEFT JOIN BlockedTime bt ON hsp.id = bt.spaceId
         WHERE sp.id = hsp.id 
-        AND ((sh.day = ${day} AND sh.interval = ${week})
+        AND (
+          (sh.day = ${day} AND sh.interval = ${week}) 
         ${blockedTimeQuery})
         GROUP BY hsp.id
       `;
