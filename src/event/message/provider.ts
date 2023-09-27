@@ -182,6 +182,14 @@ export class MessageEventProvider {
     };
 
     this.schedulerEvent.createSchedule(data.jobId, targetDate, async () => {
+      const space = await this.database.space.findUnique({
+        where: {
+          id: data.spaceId,
+        },
+        select: {
+          thumbnail: true,
+        },
+      });
       const alarm = await this.createAlarm({
         title: alarmData.title,
         content: alarmData.body,
@@ -189,6 +197,7 @@ export class MessageEventProvider {
         userId: data.userId,
         alarmAt: targetDate,
         alarmType: ALARM_TYPE.REVIEW_RECOMMEND,
+        thumbnail: space.thumbnail,
         link: alarmData.link,
       });
       const user = await this.getUser(data.userId);

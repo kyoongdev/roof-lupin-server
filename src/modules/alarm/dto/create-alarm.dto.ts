@@ -6,6 +6,7 @@ export interface CreateAlarmDTOProps {
   link?: string;
   alarmAt?: Date;
   isPush?: boolean;
+  thumbnail?: string;
   userId: string;
   alarmType: number;
 }
@@ -26,6 +27,9 @@ export class CreateAlarmDTO {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '푸시 여부' } })
   isPush?: boolean;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '알람 썸네일' } })
+  thumbnail?: string;
+
   @Property({ apiProperty: { type: 'string', description: '유저 id' } })
   userId: string;
 
@@ -38,6 +42,7 @@ export class CreateAlarmDTO {
       this.content = props.content;
       this.link = props.link;
       this.alarmAt = props.alarmAt;
+      this.thumbnail = props.thumbnail;
       this.isPush = props.isPush;
       this.userId = props.userId;
       this.alarmType = props.alarmType;
