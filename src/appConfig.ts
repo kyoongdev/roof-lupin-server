@@ -67,6 +67,7 @@ class AppConfig {
       alarms.map(async (alarm) => {
         const currentDate = new Date();
         const alarmAt = alarm.alarmAt;
+
         if (alarm.user.pushToken) {
           if (currentDate >= alarmAt) {
             await messageProvider.sendMessage({

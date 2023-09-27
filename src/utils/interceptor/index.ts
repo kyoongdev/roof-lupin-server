@@ -4,6 +4,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { RevalidateApiDecorator } from '../aop/revalidate';
 import { CreateCacheDecorator, DeleteCacheDecorator } from '../cache';
 
+import { JsonInterceptor } from './json.interceptor';
+
 export * from './data.interceptor';
 export * from './response-with-id.interceptor';
 export * from './user-cookie.interceptor';
@@ -19,6 +21,10 @@ export const Interceptors: ClassProvider<any>[] = [
   },
   {
     useClass: RevalidateApiDecorator,
+    provide: APP_INTERCEPTOR,
+  },
+  {
+    useClass: JsonInterceptor,
     provide: APP_INTERCEPTOR,
   },
 ];

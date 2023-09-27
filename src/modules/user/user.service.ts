@@ -23,12 +23,14 @@ export class UserService {
     private readonly portOneProvider: PortOneProvider
   ) {}
 
-  async validateUser(userId: string, data: CertificatePhoneDTO) {
+  async certificateUser(userId: string, data: CertificatePhoneDTO) {
     const result = await this.portOneProvider.validateCertification(data.imp_uid);
 
     if (result.phone) {
       await this.userRepository.updateUser(userId, { phoneNumber: result.phone });
     }
+    const user = await this.userRepository.findUser(userId);
+    return user;
   }
 
   async getCountInfo(userId: string) {

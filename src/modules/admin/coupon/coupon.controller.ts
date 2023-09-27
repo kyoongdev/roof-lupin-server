@@ -103,6 +103,7 @@ export class AdminCouponController {
     201
   )
   async createCoupon(@Body() body: CreateCouponDTO) {
+    console.log(body);
     return await this.couponService.createCoupon(body);
   }
 

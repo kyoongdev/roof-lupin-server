@@ -745,6 +745,7 @@ model User {
   gender         Int?      @db.TinyInt
   profileImage   String?
   isBlocked      Boolean   @default(false)
+  isCertified    Boolean   @default(false)
   unBlockAt      DateTime?
   pushToken      String?
   portOneCertKey String?

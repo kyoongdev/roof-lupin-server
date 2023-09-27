@@ -14,8 +14,6 @@ export interface UpdateUserDTOProps {
   gender?: number;
   profileImage?: string;
   pushToken?: string;
-  isAdult?: boolean;
-  isAlarmAccepted?: boolean;
 }
 
 export class UpdateUserDTO {
@@ -44,12 +42,6 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '푸시 토큰', nullable: true } })
   pushToken?: string;
 
-  @Property({ apiProperty: { type: 'boolean', description: '성인 여부', nullable: true } })
-  isAdult?: boolean;
-
-  @Property({ apiProperty: { type: 'boolean', description: '알림 수신 여부', nullable: true } })
-  isAlarmAccepted?: boolean;
-
   constructor(props?: UpdateUserDTOProps) {
     if (props) {
       this.nickname = props.nickname;
@@ -60,8 +52,6 @@ export class UpdateUserDTO {
       this.gender = props.gender;
       this.profileImage = props.profileImage;
       this.pushToken = props.pushToken;
-      this.isAdult = props.isAdult;
-      this.isAlarmAccepted = props.isAlarmAccepted;
     }
   }
 }

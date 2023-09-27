@@ -48,9 +48,12 @@ export class CommonUserDTO extends BaseUserDTO {
   @Property({ apiProperty: { type: UserSettingDTO, description: '설정' } })
   setting: UserSettingDTO;
 
+  @Property({ apiProperty: { type: 'boolean', description: '인증 여부' } })
+  isCertified: boolean;
+
   constructor(props: CommonUserDTOProps) {
     super();
-    console.log(props);
+
     this.id = props.id;
     this.name = props.name;
     this.nickname = props.nickname;
@@ -65,5 +68,6 @@ export class CommonUserDTO extends BaseUserDTO {
     this.deletedAt = props.deletedAt;
     this.socialType = props.socials.length > 0 ? numberToSocialType(props.socials.at(-1).socialType) : null;
     this.setting = new UserSettingDTO(props.setting);
+    this.isCertified = props.isCertified;
   }
 }

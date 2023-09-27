@@ -11,6 +11,7 @@ import { RoleGuard } from '@/utils/guards/role.guard';
 import { CountInfoDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CertificatePhoneDTO } from './dto/certificate-phone.dto';
 import { CommonUserDTO } from './dto/common-user.dto';
+import { UpdateUserSettingDTO } from './dto/setting';
 import { UserService } from './user.service';
 
 @Auth([JwtAuthGuard, RoleGuard('USER')])
@@ -90,7 +91,7 @@ export class UserController {
     },
     204
   )
-  async updateSetting(@ReqUser() user: RequestUser, @Body() body: UpdateUserDTO) {
+  async updateSetting(@ReqUser() user: RequestUser, @Body() body: UpdateUserSettingDTO) {
     await this.userService.updateSetting(user.id, body);
   }
 
