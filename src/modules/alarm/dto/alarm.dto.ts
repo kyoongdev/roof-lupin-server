@@ -14,6 +14,7 @@ export interface AlarmDTOProps {
   isPush: boolean;
   isPushed: boolean;
   alarmType: number;
+  thumbnail?: string;
   user: CommonUserDTOProps;
 }
 
@@ -45,6 +46,9 @@ export class AlarmDTO {
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '썸네일' } })
+  thumbnail?: string;
+
   @AlarmTypeResDecorator()
   alarmType: number;
 
@@ -58,6 +62,7 @@ export class AlarmDTO {
     this.isPush = props.isPush;
     this.isPushed = props.isPushed;
     this.alarmType = props.alarmType;
+    this.thumbnail = props.thumbnail;
     this.user = new CommonUserDTO(props.user);
   }
 }
