@@ -96,6 +96,9 @@ export class ReportRepository {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return reports.map(
