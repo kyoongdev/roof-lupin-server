@@ -19,7 +19,7 @@ export class AdminPaymentService {
   async refundPayment(reservationId: string, data: AdminRefundPaymentDTO) {
     const reservation = await this.reservationRepository.findReservation(reservationId);
 
-    if (reservation.totalCost > data.refundCost) {
+    if (reservation.totalCost < data.refundCost) {
       throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_REFUND_AMOUNT));
     }
     await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {

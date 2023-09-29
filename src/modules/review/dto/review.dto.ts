@@ -3,10 +3,6 @@ import { Property } from 'cumuco-nestjs';
 
 import { getTimeDiff } from '@/common/date';
 import type { CommonReview } from '@/interface/review.interface';
-import {
-  ReservationRentalTypeDTO,
-  type ReservationRentalTypeDTOProps,
-} from '@/modules/reservation/dto/reservation-rental-type.dto';
 import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
 import { FindReviewsQuery } from './query';
