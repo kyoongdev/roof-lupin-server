@@ -29,11 +29,13 @@ export class UpdateUserSettingDTO {
   isPushAccepted?: boolean;
 
   constructor(props: UpdateUserSettingDTOProps) {
-    this.isAdult = props.isAdult;
-    this.isAlarmAccepted = props.isAlarmAccepted;
-    this.isLocationInfoAccepted = props.isLocationInfoAccepted;
-    this.isEmailAccepted = props.isEmailAccepted;
-    this.isKakaoTalkAccepted = props.isKakaoTalkAccepted;
-    this.isPushAccepted = props.isPushAccepted;
+    if (props) {
+      this.isAdult = props.isAdult;
+      this.isAlarmAccepted = props.isAlarmAccepted;
+      this.isLocationInfoAccepted = props.isLocationInfoAccepted;
+      this.isEmailAccepted = props.isEmailAccepted;
+      this.isKakaoTalkAccepted = props.isKakaoTalkAccepted;
+      this.isPushAccepted = props.isPushAccepted;
+    }
   }
 }

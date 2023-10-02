@@ -6,10 +6,8 @@ import { nanoid } from 'nanoid';
 
 import { ApiController } from '@/utils';
 
-import { CreateHostDTO } from '../host/dto';
-
 import { AuthService } from './auth.service';
-import { AppleLoginCallbackDTO, HostAuthDTO, TokenDTO } from './dto';
+import { AppleLoginCallbackDTO, TokenDTO } from './dto';
 import { KakaoSocialUserQuery } from './dto/query';
 
 @ApiController('auth', '로그인/회원가입')
