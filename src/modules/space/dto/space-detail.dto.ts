@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { type DateProps } from '@/common';
+import { type DateDTOProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto';
 import { OpenHourDTO, OpenHourDTOProps } from '@/modules/host/dto/openHour';
@@ -16,7 +16,7 @@ import { ServiceDTO, ServiceDTOProps } from './service';
 import { SizeDTO, SizeDTOProps } from './size';
 import { TransportationDTO, TransportationDTOProps } from './transportaion';
 
-export interface SpaceDetailDTOProps extends DateProps {
+export interface SpaceDetailDTOProps extends DateDTOProps {
   id: string;
   title: string;
   averageScore: number;

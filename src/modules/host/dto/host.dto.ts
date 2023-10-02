@@ -1,8 +1,8 @@
 import { Property } from 'cumuco-nestjs';
 
-import { DateDTO, type DateProps } from '@/common';
+import { DateDTO, type DateDTOProps } from '@/common';
 
-export interface HostDTOProps extends DateProps {
+export interface HostDTOProps extends DateDTOProps {
   id: string;
   email: string;
   name: string;

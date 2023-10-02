@@ -10,6 +10,7 @@ export const RESERVATION_HOST_FIND_FORBIDDEN = '본인의 공간에 대한 예�
 export const RESERVATION_TIME_BAD_REQUEST = '예약 시간을 다시 확인해주세요.' as const;
 export const RESERVATION_COST_BAD_REQUEST = '예약 비용을 다시 확인해주세요.' as const;
 export const RESERVATION_ALREADY_APPROVED = '이미 승인된 예약입니다.' as const;
+export const RESERVATION_ALREADY_PAYED = '이미 결제된 예약입니다.' as const;
 export const RESERVATION_SPACE_NOT_IMMEDIATE = '즉시 예약이 불가능한 공간입니다.' as const;
 
 export const RESERVATION_ERROR_CODE: ErrorCode<

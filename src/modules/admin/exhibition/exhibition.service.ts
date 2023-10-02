@@ -66,9 +66,6 @@ export class AdminExhibitionService {
       },
     });
 
-    const targetDate = new Date(data.startAt);
-    targetDate.setDate(targetDate.getDate() - 1);
-
     users
       .map((user) => ({
         pushToken: user.pushToken,

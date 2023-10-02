@@ -1,5 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
+import { DateDTO, DateDTOProps } from '@/common';
 import { getDateDiff } from '@/common/date';
 import { CheckIsTargetDay } from '@/interface/common.interface';
 import { type CommonReservation, RESERVATION_STATUS, type ReservationStatus } from '@/interface/reservation.interface';
@@ -10,7 +11,7 @@ import { ReservationAdditionalServiceDTO, type ReservationAdditionalServiceDTOPr
 import { ReservationCancelDTO, type ReservationCancelDTOProps } from './cancel';
 import { ReservationRentalTypeDTO, type ReservationRentalTypeDTOProps } from './reservation-rental-type.dto';
 
-export interface ReservationDTOProps {
+export interface ReservationDTOProps extends DateDTOProps {
   id: string;
   year: number;
   month: number;
@@ -37,7 +38,7 @@ export interface ReservationDTOProps {
   additionalServices: ReservationAdditionalServiceDTOProps[];
 }
 
-export class ReservationDTO {
+export class ReservationDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: '예약 아이디' } })
   id: string;
 
@@ -127,6 +128,7 @@ export class ReservationDTO {
   additionalServices: ReservationAdditionalServiceDTO[];
 
   constructor(props: ReservationDTOProps) {
+    super(props);
     this.id = props.id;
     this.year = props.year;
     this.month = props.month;
@@ -158,7 +160,9 @@ export class ReservationDTO {
   }
 
   setReservationStatus() {
-    if (this.checkIsUsed()) {
+    if (this.deletedAt) {
+      this.status = RESERVATION_STATUS.CANCELED;
+    } else if (this.checkIsUsed()) {
       this.status = RESERVATION_STATUS.USED;
     } else if (this.cancel) {
       if (this.cancel.refundCost) {

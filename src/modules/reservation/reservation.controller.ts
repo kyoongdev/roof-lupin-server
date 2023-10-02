@@ -88,8 +88,8 @@ export class ReservationController {
   @Delete(':reservationId')
   @RequestApi({
     summary: {
-      description: '예약 삭제하기',
-      summary: '예약 삭제하기 - 유저만 사용가능합니다.',
+      description: '예약 취소하기',
+      summary: '예약 취소하기',
     },
   })
   @ResponseApi(

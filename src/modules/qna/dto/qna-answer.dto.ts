@@ -1,9 +1,9 @@
 import { Property } from 'cumuco-nestjs';
 
-import { DateDTO, type DateProps } from '@/common';
+import { DateDTO, type DateDTOProps } from '@/common';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto/host.dto';
 
-export interface QnAAnswerProps extends DateProps {
+export interface QnAAnswerProps extends DateDTOProps {
   id: string;
   content: string;
   spaceQnAId: string;

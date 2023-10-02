@@ -368,9 +368,10 @@ model Reservation {
   userName            String?
   userPhoneNumber     String?   @db.VarChar(11)
   payedAt             DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  deletedAt           DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

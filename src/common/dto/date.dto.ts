@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-export interface DateProps {
+export interface DateDTOProps {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -16,7 +16,7 @@ export class DateDTO {
   @Property({ apiProperty: { type: 'string', format: 'date-time', nullable: true } })
   deletedAt: Date;
 
-  constructor(props?: DateProps) {
+  constructor(props?: DateDTOProps) {
     if (props) {
       this.createdAt = props.createdAt;
       this.updatedAt = props.updatedAt;

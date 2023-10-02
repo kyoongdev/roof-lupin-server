@@ -8,6 +8,7 @@ import { MessageEvent } from '@/event/message';
 import { ReservationDTO } from './dto';
 import { FindReservationQuery } from './dto/query';
 import {
+  RESERVATION_ALREADY_PAYED,
   RESERVATION_ERROR_CODE,
   RESERVATION_USER_DELETE_FORBIDDEN,
   RESERVATION_USER_FIND_FORBIDDEN,
@@ -36,7 +37,6 @@ export class ReservationService {
         where: {
           userId,
           ...args.where,
-          deletedAt: null,
         },
         skip,
         take,
@@ -81,15 +81,22 @@ export class ReservationService {
       throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_USER_DELETE_FORBIDDEN));
     }
 
+    if (reservation.payedAt) {
+      throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_ALREADY_PAYED));
+    }
+
     if (reason) {
-      this.messageEvent.createReservationGuestCanceledAlarm({
-        nickname: reservation.user.nickname || reservation.user.name,
-        reason,
-        reservationId: reservation.id,
-        spaceId: reservation.space.id,
-        spaceName: reservation.space.title,
-        userId,
-      });
+      if (!reservation.space.isImmediateReservation && reservation.isApproved) {
+        this.messageEvent.createReservationGuestCanceledAlarm({
+          nickname: reservation.user.nickname || reservation.user.name,
+          reason,
+          reservationId: reservation.id,
+          spaceId: reservation.space.id,
+          spaceName: reservation.space.title,
+          userId,
+        });
+      }
+
       await this.reservationRepository.updateReservation(id, {
         cancel: {
           reason,

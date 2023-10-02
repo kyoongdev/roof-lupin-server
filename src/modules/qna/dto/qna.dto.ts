@@ -1,13 +1,13 @@
 import { Prisma } from '@prisma/client';
 import { Property } from 'cumuco-nestjs';
 
-import { DateDTO, DateProps } from '@/common';
+import { DateDTO, DateDTOProps } from '@/common';
 import { SpaceDTO, SpaceDTOProps } from '@/modules/space/dto';
 import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
 
 import { QnAAnswerDTO, QnAAnswerProps } from './qna-answer.dto';
 
-export interface QnADTOProps extends DateProps {
+export interface QnADTOProps extends DateDTOProps {
   id: string;
   content: string;
   user: CommonUserDTOProps;
