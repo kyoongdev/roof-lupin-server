@@ -7,7 +7,7 @@ import { SolapiMessageService } from 'solapi';
 
 import { getDateDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
-import {
+import type {
   PaymentSuccessAlarmTalkPayload,
   QnAAnswerAlarmTalkPayload,
   ReservationApprovedAlarmTalkPayload,
@@ -174,7 +174,7 @@ export class MessageEventProvider {
 
   @OnEvent(MESSAGE_EVENT_NAME.CREATE_REVIEW_RECOMMEND_ALARM)
   async createReviewRecommendAlarm(data: CreateReviewRecommendAlarm) {
-    const targetDate = new Date(Number(data.year), Number(data.month) - 1, Number(data.day), 4, 0, 0);
+    const targetDate = new Date(data.year, data.month - 1, data.day + 1, 4, 0, 0);
     const alarmData: BaseSendMessage = {
       title: '리뷰를 달아주세요!',
       body: `${data.nickname}님! ${data.spaceName}에서 즐거운 시간 보내셨나요? 리뷰를 남겨보세요!`,

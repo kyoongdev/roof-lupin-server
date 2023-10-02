@@ -358,7 +358,7 @@ export class PaymentService {
     this.messageEvent.createReviewRecommendAlarm({
       year: reservation.year,
       month: reservation.month,
-      day: reservation.day + 1,
+      day: reservation.day,
       jobId: `${reservation.id}_${reservation.user.id}`,
       spaceName: reservation.space.title,
       userId: reservation.user.id,
