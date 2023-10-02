@@ -146,25 +146,6 @@ export class PaymentService {
     return result;
   }
 
-  async testPayment(data: CreatePaymentDTO, userId: string) {
-    await this.database.$transaction(async (database) => {
-      const space = await this.spaceRepository.findSpace(data.spaceId);
-      await this.validatePayment(data, space);
-      const reservation = await this.reservationRepository.createPayment(userId, data, true);
-
-      await this.reservationRepository.updatePaymentWithTransaction(database, reservation.id, {
-        orderResultId: nanoid(10),
-        payedAt: new Date(),
-        orderId: nanoid(10),
-      });
-
-      await this.createSettlement(database, reservation);
-      await this.sendMessage(reservation);
-    });
-
-    return { message: 'success' };
-  }
-
   async confirmTossPayment(data: ConfirmTossPaymentDTO, userId: string) {
     const { orderId, paymentInfo } = data;
     let reservation = await this.reservationRepository.checkReservationByOrderId(orderId);
@@ -377,7 +358,7 @@ export class PaymentService {
     this.messageEvent.createReviewRecommendAlarm({
       year: reservation.year,
       month: reservation.month,
-      day: reservation.day + 7,
+      day: reservation.day + 1,
       jobId: `${reservation.id}_${reservation.user.id}`,
       spaceName: reservation.space.title,
       userId: reservation.user.id,

@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { getDateDiff, getDayAfter, getDayBefore, getTimeDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
 import { MessageEvent } from '@/event/message';
 import { RequestUser } from '@/interface/role.interface';
@@ -62,21 +63,24 @@ export class CouponService {
 
     const now = new Date();
 
-    const usageDateStartAt = new Date(coupon.defaultDueDateStart) || new Date(now);
+    const usageDateStartAt = new Date(coupon.defaultDueDateStart) || now;
+    const usageDateEndAt = getDayAfter(usageDateStartAt, coupon.defaultDueDay);
+    const dayDiff = getDateDiff(usageDateStartAt, usageDateEndAt);
 
-    const usageDateEndAt = new Date(now.setDate(now.getDate() + coupon.defaultDueDay));
     const userCouponId = await this.couponRepository.createUserCoupon(coupon.id, {
       userId: user.id,
       usageDateStartAt,
       usageDateEndAt,
     });
 
-    this.messageEvent.createCouponDurationAlarm({
-      dueDate: usageDateEndAt,
-      jobId: `${user.id}_${userCouponId}`,
-      userId: user.id,
-      nickname: user.nickname,
-    });
+    if (dayDiff > 5) {
+      this.messageEvent.createCouponDurationAlarm({
+        dueDate: getDayBefore(usageDateEndAt, 5),
+        jobId: `${user.id}_${userCouponId}`,
+        userId: user.id,
+        nickname: user.nickname,
+      });
+    }
 
     return userCouponId;
   }

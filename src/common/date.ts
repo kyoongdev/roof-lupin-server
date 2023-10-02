@@ -17,6 +17,18 @@ export const getWeek = (date: Date) => {
   return Math.ceil((currentDate + firstDay) / 7);
 };
 
+export const getDayAfter = (date: Date, day: number) => {
+  const targetDate = new Date(date.getTime());
+  targetDate.setDate(targetDate.getDate() + day);
+  return targetDate;
+};
+
+export const getDayBefore = (date: Date, day: number) => {
+  const targetDate = new Date(date.getTime());
+  targetDate.setDate(targetDate.getDate() - day);
+  return targetDate;
+};
+
 export const checkIsSameDate = (firstDate: Date, secondDate: Date) => {
   return (
     firstDate.getFullYear() === secondDate.getFullYear() &&

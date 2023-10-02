@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { PaymentSuccessAlarmTalk } from '@/interface/alarm-talk.interface';
 import type {
   CreateCouponDurationAlarm,
   CreateMarketingExhibitionAlarm,
