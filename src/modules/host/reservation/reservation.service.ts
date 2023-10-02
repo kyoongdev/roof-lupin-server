@@ -156,5 +156,12 @@ export class HostReservationService {
         }),
       },
     });
+
+    this.messageEvent.createReservationHostCanceledAlarm({
+      nickname: reservation.user.nickname || reservation.user.name,
+      reservationId: reservation.id,
+      spaceName: reservation.space.title,
+      userId: reservation.user.id,
+    });
   }
 }
