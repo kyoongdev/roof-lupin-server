@@ -17,7 +17,7 @@ import { RENTAL_TYPE_ENUM } from '../rental-type/dto/validation/rental-type.vali
 import { RentalTypeRepository } from '../rental-type/rental-type.repository';
 import { RentalTypeService } from '../rental-type/rental-type.service';
 import { CreatePaymentDTO, CreateReservationDTO, ReservationDetailDTO } from '../reservation/dto';
-import { RESERVATION_COST_BAD_REQUEST, RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
+import { RESERVATION_ERROR_CODE } from '../reservation/exception/errorCode';
 import { ReservationException } from '../reservation/exception/reservation.exception';
 import { ReservationRepository } from '../reservation/reservation.repository';
 import { SpaceDetailDTO } from '../space/dto';
@@ -32,25 +32,7 @@ import {
   ValidatedAccountDTO,
   ValidatedPaymentDTO,
 } from './dto';
-import {
-  PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT,
-  PAYMENT_CONFLICT,
-  PAYMENT_COUPON_DUE_DATE_BEFORE,
-  PAYMENT_COUPON_DUE_DATE_EXPIRED,
-  PAYMENT_DATE_BAD_REQUEST,
-  PAYMENT_DISCOUNT_COST_BAD_REQUEST,
-  PAYMENT_ERROR_CODE,
-  PAYMENT_FORBIDDEN,
-  PAYMENT_IMMEDIATE_PAYMENT_REQUIRED,
-  PAYMENT_MAX_RESERVATION_DATE,
-  PAYMENT_MUTATION_FORBIDDEN,
-  PAYMENT_NOT_APPROVED,
-  PAYMENT_ORDER_RESULT_ID_BAD_REQUEST,
-  PAYMENT_REFUND_FORBIDDEN,
-  PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR,
-  PAYMENT_SPACE_ID_BAD_REQUEST,
-  PAYMENT_TOTAL_COST_BAD_REQUEST,
-} from './exception/errorCode';
+import { PAYMENT_ERROR_CODE } from './exception/errorCode';
 import { PaymentException } from './exception/payment.exception';
 
 @Injectable()
@@ -84,7 +66,7 @@ export class PaymentService {
 
       data.validateProperties(reservation);
       if (!space.isImmediateReservation && !reservation.isApproved) {
-        throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_NOT_APPROVED));
+        throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_NOT_APPROVED);
       }
 
       return reservation;
@@ -97,7 +79,7 @@ export class PaymentService {
     await this.validatePayment(data, space);
 
     if (space.isImmediateReservation) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_IMMEDIATE_PAYMENT_REQUIRED));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_IMMEDIATE_PAYMENT_REQUIRED);
     }
     //TODO: Host 알림 추가
 
@@ -111,7 +93,7 @@ export class PaymentService {
     const totalCost = paymentData.originalCost - paymentData.discountCost;
 
     if (totalCost !== paymentData.totalCost) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_TOTAL_COST_BAD_REQUEST));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_TOTAL_COST_BAD_REQUEST);
     }
 
     const result = await this.database.$transaction(async (database) => {
@@ -153,7 +135,7 @@ export class PaymentService {
     try {
       if (reservation)
         if (data.orderId !== reservation.orderId || data.amount !== reservation.totalCost) {
-          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ORDER_RESULT_ID_BAD_REQUEST));
+          throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_ORDER_RESULT_ID_BAD_REQUEST);
         }
 
       await this.database.$transaction(async (database) => {
@@ -163,7 +145,7 @@ export class PaymentService {
         const tossPayment = await this.tossPay.getPaymentByOrderId(orderId);
 
         if (tossPayment.totalAmount !== paymentInfo.totalCost || tossPayment.paymentKey !== data.paymentKey) {
-          throw new PaymentException(PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_FORBIDDEN));
+          throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_FORBIDDEN);
         }
 
         const result = await this.tossPay.confirmPayment({
@@ -215,10 +197,10 @@ export class PaymentService {
     const refundPolicies = await this.spaceRepository.findRefundPolicyBySpaceId(reservation.space.id);
 
     if (!reservation.isRefundable) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
     if (reservation.user.id !== userId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
 
     const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
@@ -227,7 +209,7 @@ export class PaymentService {
     const diffTime = getDateDiff(reservationDate, now);
     const refundTargetDate = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     if (refundTargetDate <= 0) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
 
     const refundPolicy = refundPolicies
@@ -275,7 +257,7 @@ export class PaymentService {
     const reservation = await this.reservationRepository.findReservationByOrderId(orderId);
 
     if (reservation.user.id !== userId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_MUTATION_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_MUTATION_FORBIDDEN);
     }
 
     const coupons = await this.couponRepository.findUserCoupons({
@@ -387,14 +369,14 @@ export class PaymentService {
           const diff = reservationDate.getHours() - currentDate.getHours();
 
           if (diff <= 2) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_MAX_RESERVATION_DATE));
+            throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_MAX_RESERVATION_DATE);
           }
         }
 
         const rentalType = await this.rentalTypeRepository.findRentalType(item.rentalTypeId);
 
         if (rentalType.spaceId !== data.spaceId) {
-          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_SPACE_ID_BAD_REQUEST));
+          throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_SPACE_ID_BAD_REQUEST);
         }
 
         const possibleRentalType = await this.rentalTypeService.findPossibleRentalTypesById(item.rentalTypeId, {
@@ -408,15 +390,13 @@ export class PaymentService {
 
         //INFO: 요청한 시간이 대여 정보의 시작시간과 끝나는 시간에 포함되지 않을 때
         if (itemStartAt < possibleStartAt || possibleEndAt < itemEndAt) {
-          throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
+          throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_DATE_BAD_REQUEST);
         }
 
         if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
           //INFO: 시간 대여 타입에 시간 정보가 없을 때
           if (!possibleRentalType['timeCostInfos']) {
-            throw new PaymentException(
-              PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
-            );
+            throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR);
           }
 
           //INFO: 대여하려는 시간이 예약 불가할 때
@@ -427,7 +407,7 @@ export class PaymentService {
               !time.isPossible &&
               (!data.reservationId || (Boolean(data.reservationId) && !space.isImmediateReservation))
             ) {
-              throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+              throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_CONFLICT);
             }
           });
 
@@ -444,7 +424,7 @@ export class PaymentService {
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
           //INFO: 대여하려는 시간이 잘못 입력됐을 때
           if (itemStartAt !== possibleStartAt || itemEndAt !== possibleEndAt) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DATE_BAD_REQUEST));
+            throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_DATE_BAD_REQUEST);
           }
 
           //INFO: 대여하려는 시간이 예약 불가할 때
@@ -452,13 +432,10 @@ export class PaymentService {
             !(possibleRentalType as PossiblePackageDTO).isPossible &&
             (!data.reservationId || (Boolean(data.reservationId) && !space.isImmediateReservation))
           ) {
-            throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
+            throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_CONFLICT);
           }
           validatedRentalTypes.increaseCost(rentalType.baseCost);
-        } else
-          throw new PaymentException(
-            PAYMENT_ERROR_CODE.INTERNAL_SERVER_ERROR(PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR)
-          );
+        } else throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_RENTAL_TYPE_INTERNAL_SERVER_ERROR);
 
         validatedRentalTypes.appendRentalType(rentalType);
       })
@@ -472,7 +449,7 @@ export class PaymentService {
 
     //INFO: 가격 정보가 올바르지 않을 때
     if (originalCost !== data.originalCost || totalCost !== data.totalCost) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_COST_BAD_REQUEST));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_COST_BAD_REQUEST);
     }
 
     return new ValidatedPaymentDTO({
@@ -501,7 +478,7 @@ export class PaymentService {
 
             if (baseAdditionalCost) {
               if (baseAdditionalCost.maxCount && baseAdditionalCost.maxCount < service.count) {
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT));
+                throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT);
               }
 
               additionalCost += baseAdditionalCost.cost * service.count;
@@ -518,7 +495,7 @@ export class PaymentService {
     const { discountCost, lupinDiscountCost } = await this.getDiscountCost(data, cost + additionalCost);
 
     if (data['discountCost'] && data['discountCost'] !== discountCost) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_DISCOUNT_COST_BAD_REQUEST));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_DISCOUNT_COST_BAD_REQUEST);
     }
 
     return {
@@ -550,13 +527,13 @@ export class PaymentService {
             //INFO: 즉시 예약일 때만 쿠폰 검증
             if (!data.reservationId) {
               if (usageDateStart > currentDate.getTime()) {
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_BEFORE));
+                throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_COUPON_DUE_DATE_BEFORE);
               }
 
               if (usageDateEnd < currentDate.getTime()) {
                 await this.couponRepository.deleteUserCoupon(isExist.id);
 
-                throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_COUPON_DUE_DATE_EXPIRED));
+                throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_COUPON_DUE_DATE_EXPIRED);
               }
             }
             const discount = isExist.coupon.getDiscountCost(cost);

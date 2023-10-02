@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { UpdateUserDTO } from '@/modules/user/dto';
-import { USER_ALREADY_BLOCKED, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
+import { USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
 import { UserException } from '@/modules/user/exception/user.exception';
 
 import { AdminUserDTO, BlockUserDTO } from '../dto/user';
@@ -43,7 +43,7 @@ export class AdminUserService {
     const user = await this.findUser(id);
 
     if (user.isBlocked) {
-      throw new UserException(USER_ERROR_CODE.CONFLICT(USER_ALREADY_BLOCKED));
+      throw new UserException(USER_ERROR_CODE.USER_ALREADY_BLOCKED);
     }
 
     await this.userRepository.updateUser(id, data);
@@ -53,7 +53,7 @@ export class AdminUserService {
     const user = await this.findUser(id);
 
     if (!user.isBlocked) {
-      throw new UserException(USER_ERROR_CODE.CONFLICT(USER_ALREADY_BLOCKED));
+      throw new UserException(USER_ERROR_CODE.USER_ALREADY_BLOCKED);
     }
 
     await this.userRepository.updateUser(id, {

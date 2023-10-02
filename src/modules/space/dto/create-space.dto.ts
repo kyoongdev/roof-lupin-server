@@ -3,12 +3,12 @@ import { BadRequestException } from '@nestjs/common';
 import { Property } from 'cumuco-nestjs';
 import { range } from 'lodash';
 
-import { CreateOpenHourDTO, CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
-import { CreateLocationDTO, CreateLocationDTOProps } from '@/modules/location/dto';
-import { CreateRentalTypeDTO, CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
+import { CreateOpenHourDTO, type CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
+import { CreateLocationDTO, type CreateLocationDTOProps } from '@/modules/location/dto';
+import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
 import { PeriodsValidation } from '@/utils';
 
-import { REFUND_POLICY_DAYS_BEFORE_TYPE, REFUND_POLICY_LENGTH, SPACE_ERROR_CODE } from '../exception/errorCode';
+import { SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
 
 import { CreateBuildingDTO, type CreateBuildingDTOProps } from './building';
@@ -174,12 +174,12 @@ export class CreateSpaceDTO {
 
   validateRefundPolicies() {
     if (this.refundPolicies.length !== 9) {
-      throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_LENGTH));
+      throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_LENGTH);
     }
     range(0, 9).forEach((idx) => {
       const isExist = this.refundPolicies.find((refundPolicy) => refundPolicy.daysBefore === idx);
       if (!isExist) {
-        throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(REFUND_POLICY_DAYS_BEFORE_TYPE));
+        throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_DAYS_BEFORE_TYPE);
       }
     });
   }

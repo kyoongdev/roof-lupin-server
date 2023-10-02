@@ -15,7 +15,7 @@ import {
   SendScheduleMessagesDTO,
 } from '@/modules/alarm/dto/fcm';
 import { AlarmException } from '@/modules/alarm/exception/alarm.exception';
-import { ALARM_ERROR_CODE, ALARM_PUSH_TOKEN_NOT_FOUND } from '@/modules/alarm/exception/errorCode';
+import { ALARM_ERROR_CODE } from '@/modules/alarm/exception/errorCode';
 import { UserRepository } from '@/modules/user/user.repository';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class AdminAlarmService {
     const { pushToken } = await this.userRepository.findUserPushToken(data.userId);
 
     if (!pushToken) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_PUSH_TOKEN_NOT_FOUND));
+      throw new AlarmException(ALARM_ERROR_CODE.ALARM_PUSH_TOKEN_NOT_FOUND);
     }
     this.messageEvent.sendAlarm(
       {
@@ -70,7 +70,7 @@ export class AdminAlarmService {
     const { pushToken } = await this.userRepository.findUserPushToken(data.userId);
 
     if (!pushToken) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_PUSH_TOKEN_NOT_FOUND));
+      throw new AlarmException(ALARM_ERROR_CODE.ALARM_PUSH_TOKEN_NOT_FOUND);
     }
 
     this.messageEvent.sendScheduleAlarm({ pushToken, userId }, message);

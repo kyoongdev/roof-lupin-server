@@ -11,12 +11,7 @@ import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../d
 
 import { HostBlockedTimeRepository } from './blocked-time.repository';
 import { BlockedTimeException } from './exception/blocked-time';
-import {
-  BLOCKED_TIME_ERROR_CODE,
-  BLOCKED_TIME_MUTATION_FORBIDDEN,
-  BLOCKED_TIME_PERIOD,
-  BLOCKED_TIME_RESERVATION_EXISTS,
-} from './exception/errorCode';
+import { BLOCKED_TIME_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class HostBlockedTimeService {
@@ -64,7 +59,7 @@ export class HostBlockedTimeService {
     const space = await this.spaceRepository.findSpace(data.spaceId);
 
     if (space.host.id !== hostId) {
-      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_MUTATION_FORBIDDEN);
     }
 
     const reservations = await this.reservationRepository.findReservations({
@@ -91,7 +86,7 @@ export class HostBlockedTimeService {
     const space = await this.spaceRepository.findSpace(blockedTime.spaceId);
 
     if (space.host.id !== hostId) {
-      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_MUTATION_FORBIDDEN);
     }
     const reservations = await this.reservationRepository.findReservations({
       where: {
@@ -119,7 +114,7 @@ export class HostBlockedTimeService {
     const space = await this.spaceRepository.findSpace(blockedTime.spaceId);
 
     if (space.host.id !== hostId) {
-      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.FORBIDDEN(BLOCKED_TIME_MUTATION_FORBIDDEN));
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_MUTATION_FORBIDDEN);
     }
 
     await this.blockedTimeRepository.deleteBlockedTime(id);
@@ -127,13 +122,13 @@ export class HostBlockedTimeService {
 
   validateBlockTime(startAt: number, endAt: number, reservations: ReservationDTO[]) {
     if (startAt > endAt) {
-      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BAD_REQUEST(BLOCKED_TIME_PERIOD));
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_PERIOD);
     }
 
     reservations.forEach(({ rentalTypes }) => {
       rentalTypes.forEach((rentalType) => {
         if (startAt <= rentalType.endAt && rentalType.startAt <= endAt) {
-          throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.CONFLICT(BLOCKED_TIME_RESERVATION_EXISTS));
+          throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_RESERVATION_EXISTS);
         }
       });
     });

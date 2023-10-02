@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-import { HARD_DELETE_FAILED, USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
+import { USER_ERROR_CODE } from '@/modules/user/exception/errorCode';
 import { UserException } from '@/modules/user/exception/user.exception';
 import { numberToSocialType } from '@/modules/user/utils';
 
@@ -51,7 +51,7 @@ export class AdminUserRepository {
     });
 
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
 
     return new AdminUserDTO({
@@ -76,7 +76,7 @@ export class AdminUserRepository {
     const user = await this.findUser(id);
 
     if (!user.deletedAt) {
-      throw new UserException(USER_ERROR_CODE.FORBIDDEN(HARD_DELETE_FAILED));
+      throw new UserException(USER_ERROR_CODE.HARD_DELETE_FAILED);
     }
 
     await this.database.user.delete({

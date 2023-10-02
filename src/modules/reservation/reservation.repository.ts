@@ -9,7 +9,7 @@ import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import type { CommonReservation } from '@/interface/reservation.interface';
 
 import { CreatePaymentDTO, ReservationDetailDTO, ReservationDTO, UpdatePaymentDTO, UpdateReservationDTO } from './dto';
-import { RESERVATION_ERROR_CODE, RESERVATION_NOT_FOUND } from './exception/errorCode';
+import { RESERVATION_ERROR_CODE } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class ReservationRepository {
     })) as CommonReservation | undefined;
 
     if (!reservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_NOT_FOUND);
     }
 
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
@@ -51,7 +51,7 @@ export class ReservationRepository {
     })) as CommonReservation | undefined;
 
     if (!reservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_NOT_FOUND);
     }
 
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));
@@ -80,7 +80,7 @@ export class ReservationRepository {
     })) as CommonReservation | undefined;
 
     if (!reservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_NOT_FOUND));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_NOT_FOUND);
     }
 
     return new ReservationDetailDTO(ReservationDetailDTO.generateReservationDetailDTO(reservation));

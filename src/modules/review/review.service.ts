@@ -12,16 +12,7 @@ import { ReservationRepository } from '../reservation/reservation.repository';
 import { ReviewCountDTO, ReviewsSummaryDTO, UpdateReviewDTO } from './dto';
 import { CreateReviewDTO } from './dto/create-review.dto';
 import { ReviewDTO } from './dto/review.dto';
-import {
-  REVIEW_ALREADY_EXISTS,
-  REVIEW_ERROR_CODE,
-  REVIEW_IMAGE_LENGTH_EXCEEDED,
-  REVIEW_MUTATION_FORBIDDEN,
-  REVIEW_SPACE_BAD_REQUEST,
-  REVIEW_UPDATE_DUE_DATE,
-  REVIEW_WRITE_DUE_DATE,
-  SCORE_BAD_REQUEST,
-} from './exception/errorCode';
+import { REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 import { ReviewRepository } from './review.repository';
 
@@ -161,23 +152,23 @@ export class ReviewService {
     const currentDate = new Date();
 
     if (reservation.isReviewed) {
-      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(REVIEW_ALREADY_EXISTS));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ALREADY_EXISTS);
     }
 
     if (getDateDiff(reservationDate, currentDate) > 14) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_WRITE_DUE_DATE));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_WRITE_DUE_DATE);
     }
 
     if (reservation.space.id !== props.spaceId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_SPACE_BAD_REQUEST));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_SPACE_BAD_REQUEST);
     }
 
     if (score < 1 || score > 5) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(SCORE_BAD_REQUEST));
+      throw new ReviewException(REVIEW_ERROR_CODE.SCORE_BAD_REQUEST);
     }
 
     if (props.images.length > 3) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_IMAGE_LENGTH_EXCEEDED));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_IMAGE_LENGTH_EXCEEDED);
     }
 
     return await this.reviewRepository.createReview(props, userId);
@@ -190,7 +181,7 @@ export class ReviewService {
     const reviewedAt = review.createdAt;
 
     if (getTimeDiff(currentDate, reviewedAt) > 72) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_UPDATE_DUE_DATE));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_UPDATE_DUE_DATE);
     }
 
     await this.checkIsUserValid(reviewId, userId);
@@ -230,7 +221,7 @@ export class ReviewService {
     const review = await this.reviewRepository.findReview(reviewId);
 
     if (review.user.id !== userId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.BAD_REQUEST(REVIEW_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_MUTATION_FORBIDDEN);
     }
   }
 }

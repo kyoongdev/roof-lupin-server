@@ -204,7 +204,7 @@ export class SpaceRepository {
     });
 
     if (!space) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
+      throw new SpaceException(SPACE_ERROR_CODE.SPACE_NOT_FOUND);
     }
 
     const {
@@ -263,7 +263,7 @@ export class SpaceRepository {
       include: SpaceDTO.generateSpaceInclude(),
     });
     if (!space) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND());
+      throw new SpaceException(SPACE_ERROR_CODE.SPACE_NOT_FOUND);
     }
 
     return new SpaceDTO(SpaceDTO.generateSpaceDTO(space, userId));

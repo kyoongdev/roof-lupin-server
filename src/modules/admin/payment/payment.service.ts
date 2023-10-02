@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { HostSettlementRepository } from '@/modules/host/settlement/settlement.repository';
-import { PAYMENT_ERROR_CODE, PAYMENT_REFUND_AMOUNT } from '@/modules/payment/exception/errorCode';
+import { PAYMENT_ERROR_CODE } from '@/modules/payment/exception/errorCode';
 import { PaymentException } from '@/modules/payment/exception/payment.exception';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { TossPayProvider } from '@/utils';
@@ -20,7 +20,7 @@ export class AdminPaymentService {
     const reservation = await this.reservationRepository.findReservation(reservationId);
 
     if (reservation.totalCost < data.refundCost) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.BAD_REQUEST(PAYMENT_REFUND_AMOUNT));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_AMOUNT);
     }
     await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
       cancelAmount: data.refundCost,

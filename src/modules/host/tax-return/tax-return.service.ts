@@ -5,7 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { TaxReturnDTO } from '@/modules/admin/dto/tax-return';
 import { TaxReturnRepository } from '@/modules/admin/tax-return/tax-return.repository';
 
-import { HOST_ERROR_CODE, HOST_TAX_RETURN_FIND_FORBIDDEN } from '../exception/errorCode';
+import { HOST_ERROR_CODE } from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class HostTaxReturnService {
     const taxReturn = await this.taxReturnRepository.findTaxReturn(id);
 
     if (taxReturn.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_TAX_RETURN_FIND_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_TAX_RETURN_FIND_FORBIDDEN);
     }
 
     return taxReturn;

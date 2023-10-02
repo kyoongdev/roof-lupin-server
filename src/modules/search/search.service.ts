@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 import { SpaceRepository } from '../space/space.repository';
 
-import { SEARCH_ERROR_CODE, SEARCH_RECORD_FORBIDDEN } from './exception/errorCode';
+import { SEARCH_ERROR_CODE } from './exception/errorCode';
 import { SearchException } from './exception/search.exception';
 import { SearchRepository } from './search.repository';
 
@@ -34,7 +34,7 @@ export class SearchService {
     const searchRecord = await this.findSearchRecord(id);
 
     if (searchRecord.userId !== userId) {
-      throw new SearchException(SEARCH_ERROR_CODE.FORBIDDEN(SEARCH_RECORD_FORBIDDEN));
+      throw new SearchException(SEARCH_ERROR_CODE.SEARCH_RECORD_FORBIDDEN);
     }
 
     await this.searchRepository.deleteSearchRecord(id);

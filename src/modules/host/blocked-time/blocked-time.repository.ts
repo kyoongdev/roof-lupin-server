@@ -7,7 +7,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
 
 import { BlockedTimeException } from './exception/blocked-time';
-import { BLOCKED_TIME_ERROR_CODE, BLOCKED_TIME_NOT_FOUND } from './exception/errorCode';
+import { BLOCKED_TIME_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class HostBlockedTimeRepository {
@@ -20,7 +20,7 @@ export class HostBlockedTimeRepository {
       },
     });
     if (!blockedTime) {
-      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.NOT_FOUND(BLOCKED_TIME_NOT_FOUND));
+      throw new BlockedTimeException(BLOCKED_TIME_ERROR_CODE.BLOCKED_TIME_NOT_FOUND);
     }
     return new BlockedTimeDTO(blockedTime);
   }

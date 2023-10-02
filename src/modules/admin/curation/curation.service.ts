@@ -7,7 +7,7 @@ import { CurationRepository } from '@/modules/curation/curation.repository';
 import { CreateCurationSpaceDTO, CurationDTO } from '@/modules/curation/dto';
 import { UpdateCurationSpaceDTO } from '@/modules/curation/dto/update-curation-space.dto';
 import { CurationException } from '@/modules/curation/exception/curation.exception';
-import { CURATION_ERROR_CODE, CURATION_SPACE_ALREADY_EXIST } from '@/modules/curation/exception/errorCode';
+import { CURATION_ERROR_CODE } from '@/modules/curation/exception/errorCode';
 
 import { AdminCreateCurationDTO, AdminUpdateCurationDTO, CurationCountDTO } from '../dto/curation';
 
@@ -46,7 +46,7 @@ export class AdminCurationService {
     const isExist = await this.curationRepository.checkCurationSpace(curationId, data.spaceId);
 
     if (isExist) {
-      throw new CurationException(CURATION_ERROR_CODE.CONFLICT(CURATION_SPACE_ALREADY_EXIST));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_SPACE_ALREADY_EXIST);
     }
 
     await this.curationRepository.createCurationSpace(curationId, data);

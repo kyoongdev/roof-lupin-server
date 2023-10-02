@@ -8,14 +8,7 @@ import { MessageEvent } from '@/event/message';
 import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateReviewAnswerDTO, UpdateReviewAnswerDTO } from '@/modules/review/dto';
 import { ReviewDTO } from '@/modules/review/dto/review.dto';
-import {
-  BEST_PHOTO_LENGTH_EXCEEDED,
-  REVIEW_ANSWER_ALREADY_WRITTEN,
-  REVIEW_ANSWER_MUTATION_FORBIDDEN,
-  REVIEW_ANSWER_UPDATE_DUE_DATE,
-  REVIEW_ERROR_CODE,
-  REVIEW_MUTATION_FORBIDDEN,
-} from '@/modules/review/exception/errorCode';
+import { REVIEW_ERROR_CODE } from '@/modules/review/exception/errorCode';
 import { ReviewException } from '@/modules/review/exception/review.exception';
 import { ReviewRepository } from '@/modules/review/review.repository';
 
@@ -61,11 +54,11 @@ export class HostReviewService {
     const reviewAnswer = await this.reviewRepository.checkReviewAnswer(reviewId, hostId);
 
     if (reviewAnswer) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_ALREADY_WRITTEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_ALREADY_WRITTEN);
     }
 
     if (review.space.hostId !== hostId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_MUTATION_FORBIDDEN);
     }
 
     this.messageEvent.createReviewAnswerAlarm({
@@ -83,13 +76,13 @@ export class HostReviewService {
     const reviewAnswer = await this.reviewRepository.findReviewAnswer(reviewAnswerId);
 
     if (reviewAnswer.host.id !== hostId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_MUTATION_FORBIDDEN);
     }
 
     const timeDiff = getTimeDiff(reviewAnswer.createdAt, new Date());
 
     if (timeDiff > 72) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_UPDATE_DUE_DATE));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_UPDATE_DUE_DATE);
     }
 
     await this.historyRepository.createHistory({
@@ -105,7 +98,7 @@ export class HostReviewService {
     const reviewAnswer = await this.reviewRepository.findReviewAnswer(reviewAnswerId);
 
     if (reviewAnswer.host.id !== hostId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_ANSWER_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_MUTATION_FORBIDDEN);
     }
 
     await this.reviewRepository.deleteReviewAnswer(reviewAnswerId);
@@ -116,7 +109,7 @@ export class HostReviewService {
     const review = await this.findReview(reviewImage.reviewId);
 
     if (review.space.hostId !== hostId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_MUTATION_FORBIDDEN);
     }
 
     const bestPhotos = await this.reviewRepository.findBestReviewImages({
@@ -128,7 +121,7 @@ export class HostReviewService {
     });
 
     if (bestPhotos.length >= 10) {
-      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
+      throw new ReviewException(REVIEW_ERROR_CODE.BEST_PHOTO_LENGTH_EXCEEDED);
     }
 
     await this.reviewRepository.updateReviewImage(id, true);
@@ -139,7 +132,7 @@ export class HostReviewService {
     const review = await this.findReview(reviewImage.reviewId);
 
     if (review.space.hostId !== hostId) {
-      throw new ReviewException(REVIEW_ERROR_CODE.FORBIDDEN(REVIEW_MUTATION_FORBIDDEN));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_MUTATION_FORBIDDEN);
     }
 
     await this.reviewRepository.updateReviewImage(id, false);

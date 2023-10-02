@@ -12,12 +12,7 @@ import { UpdateSpaceDTO } from '@/modules/space/dto/update-space.dto';
 import { SpaceRepository } from '@/modules/space/space.repository';
 
 import { HostSpaceCountDTO } from '../dto/space';
-import {
-  HOST_ERROR_CODE,
-  HOST_SPACE_FIND_FORBIDDEN,
-  HOST_SPACE_MUTATION_FORBIDDEN,
-  HOST_SPACE_RENTAL_TYPE_BAD_REQUEST,
-} from '../exception/errorCode';
+import { HOST_ERROR_CODE } from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
@@ -50,7 +45,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(id);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_FIND_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_FIND_FORBIDDEN);
     }
 
     return space;
@@ -88,7 +83,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(spaceId);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_FIND_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_FIND_FORBIDDEN);
     }
     return await this.rentalTypeRepository.findRentalTypes({
       where: {
@@ -101,7 +96,7 @@ export class HostSpaceService {
     const rentalType = data.rentalTypes;
     const timeCostCount = rentalType.filter((item) => item.rentalType === 1).length;
     if (timeCostCount > 1) {
-      throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_SPACE_RENTAL_TYPE_BAD_REQUEST));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_RENTAL_TYPE_BAD_REQUEST);
     }
 
     return await this.spaceRepository.createSpace(hostId, data);
@@ -109,12 +104,12 @@ export class HostSpaceService {
   async updateRentalType(spaceId: string, rentalTypeId: string, hostId: string, data: UpdateRentalTypeDTO) {
     const space = await this.spaceRepository.findSpace(spaceId);
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
     const rentalType = await this.rentalTypeRepository.findRentalType(rentalTypeId);
 
     if (space.id !== rentalType.spaceId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
 
     await this.rentalTypeRepository.updateRentalType(rentalTypeId, data);
@@ -124,7 +119,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(id);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
     if (data.images) {
       await Promise.all(
@@ -141,7 +136,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(id);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
 
     if (space.images) {
@@ -159,7 +154,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(id);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
 
     await this.spaceRepository.hardDeleteSpace(id);
@@ -169,7 +164,7 @@ export class HostSpaceService {
     const mainSpace = await this.spaceRepository.getMainSpace(hostId);
 
     if (mainSpace.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
 
     if (mainSpace) {
@@ -182,7 +177,7 @@ export class HostSpaceService {
     const space = await this.spaceRepository.findSpace(id);
 
     if (space.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(HOST_SPACE_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_MUTATION_FORBIDDEN);
     }
 
     await this.spaceRepository.unsetMainSpace(id);

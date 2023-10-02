@@ -1,11 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CreateReportAnswerDTO, ReportDTO, UpdateReportDTO } from '@/modules/report/dto';
 import { UpdateReportAnswerDTO } from '@/modules/report/dto/update-report-answer.dto';
-import { REPORT_ANSWER_ALREADY_EXISTS } from '@/modules/report/exception/errorCode';
+import { REPORT_ERROR_CODE } from '@/modules/report/exception/errorCode';
+import { ReportException } from '@/modules/report/exception/report.exception';
 import { ReportRepository } from '@/modules/report/report.repository';
 
 @Injectable()
@@ -53,7 +54,7 @@ export class AdminReportService {
     });
 
     if (isExist) {
-      throw new ConflictException(REPORT_ANSWER_ALREADY_EXISTS);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ANSWER_ALREADY_EXISTS);
     }
 
     return await this.reportRepository.createReportAnswer(reportId, adminId, data);

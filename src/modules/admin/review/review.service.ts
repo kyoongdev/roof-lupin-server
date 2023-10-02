@@ -5,7 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CreateBestReviewImagesDTO, ReviewImageDetailDTO } from '@/modules/review/dto';
 import { DeleteBestReviewImagesQuery } from '@/modules/review/dto/query';
-import { BEST_PHOTO_LENGTH_EXCEEDED, REVIEW_ERROR_CODE } from '@/modules/review/exception/errorCode';
+import { REVIEW_ERROR_CODE } from '@/modules/review/exception/errorCode';
 import { ReviewException } from '@/modules/review/exception/review.exception';
 import { ReviewRepository } from '@/modules/review/review.repository';
 
@@ -59,7 +59,7 @@ export class AdminReviewService {
     });
 
     if (bestPhotos.length >= 10) {
-      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
+      throw new ReviewException(REVIEW_ERROR_CODE.BEST_PHOTO_LENGTH_EXCEEDED);
     }
 
     await Promise.all(
@@ -83,7 +83,7 @@ export class AdminReviewService {
     });
 
     if (bestPhotos.length >= 10) {
-      throw new ReviewException(REVIEW_ERROR_CODE.CONFLICT(BEST_PHOTO_LENGTH_EXCEEDED));
+      throw new ReviewException(REVIEW_ERROR_CODE.BEST_PHOTO_LENGTH_EXCEEDED);
     }
 
     await this.reviewRepository.updateReviewImage(id, true);

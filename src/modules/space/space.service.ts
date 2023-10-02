@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { PrismaService } from '@/database/prisma.service';
 import { SpaceSQL } from '@/sql';
 
 import { HolidayService } from '../holiday/holiday.service';
@@ -11,12 +10,7 @@ import { SearchRepository } from '../search/search.repository';
 
 import { InterestedDTO, SpaceDTO } from './dto';
 import { FindSpacesQuery } from './dto/query';
-import {
-  ALREADY_INTERESTED,
-  CURRENT_LOCATION_BAD_REQUEST,
-  NOT_INTERESTED,
-  SPACE_ERROR_CODE,
-} from './exception/errorCode';
+import { SPACE_ERROR_CODE } from './exception/errorCode';
 import { SpaceException } from './exception/space.exception';
 import { SpaceRepository } from './space.repository';
 
@@ -25,7 +19,6 @@ export class SpaceService {
   constructor(
     private readonly spaceRepository: SpaceRepository,
     private readonly searchRepository: SearchRepository,
-    private readonly database: PrismaService,
     private readonly holidayService: HolidayService
   ) {}
 
@@ -64,7 +57,7 @@ export class SpaceService {
 
     if (isDistance) {
       if (!query.lat && !query.lng && !query.distance) {
-        throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
+        throw new SpaceException(SPACE_ERROR_CODE.CURRENT_LOCATION_BAD_REQUEST);
       }
     }
 
@@ -103,7 +96,7 @@ export class SpaceService {
     const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
 
     if (isInterested) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(ALREADY_INTERESTED));
+      throw new SpaceException(SPACE_ERROR_CODE.ALREADY_INTERESTED);
     }
 
     await this.spaceRepository.createInterest(userId, spaceId);
@@ -115,7 +108,7 @@ export class SpaceService {
     const isInterested = await this.spaceRepository.checkIsInterested(userId, spaceId);
 
     if (!isInterested) {
-      throw new SpaceException(SPACE_ERROR_CODE.CONFLICT(NOT_INTERESTED));
+      throw new SpaceException(SPACE_ERROR_CODE.NOT_INTERESTED);
     }
 
     await this.spaceRepository.deleteInterest(userId, spaceId);

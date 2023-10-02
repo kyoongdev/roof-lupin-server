@@ -13,7 +13,7 @@ import {
   UpdateHostDTO,
   UpdateHostPasswordDTO,
 } from './dto';
-import { HOST_ERROR_CODE, HOST_PHONE_NUMBER_BAD_REQUEST } from './exception/errorCode';
+import { HOST_ERROR_CODE } from './exception/errorCode';
 import { HostException } from './exception/host.exception';
 import { HostRepository } from './host.repository';
 
@@ -44,7 +44,7 @@ export class HostService {
     const host = await this.hostRepository.findHostByEmail(data.email);
 
     if (host.phoneNumber !== data.phoneNumber) {
-      throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_PHONE_NUMBER_BAD_REQUEST));
+      throw new HostException(HOST_ERROR_CODE.HOST_PHONE_NUMBER_BAD_REQUEST);
     }
 
     return new IsHostCheckedDTO({ isChecked: true });
@@ -54,7 +54,7 @@ export class HostService {
     const host = await this.hostRepository.findHostByEmail(data.email);
 
     if (host.phoneNumber !== data.phoneNumber) {
-      throw new HostException(HOST_ERROR_CODE.BAD_REQUEST(HOST_PHONE_NUMBER_BAD_REQUEST));
+      throw new HostException(HOST_ERROR_CODE.HOST_PHONE_NUMBER_BAD_REQUEST);
     }
     const newPassword = nanoid(10).toUpperCase();
     const password = this.encrypt.hashPassword(host.salt, newPassword);

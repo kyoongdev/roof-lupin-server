@@ -6,7 +6,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { CurationRepository } from './curation.repository';
 import { CreateCurationDTO, CurationDTO, UpdateCurationDTO } from './dto';
 import { CurationException } from './exception/curation.exception';
-import { CURATION_ERROR_CODE, CURATION_MUTATE_FORBIDDEN } from './exception/errorCode';
+import { CURATION_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class CurationService {
@@ -54,7 +54,7 @@ export class CurationService {
     const curation = await this.findCuration(id);
 
     if (userId && curation.user.id !== userId) {
-      throw new CurationException(CURATION_ERROR_CODE.FORBIDDEN(CURATION_MUTATE_FORBIDDEN));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_MUTATE_FORBIDDEN);
     }
 
     await this.curationRepository.updateCuration(id, data);
@@ -64,7 +64,7 @@ export class CurationService {
     const curation = await this.findCuration(id);
 
     if (userId && curation.user.id !== userId) {
-      throw new CurationException(CURATION_ERROR_CODE.FORBIDDEN(CURATION_MUTATE_FORBIDDEN));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_MUTATE_FORBIDDEN);
     }
 
     await this.curationRepository.deleteCuration(id);

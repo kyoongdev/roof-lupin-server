@@ -5,7 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { CreateFAQDTO, FAQDTO } from './dto';
 import { UserUpdateFAQDTO } from './dto/user-update-faq.dto';
-import { FAQ_ERROR_CODE, FAQ_MUTATION_FORBIDDEN } from './exception/errorCode';
+import { FAQ_ERROR_CODE } from './exception/errorCode';
 import { FAQException } from './exception/faq.exception';
 import { FaqRepository } from './faq.repository';
 
@@ -45,7 +45,7 @@ export class FaqService {
   async updateFAQ(id: string, userId: string, data: UserUpdateFAQDTO) {
     const faq = await this.findFAQ(id);
     if (faq.user.id !== userId) {
-      throw new FAQException(FAQ_ERROR_CODE.FORBIDDEN(FAQ_MUTATION_FORBIDDEN));
+      throw new FAQException(FAQ_ERROR_CODE.FAQ_MUTATION_FORBIDDEN);
     }
     await this.FaqRepository.updateFAQ(id, data);
   }
@@ -54,7 +54,7 @@ export class FaqService {
     const faq = await this.findFAQ(id);
 
     if (faq.user.id !== userId) {
-      throw new FAQException(FAQ_ERROR_CODE.FORBIDDEN(FAQ_MUTATION_FORBIDDEN));
+      throw new FAQException(FAQ_ERROR_CODE.FAQ_MUTATION_FORBIDDEN);
     }
 
     await this.FaqRepository.deleteFAQ(id);

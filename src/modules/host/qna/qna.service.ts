@@ -11,7 +11,7 @@ import { QnARepository } from '@/modules/qna/qna.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 
 import { QnACountDTO } from '../dto/qna';
-import { HOST_ERROR_CODE, QNA_ANSWER_MUTATION_FORBIDDEN } from '../exception/errorCode';
+import { HOST_ERROR_CODE } from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
@@ -76,7 +76,7 @@ export class HostQnAService {
     const answer = await this.findQnAAnswer(qnaAnswerId);
 
     if (answer.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(QNA_ANSWER_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
     }
 
     await this.historyRepository.createHistory({
@@ -91,7 +91,7 @@ export class HostQnAService {
     const answer = await this.findQnAAnswer(qnaAnswerId);
 
     if (answer.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.FORBIDDEN(QNA_ANSWER_MUTATION_FORBIDDEN));
+      throw new HostException(HOST_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
     }
 
     await this.qnaRepository.deleteQnAAnswer(qnaAnswerId);

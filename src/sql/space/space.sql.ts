@@ -1,16 +1,16 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Sql } from '@prisma/client/runtime';
 import { range } from 'lodash';
 
 import { getWeek } from '@/common/date';
 import { FindSpacesQuery } from '@/modules/space/dto/query';
-import { CURRENT_LOCATION_BAD_REQUEST, SPACE_ERROR_CODE } from '@/modules/space/exception/errorCode';
+import { SPACE_ERROR_CODE } from '@/modules/space/exception/errorCode';
 import { SpaceException } from '@/modules/space/exception/space.exception';
 import { getDay } from '@/utils';
 
-import { BaseSQLInterface } from '../base-sql.interface';
+import type { BaseSQLInterface } from '../base-sql.interface';
 
-import { BaseSpaceSQL, BaseSpaceSQLProps } from './base-space.sql';
+import { BaseSpaceSQL, type BaseSpaceSQLProps } from './base-space.sql';
 
 interface SpaceSQLProps extends BaseSpaceSQLProps {
   query: FindSpacesQuery;
@@ -265,7 +265,7 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
 
     if (isDistance) {
       if (!this.query.lat && !this.query.lng && !this.query.distance) {
-        throw new SpaceException(SPACE_ERROR_CODE.BAD_REQUEST(CURRENT_LOCATION_BAD_REQUEST));
+        throw new SpaceException(SPACE_ERROR_CODE.CURRENT_LOCATION_BAD_REQUEST);
       }
     }
 

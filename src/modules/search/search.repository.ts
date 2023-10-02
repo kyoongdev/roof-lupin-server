@@ -11,7 +11,7 @@ import {
   SearchRecordDTO,
   UpdateSearchRecommendDTO,
 } from './dto';
-import { SEARCH_ERROR_CODE, SEARCH_RECOMMEND_NOT_FOUND, SEARCH_RECORD_NOT_FOUND } from './exception/errorCode';
+import { SEARCH_ERROR_CODE } from './exception/errorCode';
 import { SearchException } from './exception/search.exception';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class SearchRepository {
     });
 
     if (!searchRecord) {
-      throw new SearchException(SEARCH_ERROR_CODE.NOT_FOUND(SEARCH_RECORD_NOT_FOUND));
+      throw new SearchException(SEARCH_ERROR_CODE.SEARCH_RECORD_NOT_FOUND);
     }
     return new SearchRecordDTO(searchRecord);
   }
@@ -50,7 +50,7 @@ export class SearchRepository {
     });
 
     if (!searchRecommend) {
-      throw new SearchException(SEARCH_ERROR_CODE.NOT_FOUND(SEARCH_RECOMMEND_NOT_FOUND));
+      throw new SearchException(SEARCH_ERROR_CODE.SEARCH_RECOMMEND_NOT_FOUND);
     }
     return new SearchRecommendDTO(searchRecommend);
   }

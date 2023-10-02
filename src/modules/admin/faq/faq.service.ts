@@ -4,8 +4,6 @@ import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { FAQDTO } from '@/modules/faq/dto';
-import { FAQ_ERROR_CODE, FAQ_NOT_FOUND } from '@/modules/faq/exception/errorCode';
-import { FAQException } from '@/modules/faq/exception/faq.exception';
 import { FaqRepository } from '@/modules/faq/faq.repository';
 
 import { AdminUpdateFAQAnswerDTO } from '../dto/faq';

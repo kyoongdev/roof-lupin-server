@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 
@@ -12,7 +12,8 @@ import {
   UpdateLocationFilterDTO,
   UpdateLocationFilterGroupDTO,
 } from './dto';
-import { LOCATION_FILTER_GROUP_NOT_FOUND } from './exception/errorCode';
+import { LOCATION_ERROR_CODE } from './exception/errorCode';
+import { LocationFilterException } from './exception/location-filter.exception';
 
 @Injectable()
 export class LocationFilterRepository {
@@ -33,7 +34,7 @@ export class LocationFilterRepository {
     });
 
     if (!locationFilterGroup) {
-      throw new NotFoundException(LOCATION_FILTER_GROUP_NOT_FOUND);
+      throw new LocationFilterException(LOCATION_ERROR_CODE.LOCATION_FILTER_GROUP_NOT_FOUND);
     }
     return new LocationFilterGroupDTO(locationFilterGroup);
   }
@@ -64,7 +65,7 @@ export class LocationFilterRepository {
     });
 
     if (!locationFilter) {
-      throw new NotFoundException(LOCATION_FILTER_GROUP_NOT_FOUND);
+      throw new LocationFilterException(LOCATION_ERROR_CODE.LOCATION_FILTER_NOT_FOUND);
     }
     return new LocationFilterDTO(locationFilter);
   }

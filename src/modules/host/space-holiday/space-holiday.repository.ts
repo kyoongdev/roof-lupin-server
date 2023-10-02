@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 import { CreateSpaceHolidayDTO, SpaceHolidayDTO, UpdateSpaceHolidayDTO } from '@/modules/space/dto/holiday';
 
-import { HOST_ERROR_CODE, HOST_SPACE_HOLIDAY_NOT_FOUND } from '../exception/errorCode';
+import { HOST_ERROR_CODE } from '../exception/errorCode';
 import { HostException } from '../exception/host.exception';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class HostSpaceHolidayRepository {
     });
 
     if (!holiday) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_SPACE_HOLIDAY_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_HOLIDAY_NOT_FOUND);
     }
 
     return new SpaceHolidayDTO(holiday);

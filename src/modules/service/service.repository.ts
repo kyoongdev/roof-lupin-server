@@ -8,7 +8,7 @@ import { CreateServiceDTO, ServiceDTO, UpdateServiceDTO } from './dto';
 import { CreateServiceTitleDTO } from './dto/create-service-title.dto';
 import { ServiceTitleDTO } from './dto/service-title.dto';
 import { UpdateServiceTitleDTO } from './dto/update-service-title.dto';
-import { SERVICE_ERROR_CODE, SERVICE_NOT_FOUND } from './exception/errorCode';
+import { SERVICE_ERROR_CODE } from './exception/errorCode';
 import { ServiceException } from './exception/service.exception';
 
 @Injectable()
@@ -28,9 +28,9 @@ export class ServiceRepository {
         },
       },
     });
-    console.log(service);
+
     if (!service) {
-      throw new ServiceException(SERVICE_ERROR_CODE.NOT_FOUND(SERVICE_NOT_FOUND));
+      throw new ServiceException(SERVICE_ERROR_CODE.SERVICE_NOT_FOUND);
     }
 
     return new ServiceDTO(service);
@@ -148,7 +148,7 @@ export class ServiceRepository {
     });
 
     if (!serviceTitle) {
-      throw new ServiceException(SERVICE_ERROR_CODE.NOT_FOUND(SERVICE_NOT_FOUND));
+      throw new ServiceException(SERVICE_ERROR_CODE.SERVICE_TITLE_NOT_FOUND);
     }
 
     return new ServiceTitleDTO(serviceTitle);

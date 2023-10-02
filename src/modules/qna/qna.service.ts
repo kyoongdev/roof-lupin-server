@@ -6,7 +6,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { HistoryRepository } from '../history/history.repository';
 
 import { CreateQnADTO, QnACountDTO, QnACountSummaryDTO, QnADTO, UpdateQnADTO } from './dto';
-import { QNA_ERROR_CODE, QNA_MUTATION_FORBIDDEN, QNA_READ_FORBIDDEN } from './exception/errorCode';
+import { QNA_ERROR_CODE } from './exception/errorCode';
 import { QnAException } from './exception/qna.exception';
 import { QnARepository } from './qna.repository';
 
@@ -52,7 +52,7 @@ export class QnAService {
     const qna = await this.qnaRepository.findQnA(id);
 
     if (qna.user.id !== userId) {
-      throw new QnAException(QNA_ERROR_CODE.FORBIDDEN(QNA_READ_FORBIDDEN));
+      throw new QnAException(QNA_ERROR_CODE.QNA_READ_FORBIDDEN);
     }
 
     return qna;
@@ -129,7 +129,7 @@ export class QnAService {
 
   checkIsUserValid(qna: QnADTO, userId: string) {
     if (qna.user.id !== userId) {
-      throw new QnAException(QNA_ERROR_CODE.FORBIDDEN(QNA_MUTATION_FORBIDDEN));
+      throw new QnAException(QNA_ERROR_CODE.QNA_MUTATION_FORBIDDEN);
     }
   }
 }

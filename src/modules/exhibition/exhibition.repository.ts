@@ -12,10 +12,9 @@ import {
   ExhibitionDetailDTO,
   ExhibitionDTO,
   UpdateExhibitionDTO,
-  UpdateExhibitionOrderDTO,
   UpdateExhibitionSpaceDTO,
 } from './dto';
-import { EXHIBITION_ERROR_CODE, EXHIBITION_NOT_FOUND, EXHIBITION_SPACE_NOT_FOUND } from './exception/errorCode';
+import { EXHIBITION_ERROR_CODE } from './exception/errorCode';
 import { ExhibitionException } from './exception/exhibition.exception';
 
 @Injectable()
@@ -51,7 +50,7 @@ export class ExhibitionRepository {
       },
     });
 
-    if (!exhibition) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_NOT_FOUND));
+    if (!exhibition) throw new ExhibitionException(EXHIBITION_ERROR_CODE.EXHIBITION_NOT_FOUND);
 
     return new ExhibitionDetailDTO({
       ...exhibition,
@@ -206,7 +205,7 @@ export class ExhibitionRepository {
           },
         },
       });
-      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_SPACE_NOT_FOUND));
+      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.EXHIBITION_SPACE_NOT_FOUND);
 
       await prisma.exhibitionSpace.updateMany({
         where: {
@@ -293,7 +292,7 @@ export class ExhibitionRepository {
           },
         },
       });
-      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.NOT_FOUND(EXHIBITION_SPACE_NOT_FOUND));
+      if (!isExist) throw new ExhibitionException(EXHIBITION_ERROR_CODE.EXHIBITION_SPACE_NOT_FOUND);
 
       await prisma.exhibitionSpace.updateMany({
         where: {

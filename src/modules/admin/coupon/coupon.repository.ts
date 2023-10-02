@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 import { CouponException } from '@/modules/coupon/exception/coupon.exception';
-import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from '@/modules/coupon/exception/errorCode';
+import { COUPON_ERROR_CODE } from '@/modules/coupon/exception/errorCode';
 
 import { AdminCouponDTO, UserAdminCouponDTO } from '../dto/coupon';
 
@@ -20,7 +20,7 @@ export class AdminCouponRepository {
     });
 
     if (!coupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.COUPON_NOT_FOUND);
     }
 
     return new AdminCouponDTO(coupon);
@@ -34,7 +34,7 @@ export class AdminCouponRepository {
     });
 
     if (!coupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.COUPON_NOT_FOUND);
     }
 
     return new AdminCouponDTO(coupon);
@@ -80,7 +80,7 @@ export class AdminCouponRepository {
     });
 
     if (!userCoupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.USER_COUPON_NOT_FOUND);
     }
 
     return new UserAdminCouponDTO({
@@ -108,7 +108,7 @@ export class AdminCouponRepository {
     });
 
     if (!userCoupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.USER_COUPON_NOT_FOUND);
     }
 
     return new UserAdminCouponDTO({

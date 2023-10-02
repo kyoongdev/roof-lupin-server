@@ -4,9 +4,6 @@ import { Prisma } from '@prisma/client';
 
 import { FileService } from '@/modules/file/file.service';
 
-import { AdminException } from '../exception/admin.exception';
-import { ADMIN_ERROR_CODE, ADMIN_ICON_IN_USE } from '../exception/errorCode';
-
 import { IconRepository } from './icon.repository';
 
 @Injectable()

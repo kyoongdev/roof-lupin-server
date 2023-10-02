@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { MessageEvent } from '@/event/message';
 import { ValidateAccountQuery, ValidatedAccountDTO } from '@/modules/payment/dto';
-import { PAYMENT_ERROR_CODE, PAYMENT_REFUND_FORBIDDEN } from '@/modules/payment/exception/errorCode';
+import { PAYMENT_ERROR_CODE } from '@/modules/payment/exception/errorCode';
 import { PaymentException } from '@/modules/payment/exception/payment.exception';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { PortOneProvider, TossPayProvider } from '@/utils';
@@ -33,11 +33,11 @@ export class HostPaymentService {
     const reservation = await this.reservationRepository.findReservation(id);
 
     if (reservation.space.hostId !== hostId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
 
     if (!reservation.payedAt || !reservation.orderResultId) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.FORBIDDEN(PAYMENT_REFUND_FORBIDDEN));
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
 
     await this.tossPayProvider.cancelPaymentByPaymentKey(reservation.orderResultId, {

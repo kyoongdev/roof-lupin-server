@@ -6,7 +6,7 @@ import { SpaceDTO } from '../space/dto';
 import { SpaceRepository } from '../space/space.repository';
 
 import { HomeContentsDTO } from './dto';
-import { HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from './exception/errorCode';
+import { HOME_ERROR_CODE } from './exception/errorCode';
 import { HomeException } from './exception/home.exception';
 
 @Injectable()
@@ -96,7 +96,7 @@ export class HomeService {
       },
     });
     if (!category) {
-      throw new HomeException(HOME_ERROR_CODE.NOT_FOUND(HOME_CONTENTS_NOT_FOUND));
+      throw new HomeException(HOME_ERROR_CODE.HOME_CONTENTS_NOT_FOUND);
     }
 
     return category;

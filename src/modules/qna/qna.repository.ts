@@ -84,7 +84,7 @@ export class QnARepository {
       },
     });
     if (!qna) {
-      throw new QnAException(QNA_ERROR_CODE.NOT_FOUND());
+      throw new QnAException(QNA_ERROR_CODE.QNA_NOT_FOUND);
     }
 
     return new QnADTO({
@@ -152,7 +152,7 @@ export class QnARepository {
       },
     });
     if (!qnaAnswer) {
-      throw new QnAException(QNA_ERROR_CODE.NOT_FOUND());
+      throw new QnAException(QNA_ERROR_CODE.QNA_NOT_FOUND);
     }
 
     return new QnAAnswerDTO(qnaAnswer);

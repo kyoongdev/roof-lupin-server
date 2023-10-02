@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateFrequentQuestionDTO, FrequentQuestionDTO, UpdateFrequentQuestionDTO } from './dto';
-import { FREQUENT_QUESTION_ERROR_CODE, FREQUENT_QUESTION_NOT_FOUND } from './exception/errorCode';
+import { FREQUENT_QUESTION_ERROR_CODE } from './exception/errorCode';
 import { FrequentQuestionException } from './exception/frequent-question.exception';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class FrequentQuestionRepository {
     });
 
     if (!question) {
-      throw new FrequentQuestionException(FREQUENT_QUESTION_ERROR_CODE.NOT_FOUND(FREQUENT_QUESTION_NOT_FOUND));
+      throw new FrequentQuestionException(FREQUENT_QUESTION_ERROR_CODE.FREQUENT_QUESTION_NOT_FOUND);
     }
 
     return new FrequentQuestionDTO(question);

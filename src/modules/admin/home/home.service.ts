@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma.service';
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';
-import { HOME_CONTENT_DELETED, HOME_CONTENTS_NOT_FOUND, HOME_ERROR_CODE } from '@/modules/home/exception/errorCode';
+import { HOME_ERROR_CODE } from '@/modules/home/exception/errorCode';
 import { HomeException } from '@/modules/home/exception/home.exception';
 import { RankingRepository } from '@/modules/ranking/ranking.repository';
 import { SpaceDTO } from '@/modules/space/dto';
@@ -28,7 +28,7 @@ export class AdminHomeService {
     });
 
     if (!content) {
-      throw new HomeException(HOME_ERROR_CODE.NOT_FOUND(HOME_CONTENTS_NOT_FOUND));
+      throw new HomeException(HOME_ERROR_CODE.HOME_CONTENTS_NOT_FOUND);
     }
     return content;
   }
@@ -230,21 +230,21 @@ export class AdminHomeService {
     if (data.contentCategoryId) {
       const contentCategory = await this.categoryRepository.findContentCategory(data.contentCategoryId);
       if (contentCategory.deletedAt) {
-        throw new BadRequestException(HOME_CONTENT_DELETED);
+        throw new HomeException(HOME_ERROR_CODE.HOME_CONTENT_DELETED);
       }
     }
     if (data.exhibitionId) {
       const exhibition = await this.exhibitionRepository.findExhibition(data.exhibitionId);
 
       if (exhibition.deletedAt) {
-        throw new BadRequestException(HOME_CONTENT_DELETED);
+        throw new HomeException(HOME_ERROR_CODE.HOME_CONTENT_DELETED);
       }
     }
 
     if (data.rankingId) {
       const ranking = await this.rankingRepository.findRanking(data.rankingId);
       if (ranking.deletedAt) {
-        throw new BadRequestException(HOME_CONTENT_DELETED);
+        throw new HomeException(HOME_ERROR_CODE.HOME_CONTENT_DELETED);
       }
     }
   }

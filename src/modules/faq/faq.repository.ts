@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 import { CreateFAQDTO, FAQDTO, UpdateFAQDTO } from '@/modules/faq/dto';
-import { FAQ_ERROR_CODE, FAQ_NOT_FOUND } from '@/modules/faq/exception/errorCode';
+import { FAQ_ERROR_CODE } from '@/modules/faq/exception/errorCode';
 import { FAQException } from '@/modules/faq/exception/faq.exception';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class FaqRepository {
     });
 
     if (!faq) {
-      throw new FAQException(FAQ_ERROR_CODE.NOT_FOUND(FAQ_NOT_FOUND));
+      throw new FAQException(FAQ_ERROR_CODE.FAQ_NOT_FOUND);
     }
     return new FAQDTO(faq);
   }

@@ -6,7 +6,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 import { CategoryRepository } from './category.repository';
 import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from './dto';
 import { CategoryException } from './exception/category.exception';
-import { CATEGORY_ERROR_CODE, HOME_CATEGORY_COUNT, HOME_CATEGORY_ICON_PATH_BAD_REQUEST } from './exception/errorCode';
+import { CATEGORY_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class CategoryService {
@@ -45,11 +45,11 @@ export class CategoryService {
     });
 
     if (homeCategoryCount === 5) {
-      throw new CategoryException(CATEGORY_ERROR_CODE.CONFLICT(HOME_CATEGORY_COUNT));
+      throw new CategoryException(CATEGORY_ERROR_CODE.HOME_CATEGORY_COUNT);
     }
 
     if (data.isHome === true && (!data.icons || data.icons.length === 0)) {
-      throw new CategoryException(CATEGORY_ERROR_CODE.BAD_REQUEST(HOME_CATEGORY_ICON_PATH_BAD_REQUEST));
+      throw new CategoryException(CATEGORY_ERROR_CODE.HOME_CATEGORY_ICON_PATH_BAD_REQUEST);
     }
 
     return await this.categoryRepository.createCategory(data);
@@ -60,7 +60,7 @@ export class CategoryService {
 
     if (data.isHome === true) {
       if (!data.icons || data.icons.length === 0) {
-        throw new CategoryException(CATEGORY_ERROR_CODE.BAD_REQUEST(HOME_CATEGORY_ICON_PATH_BAD_REQUEST));
+        throw new CategoryException(CATEGORY_ERROR_CODE.HOME_CATEGORY_ICON_PATH_BAD_REQUEST);
       }
       const homeCategoryCount = await this.categoryRepository.countCategories({
         where: {
@@ -69,7 +69,7 @@ export class CategoryService {
       });
 
       if (homeCategoryCount === 5) {
-        throw new CategoryException(CATEGORY_ERROR_CODE.CONFLICT(HOME_CATEGORY_COUNT));
+        throw new CategoryException(CATEGORY_ERROR_CODE.HOME_CATEGORY_COUNT);
       }
     }
 

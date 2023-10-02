@@ -14,7 +14,7 @@ import {
   UpdateRankingDTO,
   UpdateRankingSpaceDTO,
 } from './dto';
-import { RANKING_ERROR_CODE, RANKING_NOT_FOUND, RANKING_SPACE_NOT_FOUND } from './exception/errorCode';
+import { RANKING_ERROR_CODE } from './exception/errorCode';
 import { RankingException } from './exception/ranking.exception';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class RankingRepository {
     });
 
     if (!ranking) {
-      throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_NOT_FOUND));
+      throw new RankingException(RANKING_ERROR_CODE.RANKING_NOT_FOUND);
     }
 
     return new RankingDTO({
@@ -162,7 +162,7 @@ export class RankingRepository {
           },
         },
       });
-      if (!isExist) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
+      if (!isExist) throw new RankingException(RANKING_ERROR_CODE.RANKING_SPACE_NOT_FOUND);
       await prisma.rankingSpaces.updateMany({
         where: {
           ...(isExist.orderNo > data.orderNo
@@ -272,7 +272,7 @@ export class RankingRepository {
           },
         },
       });
-      if (!rankingSpace) throw new RankingException(RANKING_ERROR_CODE.NOT_FOUND(RANKING_SPACE_NOT_FOUND));
+      if (!rankingSpace) throw new RankingException(RANKING_ERROR_CODE.RANKING_SPACE_NOT_FOUND);
 
       await prisma.rankingSpaces.updateMany({
         where: {

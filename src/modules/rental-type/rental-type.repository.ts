@@ -7,7 +7,7 @@ import type { CommonReservationWithRentalType } from '@/interface/reservation.in
 import { ReservationDTO } from '@/modules/reservation/dto';
 
 import { AdditionalServiceDTO } from '../space/dto/additional-service';
-import { RENTAL_TYPE_NOT_FOUND, SPACE_ERROR_CODE } from '../space/exception/errorCode';
+import { SPACE_ERROR_CODE } from '../space/exception/errorCode';
 import { SpaceException } from '../space/exception/space.exception';
 
 import {
@@ -33,7 +33,7 @@ export class RentalTypeRepository {
     });
 
     if (!rentalType) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+      throw new SpaceException(SPACE_ERROR_CODE.RENTAL_TYPE_NOT_FOUND);
     }
 
     return rentalType.additionalServices.map((service) => new AdditionalServiceDTO(service));
@@ -55,7 +55,7 @@ export class RentalTypeRepository {
     });
 
     if (!rentalType) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+      throw new SpaceException(SPACE_ERROR_CODE.RENTAL_TYPE_NOT_FOUND);
     }
 
     return new RentalTypeDTO(rentalType);
@@ -165,7 +165,7 @@ export class RentalTypeRepository {
     });
 
     if (!rentalType) {
-      throw new SpaceException(SPACE_ERROR_CODE.NOT_FOUND(RENTAL_TYPE_NOT_FOUND));
+      throw new SpaceException(SPACE_ERROR_CODE.RENTAL_TYPE_NOT_FOUND);
     }
 
     return new RentalTypeWithReservationDTO({

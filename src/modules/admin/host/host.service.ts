@@ -1,10 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { BlockHostDTO, CreateHostDTO, HostDTO, UpdateHostDTO } from '@/modules/host/dto';
-import { HOST_ALREADY_EXIST } from '@/modules/host/exception/errorCode';
+import { HOST_ERROR_CODE } from '@/modules/host/exception/errorCode';
+import { HostException } from '@/modules/host/exception/host.exception';
 import { HostRepository } from '@/modules/host/host.repository';
 
 @Injectable()
@@ -33,7 +34,7 @@ export class AdminHostService {
     const isExist = await this.hostRepository.checkHostByEmail(data.email);
 
     if (isExist) {
-      throw new ConflictException(HOST_ALREADY_EXIST);
+      throw new HostException(HOST_ERROR_CODE.HOST_ALREADY_EXIST);
     }
 
     return await this.hostRepository.createHost(data);

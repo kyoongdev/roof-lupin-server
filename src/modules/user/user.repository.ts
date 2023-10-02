@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { CommonUserDTO, CreateSocialUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { UpdateUserSettingDTO } from './dto/setting';
-import { SOCIAL_USER_NOT_FOUND, USER_ALREADY_EXIST, USER_ERROR_CODE } from './exception/errorCode';
+import { USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class UserRepository {
     });
 
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
 
     return new CommonUserDTO(user);
@@ -40,7 +40,7 @@ export class UserRepository {
     });
 
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
 
     return new PushTokenDTO(user);
@@ -57,7 +57,7 @@ export class UserRepository {
       },
     });
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
 
     return new CommonUserDTO(user);
@@ -74,7 +74,7 @@ export class UserRepository {
       },
     });
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
     return new CommonUserDTO(user);
   }
@@ -94,7 +94,7 @@ export class UserRepository {
     });
 
     if (!socialUser) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND(SOCIAL_USER_NOT_FOUND));
+      throw new UserException(USER_ERROR_CODE.SOCIAL_USER_NOT_FOUND);
     }
 
     return socialUser.user;
@@ -112,7 +112,7 @@ export class UserRepository {
     });
 
     if (!user) {
-      throw new UserException(USER_ERROR_CODE.NOT_FOUND());
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
     }
 
     return user;
@@ -155,7 +155,7 @@ export class UserRepository {
     const isExist = await this.checkUserBySocialId(socialId);
 
     if (isExist) {
-      throw new UserException(USER_ERROR_CODE.CONFLICT(USER_ALREADY_EXIST));
+      throw new UserException(USER_ERROR_CODE.USER_ALREADY_EXIST);
     }
     const newUser = await this.database.user.create({
       data: {

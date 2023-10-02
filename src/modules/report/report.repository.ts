@@ -10,7 +10,8 @@ import { SpaceDTO } from '../space/dto';
 
 import { CreateReportAnswerDTO, CreateReportDTO, ReportAnswerDTO, ReportDTO, UpdateReportDTO } from './dto';
 import { UpdateReportAnswerDTO } from './dto/update-report-answer.dto';
-import { REPORT_ANSWER_NOT_FOUND, REPORT_NOT_FOUND } from './exception/errorCode';
+import { REPORT_ERROR_CODE } from './exception/errorCode';
+import { ReportException } from './exception/report.exception';
 
 @Injectable()
 export class ReportRepository {
@@ -51,7 +52,7 @@ export class ReportRepository {
     });
 
     if (!report) {
-      throw new NotFoundException(REPORT_NOT_FOUND);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_NOT_FOUND);
     }
 
     return new ReportDTO({
@@ -195,7 +196,7 @@ export class ReportRepository {
     });
 
     if (!reportAnswer) {
-      throw new NotFoundException(REPORT_ANSWER_NOT_FOUND);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ANSWER_NOT_FOUND);
     }
 
     return new ReportAnswerDTO(reportAnswer);

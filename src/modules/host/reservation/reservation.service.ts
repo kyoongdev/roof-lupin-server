@@ -5,12 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { MessageEvent } from '@/event/message';
 import { ReservationDTO } from '@/modules/reservation/dto';
-import {
-  RESERVATION_ALREADY_APPROVED,
-  RESERVATION_ERROR_CODE,
-  RESERVATION_HOST_FIND_FORBIDDEN,
-  RESERVATION_SPACE_NOT_IMMEDIATE,
-} from '@/modules/reservation/exception/errorCode';
+import { RESERVATION_ERROR_CODE } from '@/modules/reservation/exception/errorCode';
 import { ReservationException } from '@/modules/reservation/exception/reservation.exception';
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 import { TossPayProvider } from '@/utils';
@@ -28,7 +23,7 @@ export class HostReservationService {
   async findReservation(id: string, hostId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
     if (reservation.space.hostId !== hostId) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.FORBIDDEN(RESERVATION_HOST_FIND_FORBIDDEN));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_HOST_FIND_FORBIDDEN);
     }
     return reservation;
   }
@@ -80,10 +75,10 @@ export class HostReservationService {
     const reservation = await this.findReservation(id, hostId);
 
     if (reservation.space.isImmediateReservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_SPACE_NOT_IMMEDIATE);
     }
     if (reservation.isApproved) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_ALREADY_APPROVED));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_ALREADY_APPROVED);
     }
 
     await this.reservationRepository.updateReservation(id, {
@@ -109,10 +104,10 @@ export class HostReservationService {
     const reservation = await this.findReservation(id, hostId);
 
     if (!reservation.space.isImmediateReservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_SPACE_NOT_IMMEDIATE);
     }
     if (reservation.isApproved) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_ALREADY_APPROVED));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_ALREADY_APPROVED);
     }
 
     await this.reservationRepository.updateReservation(id, {
@@ -136,7 +131,7 @@ export class HostReservationService {
     const isRefund = Boolean(reservation.payedAt) && reservation.orderResultId;
 
     if (!reservation.space.isImmediateReservation) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.CONFLICT(RESERVATION_SPACE_NOT_IMMEDIATE));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_SPACE_NOT_IMMEDIATE);
     }
 
     if (isRefund) {

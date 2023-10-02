@@ -7,7 +7,7 @@ import { ReservationDTO } from '@/modules/reservation/dto';
 
 import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
 
-import { SETTLEMENT_ERROR_CODE, SETTLEMENT_NOT_FOUND } from './exception/errorCode';
+import { SETTLEMENT_ERROR_CODE } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
 
 @Injectable()
@@ -53,7 +53,7 @@ export class HostSettlementRepository {
     });
 
     if (!settlement) {
-      throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
+      throw new SettlementException(SETTLEMENT_ERROR_CODE.SETTLEMENT_NOT_FOUND);
     }
 
     const { reservations, ...rest } = settlement;
@@ -105,7 +105,7 @@ export class HostSettlementRepository {
     });
 
     if (!settlement) {
-      throw new SettlementException(SETTLEMENT_ERROR_CODE.NOT_FOUND(SETTLEMENT_NOT_FOUND));
+      throw new SettlementException(SETTLEMENT_ERROR_CODE.SETTLEMENT_NOT_FOUND);
     }
     const { reservations, ...rest } = settlement;
 

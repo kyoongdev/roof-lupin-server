@@ -9,7 +9,7 @@ import { SpaceDTO } from '../space/dto';
 import { CreateCurationDTO, CreateCurationSpaceDTO, CurationDetailDTO, CurationDTO, UpdateCurationDTO } from './dto';
 import { UpdateCurationSpaceDTO } from './dto/update-curation-space.dto';
 import { CurationException } from './exception/curation.exception';
-import { CURATION_ERROR_CODE, CURATION_NOT_FOUND, CURATION_SPACE_NOT_FOUND } from './exception/errorCode';
+import { CURATION_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class CurationRepository {
@@ -52,7 +52,7 @@ export class CurationRepository {
     });
 
     if (!curation) {
-      throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_NOT_FOUND);
     }
     return new CurationDetailDTO({
       ...curation,
@@ -196,7 +196,7 @@ export class CurationRepository {
       });
 
       if (!isExist) {
-        throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_SPACE_NOT_FOUND));
+        throw new CurationException(CURATION_ERROR_CODE.CURATION_SPACE_NOT_FOUND);
       }
 
       await prisma.curationSpace.updateMany({
@@ -267,7 +267,7 @@ export class CurationRepository {
       });
 
       if (!isExist) {
-        throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+        throw new CurationException(CURATION_ERROR_CODE.CURATION_NOT_FOUND);
       }
 
       await prisma.curation.updateMany({
@@ -331,7 +331,7 @@ export class CurationRepository {
     });
 
     if (!curation) {
-      throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_NOT_FOUND);
     }
 
     await this.database.curation.updateMany({
@@ -361,7 +361,7 @@ export class CurationRepository {
     });
 
     if (!curation) {
-      throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_NOT_FOUND));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_NOT_FOUND);
     }
 
     await this.database.curation.updateMany({
@@ -393,7 +393,7 @@ export class CurationRepository {
     });
 
     if (!curationSpace) {
-      throw new CurationException(CURATION_ERROR_CODE.NOT_FOUND(CURATION_SPACE_NOT_FOUND));
+      throw new CurationException(CURATION_ERROR_CODE.CURATION_SPACE_NOT_FOUND);
     }
 
     await this.database.curationSpace.updateMany({

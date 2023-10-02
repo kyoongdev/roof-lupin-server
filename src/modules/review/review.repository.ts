@@ -4,8 +4,6 @@ import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { SpaceDTO } from '../space/dto';
-
 import {
   BestPhotoDTO,
   CreateReviewAnswerDTO,
@@ -19,7 +17,7 @@ import {
 import { ReviewImageDTO } from './dto/review-image.dto';
 import { ReviewSpaceDTO } from './dto/review-space.dto';
 import { ReviewDTO } from './dto/review.dto';
-import { REVIEW_ANSWER_NOT_FOUND, REVIEW_ERROR_CODE, REVIEW_IMAGE_NOT_FOUND } from './exception/errorCode';
+import { REVIEW_ERROR_CODE } from './exception/errorCode';
 import { ReviewException } from './exception/review.exception';
 
 @Injectable()
@@ -35,7 +33,7 @@ export class ReviewRepository {
     });
 
     if (!review) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_NOT_FOUND);
     }
 
     return new ReviewDetailDTO({
@@ -61,7 +59,7 @@ export class ReviewRepository {
     });
 
     if (!review) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND());
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_NOT_FOUND);
     }
 
     return new ReviewDetailDTO({
@@ -265,7 +263,7 @@ export class ReviewRepository {
     });
 
     if (!reviewAnswer) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(REVIEW_ANSWER_NOT_FOUND));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_ANSWER_NOT_FOUND);
     }
 
     return new ReviewAnswerDTO(reviewAnswer);
@@ -340,7 +338,7 @@ export class ReviewRepository {
       },
     });
     if (!image) {
-      throw new ReviewException(REVIEW_ERROR_CODE.NOT_FOUND(REVIEW_IMAGE_NOT_FOUND));
+      throw new ReviewException(REVIEW_ERROR_CODE.REVIEW_IMAGE_NOT_FOUND);
     }
 
     return new ReviewImageDTO({

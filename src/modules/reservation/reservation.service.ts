@@ -7,12 +7,7 @@ import { MessageEvent } from '@/event/message';
 
 import { ReservationDTO } from './dto';
 import { FindReservationQuery } from './dto/query';
-import {
-  RESERVATION_ALREADY_PAYED,
-  RESERVATION_ERROR_CODE,
-  RESERVATION_USER_DELETE_FORBIDDEN,
-  RESERVATION_USER_FIND_FORBIDDEN,
-} from './exception/errorCode';
+import { RESERVATION_ERROR_CODE } from './exception/errorCode';
 import { ReservationException } from './exception/reservation.exception';
 import { ReservationRepository } from './reservation.repository';
 
@@ -51,7 +46,7 @@ export class ReservationService {
     const reservation = await this.reservationRepository.findReservation(id);
 
     if (reservation.user.id !== userId) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_USER_FIND_FORBIDDEN));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_USER_FIND_FORBIDDEN);
     }
 
     return reservation;
@@ -78,11 +73,11 @@ export class ReservationService {
     const reservation = await this.reservationRepository.findReservation(id);
 
     if (reservation.user.id !== userId) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.NOT_FOUND(RESERVATION_USER_DELETE_FORBIDDEN));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_USER_DELETE_FORBIDDEN);
     }
 
     if (reservation.payedAt) {
-      throw new ReservationException(RESERVATION_ERROR_CODE.BAD_REQUEST(RESERVATION_ALREADY_PAYED));
+      throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_ALREADY_PAYED);
     }
 
     if (reason) {

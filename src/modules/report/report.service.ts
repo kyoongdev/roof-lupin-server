@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
@@ -8,7 +8,8 @@ import { ReviewRepository } from '../review/review.repository';
 import { SpaceRepository } from '../space/space.repository';
 
 import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
-import { REPORT_ALREADY_EXISTS } from './exception/errorCode';
+import { REPORT_ERROR_CODE } from './exception/errorCode';
+import { ReportException } from './exception/report.exception';
 import { ReportRepository } from './report.repository';
 
 @Injectable()
@@ -66,7 +67,7 @@ export class ReportService {
     });
 
     if (report) {
-      throw new ConflictException(REPORT_ALREADY_EXISTS);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
     return await this.reportRepository.createReport(userId, data);
@@ -83,7 +84,7 @@ export class ReportService {
     });
 
     if (report) {
-      throw new ConflictException(REPORT_ALREADY_EXISTS);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
     return await this.reportRepository.createReport(userId, data);
@@ -100,7 +101,7 @@ export class ReportService {
     });
 
     if (report) {
-      throw new ConflictException(REPORT_ALREADY_EXISTS);
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
     return await this.reportRepository.createReport(userId, data);

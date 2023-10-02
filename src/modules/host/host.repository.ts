@@ -16,7 +16,7 @@ import {
 } from './dto';
 import { HostAuthDetailDTO } from './dto/host-auth-detail.dto';
 import { HostDetailDTO } from './dto/host-detail.dto';
-import { HOST_ACCOUNT_NOT_FOUND, HOST_ERROR_CODE, HOST_NOT_FOUND } from './exception/errorCode';
+import { HOST_ERROR_CODE } from './exception/errorCode';
 import { HostException } from './exception/host.exception';
 
 @Injectable()
@@ -37,7 +37,7 @@ export class HostRepository {
       },
     });
     if (!host) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_NOT_FOUND);
     }
 
     return new HostDetailDTO(host);
@@ -75,7 +75,7 @@ export class HostRepository {
       },
     });
     if (!host) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_NOT_FOUND);
     }
 
     return new HostDetailDTO(host);
@@ -92,7 +92,7 @@ export class HostRepository {
     });
 
     if (!host) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_NOT_FOUND);
     }
 
     return new HostDetailDTO(host);
@@ -119,7 +119,7 @@ export class HostRepository {
       },
     });
     if (!host) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_NOT_FOUND);
     }
 
     return new HostAuthDetailDTO(host);
@@ -209,7 +209,7 @@ export class HostRepository {
       },
     });
     if (!hostAccount) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_ACCOUNT_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_ACCOUNT_NOT_FOUND);
     }
 
     return new HostAccountDTO(hostAccount);
@@ -222,7 +222,7 @@ export class HostRepository {
       },
     });
     if (!hostAccount) {
-      throw new HostException(HOST_ERROR_CODE.NOT_FOUND(HOST_ACCOUNT_NOT_FOUND));
+      throw new HostException(HOST_ERROR_CODE.HOST_ACCOUNT_NOT_FOUND);
     }
 
     return new HostAccountDTO(hostAccount);

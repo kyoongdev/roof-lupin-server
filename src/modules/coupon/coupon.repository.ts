@@ -3,12 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
-import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
+import { PrismaService } from '@/database/prisma.service';
 
 import { CouponDTO, CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO, UserCouponDTO } from './dto';
 import { CreateUserCouponDTO } from './dto/create-user-coupon.dto';
 import { CouponException } from './exception/coupon.exception';
-import { COUPON_ERROR_CODE, COUPON_NOT_FOUND, USER_COUPON_NOT_FOUND } from './exception/errorCode';
+import { COUPON_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class CouponRepository {
@@ -22,7 +22,7 @@ export class CouponRepository {
     });
 
     if (!coupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.COUPON_NOT_FOUND);
     }
 
     return new CouponDTO(coupon);
@@ -36,7 +36,7 @@ export class CouponRepository {
     });
 
     if (!coupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.COUPON_NOT_FOUND);
     }
 
     return new CouponDTO(coupon);
@@ -127,7 +127,7 @@ export class CouponRepository {
     });
 
     if (!userCoupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.USER_COUPON_NOT_FOUND);
     }
 
     return new UserCouponDTO({
@@ -155,7 +155,7 @@ export class CouponRepository {
     });
 
     if (!userCoupon) {
-      throw new CouponException(COUPON_ERROR_CODE.NOT_FOUND(USER_COUPON_NOT_FOUND));
+      throw new CouponException(COUPON_ERROR_CODE.USER_COUPON_NOT_FOUND);
     }
 
     return new UserCouponDTO({

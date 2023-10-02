@@ -17,12 +17,7 @@ import {
 } from './dto';
 import { ContentCategoryDTO } from './dto/content-category.dto';
 import { CategoryException } from './exception/category.exception';
-import {
-  CATEGORY_ERROR_CODE,
-  CATEGORY_NOT_FOUND,
-  CONTENT_CATEGORY_NOT_FOUND,
-  CONTENT_CATEGORY_SPACE_NOT_FOUND,
-} from './exception/errorCode';
+import { CATEGORY_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class CategoryRepository {
@@ -43,7 +38,7 @@ export class CategoryRepository {
     });
 
     if (!category) {
-      throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CATEGORY_NOT_FOUND));
+      throw new CategoryException(CATEGORY_ERROR_CODE.CATEGORY_NOT_FOUND);
     }
     return new CategoryDTO(category);
   }
@@ -87,7 +82,7 @@ export class CategoryRepository {
     });
 
     if (!category) {
-      throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_NOT_FOUND));
+      throw new CategoryException(CATEGORY_ERROR_CODE.CONTENT_CATEGORY_NOT_FOUND);
     }
 
     return new ContentCategoryDTO({
@@ -266,7 +261,7 @@ export class CategoryRepository {
         },
       });
       if (!isExist) {
-        throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_SPACE_NOT_FOUND));
+        throw new CategoryException(CATEGORY_ERROR_CODE.CONTENT_CATEGORY_SPACE_NOT_FOUND);
       }
 
       await prisma.contentCategorySpace.updateMany({
@@ -363,7 +358,7 @@ export class CategoryRepository {
       });
 
       if (!isExist) {
-        throw new CategoryException(CATEGORY_ERROR_CODE.NOT_FOUND(CONTENT_CATEGORY_SPACE_NOT_FOUND));
+        throw new CategoryException(CATEGORY_ERROR_CODE.CONTENT_CATEGORY_SPACE_NOT_FOUND);
       }
 
       await prisma.contentCategorySpace.updateMany({
