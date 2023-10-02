@@ -8,7 +8,7 @@ import { HostSettlementRepository } from '@/modules/host/settlement/settlement.r
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
 import { AdminException } from '../exception/admin.exception';
-import { ADMIN_ERROR_CODE, ADMIN_SETTLEMENT_ALREADY_EXISTS } from '../exception/errorCode';
+import { ADMIN_ERROR_CODE } from '../exception/errorCode';
 
 @Injectable()
 export class AdminSettlementService {
@@ -43,7 +43,7 @@ export class AdminSettlementService {
     );
 
     if (isExist) {
-      throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_SETTLEMENT_ALREADY_EXISTS));
+      throw new AdminException(ADMIN_ERROR_CODE.ADMIN_SETTLEMENT_ALREADY_EXISTS);
     }
 
     if (data.reservationIds) {

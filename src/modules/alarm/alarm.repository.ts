@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { AlarmDTO, CreateAlarmDTO, UpdateAlarmDTO } from './dto';
 import { AlarmException } from './exception/alarm.exception';
-import { ALARM_ERROR_CODE, ALARM_NOT_FOUND } from './exception/errorCode';
+import { ALARM_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class AlarmRepository {
@@ -28,7 +28,7 @@ export class AlarmRepository {
     });
 
     if (!alarm) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_NOT_FOUND));
+      throw new AlarmException(ALARM_ERROR_CODE.ALARM_NOT_FOUND);
     }
 
     return new AlarmDTO(alarm);

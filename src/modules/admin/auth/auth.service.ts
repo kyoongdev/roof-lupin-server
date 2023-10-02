@@ -4,16 +4,7 @@ import { EncryptProvider } from '@/common/encrypt';
 import { TokenPayload } from '@/interface/token.interface';
 import { AdminAuthDTO, TokenDTO } from '@/modules/auth/dto';
 import { AuthException } from '@/modules/auth/exception/auth.exception';
-import {
-  ALREADY_EXIST_ADMIN,
-  AUTH_ERROR_CODE,
-  NOT_ACCEPTED_ADMIN,
-  WRONG_ACCESS_TOKEN,
-  WRONG_ID,
-  WRONG_KEY,
-  WRONG_PASSWORD,
-  WRONG_REFRESH_TOKEN,
-} from '@/modules/auth/exception/errorCode';
+import { AUTH_ERROR_CODE } from '@/modules/auth/exception/errorCode';
 import { Jsonwebtoken } from '@/utils/jwt';
 
 import { AdminRepository } from '../admin.repository';
@@ -31,11 +22,11 @@ export class AdminAuthService {
 
     const isMatch = this.encrypt.comparePassword(admin.salt, props.password, admin.password);
     if (!isMatch) {
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_PASSWORD));
+      throw new AuthException(AUTH_ERROR_CODE.WRONG_PASSWORD);
     }
 
     if (!admin.isAccepted) {
-      throw new AuthException(AUTH_ERROR_CODE.UNAUTHORIZED(NOT_ACCEPTED_ADMIN));
+      throw new AuthException(AUTH_ERROR_CODE.NOT_ACCEPTED_ADMIN);
     }
 
     const token = await this.jwt.createTokens({ id: admin.id, role: 'ADMIN' });
@@ -45,7 +36,7 @@ export class AdminAuthService {
   async adminRegister(props: CreateAdminDTO) {
     const isExist = await this.adminRepository.checkAdminByUserId(props.userId);
     if (isExist) {
-      throw new AuthException(AUTH_ERROR_CODE.CONFLICT(ALREADY_EXIST_ADMIN));
+      throw new AuthException(AUTH_ERROR_CODE.ALREADY_EXIST_ADMIN);
     }
 
     const admin = await this.adminRepository.createAdmin(props);
@@ -60,13 +51,11 @@ export class AdminAuthService {
     }) as TokenPayload | null | undefined;
     const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken) as TokenPayload | null | undefined;
 
-    if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
-    if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
+    if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.WRONG_ACCESS_TOKEN);
+    if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.WRONG_REFRESH_TOKEN);
 
-    if (accessTokenPayload.key !== refreshTokenPayload.key)
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_KEY));
-    if (accessTokenPayload.id !== refreshTokenPayload.id)
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
+    if (accessTokenPayload.key !== refreshTokenPayload.key) throw new AuthException(AUTH_ERROR_CODE.WRONG_KEY);
+    if (accessTokenPayload.id !== refreshTokenPayload.id) throw new AuthException(AUTH_ERROR_CODE.WRONG_ID);
 
     return this.jwt.createTokens({ id: refreshTokenPayload.id, role: refreshTokenPayload.role });
   }

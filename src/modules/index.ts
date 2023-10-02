@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 
 import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
-import { AppInfoModule } from './app-info/app-info.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { ContentModule } from './content/content.module';
@@ -39,7 +38,6 @@ export const Modules = [
   CouponModule,
   FileModule,
   HomeModule,
-  AppInfoModule,
   AnnouncementModule,
   FaqModule,
   SearchModule,

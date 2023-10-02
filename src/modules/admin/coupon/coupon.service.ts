@@ -4,14 +4,13 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { MessageEvent } from '@/event/message';
-import { CategoryRepository } from '@/modules/category/category.repository';
 import { CouponRepository } from '@/modules/coupon/coupon.repository';
 import { CreateCouponDTO, UpdateCouponDTO, UpdateUserCouponDTO } from '@/modules/coupon/dto';
 import { CreateUserCouponDTO } from '@/modules/coupon/dto/create-user-coupon.dto';
 
 import { AdminCouponDTO, UserAdminCouponDTO } from '../dto/coupon';
 import { AdminException } from '../exception/admin.exception';
-import { ADMIN_ERROR_CODE, ADMIN_USER_COUPON_ALREADY_EXISTS } from '../exception/errorCode';
+import { ADMIN_ERROR_CODE } from '../exception/errorCode';
 
 import { AdminCouponRepository } from './coupon.repository';
 
@@ -70,7 +69,7 @@ export class AdminCouponService {
     const isExist = await this.couponRepository.checkUserCoupon(couponId, data.userId);
 
     if (isExist) {
-      throw new AdminException(ADMIN_ERROR_CODE.CONFLICT(ADMIN_USER_COUPON_ALREADY_EXISTS));
+      throw new AdminException(ADMIN_ERROR_CODE.ADMIN_USER_COUPON_ALREADY_EXISTS);
     }
 
     const userCoupon = await this.couponRepository.createUserCoupon(couponId, data);

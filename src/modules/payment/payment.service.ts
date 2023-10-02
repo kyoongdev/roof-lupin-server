@@ -425,10 +425,7 @@ export class PaymentService {
               itemStartAt <= time.time &&
               time.time <= itemEndAt &&
               !time.isPossible &&
-              (!data.reservationId ||
-                (Boolean(data.reservationId) &&
-                  !space.isImmediateReservation &&
-                  possibleRentalType.id !== item.rentalTypeId))
+              (!data.reservationId || (Boolean(data.reservationId) && !space.isImmediateReservation))
             ) {
               throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
             }
@@ -453,10 +450,7 @@ export class PaymentService {
           //INFO: 대여하려는 시간이 예약 불가할 때
           if (
             !(possibleRentalType as PossiblePackageDTO).isPossible &&
-            (!data.reservationId ||
-              (Boolean(data.reservationId) &&
-                !space.isImmediateReservation &&
-                possibleRentalType.id !== item.rentalTypeId))
+            (!data.reservationId || (Boolean(data.reservationId) && !space.isImmediateReservation))
           ) {
             throw new PaymentException(PAYMENT_ERROR_CODE.CONFLICT(PAYMENT_CONFLICT));
           }

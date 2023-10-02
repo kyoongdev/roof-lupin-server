@@ -16,12 +16,12 @@ import { Jsonwebtoken } from '@/utils/jwt';
 import { COUPON_CODE } from '../coupon/constants';
 import { CouponRepository } from '../coupon/coupon.repository';
 import { CreateSocialUserDTO } from '../user/dto';
-import { USER_BLOCKED, USER_ERROR_CODE } from '../user/exception/errorCode';
+import { USER_ERROR_CODE } from '../user/exception/errorCode';
 import { UserException } from '../user/exception/user.exception';
 
 import { TokenDTO } from './dto';
 import { AuthException } from './exception/auth.exception';
-import { AUTH_ERROR_CODE, WRONG_ACCESS_TOKEN, WRONG_ID, WRONG_KEY, WRONG_REFRESH_TOKEN } from './exception/errorCode';
+import { AUTH_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class AuthService {
@@ -78,7 +78,7 @@ export class AuthService {
 
     const currentDate = new Date();
     if (user.isBlocked && user.unBlockAt.getTime() > currentDate.getTime()) {
-      throw new UserException(USER_ERROR_CODE.FORBIDDEN(USER_BLOCKED));
+      throw new UserException(USER_ERROR_CODE.USER_BLOCKED);
     }
 
     const tokens = await this.jwt.createTokens({ id: user.id, role: 'USER' });
@@ -151,13 +151,11 @@ export class AuthService {
     }) as TokenPayload | null | undefined;
     const refreshTokenPayload = this.jwt.verifyJwt<TokenPayload>(refreshToken) as TokenPayload | null | undefined;
 
-    if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ACCESS_TOKEN));
-    if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_REFRESH_TOKEN));
+    if (!accessTokenPayload) throw new AuthException(AUTH_ERROR_CODE.WRONG_ACCESS_TOKEN);
+    if (!refreshTokenPayload) throw new AuthException(AUTH_ERROR_CODE.WRONG_REFRESH_TOKEN);
 
-    if (accessTokenPayload.key !== refreshTokenPayload.key)
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_KEY));
-    if (accessTokenPayload.id !== refreshTokenPayload.id)
-      throw new AuthException(AUTH_ERROR_CODE.BAD_REQUEST(WRONG_ID));
+    if (accessTokenPayload.key !== refreshTokenPayload.key) throw new AuthException(AUTH_ERROR_CODE.WRONG_KEY);
+    if (accessTokenPayload.id !== refreshTokenPayload.id) throw new AuthException(AUTH_ERROR_CODE.WRONG_ID);
 
     return this.jwt.createTokens({ id: refreshTokenPayload.id, role: refreshTokenPayload.role });
   }

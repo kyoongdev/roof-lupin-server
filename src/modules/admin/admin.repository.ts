@@ -8,7 +8,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { AdminDetailDTO, AdminDTO, UpdateAdminDTO } from './dto';
 import { CreateAdminDTO } from './dto/create-admin.dto';
 import { AdminException } from './exception/admin.exception';
-import { ADMIN_ERROR_CODE, ADMIN_NOT_FOUND } from './exception/errorCode';
+import { ADMIN_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class AdminRepository {
@@ -38,7 +38,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
+      throw new AdminException(ADMIN_ERROR_CODE.ADMIN_NOT_FOUND);
     }
     return new AdminDTO(admin);
   }
@@ -51,7 +51,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
+      throw new AdminException(ADMIN_ERROR_CODE.ADMIN_NOT_FOUND);
     }
     return new AdminDetailDTO(admin);
   }
@@ -64,7 +64,7 @@ export class AdminRepository {
     });
 
     if (!admin) {
-      throw new AdminException(ADMIN_ERROR_CODE.NOT_FOUND(ADMIN_NOT_FOUND));
+      throw new AdminException(ADMIN_ERROR_CODE.ADMIN_NOT_FOUND);
     }
 
     return new AdminDetailDTO(admin);

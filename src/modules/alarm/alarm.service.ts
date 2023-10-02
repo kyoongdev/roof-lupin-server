@@ -3,22 +3,10 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
-import { MessageEvent } from '@/event/message';
-
-import { UserRepository } from '../user/user.repository';
-
 import { AlarmRepository } from './alarm.repository';
 import { AlarmDTO, UnReadAlarmDTO } from './dto';
-import {
-  AlarmResultDTO,
-  AlarmResultsDTO,
-  SendMessageDTO,
-  SendMessagesDTO,
-  SendScheduleMessageDTO,
-  SendScheduleMessagesDTO,
-} from './dto/fcm';
 import { AlarmException } from './exception/alarm.exception';
-import { ALARM_ERROR_CODE, ALARM_MUTATION_FORBIDDEN, ALARM_PUSH_TOKEN_NOT_FOUND } from './exception/errorCode';
+import { ALARM_ERROR_CODE } from './exception/errorCode';
 
 @Injectable()
 export class AlarmService {
@@ -65,7 +53,7 @@ export class AlarmService {
     const alarm = await this.findAlarm(id);
 
     if (alarm.user.id !== userId) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_MUTATION_FORBIDDEN));
+      throw new AlarmException(ALARM_ERROR_CODE.ALARM_MUTATION_FORBIDDEN);
     }
     await this.alarmRepository.updateAlarm(id, { isRead: true });
   }
@@ -74,7 +62,7 @@ export class AlarmService {
     const alarm = await this.findAlarm(id);
 
     if (alarm.user.id !== userId) {
-      throw new AlarmException(ALARM_ERROR_CODE.NOT_FOUND(ALARM_MUTATION_FORBIDDEN));
+      throw new AlarmException(ALARM_ERROR_CODE.ALARM_MUTATION_FORBIDDEN);
     }
     await this.alarmRepository.deleteAlarm(id);
   }

@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { CreateTaxReturnDTO, TaxReturnDTO, UpdateTaxReturnDTO } from '../dto/tax-return';
 
-import { TAX_RETURN_ERROR_CODE, TAX_RETURN_NOT_FOUND } from './exception/errorCode';
+import { TAX_RETURN_ERROR_CODE } from './exception/errorCode';
 import { TaxReturnException } from './exception/tax-return.exception';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class TaxReturnRepository {
     });
 
     if (!taxReturn) {
-      throw new TaxReturnException(TAX_RETURN_ERROR_CODE.NOT_FOUND(TAX_RETURN_NOT_FOUND));
+      throw new TaxReturnException(TAX_RETURN_ERROR_CODE.TAX_RETURN_NOT_FOUND);
     }
 
     return new TaxReturnDTO(taxReturn);

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import type { Prisma } from '@prisma/client';
-import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { PrismaService } from '@/database/prisma.service';
 import { AnnouncementException } from '@/modules/announcement/exception/announcement.exception';
@@ -19,7 +18,7 @@ export class AnnouncementRepository {
     });
 
     if (!announcement) {
-      throw new AnnouncementException(ANNOUNCEMENT_ERROR_CODE.NOT_FOUND());
+      throw new AnnouncementException(ANNOUNCEMENT_ERROR_CODE.ANNOUNCEMENT_NOT_FOUND);
     }
 
     return new AnnouncementDTO(announcement);
