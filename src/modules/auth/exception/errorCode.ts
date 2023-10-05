@@ -14,9 +14,14 @@ export const AUTH_ERROR = {
   ALREADY_EXIST_HOST: '이미 존재하는 호스트입니다.',
   WRONG_PASSWORD: '비밀번호가 일치하지 않습니다.',
   NOT_ACCEPTED_ADMIN: '승인되지 않은 관리자입니다.',
+  DEV_ONLY: '개발 환경에서만 사용이 가능합니다.',
 } as const;
 
 export const AUTH_ERROR_CODE: ErrorCode<typeof AUTH_ERROR> = {
+  DEV_ONLY: {
+    code: HttpStatus.UNAUTHORIZED,
+    message: AUTH_ERROR.DEV_ONLY,
+  },
   WRONG_ACCESS_TOKEN: {
     code: HttpStatus.UNAUTHORIZED,
     message: AUTH_ERROR.WRONG_ACCESS_TOKEN,

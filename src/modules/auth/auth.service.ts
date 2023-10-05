@@ -37,6 +37,10 @@ export class AuthService {
   ) {}
 
   async testUserLogin() {
+    const nodeEnv = this.configService.get('NODE_ENV');
+    if (nodeEnv === 'prod') {
+      throw new AuthException(AUTH_ERROR_CODE.DEV_ONLY);
+    }
     const user = await this.userRepository.findUserByNickname('user2');
 
     const tokens = await this.jwt.createTokens({ id: user.id, role: 'USER' });
