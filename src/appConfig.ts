@@ -134,6 +134,7 @@ class AppConfig {
       .setVersion('1.0.0')
       .addServer('http://localhost:8000')
       .addServer('https://api.rooflupin.com')
+      .addServer('https://api-prod.rooflupin.com')
       .addBearerAuth(
         {
           type: 'http',
