@@ -1,9 +1,9 @@
 import { PrismaClient, Space, User } from '@prisma/client';
 import { range } from 'lodash';
 
-import { EncryptProvider } from '../common/encrypt';
-import { COUPON_CODE } from '../modules/coupon/constants';
-import { DISCOUNT_TYPE_ENUM } from '../modules/coupon/validation';
+import { EncryptProvider } from '../../common/encrypt';
+import { COUPON_CODE } from '../../modules/coupon/constants';
+import { DISCOUNT_TYPE_ENUM } from '../../modules/coupon/validation';
 
 import { seedAnnouncement } from './announcement';
 import { seedFilter } from './filter';

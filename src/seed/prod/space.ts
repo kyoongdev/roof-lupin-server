@@ -1,6 +1,9 @@
 import { PrismaClient, Space, User } from '@prisma/client';
+import { range } from 'lodash';
 
 import { EncryptProvider } from '@/common/encrypt';
+
+import { getRentalType } from './rental-type';
 
 export const seedSpace = async (users: User[], database: PrismaClient): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
@@ -204,37 +207,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               day: 1,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 2,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 3,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 4,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 5,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 6,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
             {
               day: 7,
               startAt: 10,
-              endAt: 26,
+              endAt: 9,
             },
           ],
         },
@@ -251,170 +254,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           ],
         },
         rentalType: {
-          create: [
-            {
-              baseCost: 5000,
-              name: '시간당 요금',
-              rentalType: 1,
-              baseHour: 2,
-              startAt: 9,
-              endAt: 32,
-              day: 1,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-              timeCostInfos: {
-                create: [
-                  {
-                    cost: 5000,
-                    time: 9,
-                  },
-                  {
-                    cost: 5000,
-                    time: 10,
-                  },
-                  {
-                    cost: 5000,
-                    time: 11,
-                  },
-                  {
-                    cost: 5000,
-                    time: 12,
-                  },
-                  {
-                    cost: 5000,
-                    time: 13,
-                  },
-                  {
-                    cost: 5000,
-                    time: 14,
-                  },
-                  {
-                    cost: 5000,
-                    time: 15,
-                  },
-                  {
-                    cost: 5000,
-                    time: 16,
-                  },
-                  {
-                    cost: 7000,
-                    time: 17,
-                  },
-                  {
-                    cost: 7000,
-                    time: 18,
-                  },
-                  {
-                    cost: 7000,
-                    time: 19,
-                  },
-                  {
-                    cost: 7000,
-                    time: 20,
-                  },
-                  {
-                    cost: 7000,
-                    time: 21,
-                  },
-                  {
-                    cost: 7000,
-                    time: 22,
-                  },
-                  {
-                    cost: 7000,
-                    time: 23,
-                  },
-                  {
-                    cost: 7000,
-                    time: 24,
-                  },
-                  {
-                    cost: 7000,
-                    time: 25,
-                  },
-                  {
-                    cost: 7000,
-                    time: 26,
-                  },
-                  {
-                    cost: 7000,
-                    time: 27,
-                  },
-                  {
-                    cost: 7000,
-                    time: 28,
-                  },
-                  {
-                    cost: 7000,
-                    time: 29,
-                  },
-                  {
-                    cost: 7000,
-                    time: 30,
-                  },
-                  {
-                    cost: 7000,
-                    time: 31,
-                  },
-                  {
-                    cost: 7000,
-                    time: 32,
-                  },
-                ],
-              },
-            },
-            {
-              baseCost: 100000,
-              name: '올데이 패키지',
-              startAt: 11,
-              endAt: 16,
-              day: 1,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-            {
-              baseCost: 150000,
-              name: '올나잇 패키지',
-              startAt: 19,
-              endAt: 33,
-              day: 1,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-            {
-              baseCost: 150000,
-              name: '올나잇 패키지',
-              startAt: 19,
-              endAt: 33,
-              day: 5,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-          ],
+          create: getRentalType(),
         },
-
         host: {
           connect: {
             id: realHost.id,
@@ -635,245 +476,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
     spaces.push(space);
   }
 
-  await Promise.all(
-    spaces.map(async (space, spIdx) => {
-      const rentalType = space.rentalType.find((type: any) => type.name === '시간당 요금');
-
-      if (rentalType)
-        await Promise.all(
-          users.map(async (user, index) => {
-            await database.spaceQnA.create({
-              data: {
-                content: '질문이 있는데요.',
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-                ...(index % 2 === 0 && {
-                  answers: {
-                    create: [
-                      {
-                        content: '답변입니다.',
-                        host: {
-                          connect: {
-                            id: realHost.id,
-                          },
-                        },
-                      },
-                    ],
-                  },
-                }),
-              },
-            });
-
-            const reservation = await database.reservation.create({
-              data: {
-                year: 2023,
-                month: 9,
-                day: (spIdx % 29) + 1,
-                userName: '용준',
-                userPhoneNumber: '01012341234',
-                originalCost: 10000,
-                totalCost: 10000,
-                discountCost: 0,
-                userCount: 3,
-                vatCost: 1000,
-                isApproved: true,
-                payedAt: new Date(2023, 10, (spIdx % 29) + 1),
-                payMethod: '토스페이',
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-                code: `${new Date().getTime()}${index}${spIdx}`,
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                rentalTypes: {
-                  create: [
-                    {
-                      startAt: 12,
-                      endAt: 32,
-                      rentalType: {
-                        connect: {
-                          id: rentalType.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-                additionalServices: {
-                  create: [
-                    {
-                      additionalService: {
-                        connect: {
-                          id: rentalType.additionalServices[0].id,
-                        },
-                      },
-                      count: 1,
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: 2023,
-                month: 9,
-                day: (spIdx % 29) + 2,
-                userName: '용준',
-                userPhoneNumber: '01012341234',
-                originalCost: 10000,
-                totalCost: 10000,
-                discountCost: 0,
-                userCount: 3,
-                vatCost: 1000,
-                isApproved: true,
-                payedAt: new Date(2023, 10, (spIdx % 29) + 2),
-                payMethod: '토스페이',
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-                code: `${new Date().getTime()}2${index}${spIdx}`,
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                rentalTypes: {
-                  create: [
-                    {
-                      startAt: 12,
-                      endAt: 32,
-                      rentalType: {
-                        connect: {
-                          id: rentalType.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-            await database.reservation.create({
-              data: {
-                year: 2023,
-                month: 10,
-                day: (spIdx % 29) + 1,
-                userName: '용준',
-                userPhoneNumber: '01012341234',
-                originalCost: 10000,
-                totalCost: 10000,
-                discountCost: 0,
-                userCount: 3,
-                vatCost: 1000,
-                isApproved: false,
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-                payedAt: new Date(),
-                code: `${new Date().getTime()}3${index}${spIdx}`,
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                rentalTypes: {
-                  create: [
-                    {
-                      startAt: 12,
-                      endAt: 32,
-                      rentalType: {
-                        connect: {
-                          id: rentalType.id,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            });
-
-            await database.spaceReview.create({
-              data: {
-                content: '좋아요!!',
-                score: 3,
-                images: {
-                  create: [
-                    {
-                      image: {
-                        create: {
-                          url: 'https://dev-image.rooflupin.com/1688717253781IMG_5925.jpeg',
-                        },
-                      },
-                      isBest: true,
-                    },
-                    {
-                      image: {
-                        create: {
-                          url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
-                        },
-                      },
-                    },
-                    {
-                      image: {
-                        create: {
-                          url: 'https://dev-image.rooflupin.com/1688717253784IMG_5926.jpeg',
-                        },
-                      },
-                    },
-                  ],
-                },
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                reservation: {
-                  connect: {
-                    id: reservation.id,
-                  },
-                },
-              },
-            });
-            await database.userReport.create({
-              data: {
-                content: '신고합니다',
-                user: {
-                  connect: {
-                    id: user.id,
-                  },
-                },
-                space: {
-                  connect: {
-                    id: space.id,
-                  },
-                },
-              },
-            });
-          })
-        );
-    })
-  );
-
   const space1 = await database.space.create({
     data: {
       title: `루프탑 노을 공원`,
@@ -954,176 +556,42 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
         ],
       },
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여2',
-            rentalType: 1,
-            day: 2,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 1,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
       location: {
         create: {
@@ -1287,48 +755,41 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 9,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
         ],
       },
-      holidays: {
-        create: [
-          {
-            day: 14,
-            interval: 4,
-          },
-        ],
-      },
+
       sizes: {
         create: [
           {
@@ -1391,90 +852,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       `,
 
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
       location: {
         create: {
@@ -1622,37 +1000,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 9,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
         ],
       },
@@ -1717,90 +1095,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
        7. 공간 사용후에는 정리를 해주셔야 합니다.
       `,
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 3,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
       location: {
         create: {
@@ -1945,37 +1240,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 9,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 26,
+            endAt: 9,
           },
         ],
       },
@@ -2048,90 +1343,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
        7. 공간 사용후에는 정리를 해주셔야 합니다.
       `,
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 3,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
 
       location: {
