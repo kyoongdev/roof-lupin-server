@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g yarn
+      - yarn install
+  pre_build:
+    commands:
+      - yarn config:prod
+      - yarn prisma migrate deploy
+  build:
+    commands:
+      - yarn build
+artifacts:
+  exclude-paths:
+    - ./test
+    - ./docker
+    - ./.husky
+    - ./logs
+  files:
+    - '**/*'
+  name: rooflupin-build-prod-$(date +%Y-%m-%d)
+cache:
+  paths:
+    - 'node_modules/**/*'

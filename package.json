@@ -21,6 +21,7 @@
     "prepare": "husky install",
     "config:local": "cp ./env/.env.local .env ",
     "config:dev": "cp ./env/.env.dev .env ",
+    "config:prod": "cp ./env/.env.prod .env ",
     "config:stage": "cp ./env/.env.stage .env ",
     "config:docker": "cp ./env/.env.docker .env ",
     "migrate:dev": "yarn config:dev && yarn prisma migrate dev",

@@ -1,8 +1,14 @@
+import { ConfigService } from '@nestjs/config';
+
 import { PrismaClient } from '@prisma/client';
 
-import { seedDatabase } from './seed';
+import { seedDatabase as seedDev } from './seed/dev';
+import { seedDatabase as seedProd } from './seed/prod';
 
 (async () => {
   const database = new PrismaClient();
-  await seedDatabase(database);
+  const configService = new ConfigService();
+  console.log('NODE_ENV', configService.get('NODE_ENV'));
+
+  // await seedDev(database);
 })();
