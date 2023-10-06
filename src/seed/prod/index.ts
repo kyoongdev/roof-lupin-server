@@ -77,18 +77,6 @@ export const seedDatabase = async (database: PrismaClient) => {
     },
   });
 
-  await database.coupon.create({
-    data: {
-      name: '코드 쿠폰',
-      code: COUPON_CODE.CODE_TEST,
-      description: '코드 발급 쿠폰 테스트',
-      discountType: DISCOUNT_TYPE_ENUM.PERCENTAGE,
-      discountValue: 20,
-      isLupinPay: true,
-      defaultDueDay: 7,
-    },
-  });
-
   await database.admin.create({
     data: {
       name: '통합관리자',
