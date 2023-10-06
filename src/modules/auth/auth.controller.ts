@@ -116,21 +116,4 @@ export class AuthController {
   async refresh(@Body() body: TokenDTO) {
     return await this.authService.refresh(body);
   }
-
-  @Post('refresh')
-  @RequestApi({
-    summary: {
-      description: '토큰 리프레시',
-      summary: 'access token과 refresh token을 통해 토큰을 재발급합니다.',
-    },
-    body: {
-      type: TokenDTO,
-    },
-  })
-  @ResponseApi({
-    type: TokenDTO,
-  })
-  async refreshToken(@Body() body: TokenDTO) {
-    return await this.authService.refresh(body);
-  }
 }

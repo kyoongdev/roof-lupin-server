@@ -28,7 +28,7 @@ class AppConfig {
     try {
       await this.initAlarm();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

@@ -31,7 +31,7 @@ export class AdminCouponService {
     const count = await this.adminCouponRepository.countCoupons({
       where: args.where,
     });
-    console.log(args.where);
+
     const coupons = await this.adminCouponRepository.findCoupons({
       where: args.where,
       skip,
