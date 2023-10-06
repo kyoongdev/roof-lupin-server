@@ -12,6 +12,7 @@ import { MessageProvider } from './utils/fcm';
 
 class AppConfig {
   private app: INestApplication;
+  private configService = new ConfigService();
 
   constructor(app: INestApplication) {
     this.app = app;
@@ -23,7 +24,7 @@ class AppConfig {
     await this.configureDatabase();
 
     await this.app.listen(8000, () => {
-      console.info('🔥 루프루팡 서버 시작!! 8000 🔥');
+      console.info(`🔥 루프루팡 ${this.configService.get('NODE_ENV')} 서버 시작!! 8000 🔥`);
     });
     try {
       await this.initAlarm();
@@ -33,14 +34,12 @@ class AppConfig {
   }
 
   revalidate() {
-    const configService = this.app.get(ConfigService);
-
-    if (configService.get('NODE_ENV') === 'dev') {
-      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=spaces`);
-      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=home`);
-      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=rankings`);
-      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=contents`);
-      axios.get(`${configService.get('CLIENT_REVALIDATE_URL')}?tag=rental-types`);
+    if (this.configService.get('NODE_ENV') === 'dev') {
+      axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=spaces`);
+      axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=home`);
+      axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=rankings`);
+      axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=contents`);
+      axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=rental-types`);
     }
   }
 
