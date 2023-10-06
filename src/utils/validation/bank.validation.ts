@@ -1,5 +1,4 @@
-import { applyDecorators } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
+import { applyDecorators, mixin } from '@nestjs/common';
 
 import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
@@ -12,18 +11,23 @@ import { BaseValidator } from './base-validator';
 export const BANK_CODES = Object.keys(BANK_CODE);
 export const BANK_NAMES = Object.values(BANK_CODE);
 
-@ValidatorConstraint()
-export class BankCodeConstraint implements ValidatorConstraintInterface {
-  validate(value: string | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
-    if (!BANK_CODES.includes(value)) return false;
+export const BankCodeConstraint = (nullable = false) => {
+  @ValidatorConstraint()
+  class BankCodeConstraintImpl implements ValidatorConstraintInterface {
+    validate(value: string | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+      if (nullable && !value) return true;
+      if (!BANK_CODES.includes(value)) return false;
 
-    return true;
+      return true;
+    }
   }
-}
-export const BankCodeValidation = BaseValidator(
-  BankCodeConstraint,
-  'bankCode 옵션은 다음 중 하나여야 합니다: ' + BANK_CODES.join(', ') + '.'
-);
+  return mixin<BankCodeConstraintImpl>(BankCodeConstraintImpl);
+};
+export const BankCodeValidation = (nullable = false) =>
+  BaseValidator(
+    BankCodeConstraint(nullable),
+    'bankCode 옵션은 다음 중 하나여야 합니다: ' + BANK_CODES.join(', ') + '.'
+  );
 
 export const bankCodeToName = (code: string) => {
   if (!BANK_CODES.includes(code)) return null;
@@ -38,8 +42,7 @@ export const bankNameToCode = (name: string) => {
 
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
-    BankCodeValidation(),
-
+    BankCodeValidation(nullable)(),
     Property({
       apiProperty: {
         description: '은행명',
