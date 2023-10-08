@@ -1,6 +1,5 @@
 import { applyDecorators, mixin } from '@nestjs/common';
 
-import { Transform } from 'class-transformer';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
 
@@ -23,6 +22,7 @@ export const BankCodeConstraint = (nullable = false) => {
   }
   return mixin<BankCodeConstraintImpl>(BankCodeConstraintImpl);
 };
+
 export const BankCodeValidation = (nullable = false) =>
   BaseValidator(
     BankCodeConstraint(nullable),
