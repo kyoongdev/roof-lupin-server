@@ -134,6 +134,7 @@ export class AuthService {
       const result = await this.kakaoService.getRestCallback(code);
 
       const { user } = result;
+      //각 소셜로그인 서비스 마다 id 값이 있음 <- DB에 저장 asdfa_asdf90123
 
       this.socialCallback(new CreateSocialUserDTO().setKakaoUser(user), `${user.id}`, 'kakao', result.token, res);
     } catch (err) {

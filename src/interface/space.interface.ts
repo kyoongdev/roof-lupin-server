@@ -19,7 +19,6 @@ export interface SqlSpace {
   description: string;
   buildingType: number;
   thumbnail: string;
-  minUser: number;
   maxUser: number;
   overflowUserCost: number;
   overflowUserCount: number;

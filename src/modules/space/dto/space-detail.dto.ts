@@ -29,7 +29,7 @@ export interface SpaceDetailDTOProps extends DateDTOProps {
   minSize: number;
   buildingType: number;
   deposit?: number;
-  minUser: number;
+  depositDescription?: string;
   maxUser: number;
   overflowUserCost: number;
   overflowUserCount: number;
@@ -69,6 +69,9 @@ export class SpaceDetailDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })
   deposit?: number;
 
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금 관련 설명' } })
+  depositDescription?: string;
+
   @Property({ apiProperty: { type: 'string', description: '전화번호' } })
   phoneNumber: string;
 
@@ -92,9 +95,6 @@ export class SpaceDetailDTO {
 
   @Property({ apiProperty: { type: 'number', description: '건물 타입', nullable: true } })
   buildingType?: number;
-
-  @Property({ apiProperty: { type: 'number', description: '공간 최소 인원' } })
-  minUser: number;
 
   @Property({ apiProperty: { type: 'number', description: '공간 최대 인원' } })
   maxUser: number;
@@ -171,16 +171,15 @@ export class SpaceDetailDTO {
     this.description = props.description;
     this.minSize = props.minSize;
     this.buildingType = props.buildingType ?? null;
-    this.minUser = props.minUser;
     this.maxUser = props.maxUser;
     this.deposit = props.deposit ?? null;
+    this.depositDescription = props.depositDescription ?? null;
     this.orderNo = props.orderNo;
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
     this.qnaCount = props.qnaCount;
     this.isInterested = props.isInterested ?? false;
     this.isImmediateReservation = props.isImmediateReservation;
-
     this.link = props.link;
     this.caution = props.caution;
     this.host = new HostDTO(props.host);

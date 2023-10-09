@@ -89,7 +89,7 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
       )})`
       : Prisma.empty;
 
-    const userCountWhere = this.query.userCount ? Prisma.sql`AND minUser <= ${this.query.userCount}` : Prisma.empty;
+    const userCountWhere = this.query.userCount ? Prisma.sql`AND maxUser >= ${this.query.userCount}` : Prisma.empty;
 
     const serviceWhere = this.query.serviceIds
       ? Prisma.sql`AND (${Prisma.join(

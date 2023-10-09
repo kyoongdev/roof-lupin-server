@@ -156,26 +156,26 @@ model Space {
   description String @db.MediumText
 
   //NOTE: 건물 타입 -> 상가 ~~
-  buildingType      Int?    @db.TinyInt //TODO: 추후 정리
-  thumbnail         String
-  //NOTE: 최소 인원
-  minUser           Int     @db.TinyInt
+  buildingType       Int?    @db.TinyInt //TODO: 추후 정리
+  thumbnail          String
   //NOTE: 최대 인원
-  maxUser           Int     @db.TinyInt
+  maxUser            Int     @db.TinyInt
   //NOTE: 초과 인원당 추가 비용
-  overflowUserCost  Int     @db.MediumInt
+  overflowUserCost   Int     @db.MediumInt
   //NOTE: 초과 인원 기준 인원
-  overflowUserCount Int     @db.TinyInt
+  overflowUserCount  Int     @db.TinyInt
   //NOTE:  최소 면적
-  minSize           Int     @default(0) @db.SmallInt
+  minSize            Int     @default(0) @db.SmallInt
   //NOTE: 보증금
-  deposit           Int?    @db.MediumInt
+  deposit            Int?    @db.MediumInt
+  //NOTE: 보증금 설명
+  depositDescription String? @db.VarChar(120)
   //NOTE: 링크
-  link              String? @db.VarChar(255)
+  link               String? @db.VarChar(255)
   //NOTE: 전화번호
-  phoneNumber       String  @db.VarChar(11)
+  phoneNumber        String  @db.VarChar(11)
   //NOTE: 주의사항
-  caution           String  @db.MediumText
+  caution            String  @db.MediumText
 
   //NOTE: 옥상만 있는지
   isRoofOnly Boolean @default(false)

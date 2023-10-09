@@ -191,7 +191,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         불은 호스트가 직접피어 드립니다
         넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
         thumbnail: 'https://dev-image.rooflupin.com/IMG_5913.jpg',
-        minUser: 5,
         maxUser: 10,
         overflowUserCount: 6,
         overflowUserCost: 15000,
@@ -483,7 +482,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       description:
         '루프탑 노을공원 ( 구 루프탑 공간 휴 )은 멀리 여행을 가서 할수 있는 캠핑을 도심에서 간편하게 즐길수 있는 공간이 있어 숯불 바베큐를 구워먹으며 빔프로젝터를 통해 영화도 볼수 있습니다. 또한 옥상캠핑, 생일파티, 소모임, 이벤트, 촬영 등 다양한 목적으로 이용 가능합니다.',
       thumbnail: 'https://dev-image.rooflupin.com/1688632155577áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
-      minUser: 1,
       maxUser: 20,
       overflowUserCost: 10000,
       overflowUserCount: 5,
@@ -740,7 +738,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         * 오락실게임 900개 게임보드, DVD플레이어, 미라캐스트, 55인치 대형 UHDTV(사진의 빔프로젝트는 화질상의 이유로 TV로 교체),  오디오시설 구비
         `,
       thumbnail: 'https://dev-image.rooflupin.com/1688632809745áá³áá³ááµá«áá£áº 2023-07-06 áá©áá® 5.jpeg',
-      minUser: 1,
       maxUser: 20,
       phoneNumber: '01012341234',
       overflowUserCost: 10000,
@@ -985,7 +982,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
         * 오락실게임 900개 게임보드, DVD플레이어, 미라캐스트, 55인치 대형 UHDTV(사진의 빔프로젝트는 화질상의 이유로 TV로 교체),  오디오시설 구비
         `,
       thumbnail: 'https://dev-image.rooflupin.com/1688632936057asdf.jpeg',
-      minUser: 1,
       maxUser: 20,
       overflowUserCost: 10000,
       overflowUserCount: 5,
@@ -1226,7 +1222,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
       친구, 가족, 연인, 좋아하는 사람들과 옥상 정원에서 행복한 파티를 해보세요!
         `,
       thumbnail: 'https://dev-image.rooflupin.com/1690959585318asdfsda.jpeg',
-      minUser: 1,
       maxUser: 6,
       overflowUserCost: 20000,
       overflowUserCount: 3,
