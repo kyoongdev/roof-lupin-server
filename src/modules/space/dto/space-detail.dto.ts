@@ -191,6 +191,7 @@ export class SpaceDetailDTO {
     this.publicTransportations = props.publicTransportations.map(
       (publicTransportation) => new TransportationDTO(publicTransportation)
     );
+
     this.sizes = props.sizes.map((size) => new SizeDTO(size));
     this.reviews = props.reviews.map((review) => new ReviewDTO(review));
     this.bestPhotos = props.bestPhotos.map((bestPhoto) => new BestPhotoDTO(bestPhoto));
