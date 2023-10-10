@@ -42,14 +42,14 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
     `;
     } else if (this.type === 'POPULARITY') {
       return Prisma.sql`
-     SELECT ${this.getBaseSelect()}
-     FROM Space sp
-     ${this.getBaseJoin()}
-     ${this.getWhere()}
-     GROUP BY sp.id
-     ORDER BY sp.orderNo DESC, interestCount DESC, averageScore DESC, reviewCount DESC
-     LIMIT ${this.paging.page},${this.paging.limit ?? 10}
-   `;
+                SELECT ${this.getBaseSelect()}
+                FROM Space sp
+                ${this.getBaseJoin()}
+                ${this.getWhere()}
+                GROUP BY sp.id
+                ORDER BY sp.orderNo DESC, interestCount DESC, averageScore DESC, reviewCount DESC
+                LIMIT ${this.paging.page},${this.paging.limit ?? 10}
+            `;
     }
 
     const orderBy =
