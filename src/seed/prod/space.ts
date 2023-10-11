@@ -5,7 +5,7 @@ import { EncryptProvider } from '@/common/encrypt';
 
 import { getRentalType } from './rental-type';
 
-export const seedSpace = async (users: User[], database: PrismaClient): Promise<Space[]> => {
+export const seedSpace = async (database: PrismaClient): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');
@@ -206,37 +206,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
             {
               day: 1,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 2,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 3,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 4,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 5,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 6,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
             {
               day: 7,
               startAt: 10,
-              endAt: 9,
+              endAt: 34,
             },
           ],
         },
@@ -554,37 +554,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
         ],
       },
@@ -752,37 +752,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
         ],
       },
@@ -996,37 +996,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
         ],
       },
@@ -1235,37 +1235,37 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 1,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 2,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 3,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 4,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 5,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 6,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
           {
             day: 7,
             startAt: 10,
-            endAt: 9,
+            endAt: 34,
           },
         ],
       },
