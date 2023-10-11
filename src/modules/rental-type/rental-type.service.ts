@@ -537,6 +537,7 @@ export class RentalTypeService {
         const currentDay = isHoliday.getCurrentDay(targetDate);
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
+
         if (holidays.length > 0) {
           isPossible = false;
         }

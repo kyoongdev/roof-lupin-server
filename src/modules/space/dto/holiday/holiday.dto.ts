@@ -26,10 +26,14 @@ export class SpaceHolidayDTO {
   }
 
   checkWeekIsHoliday(week: number, currentDay: number) {
-    if (this.interval === INTERVAL_WEEK.TWO) {
-      return (week === 2 || week === 4) && this.day === currentDay;
-    } else {
+    if (this.interval === INTERVAL_WEEK.EVERY_WEEK) {
       return this.day === currentDay;
+    } else if (this.interval === INTERVAL_WEEK.TWO) {
+      return week === 2 && this.day === currentDay;
+    } else if (this.interval === INTERVAL_WEEK.THREE) {
+      return week === 3 && this.day === currentDay;
+    } else {
+      return week === 4 && this.day === currentDay;
     }
   }
 }
