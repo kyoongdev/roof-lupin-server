@@ -11,6 +11,7 @@ phases:
     commands:
       - yarn config:prod
       - yarn prisma migrate deploy
+      - yarn seed
   build:
     commands:
       - yarn build
