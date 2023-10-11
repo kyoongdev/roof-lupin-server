@@ -12,7 +12,7 @@ export class JsonInterceptor implements NestInterceptor {
 
   parseJson(body: object) {
     Object.entries(body).forEach(([key, value]) => {
-      if (!value || (typeof value === 'string' && value.length === 0)) {
+      if (typeof value === 'undefined' || value === null || (typeof value === 'string' && value.length === 0)) {
         body[key] = undefined;
       } else if (typeof value === 'object') {
         this.parseJson(value);
