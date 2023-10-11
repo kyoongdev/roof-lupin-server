@@ -5,7 +5,7 @@ import { EncryptProvider } from '@/common/encrypt';
 
 import { getRentalType } from './rental-type';
 
-export const seedSpace = async (users: User[], database: PrismaClient): Promise<Space[]> => {
+export const seedSpace = async (database: PrismaClient): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
   const hostPassword = encrypt.hashPassword(salt, 'host1234');

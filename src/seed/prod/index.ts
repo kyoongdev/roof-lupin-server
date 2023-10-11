@@ -42,7 +42,6 @@ export const seedDatabase = async (database: PrismaClient) => {
   const salt = encrypt.createSalt();
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
-  const users: User[] = [];
 
   await database.searchRecommend.create({
     data: {
@@ -103,7 +102,7 @@ export const seedDatabase = async (database: PrismaClient) => {
     },
   });
 
-  const spaces: Space[] = await seedSpace(users, database);
+  const spaces: Space[] = await seedSpace(database);
 
   await seedHome(database, spaces);
 };
