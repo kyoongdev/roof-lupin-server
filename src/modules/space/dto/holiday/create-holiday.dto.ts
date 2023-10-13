@@ -16,7 +16,7 @@ export class CreateSpaceHolidayDTO {
       type: 'number',
       minimum: 1,
       maximum: 5,
-      description: '간격 (해당 월의 n번째주)',
+      description: '간격 (1 : 매주, 2 : 2째주, 3 : 3째주, 4 : 4째주)',
     },
   })
   interval: number;

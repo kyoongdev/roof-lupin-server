@@ -137,7 +137,7 @@ export const getRentalType = () => {
       name: '올나잇 패키지',
       startAt: 19,
       endAt: 33,
-      day: 1,
+      day: i,
       rentalType: 2,
       baseHour: 5,
       additionalServices: {

@@ -18,7 +18,7 @@ export interface TokenPayload {
 }
 
 export enum INTERVAL_WEEK {
-  ONE = 1,
+  EVERY_WEEK = 1,
   TWO = 2,
   THREE = 3,
   FOUR = 4,

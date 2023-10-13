@@ -234,7 +234,7 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
         LEFT JOIN BlockedTime bt ON hsp.id = bt.spaceId
         WHERE sp.id = hsp.id 
         AND (
-          (sh.day = ${day} AND sh.interval = ${week}) 
+          (IF(sh.interval = 1,sh.day = ${day} ,sh.day = ${day} AND sh.interval = ${week})) 
         ${blockedTimeQuery})
         GROUP BY hsp.id
       `;
