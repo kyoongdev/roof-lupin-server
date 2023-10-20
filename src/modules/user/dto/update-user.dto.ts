@@ -3,7 +3,7 @@ import { Property } from 'cumuco-nestjs';
 
 import { DayValidation } from '@/utils';
 
-import { GenderValidation } from '../../../utils/validation/gender.validate';
+import { GenderReqDecorators, GenderValidation } from '../../../utils/validation/gender.validate';
 
 export interface UpdateUserDTOProps {
   nickname?: string;
@@ -32,8 +32,7 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '생년월일', nullable: true, minLength: 4, maxLength: 4 } })
   birthYear?: string;
 
-  @GenderValidation()
-  @Property({ apiProperty: { type: 'string', description: '성별', nullable: true } })
+  @GenderReqDecorators(true)
   gender?: number;
 
   @Property({ apiProperty: { type: 'string', description: '프로필 사진', nullable: true } })
