@@ -362,6 +362,7 @@ export class MessageEventProvider {
     const user = await this.getUser(data.userId);
     if (user && user.setting.checkIsKakaoTalkAlarmAccepted()) {
       const reservation = await this.getReservation(data.reservationId);
+
       if (!reservation) return;
 
       this.sendKakaoMessage<ReservationGuestCanceledAlarmTalkPayload>(
@@ -610,14 +611,18 @@ export class MessageEventProvider {
     });
   }
   async sendKakaoMessage<T>(targetPhoneNumber: string, templateId: string, variables?: T) {
-    await this.solaapi.send({
-      to: targetPhoneNumber,
-      kakaoOptions: {
-        pfId: this.configService.get('SOLAPI_PFID'),
-        templateId,
-        variables: variables ?? {},
-      },
-    });
+    try {
+      await this.solaapi.send({
+        to: targetPhoneNumber,
+        kakaoOptions: {
+          pfId: this.configService.get('SOLAPI_PFID'),
+          templateId,
+          variables: variables ?? {},
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async sendAlarmWithUpdate(alarmId: string, data: SendPushMessage) {

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { flatten, range } from 'lodash';
 
-import { getWeek } from '@/common/date';
+import { checkIsAfterDate, checkIsSameDate, getWeek } from '@/common/date';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
@@ -69,6 +69,7 @@ export class RentalTypeService {
         rentalType: 'asc',
       },
     });
+
     rentalTypes.forEach((rentalType) => rentalType.applyNextDayToTimeCostInfos());
     return rentalTypes;
   }
@@ -118,6 +119,7 @@ export class RentalTypeService {
         spaceId,
       },
     });
+
     const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
       where: {
         spaceId,
@@ -327,6 +329,7 @@ export class RentalTypeService {
       days: [],
     };
     const fullDays = new Date(Number(query.year), Number(query.month), 0).getDate();
+    const currentDate = new Date();
     await Promise.all(
       range(1, fullDays + 1).map(async (day) => {
         const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, day);
@@ -352,13 +355,13 @@ export class RentalTypeService {
           }
         );
 
-        const currentDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
+        const targetDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
 
         const currentDay = isHoliday.getCurrentDay({
           ...query,
           day: day,
         });
-        const week = getWeek(currentDate);
+        const week = getWeek(targetDate);
 
         const holidays = spaceHolidays.filter((holiday) => holiday.checkWeekIsHoliday(week, currentDay));
 
@@ -366,10 +369,12 @@ export class RentalTypeService {
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
+        const isAfter = checkIsAfterDate(new Date(query.year, query.month), currentDate, true);
+
         const data: PossibleRentalTypeByMonthDTOProps = {
           day,
           isHoliday: isHoliday.isHoliday,
-          isPossible: holidays.length > 0 ? false : !isImpossible,
+          isPossible: isAfter ? false : holidays.length > 0 ? false : !isImpossible,
           rentalType: result,
         };
 
@@ -432,6 +437,8 @@ export class RentalTypeService {
     spaceHolidays: SpaceHolidayDTO[],
     targetDate: PossibleRentalTypeQuery
   ) {
+    const currentDate = new Date();
+
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
         ...range(9, 33).map((hour: number) => ({
@@ -440,11 +447,21 @@ export class RentalTypeService {
           time: hour,
         })),
       ];
+
+      const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+
       rentalType.timeCostInfos.forEach((timeInfo) => {
         timeCostInfos.forEach((info) => {
           if (info.time === timeInfo.time) {
             info.cost = timeInfo.cost;
-            info.isPossible = true;
+            info.isPossible = checkIsSameDate(
+              currentDate,
+              new Date(targetDate.year, targetDate.month - 1, targetDate.day)
+            )
+              ? !(info.time <= currentDate.getHours())
+              : isAfter
+              ? false
+              : true;
           }
         });
       });
@@ -500,10 +517,17 @@ export class RentalTypeService {
 
       return new PossibleRentalTypeDTO({
         ...rentalType,
-        timeCostInfos: timeCostInfos.map((info) => info),
+        timeCostInfos,
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-      let isPossible = true;
+      const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+      let isPossible = isAfter ? false : true;
+      if (
+        checkIsSameDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate) &&
+        rentalType.startAt <= currentDate.getHours()
+      ) {
+        isPossible = false;
+      }
 
       reservations.forEach((reservation) => {
         if (reservation.checkIsTargetDay(targetDate)) {
@@ -547,7 +571,7 @@ export class RentalTypeService {
             const openStart = openHour.startAt;
             const openEnd = openHour.endAt;
 
-            if (!(rentalType.endAt <= openEnd && rentalType.startAt >= openStart)) isPossible = false;
+            if (!(openStart <= rentalType.startAt && rentalType.endAt <= openEnd)) isPossible = false;
           });
       }
 

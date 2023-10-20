@@ -131,9 +131,8 @@ class AppConfig {
       .setDescription('RoofLupin 루프루팡의 API 문서입니다.')
       .setContact("RoofLupin's Developer", '', 'dev@cumuco.net')
       .setVersion('1.0.0')
-      .addServer('http://localhost:8000')
-      .addServer('https://api.rooflupin.com')
-      .addServer('https://api-prod.rooflupin.com')
+      .addServer(this.configService.get('API_URL'))
+
       .addBearerAuth(
         {
           type: 'http',

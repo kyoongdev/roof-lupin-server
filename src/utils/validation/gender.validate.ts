@@ -54,10 +54,11 @@ export const GenderReqTransForm = () =>
       return null;
     }
   });
+
 export const GenderResTransForm = () => Transform(({ value }) => genderNumberToString(value));
 export const GenderReqDecorators = (nullable = false) =>
   applyDecorators(
+    Property({ apiProperty: { type: 'number', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' } }),
     GenderReqTransForm(),
-    GenderValidation(),
-    Property({ apiProperty: { type: 'string', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' } })
+    GenderValidation()
   );
