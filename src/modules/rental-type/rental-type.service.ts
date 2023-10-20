@@ -69,6 +69,7 @@ export class RentalTypeService {
         rentalType: 'asc',
       },
     });
+
     rentalTypes.forEach((rentalType) => rentalType.applyNextDayToTimeCostInfos());
     return rentalTypes;
   }
@@ -368,7 +369,7 @@ export class RentalTypeService {
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
-        const isAfter = checkIsAfterDate(currentDate, new Date(query.year, query.month));
+        const isAfter = checkIsAfterDate(new Date(query.year, query.month), currentDate, true);
 
         const data: PossibleRentalTypeByMonthDTOProps = {
           day,

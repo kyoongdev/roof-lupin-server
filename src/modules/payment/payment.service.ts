@@ -168,8 +168,6 @@ export class PaymentService {
 
         await this.createSettlement(database, reservation);
       });
-
-      await this.sendMessage(reservation);
     } catch (err) {
       logger.error(err);
       if (reservation && reservation.id) {
@@ -188,6 +186,7 @@ export class PaymentService {
 
       throw err;
     }
+    await this.sendMessage(reservation);
 
     return reservation;
   }
@@ -206,9 +205,9 @@ export class PaymentService {
     const reservationDate = new Date(Number(reservation.year), Number(reservation.month) - 1, Number(reservation.day));
     const now = new Date();
 
-    const diffTime = getDateDiff(reservationDate, now);
-    const refundTargetDate = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    if (refundTargetDate <= 0) {
+    const refundTargetDate = getDateDiff(reservationDate, now);
+
+    if (refundTargetDate < 0) {
       throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_REFUND_FORBIDDEN);
     }
 
@@ -217,7 +216,8 @@ export class PaymentService {
       .reverse()
       .find((policy) => policy.daysBefore <= refundTargetDate);
 
-    const refundCost = refundPolicy.getRefundCost(reservation.totalCost);
+    const refundCost =
+      refundTargetDate >= 8 ? reservation.totalCost : refundPolicy.getRefundCost(reservation.totalCost);
 
     await this.tossPay.cancelPaymentByPaymentKey(reservation.orderResultId, {
       cancelAmount: refundCost,
@@ -227,7 +227,7 @@ export class PaymentService {
     await this.reservationRepository.updatePayment(reservation.id, {
       cancel: {
         refundCost,
-        reason: '사용자 환불 요청',
+        reason: data.cancelReason,
         userId,
       },
     });
@@ -244,7 +244,7 @@ export class PaymentService {
 
     this.messageEvent.createReservationGuestCanceledAlarm({
       nickname: reservation.user.nickname || reservation.user.name,
-      reason: '사용자 환불 요청',
+      reason: data.cancelReason,
       reservationId: reservation.id,
       spaceId: reservation.space.id,
       spaceName: reservation.space.title,
