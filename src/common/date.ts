@@ -38,9 +38,11 @@ export const checkIsSameDate = (firstDate: Date, secondDate: Date) => {
 };
 
 export const checkIsAfterDate = (firstDate: Date, secondDate: Date) => {
-  console.log(firstDate, secondDate);
   return (
     firstDate.getFullYear() < secondDate.getFullYear() ||
-    (firstDate.getFullYear() === secondDate.getFullYear() && firstDate.getMonth() < secondDate.getMonth())
+    (firstDate.getFullYear() === secondDate.getFullYear() && firstDate.getMonth() < secondDate.getMonth()) ||
+    (firstDate.getFullYear() === secondDate.getFullYear() &&
+      firstDate.getMonth() === secondDate.getMonth() &&
+      firstDate.getDate() < secondDate.getDate())
   );
 };

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { flatten, range } from 'lodash';
 
-import { checkIsAfterDate, getWeek } from '@/common/date';
+import { checkIsAfterDate, checkIsSameDate, getWeek } from '@/common/date';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
@@ -118,6 +118,7 @@ export class RentalTypeService {
         spaceId,
       },
     });
+
     const spaceHolidays = await this.spaceHolidayRepository.findSpaceHolidays({
       where: {
         spaceId,
@@ -435,6 +436,8 @@ export class RentalTypeService {
     spaceHolidays: SpaceHolidayDTO[],
     targetDate: PossibleRentalTypeQuery
   ) {
+    const currentDate = new Date();
+
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
         ...range(9, 33).map((hour: number) => ({
@@ -443,11 +446,21 @@ export class RentalTypeService {
           time: hour,
         })),
       ];
+
+      const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+
       rentalType.timeCostInfos.forEach((timeInfo) => {
         timeCostInfos.forEach((info) => {
           if (info.time === timeInfo.time) {
             info.cost = timeInfo.cost;
-            info.isPossible = true;
+            info.isPossible = checkIsSameDate(
+              currentDate,
+              new Date(targetDate.year, targetDate.month - 1, targetDate.day)
+            )
+              ? !(info.time <= currentDate.getHours())
+              : isAfter
+              ? false
+              : true;
           }
         });
       });
@@ -503,10 +516,17 @@ export class RentalTypeService {
 
       return new PossibleRentalTypeDTO({
         ...rentalType,
-        timeCostInfos: timeCostInfos.map((info) => info),
+        timeCostInfos,
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-      let isPossible = true;
+      const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+      let isPossible = isAfter ? false : true;
+      if (
+        checkIsSameDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate) &&
+        rentalType.startAt <= currentDate.getHours()
+      ) {
+        isPossible = false;
+      }
 
       reservations.forEach((reservation) => {
         if (reservation.checkIsTargetDay(targetDate)) {
@@ -550,7 +570,7 @@ export class RentalTypeService {
             const openStart = openHour.startAt;
             const openEnd = openHour.endAt;
 
-            if (!(rentalType.endAt <= openEnd && rentalType.startAt >= openStart)) isPossible = false;
+            if (!(openStart <= rentalType.startAt && rentalType.endAt <= openEnd)) isPossible = false;
           });
       }
 

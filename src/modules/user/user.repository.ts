@@ -185,7 +185,6 @@ export class UserRepository {
   }
 
   async updateSetting(userId: string, data: UpdateUserSettingDTO) {
-    console.log({ data });
     await this.database.userSetting.update({
       where: {
         userId,

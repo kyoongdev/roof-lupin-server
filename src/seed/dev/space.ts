@@ -2,6 +2,8 @@ import { PrismaClient, Space, User } from '@prisma/client';
 
 import { EncryptProvider } from '@/common/encrypt';
 
+import { getRentalType } from '../prod/rental-type';
+
 export const seedSpace = async (users: User[], database: PrismaClient): Promise<Space[]> => {
   const encrypt = new EncryptProvider();
   const salt = encrypt.createSalt();
@@ -250,168 +252,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           ],
         },
         rentalType: {
-          create: [
-            {
-              baseCost: 5000,
-              name: '시간당 요금',
-              rentalType: 1,
-              baseHour: 2,
-              startAt: 9,
-              endAt: 32,
-              day: 1,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-              timeCostInfos: {
-                create: [
-                  {
-                    cost: 5000,
-                    time: 9,
-                  },
-                  {
-                    cost: 5000,
-                    time: 10,
-                  },
-                  {
-                    cost: 5000,
-                    time: 11,
-                  },
-                  {
-                    cost: 5000,
-                    time: 12,
-                  },
-                  {
-                    cost: 5000,
-                    time: 13,
-                  },
-                  {
-                    cost: 5000,
-                    time: 14,
-                  },
-                  {
-                    cost: 5000,
-                    time: 15,
-                  },
-                  {
-                    cost: 5000,
-                    time: 16,
-                  },
-                  {
-                    cost: 7000,
-                    time: 17,
-                  },
-                  {
-                    cost: 7000,
-                    time: 18,
-                  },
-                  {
-                    cost: 7000,
-                    time: 19,
-                  },
-                  {
-                    cost: 7000,
-                    time: 20,
-                  },
-                  {
-                    cost: 7000,
-                    time: 21,
-                  },
-                  {
-                    cost: 7000,
-                    time: 22,
-                  },
-                  {
-                    cost: 7000,
-                    time: 23,
-                  },
-                  {
-                    cost: 7000,
-                    time: 24,
-                  },
-                  {
-                    cost: 7000,
-                    time: 25,
-                  },
-                  {
-                    cost: 7000,
-                    time: 26,
-                  },
-                  {
-                    cost: 7000,
-                    time: 27,
-                  },
-                  {
-                    cost: 7000,
-                    time: 28,
-                  },
-                  {
-                    cost: 7000,
-                    time: 29,
-                  },
-                  {
-                    cost: 7000,
-                    time: 30,
-                  },
-                  {
-                    cost: 7000,
-                    time: 31,
-                  },
-                  {
-                    cost: 7000,
-                    time: 32,
-                  },
-                ],
-              },
-            },
-            {
-              baseCost: 100000,
-              name: '올데이 패키지',
-              startAt: 11,
-              endAt: 16,
-              day: 1,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-            {
-              baseCost: 150000,
-              name: '올나잇 패키지',
-              startAt: 19,
-              endAt: 33,
-              day: 1,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-            {
-              baseCost: 150000,
-              name: '올나잇 패키지',
-              startAt: 19,
-              endAt: 33,
-              day: 5,
-              rentalType: 2,
-              baseHour: 5,
-              additionalServices: {
-                create: {
-                  name: '바베큐',
-                  cost: 10000,
-                },
-              },
-            },
-          ],
+          create: getRentalType(),
         },
 
         host: {
@@ -1309,7 +1150,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 26,
           },
           {
             day: 7,
@@ -1386,92 +1227,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
 
        7. 공간 사용후에는 정리를 해주셔야 합니다.
       `,
-
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
       location: {
         create: {
@@ -1643,7 +1400,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 26,
           },
           {
             day: 7,
@@ -1713,90 +1470,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
        7. 공간 사용후에는 정리를 해주셔야 합니다.
       `,
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 3,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
       location: {
         create: {
@@ -1965,7 +1639,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
           {
             day: 6,
             startAt: 10,
-            endAt: 10,
+            endAt: 26,
           },
           {
             day: 7,
@@ -2043,92 +1717,8 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
        7. 공간 사용후에는 정리를 해주셔야 합니다.
       `,
       rentalType: {
-        create: [
-          {
-            baseCost: 1000,
-            startAt: 14,
-            endAt: 22,
-            name: '시간대여',
-            rentalType: 1,
-            day: 3,
-            baseHour: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-            timeCostInfos: {
-              create: [
-                {
-                  cost: 1000,
-                  time: 14,
-                },
-                {
-                  cost: 1000,
-                  time: 15,
-                },
-                {
-                  cost: 1000,
-                  time: 16,
-                },
-                {
-                  cost: 2000,
-                  time: 17,
-                },
-                {
-                  cost: 2000,
-                  time: 18,
-                },
-                {
-                  cost: 2000,
-                  time: 19,
-                },
-                {
-                  cost: 2000,
-                  time: 20,
-                },
-                {
-                  cost: 2000,
-                  time: 21,
-                },
-              ],
-            },
-          },
-
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여',
-            rentalType: 2,
-            baseHour: 6,
-            day: 3,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-          {
-            baseCost: 100000,
-            startAt: 13,
-            endAt: 24,
-            name: '패키지 대여2',
-            rentalType: 2,
-            baseHour: 6,
-            day: 2,
-            additionalServices: {
-              create: {
-                name: '바베큐',
-                cost: 10000,
-              },
-            },
-          },
-        ],
+        create: getRentalType(),
       },
-
       location: {
         create: {
           roadAddress: '서울특별시 영등포구 선서유로24길 25-1 4층',
