@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { flatten, range } from 'lodash';
 
-import { getWeek } from '@/common/date';
+import { checkIsAfterDate, getWeek } from '@/common/date';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
@@ -327,6 +327,7 @@ export class RentalTypeService {
       days: [],
     };
     const fullDays = new Date(Number(query.year), Number(query.month), 0).getDate();
+    const currentDate = new Date();
     await Promise.all(
       range(1, fullDays + 1).map(async (day) => {
         const isHoliday = await this.holidayService.checkIsHoliday(query.year, query.month, day);
@@ -352,13 +353,13 @@ export class RentalTypeService {
           }
         );
 
-        const currentDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
+        const targetDate = new Date(Number(query.year), Number(query.month) - 1, Number(day));
 
         const currentDay = isHoliday.getCurrentDay({
           ...query,
           day: day,
         });
-        const week = getWeek(currentDate);
+        const week = getWeek(targetDate);
 
         const holidays = spaceHolidays.filter((holiday) => holiday.checkWeekIsHoliday(week, currentDay));
 
@@ -366,10 +367,12 @@ export class RentalTypeService {
           result.package.every((item) => !item.isPossible) &&
           (result.time ? result.time.timeCostInfos.every((item) => !item.isPossible) : true);
 
+        const isAfter = checkIsAfterDate(currentDate, new Date(query.year, query.month));
+
         const data: PossibleRentalTypeByMonthDTOProps = {
           day,
           isHoliday: isHoliday.isHoliday,
-          isPossible: holidays.length > 0 ? false : !isImpossible,
+          isPossible: isAfter ? false : holidays.length > 0 ? false : !isImpossible,
           rentalType: result,
         };
 

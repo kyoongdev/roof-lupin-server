@@ -54,6 +54,7 @@ export const GenderReqTransForm = () =>
       return null;
     }
   });
+
 export const GenderResTransForm = () => Transform(({ value }) => genderNumberToString(value));
 export const GenderReqDecorators = (nullable = false) =>
   applyDecorators(
