@@ -167,7 +167,9 @@ export class UserRepository {
           },
         },
         setting: {
-          create: {},
+          create: {
+            isKakaoTalkAccepted: true,
+          },
         },
       },
     });
