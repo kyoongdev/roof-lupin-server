@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { flatten, range } from 'lodash';
 
-import { checkIsAfterDate, checkIsSameDate, getWeek } from '@/common/date';
+import { checkIsAfterDate, checkIsSameDate, getDateDiff, getWeek } from '@/common/date';
 import { HolidayService } from '@/modules/holiday/holiday.service';
 import { HostBlockedTimeRepository } from '@/modules/host/blocked-time/blocked-time.repository';
 import { BlockedTimeDTO } from '@/modules/host/dto/blocked-time';
@@ -418,6 +418,7 @@ export class RentalTypeService {
           spaceHolidays,
           targetDate
         );
+
         if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
           result.time = possibleRentalType;
         } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
@@ -439,6 +440,13 @@ export class RentalTypeService {
   ) {
     const currentDate = new Date();
 
+    const targetDay = new Date(
+      Number(targetDate.year),
+      Number(targetDate.month) - 1,
+      Number(targetDate.day),
+      currentDate.getHours()
+    );
+
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
       const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
         ...range(9, 33).map((hour: number) => ({
@@ -448,20 +456,21 @@ export class RentalTypeService {
         })),
       ];
 
-      const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+      const isAfter = checkIsAfterDate(targetDay, currentDate) && currentDate.getHours() < 9;
 
       rentalType.timeCostInfos.forEach((timeInfo) => {
         timeCostInfos.forEach((info) => {
           if (info.time === timeInfo.time) {
+            const dateDiff = getDateDiff(targetDay, currentDate);
             info.cost = timeInfo.cost;
-            info.isPossible = checkIsSameDate(
-              currentDate,
-              new Date(targetDate.year, targetDate.month - 1, targetDate.day)
-            )
-              ? !(info.time <= currentDate.getHours())
-              : isAfter
-              ? false
-              : true;
+            const time = dateDiff === 1 && !isAfter ? currentDate.getHours() + 15 : currentDate.getHours();
+            console.log({ dateDiff, isAfter, time, currentDate, targetDay }, currentDate.getHours());
+            info.isPossible =
+              checkIsSameDate(currentDate, targetDay) || (dateDiff === 1 && !isAfter)
+                ? !(info.time <= time)
+                : isAfter
+                ? false
+                : true;
           }
         });
       });
@@ -521,10 +530,12 @@ export class RentalTypeService {
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
+      const dateDiff = getDateDiff(targetDay, currentDate);
+      const time = dateDiff === 1 && !isAfter ? currentDate.getHours() + 15 : currentDate.getHours();
       let isPossible = isAfter ? false : true;
       if (
         checkIsSameDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate) &&
-        rentalType.startAt <= currentDate.getHours()
+        rentalType.startAt <= time
       ) {
         isPossible = false;
       }
