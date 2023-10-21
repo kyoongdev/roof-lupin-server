@@ -169,6 +169,7 @@ export class PaymentService {
         await this.createSettlement(database, reservation);
       });
     } catch (err) {
+      console.log(err);
       logger.error(err);
       if (reservation && reservation.id) {
         const coupons = await this.couponRepository.findUserCoupons({

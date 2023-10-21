@@ -611,6 +611,7 @@ export class MessageEventProvider {
     });
   }
   async sendKakaoMessage<T>(targetPhoneNumber: string, templateId: string, variables?: T) {
+    if (this.configService.get('NODE_ENV') !== 'prod') return;
     try {
       await this.solaapi.send({
         to: targetPhoneNumber,
