@@ -34,7 +34,7 @@ class AppConfig {
   }
 
   revalidate() {
-    if (this.configService.get('NODE_ENV') === 'dev') {
+    if (this.configService.get('NODE_ENV') !== 'local') {
       axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=spaces`);
       axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=home`);
       axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=rankings`);
