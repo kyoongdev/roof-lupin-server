@@ -177,10 +177,10 @@ export class CreateSpaceDTO {
   }
 
   validateRefundPolicies() {
-    if (this.refundPolicies.length !== 8) {
+    if (this.refundPolicies.length !== 9) {
       throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_LENGTH);
     }
-    range(1, 9).forEach((idx) => {
+    range(0, 9).forEach((idx) => {
       const isExist = this.refundPolicies.find((refundPolicy) => refundPolicy.daysBefore === idx);
       if (!isExist) {
         throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_DAYS_BEFORE_TYPE);
