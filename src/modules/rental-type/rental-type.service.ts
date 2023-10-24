@@ -16,7 +16,10 @@ import { getDay } from '@/utils/validation/day.validation';
 import { SpaceHolidayDTO } from '../space/dto/holiday';
 import { PossibleRentalTypeByMonthQuery, PossibleRentalTypeQuery } from '../space/dto/query';
 import { PossibleRentalTypePagingDTO } from '../space/dto/query/possible-rental-type-paging.dto';
-import { PossibleTimeCostInfoDTOProps } from '../space/dto/timeCostInfo/possible-time-cost-info.dto';
+import {
+  PossibleTimeCostInfoDTO,
+  PossibleTimeCostInfoDTOProps,
+} from '../space/dto/timeCostInfo/possible-time-cost-info.dto';
 import { SpaceRepository } from '../space/space.repository';
 
 import {
@@ -448,29 +451,20 @@ export class RentalTypeService {
     );
 
     if (rentalType.rentalType === RENTAL_TYPE_ENUM.TIME) {
-      const timeCostInfos: PossibleTimeCostInfoDTOProps[] = [
-        ...range(9, 33).map((hour: number) => ({
-          cost: 0,
-          isPossible: false,
-          time: hour,
-        })),
-      ];
-
-      const isAfter = checkIsAfterDate(targetDay, currentDate) && currentDate.getHours() < 9;
+      const timeCostInfos: PossibleTimeCostInfoDTO[] = range(9, 33).map(
+        (hour: number) =>
+          new PossibleTimeCostInfoDTO({
+            cost: 0,
+            isPossible: false,
+            time: hour,
+          })
+      );
 
       rentalType.timeCostInfos.forEach((timeInfo) => {
         timeCostInfos.forEach((info) => {
           if (info.time === timeInfo.time) {
-            const dateDiff = getDateDiff(targetDay, currentDate);
             info.cost = timeInfo.cost;
-            const time = dateDiff === 1 && !isAfter ? currentDate.getHours() + 15 : currentDate.getHours();
-            console.log({ dateDiff, isAfter, time, currentDate, targetDay }, currentDate.getHours());
-            info.isPossible =
-              checkIsSameDate(currentDate, targetDay) || (dateDiff === 1 && !isAfter)
-                ? !(info.time <= time)
-                : isAfter
-                ? false
-                : true;
+            info.isPossible = info.checkIsAfter(currentDate, targetDay);
           }
         });
       });
@@ -480,23 +474,19 @@ export class RentalTypeService {
           reservation.rentalTypes.forEach((reservedRentalType) => {
             const startAt = reservedRentalType.startAt;
             const endAt = reservedRentalType.endAt;
-
             range(startAt, endAt + 1).forEach((hour) => {
-              const index = timeCostInfos.findIndex((timeCostInfo) => timeCostInfo.time === hour);
-
-              if (index !== -1) {
-                timeCostInfos[index].isPossible = false;
-              }
+              timeCostInfos.forEach((timeCostInfo) => timeCostInfo.checkIsImpossibleTime(hour));
             });
           });
         }
       });
       //INFO: 막아둔 날짜는 block
       blockedTimes.forEach((blockedTime) => {
-        if (blockedTime.checkIsTargetDay(targetDate))
-          for (let time = blockedTime.startAt; time < blockedTime.endAt; time++) {
-            timeCostInfos[time].isPossible = false;
-          }
+        if (blockedTime.checkIsTargetDay(targetDate)) {
+          range(blockedTime.startAt, blockedTime.endAt).forEach((hour) =>
+            timeCostInfos.forEach((timeCostInfo) => timeCostInfo.checkIsImpossibleTime(hour))
+          );
+        }
       });
 
       if (targetDate) {
@@ -505,23 +495,12 @@ export class RentalTypeService {
 
         const holidays = this.getHolidays(targetDate, spaceHolidays);
         if (holidays.length > 0) {
-          timeCostInfos.forEach((_, index) => {
-            timeCostInfos[index].isPossible = false;
-          });
+          timeCostInfos.forEach((timeCostInfo) => (timeCostInfo.isPossible = false));
         }
 
         openHours
           .filter((openHour) => openHour.day === currentDay)
-          .forEach((openHour) => {
-            const openStart = openHour.startAt;
-            const openEnd = openHour.endAt - 1;
-
-            timeCostInfos.forEach((timeCostInfo, index) => {
-              if (!(timeCostInfo.time >= openStart && timeCostInfo.time < openEnd)) {
-                timeCostInfos[index].isPossible = false;
-              }
-            });
-          });
+          .forEach((openHour) => timeCostInfos.forEach((timeCostInfo) => timeCostInfo.checkIsOpenTime(openHour)));
       }
 
       return new PossibleRentalTypeDTO({
@@ -529,67 +508,51 @@ export class RentalTypeService {
         timeCostInfos,
       });
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
+      const possiblePackage = new PossiblePackageDTO({
+        ...rentalType,
+        isPossible: false,
+      });
       const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
       const dateDiff = getDateDiff(targetDay, currentDate);
       const time = dateDiff === 1 && !isAfter ? currentDate.getHours() + 15 : currentDate.getHours();
-      let isPossible = isAfter ? false : true;
+
       if (
         checkIsSameDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate) &&
         rentalType.startAt <= time
       ) {
-        isPossible = false;
+        possiblePackage.isPossible = false;
       }
 
       reservations.forEach((reservation) => {
         if (reservation.checkIsTargetDay(targetDate)) {
           reservation.rentalTypes.forEach((reservedRentalType) => {
-            if (reservedRentalType.rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
-              isPossible = !(
-                rentalType.startAt === reservedRentalType.startAt && rentalType.endAt === reservedRentalType.endAt
-              );
-            } else {
-              const startAt = reservedRentalType.startAt;
-              const endAt = reservedRentalType.endAt + 1;
-              const nextStartAt = rentalType.startAt;
-              const nextEndAt = rentalType.endAt;
-
-              range(startAt, endAt).forEach((hour) => {
-                if (nextStartAt <= hour && hour < nextEndAt) isPossible = false;
-              });
-            }
+            possiblePackage.checkIsReservedTime(reservedRentalType, rentalType);
           });
         }
       });
 
       blockedTimes.forEach((blockedTime) => {
-        if (rentalType.endAt >= blockedTime.startAt && blockedTime.endAt >= rentalType.startAt) {
-          isPossible = false;
-        }
+        possiblePackage.checkIsBlockedTime(blockedTime, rentalType);
       });
 
       if (targetDate) {
         const isHoliday = await this.holidayService.checkIsHoliday(targetDate.year, targetDate.month, targetDate.day);
-        const currentDay = isHoliday.getCurrentDay(targetDate);
-
         const holidays = this.getHolidays(targetDate, spaceHolidays);
 
         if (holidays.length > 0) {
-          isPossible = false;
+          possiblePackage.isPossible = false;
         }
+
+        const currentDay = isHoliday.getCurrentDay(targetDate);
+
         openHours
           .filter((openHour) => openHour.day === currentDay)
           .forEach((openHour) => {
-            const openStart = openHour.startAt;
-            const openEnd = openHour.endAt;
-
-            if (!(openStart <= rentalType.startAt && rentalType.endAt <= openEnd)) isPossible = false;
+            possiblePackage.checkIsNotOpenTime(openHour, rentalType);
           });
       }
 
-      return new PossiblePackageDTO({
-        ...rentalType,
-        isPossible,
-      });
+      return possiblePackage;
     }
   }
 

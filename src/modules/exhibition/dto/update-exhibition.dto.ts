@@ -7,6 +7,7 @@ export interface UpdateExhibitionDTOProps {
   thumbnail?: string;
   description?: string;
   content?: string;
+  spaceTitle?: string;
   startAt?: Date;
   endAt?: Date;
   isShow?: boolean;
@@ -27,6 +28,9 @@ export class UpdateExhibitionDTO {
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 내용' } })
   content?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 공간 제목' } })
+  spaceTitle?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 시작날짜' } })
   startAt?: Date;

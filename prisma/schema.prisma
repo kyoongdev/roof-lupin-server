@@ -95,7 +95,8 @@ model Curation {
   thumbnail String
   isMain    Boolean @default(false)
 
-  orderNo Int?
+  orderNo    Int?
+  spaceTitle String @db.VarChar(80)
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -1025,7 +1026,8 @@ model Exhibition {
   thumbnail   String
   description String @db.VarChar(120)
 
-  content String @db.MediumText
+  content    String @db.MediumText
+  spaceTitle String @db.VarChar(80)
 
   startAt DateTime @db.DateTime
   endAt   DateTime @db.DateTime

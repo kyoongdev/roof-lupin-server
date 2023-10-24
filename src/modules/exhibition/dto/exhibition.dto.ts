@@ -6,6 +6,7 @@ export interface ExhibitionDTOProps {
   thumbnail: string;
   description: string;
   content: string;
+  spaceTitle: string;
   startAt: Date;
   endAt: Date;
   createdAt: Date;
@@ -29,6 +30,9 @@ export class ExhibitionDTO {
   @Property({ apiProperty: { type: 'string', description: '기획전 내용' } })
   content: string;
 
+  @Property({ apiProperty: { type: 'string', description: '기획전 공간 제목' } })
+  spaceTitle: string;
+
   @Property({ apiProperty: { type: 'string', description: '기획전 시작' } })
   startAt: Date;
 
@@ -50,6 +54,7 @@ export class ExhibitionDTO {
     this.thumbnail = props.thumbnail;
     this.description = props.description;
     this.content = props.content;
+    this.spaceTitle = props.spaceTitle;
     this.startAt = props.startAt;
     this.endAt = props.endAt;
     this.createdAt = props.createdAt;

@@ -18,6 +18,20 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
       startAt: new Date(),
       endAt: new Date(),
       thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
+      spaceTitle: '옥상 영화 이색 데이트는 여기서!',
+    },
+  });
+
+  const curation = await database.curation.create({
+    data: {
+      title: '옥상에서 열리는 별빛 영화제',
+      spaceTitle: '영화제 공간',
+      content:
+        '<h1>특별한 장소에서 이색 데이트 고민 중이라면?</h1><h4>옥상에서 열리는 영화제 모음</h4><p><br></p><p>여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. </p><p><br></p><h4>영화를 옥상에서 본다고? 폼 미쳤다이</h4><h2>전무후무 개띵작만 </h2><h2>모아서 상영하는</h2><p><br></p><p><img src="https://dev-image.rooflupin.com/16959744467561686736136673wallpaperbet.jpeg" alt="1686736136673wallpaperbet.ter.jpg" contenteditable="false">여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. </p><p>여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. 여기는 옥상 기획전 관련 텍스트가 들어갈 자리입니다. !</p>',
+      subTitle: '에무시네마 기획전',
+      thumbnail: 'https://dev-image.rooflupin.com/1688714930777rooftop-cafe.jpeg',
+      isMain: true,
+      orderNo: 1,
     },
   });
 
@@ -64,6 +78,25 @@ export const seedHome = async (database: PrismaClient, spaces: Space[]) => {
                     },
                   },
                   orderNo: index,
+                },
+              ],
+            },
+          },
+        });
+        await database.curation.update({
+          where: {
+            id: curation.id,
+          },
+          data: {
+            spaces: {
+              create: [
+                {
+                  orderNo: index,
+                  space: {
+                    connect: {
+                      id: spaces.id,
+                    },
+                  },
                 },
               ],
             },

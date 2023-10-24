@@ -7,7 +7,7 @@ export interface UpdateCurationDTOProps {
   subTitle?: string;
   content?: string;
   thumbnail?: string;
-
+  spaceTitle?: string;
   spaces?: UpdateCurationSpaceDTOProps[];
 }
 
@@ -24,6 +24,9 @@ export class UpdateCurationDTO {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '큐레이션 썸네일' } })
   thumbnail?: string;
 
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '큐레이션 공간 제목' } })
+  spaceTitle?: string;
+
   @Property({ apiProperty: { type: UpdateCurationSpaceDTO, isArray: true, nullable: true, description: '공간' } })
   spaces?: UpdateCurationSpaceDTO[];
 
@@ -33,7 +36,7 @@ export class UpdateCurationDTO {
       this.subTitle = props.subTitle;
       this.content = props.content;
       this.thumbnail = props.thumbnail;
-
+      this.spaceTitle = props.spaceTitle;
       this.spaces = props.spaces?.map((space) => new UpdateCurationSpaceDTO(space));
     }
   }
