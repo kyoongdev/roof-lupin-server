@@ -27,8 +27,29 @@ export class RentalTypeValidateConstraint implements ValidatorConstraintInterfac
   }
 }
 
+@ValidatorConstraint()
+export class RentalTypeArrayValidateConstraint implements ValidatorConstraintInterface {
+  validate(
+    value: { [key: string]: any; rentalType: number }[] | null,
+    validationArguments?: ValidationArguments
+  ): boolean | Promise<boolean> {
+    if (!value) return true;
+    const rentalTypeArray = value.map((item) => item.rentalType);
+
+    if (rentalTypeArray.some((item) => item !== RENTAL_TYPE_ENUM.TIME && item !== RENTAL_TYPE_ENUM.PACKAGE))
+      return false;
+
+    return true;
+  }
+}
+
 export const RentalTypeValidation = BaseValidator(
   RentalTypeValidateConstraint,
+  'rentalType 옵션은 다음 중 하나여야 합니다: ' + RENTAL_TYPE_VALUES.join(', ') + '.'
+);
+
+export const RentalTypeArrayValidation = BaseValidator(
+  RentalTypeArrayValidateConstraint,
   'rentalType 옵션은 다음 중 하나여야 합니다: ' + RENTAL_TYPE_VALUES.join(', ') + '.'
 );
 
@@ -40,6 +61,16 @@ export const rentalTypeStringToNumber = (rentalType: string) => {
   } else return null;
 };
 
+export const rentalTypeArrayStringToNumber = (data: { [key: string]: any; rentalType: string }[] | null) => {
+  if (!data) return null;
+  return data.map((item) => {
+    return {
+      ...item,
+      rentalType: rentalTypeStringToNumber(item.rentalType),
+    };
+  });
+};
+
 export const rentalTypeNumberToString = (rentalType: number) => {
   if (rentalType === RENTAL_TYPE_ENUM.TIME) {
     return RENTAL_TYPE.TIME;
@@ -49,6 +80,7 @@ export const rentalTypeNumberToString = (rentalType: number) => {
 };
 
 export const RentalTypeRequestTransForm = () => Transform(({ value }) => rentalTypeStringToNumber(value));
+export const RentalTypeArrayRequestTransForm = () => Transform(({ value }) => rentalTypeArrayStringToNumber(value));
 export const RentalTypeResTransForm = () => Transform(({ value }) => rentalTypeNumberToString(value));
 export const RentalTypeReqDecorator = (nullable = false) =>
   applyDecorators(
@@ -61,3 +93,6 @@ export const RentalTypeReqDecorator = (nullable = false) =>
       description: RENTAL_TYPE_KEYS.join(','),
     })
   );
+
+export const RentalTypeArrayReqDecorator = (nullable = false) =>
+  applyDecorators(RentalTypeArrayRequestTransForm(), RentalTypeArrayValidation());

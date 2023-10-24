@@ -93,12 +93,6 @@ export class HostSpaceService {
   }
 
   async createSpace(hostId: string, data: CreateSpaceDTO) {
-    const rentalType = data.rentalTypes;
-    const timeCostCount = rentalType.filter((item) => item.rentalType === 1).length;
-    if (timeCostCount > 1) {
-      throw new HostException(HOST_ERROR_CODE.HOST_SPACE_RENTAL_TYPE_BAD_REQUEST);
-    }
-
     return await this.spaceRepository.createSpace(hostId, data);
   }
   async updateRentalType(spaceId: string, rentalTypeId: string, hostId: string, data: UpdateRentalTypeDTO) {

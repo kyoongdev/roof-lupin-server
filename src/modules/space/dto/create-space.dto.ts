@@ -6,7 +6,8 @@ import { range } from 'lodash';
 import { CreateOpenHourDTO, type CreateOpenHourDTOProps } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO, type CreateLocationDTOProps } from '@/modules/location/dto';
 import { CreateRentalTypeDTO, type CreateRentalTypeDTOProps } from '@/modules/rental-type/dto';
-import { PeriodsValidation } from '@/utils';
+import { RentalTypeArrayReqDecorator } from '@/modules/rental-type/dto/validation/rental-type.validation';
+import { DayArrayReqDecorator, PeriodsValidation } from '@/utils';
 
 import { SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -71,7 +72,7 @@ export class CreateSpaceDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금' } })
   deposit?: number;
 
-  @Property({ apiProperty: { type: 'number', nullable: true, description: '보증금 관련 설명' } })
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '보증금 관련 설명' } })
   depositDescription?: string;
 
   @Property({ apiProperty: { type: 'number', description: '최대 인원' } })
@@ -102,6 +103,8 @@ export class CreateSpaceDTO {
   caution: string;
 
   @PeriodsValidation()
+  @DayArrayReqDecorator()
+  @RentalTypeArrayReqDecorator()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, isArray: true, description: '대여 유형' } })
   rentalTypes: CreateRentalTypeDTO[];
 
@@ -127,6 +130,7 @@ export class CreateSpaceDTO {
   sizes: CreateSizeDTO[];
 
   @PeriodsValidation()
+  @DayArrayReqDecorator()
   @Property({ apiProperty: { type: CreateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours: CreateOpenHourDTO[];
 
@@ -173,10 +177,10 @@ export class CreateSpaceDTO {
   }
 
   validateRefundPolicies() {
-    if (this.refundPolicies.length !== 9) {
+    if (this.refundPolicies.length !== 8) {
       throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_LENGTH);
     }
-    range(0, 9).forEach((idx) => {
+    range(1, 9).forEach((idx) => {
       const isExist = this.refundPolicies.find((refundPolicy) => refundPolicy.daysBefore === idx);
       if (!isExist) {
         throw new SpaceException(SPACE_ERROR_CODE.REFUND_POLICY_DAYS_BEFORE_TYPE);

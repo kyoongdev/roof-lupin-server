@@ -6,7 +6,8 @@ import { range } from 'lodash';
 import { UpdateOpenHourDTO } from '@/modules/host/dto/openHour';
 import { CreateLocationDTO } from '@/modules/location/dto';
 import { CreateRentalTypeDTO } from '@/modules/rental-type/dto';
-import { PeriodsValidation } from '@/utils';
+import { RentalTypeArrayReqDecorator } from '@/modules/rental-type/dto/validation/rental-type.validation';
+import { DayArrayReqDecorator, PeriodsValidation } from '@/utils';
 
 import { SPACE_ERROR_CODE } from '../exception/errorCode';
 import { SpaceException } from '../exception/space.exception';
@@ -79,6 +80,8 @@ export class UpdateSpaceDTO {
   caution?: string;
 
   @PeriodsValidation()
+  @DayArrayReqDecorator()
+  @RentalTypeArrayReqDecorator()
   @Property({ apiProperty: { type: CreateRentalTypeDTO, nullable: true, isArray: true, description: '대여 유형' } })
   rentalTypes?: CreateRentalTypeDTO[];
 
@@ -107,6 +110,7 @@ export class UpdateSpaceDTO {
   sizes?: CreateSizeDTO[];
 
   @PeriodsValidation()
+  @DayArrayReqDecorator()
   @Property({ apiProperty: { type: UpdateOpenHourDTO, isArray: true, description: '영업시간' } })
   openHours?: UpdateOpenHourDTO[];
 

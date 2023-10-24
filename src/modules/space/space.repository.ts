@@ -325,7 +325,7 @@ export class SpaceRepository {
 
     data.validateDTO();
 
-    const minSize = Math.min(...sizes.map((size) => size.size));
+    const minSize = sizes.length > 0 ? Math.min(...sizes.map((size) => size.size)) : 0;
 
     const id = await this.database.$transaction(async (prisma) => {
       const buildings = await this.findOrCreateBuildings(prisma, buildingProps);
@@ -388,8 +388,11 @@ export class SpaceRepository {
             create: openHours.map((openHour) => openHour),
           },
           ...(holidays && {
-            holiday: {
-              create: holidays.map((holiday) => holiday),
+            holidays: {
+              create: holidays.map((holiday) => ({
+                day: holiday.day,
+                interval: holiday.interval,
+              })),
             },
           }),
         },

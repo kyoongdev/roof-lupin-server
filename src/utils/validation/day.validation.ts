@@ -57,8 +57,41 @@ export class DayValidateConstraint implements ValidatorConstraintInterface {
   }
 }
 
+@ValidatorConstraint()
+export class DayArrayValidateConstraint implements ValidatorConstraintInterface {
+  validate(
+    value: { [key: string]: any; day: number }[] | null,
+    validationArguments?: ValidationArguments
+  ): boolean | Promise<boolean> {
+    if (!value) return true;
+    const dayArray = value.map((item) => item.day);
+
+    if (
+      dayArray.some(
+        (item) =>
+          item !== DAY_ENUM.SUNDAY &&
+          item !== DAY_ENUM.MONDAY &&
+          item !== DAY_ENUM.TUESDAY &&
+          item !== DAY_ENUM.WEDNESDAY &&
+          item !== DAY_ENUM.THURSDAY &&
+          item !== DAY_ENUM.FRIDAY &&
+          item !== DAY_ENUM.SATURDAY &&
+          item !== DAY_ENUM.HOLIDAY
+      )
+    )
+      return false;
+
+    return true;
+  }
+}
+
 export const DayValidation = BaseValidator(
   DayValidateConstraint,
+  'day 옵션은 다음 중 하나여야 합니다: ' + DAY_VALUES.join(', ') + '.'
+);
+
+export const DayArrayValidation = BaseValidator(
+  DayArrayValidateConstraint,
   'day 옵션은 다음 중 하나여야 합니다: ' + DAY_VALUES.join(', ') + '.'
 );
 
@@ -85,6 +118,15 @@ export const dayStringToNumber = (day: string) => {
   }
 };
 
+export const dayArrayToNumber = (data: { [key: string]: any; day: string }[] | null) => {
+  if (!data) return null;
+
+  return data.map((item, idx) => ({
+    ...item,
+    day: dayStringToNumber(item.day),
+  }));
+};
+
 export const dayNumberToString = (day: number) => {
   switch (day) {
     case DAY_ENUM.MONDAY:
@@ -109,6 +151,7 @@ export const dayNumberToString = (day: number) => {
 };
 
 export const DayRequestTransform = () => Transform(({ value }) => dayStringToNumber(value));
+export const DayArrayRequestTransform = () => Transform(({ value }) => dayArrayToNumber(value));
 export const DayResponseTransform = () => Transform(({ value }) => dayNumberToString(value));
 export const DayResDecorator = (nullable = false) =>
   applyDecorators(
@@ -136,3 +179,6 @@ export const DayReqDecorator = (nullable = false) =>
       example: DAY_VALUES.join(' | '),
     })
   );
+
+export const DayArrayReqDecorator = (nullable = false) =>
+  applyDecorators(DayArrayRequestTransform(), DayArrayValidation());

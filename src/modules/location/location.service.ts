@@ -32,8 +32,16 @@ export class LocationService {
         resultType: 'json',
       },
     });
+    const result = JSON.parse(response.data.slice(1, -1) as string) as AddressResult;
+    result.results.juso = await Promise.all(
+      result.results.juso.map(async (juso) => {
+        const kakaoResponse = await this.socialLocationService.getKakaoLocationByAddress({ address: juso.jibunAddr });
+        const kakaoJuso = kakaoResponse.data[0];
 
-    return new JusoResultDTO(JSON.parse(response.data.slice(1, -1) as string) as AddressResult);
+        return { ...juso, latitude: kakaoJuso.y, longitude: kakaoJuso.x };
+      })
+    );
+    return new JusoResultDTO(result);
   }
 
   async findKakaoSubway(query: KakaoKeywordQuery) {
