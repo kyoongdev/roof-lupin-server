@@ -47,6 +47,8 @@ export interface Juso {
   bdMgtSn: string;
   /** 건물부번 */
   buldSlno: string;
+  latitude?: string;
+  longitude?: string;
 }
 
 export interface Common {

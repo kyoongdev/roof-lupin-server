@@ -71,7 +71,7 @@ export class CreateRentalTypeDTO {
     }
   }
 
-  validateTimeCostInfos() {
+  public validateTimeCostInfos() {
     if (this.timeCostInfos) {
       const times = this.timeCostInfos.map((timeCost) => timeCost.time);
       const isDuplicate = times.some((time, index) => times.indexOf(time) !== index);

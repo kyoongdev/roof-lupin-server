@@ -206,36 +206,39 @@ export class RentalTypeRepository {
 
   async createRentalTypes(prisma: TransactionPrisma, spaceId: string, data: CreateRentalTypeDTO[]) {
     await Promise.all(
-      data.map(async (rentalType) => {
-        const { timeCostInfos, additionalServices, ...rest } = rentalType;
-        const createArgs: Prisma.RentalTypeCreateArgs = {
-          data: {
-            ...rest,
-            space: {
-              connect: {
-                id: spaceId,
+      data
+        .map((rentalType) => new CreateRentalTypeDTO(rentalType))
+        .map(async (rentalType) => {
+          const { timeCostInfos, additionalServices, ...rest } = rentalType;
+          const createArgs: Prisma.RentalTypeCreateArgs = {
+            data: {
+              ...rest,
+              space: {
+                connect: {
+                  id: spaceId,
+                },
+              },
+              additionalServices: {
+                create: additionalServices.map((service) => service),
               },
             },
-            additionalServices: {
-              create: additionalServices.map((service) => service),
-            },
-          },
-        };
-        if (rest.rentalType === 1) {
-          rentalType.validateTimeCostInfos();
-          createArgs.data = {
-            ...createArgs.data,
-            baseCost: Math.min(...timeCostInfos.map(({ cost }) => cost)),
-            timeCostInfos: {
-              create: timeCostInfos.map((timeCostInfo) => ({
-                cost: timeCostInfo.cost,
-                time: timeCostInfo.time,
-              })),
-            },
           };
-        }
-        await prisma.rentalType.create(createArgs);
-      })
+
+          if (rest.rentalType === 1) {
+            rentalType.validateTimeCostInfos();
+            createArgs.data = {
+              ...createArgs.data,
+              baseCost: Math.min(...timeCostInfos.map(({ cost }) => cost)),
+              timeCostInfos: {
+                create: timeCostInfos.map((timeCostInfo) => ({
+                  cost: timeCostInfo.cost,
+                  time: timeCostInfo.time,
+                })),
+              },
+            };
+          }
+          await prisma.rentalType.create(createArgs);
+        })
     );
   }
 
