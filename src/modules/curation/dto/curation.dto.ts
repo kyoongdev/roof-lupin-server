@@ -9,6 +9,7 @@ export interface CurationDTOProps {
   title: string;
   subTitle: string;
   content: string;
+  spaceTitle: string;
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
@@ -26,6 +27,12 @@ export class CurationDTO {
 
   @Property({ apiProperty: { type: 'string', description: '큐레이션 부제목' } })
   subTitle: string;
+
+  @Property({ apiProperty: { type: 'string', description: '내용' } })
+  content: string;
+
+  @Property({ apiProperty: { type: 'string', description: '큐레이션 공간 제목' } })
+  spaceTitle: string;
 
   @Property({ apiProperty: { type: 'string', description: '큐레이션 썸네일' } })
   thumbnail: string;
@@ -49,6 +56,8 @@ export class CurationDTO {
     this.id = props.id;
     this.title = props.title;
     this.subTitle = props.subTitle;
+    this.content = props.content;
+    this.spaceTitle = props.spaceTitle;
     this.thumbnail = props.thumbnail;
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
