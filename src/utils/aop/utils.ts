@@ -27,7 +27,7 @@ export const applyAOPFunction: ApplyAOPFunction = (_, propertyKey, descriptor) =
     }
     return originalFn.apply(this, args);
   };
-  console.log({ propertyKey });
+
   Object.defineProperty(descriptor.value, 'name', {
     value: propertyKey.toString(),
     writable: false,
