@@ -91,12 +91,6 @@ export class AdminSpaceController {
     return await this.spaceService.findSpace(id);
   }
 
-  @RevalidateApi([
-    {
-      key: '/spaces/:spaceId/detail',
-      index: 0,
-    },
-  ])
   @Patch(':spaceId')
   @RequestApi({
     summary: {
@@ -110,6 +104,12 @@ export class AdminSpaceController {
     },
     204
   )
+  @RevalidateApi([
+    {
+      key: '/spaces/:spaceId/detail',
+      index: 0,
+    },
+  ])
   async updateSpace(@Param('spaceId') id: string, @Body() body: UpdateSpaceDTO) {
     await this.spaceService.updateSpace(id, body);
   }
