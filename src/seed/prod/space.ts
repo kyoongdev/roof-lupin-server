@@ -159,18 +159,18 @@ export const seedSpace = async (database: PrismaClient): Promise<Space[]> => {
     },
   });
   const spaces: any[] = [];
-  for (let i = 0; i < 1; i++) {
-    const space = await database.space.create({
-      include: {
-        rentalType: {
-          include: {
-            additionalServices: true,
-          },
+
+  const space = await database.space.create({
+    include: {
+      rentalType: {
+        include: {
+          additionalServices: true,
         },
       },
-      data: {
-        title: '디난트 파티룸',
-        description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
+    },
+    data: {
+      title: '디난트 파티룸',
+      description: `특별한날 우리만의 공간에서 파티를 즐길수 있는 디난트파티룸!
         건대후문 바로 앞 어린이대공원역 도보 3분컷!
         
         다양한 컨셉으로 포토존 가득한 파티룸
@@ -190,140 +190,140 @@ export const seedSpace = async (database: PrismaClient): Promise<Space[]> => {
         숯불바베큐가 가능하며
         불은 호스트가 직접피어 드립니다
         넓은공간/ 프라이빗루프탑/ 실내화장실 /대형티비 완비`,
-        thumbnail: 'https://dev-image.rooflupin.com/IMG_5913.jpg',
-        maxUser: 10,
-        overflowUserCount: 6,
-        overflowUserCost: 15000,
-        buildingType: 1,
-        minSize: 80,
-        phoneNumber: '01012341234',
-        isPublic: true,
-        isApproved: true,
-        isImmediateReservation: true,
+      thumbnail: 'https://dev-image.rooflupin.com/IMG_5913.jpg',
+      maxUser: 10,
+      overflowUserCount: 6,
+      overflowUserCost: 15000,
+      buildingType: 1,
+      minSize: 80,
+      phoneNumber: '01012341234',
+      isPublic: true,
+      isApproved: true,
+      isImmediateReservation: true,
 
-        openHours: {
-          create: [
-            {
-              day: 1,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 2,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 3,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 4,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 5,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 6,
-              startAt: 10,
-              endAt: 34,
-            },
-            {
-              day: 7,
-              startAt: 10,
-              endAt: 34,
-            },
-          ],
-        },
-        holidays: {
-          create: [
-            {
-              day: 2,
-              interval: 2,
-            },
-            {
-              day: 3,
-              interval: 2,
-            },
-          ],
-        },
-        rentalType: {
-          create: getRentalType(),
-        },
-        host: {
-          connect: {
-            id: realHost.id,
+      openHours: {
+        create: [
+          {
+            day: 1,
+            startAt: 10,
+            endAt: 34,
           },
+          {
+            day: 2,
+            startAt: 10,
+            endAt: 34,
+          },
+          {
+            day: 3,
+            startAt: 10,
+            endAt: 34,
+          },
+          {
+            day: 4,
+            startAt: 10,
+            endAt: 34,
+          },
+          {
+            day: 5,
+            startAt: 10,
+            endAt: 34,
+          },
+          {
+            day: 6,
+            startAt: 10,
+            endAt: 34,
+          },
+          {
+            day: 7,
+            startAt: 10,
+            endAt: 34,
+          },
+        ],
+      },
+      holidays: {
+        create: [
+          {
+            day: 2,
+            interval: 2,
+          },
+          {
+            day: 3,
+            interval: 2,
+          },
+        ],
+      },
+      rentalType: {
+        create: getRentalType(),
+      },
+      host: {
+        connect: {
+          id: realHost.id,
         },
-        sizes: {
-          create: [
-            {
-              size: 80,
-              floor: 3,
-            },
-          ],
-        },
-        images: {
-          create: [
-            {
-              image: {
-                create: {
-                  url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
-                },
+      },
+      sizes: {
+        create: [
+          {
+            size: 80,
+            floor: 3,
+          },
+        ],
+      },
+      images: {
+        create: [
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
               },
             },
-            {
-              image: {
-                create: {
-                  url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
-                },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/IMG_5916.jpg',
               },
             },
-            {
-              image: {
-                create: {
-                  url: 'https://dev-image.rooflupin.com/IMG_5917.jpg',
-                },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/IMG_5917.jpg',
               },
             },
-            {
-              image: {
-                create: {
-                  url: 'https://dev-image.rooflupin.com/IMG_5918.jpg',
-                },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/IMG_5918.jpg',
               },
             },
-            {
-              image: {
-                create: {
-                  url: 'https://dev-image.rooflupin.com/IMG_5925.jpg',
-                },
+          },
+          {
+            image: {
+              create: {
+                url: 'https://dev-image.rooflupin.com/IMG_5925.jpg',
               },
             },
-          ],
-        },
-        refundPolicies: {
-          create: [
-            {
-              daysBefore: 0,
-              refundRate: 10,
-            },
-            {
-              daysBefore: 1,
-              refundRate: 20,
-            },
-            {
-              daysBefore: 2,
-              refundRate: 30,
-            },
-          ],
-        },
-        caution: `1. 조용한 주택가에 위치한 곳이라 시끄럽게 떠들지 못하는 공간인 점 양해 부탁드립니다 
+          },
+        ],
+      },
+      refundPolicies: {
+        create: [
+          {
+            daysBefore: 0,
+            refundRate: 10,
+          },
+          {
+            daysBefore: 1,
+            refundRate: 20,
+          },
+          {
+            daysBefore: 2,
+            refundRate: 30,
+          },
+        ],
+      },
+      caution: `1. 조용한 주택가에 위치한 곳이라 시끄럽게 떠들지 못하는 공간인 점 양해 부탁드립니다 
       
         2. 저희 공간은 숙박시설이 아니므로 숙박 물품은 제공하지 않습니다. (무릎 담요 등 제공)
  
@@ -337,143 +337,142 @@ export const seedSpace = async (database: PrismaClient): Promise<Space[]> => {
  
         7. 공간 사용후에는 정리를 해주셔야 합니다.
        `,
-        location: {
-          create: {
-            roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
-            jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
-            detailAddress: '',
-            lng: '127.07668323717',
-            lat: '37.545277604771',
-          },
-        },
-        buildings: {
-          create: [
-            {
-              building: {
-                create: {
-                  icon: {
-                    connect: {
-                      id: baseIcon.id,
-                    },
-                  },
-                  name: '주차 0대',
-                },
-              },
-            },
-            {
-              building: {
-                create: {
-                  icon: {
-                    connect: {
-                      id: baseIcon.id,
-                    },
-                  },
-                  name: '3층',
-                },
-              },
-            },
-            {
-              building: {
-                create: {
-                  icon: {
-                    connect: {
-                      id: baseIcon.id,
-                    },
-                  },
-                  name: '엘리베이터 없음',
-                },
-              },
-            },
-          ],
-        },
-        services: {
-          create: [
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[0].services[0].id,
-                },
-              },
-            },
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[1].services[0].id,
-                },
-              },
-            },
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[2].services[0].id,
-                },
-              },
-            },
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[3].services[0].id,
-                },
-              },
-            },
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[4].services[0].id,
-                },
-              },
-            },
-            {
-              service: {
-                connect: {
-                  id: serviceTitles[5].services[0].id,
-                },
-              },
-            },
-          ],
-        },
-        hashTags: {
-          create: [
-            {
-              hashTag: {
-                create: {
-                  name: '건대',
-                },
-              },
-            },
-            {
-              hashTag: {
-                create: {
-                  name: '파티룸',
-                },
-              },
-            },
-          ],
-        },
-        publicTransportations: {
-          create: [
-            {
-              name: '어린이대공원역',
-              timeTaken: 10,
-            },
-          ],
-        },
-        categories: {
-          create: [
-            {
-              category: {
-                connect: {
-                  id: mainCategories[i % 4].id,
-                },
-              },
-            },
-          ],
+      location: {
+        create: {
+          roadAddress: '서울특별시 광진구 광나루로24길 23 (화양동), 3층',
+          jibunAddress: '	서울특별시 광진구 화양동 495-27, 3층',
+          detailAddress: '',
+          lng: '127.07668323717',
+          lat: '37.545277604771',
         },
       },
-    });
+      buildings: {
+        create: [
+          {
+            building: {
+              create: {
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
+                name: '주차 0대',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
+                name: '3층',
+              },
+            },
+          },
+          {
+            building: {
+              create: {
+                icon: {
+                  connect: {
+                    id: baseIcon.id,
+                  },
+                },
+                name: '엘리베이터 없음',
+              },
+            },
+          },
+        ],
+      },
+      services: {
+        create: [
+          {
+            service: {
+              connect: {
+                id: serviceTitles[0].services[0].id,
+              },
+            },
+          },
+          {
+            service: {
+              connect: {
+                id: serviceTitles[1].services[0].id,
+              },
+            },
+          },
+          {
+            service: {
+              connect: {
+                id: serviceTitles[2].services[0].id,
+              },
+            },
+          },
+          {
+            service: {
+              connect: {
+                id: serviceTitles[3].services[0].id,
+              },
+            },
+          },
+          {
+            service: {
+              connect: {
+                id: serviceTitles[4].services[0].id,
+              },
+            },
+          },
+          {
+            service: {
+              connect: {
+                id: serviceTitles[5].services[0].id,
+              },
+            },
+          },
+        ],
+      },
+      hashTags: {
+        create: [
+          {
+            hashTag: {
+              create: {
+                name: '건대',
+              },
+            },
+          },
+          {
+            hashTag: {
+              create: {
+                name: '파티룸',
+              },
+            },
+          },
+        ],
+      },
+      publicTransportations: {
+        create: [
+          {
+            name: '어린이대공원역',
+            timeTaken: 10,
+          },
+        ],
+      },
+      categories: {
+        create: [
+          {
+            category: {
+              connect: {
+                id: mainCategories[0].id,
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
 
-    spaces.push(space);
-  }
+  spaces.push(space);
 
   const space1 = await database.space.create({
     data: {
