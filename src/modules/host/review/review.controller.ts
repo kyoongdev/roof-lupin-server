@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -9,6 +9,9 @@ import { ReviewDTO } from '@/modules/review/dto/review.dto';
 import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { HostFindReviewsQuery } from '../dto/query';
+import { HostReviewCountDTO } from '../dto/review';
 
 import { HostReviewService } from './review.service';
 
@@ -54,36 +57,8 @@ export class HostReviewController {
   async getReviewsBySpaceID(
     @Paging() paging: PagingDTO,
     @Param('spaceId') spaceId: string,
-    @ReqUser() user: RequestHost
-  ) {
-    return await this.reviewService.findPagingReviews(paging, {
-      where: {
-        spaceId,
-        space: {
-          hostId: user.id,
-        },
-      },
-    });
-  }
-
-  @Get('spaces/:spaceId/not-answered')
-  @RequestApi({
-    summary: {
-      description: '미답변 리뷰 목록 조회',
-      summary: '미답변 리뷰 목록 조회',
-    },
-    query: {
-      type: PagingDTO,
-    },
-  })
-  @ResponseApi({
-    type: ReviewDTO,
-    isPaging: true,
-  })
-  async getNotAnsweredReviewsBySpaceID(
-    @Param('spaceId') spaceId: string,
     @ReqUser() user: RequestHost,
-    @Paging() paging: PagingDTO
+    @Query() query: HostFindReviewsQuery
   ) {
     return await this.reviewService.findPagingReviews(paging, {
       where: {
@@ -91,14 +66,12 @@ export class HostReviewController {
         space: {
           hostId: user.id,
         },
-        answers: {
-          none: {},
-        },
+        ...query.generateQuery(),
       },
     });
   }
 
-  @Get('/not-answered/count')
+  @Get(':spaceId/not-answered/count')
   @RequestApi({
     summary: {
       description: '미답변 리뷰 개수 조회',
@@ -106,15 +79,15 @@ export class HostReviewController {
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
-    isArray: true,
+    type: HostReviewCountDTO,
   })
-  async getNotAnsweredReviewsCount(@ReqUser() user: RequestHost) {
+  async getNotAnsweredReviewsCount(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
     return await this.reviewService.countReviews({
       where: {
         space: {
           hostId: user.id,
         },
+        spaceId,
         answers: {
           none: {},
         },
@@ -122,29 +95,23 @@ export class HostReviewController {
     });
   }
 
-  @Get('/not-answered')
+  @Get(':spaceId/total-count')
   @RequestApi({
     summary: {
-      description: '미답변 리뷰 목록 조회',
-      summary: '미답변 리뷰 목록 조회',
-    },
-    query: {
-      type: PagingDTO,
+      description: '전체 리뷰 개수 조회',
+      summary: '전체 리뷰 개수 조회',
     },
   })
   @ResponseApi({
-    type: ReviewDTO,
-    isPaging: true,
+    type: HostReviewCountDTO,
   })
-  async getNotAnsweredReviews(@ReqUser() user: RequestHost, @Paging() paging: PagingDTO) {
-    return await this.reviewService.findPagingReviews(paging, {
+  async getReviewsCount(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
+    return await this.reviewService.countReviews({
       where: {
         space: {
           hostId: user.id,
         },
-        answers: {
-          none: {},
-        },
+        spaceId,
       },
     });
   }

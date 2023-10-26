@@ -12,6 +12,8 @@ import { REVIEW_ERROR_CODE } from '@/modules/review/exception/errorCode';
 import { ReviewException } from '@/modules/review/exception/review.exception';
 import { ReviewRepository } from '@/modules/review/review.repository';
 
+import { HostReviewCountDTO } from '../dto/review';
+
 @Injectable()
 export class HostReviewService {
   constructor(
@@ -29,7 +31,9 @@ export class HostReviewService {
   }
 
   async countReviews(args = {} as Prisma.SpaceReviewCountArgs) {
-    return await this.reviewRepository.countReviews(args);
+    const count = await this.reviewRepository.countReviews(args);
+
+    return new HostReviewCountDTO({ count });
   }
 
   async findPagingReviews(paging: PagingDTO, args = {} as Prisma.SpaceReviewFindManyArgs) {

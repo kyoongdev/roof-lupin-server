@@ -1,14 +1,14 @@
 import { Property } from 'cumuco-nestjs';
 
-export interface ReportCountDTOProps {
+export interface HostReviewCountDTOProps {
   count: number;
 }
 
-export class ReportCountDTO {
+export class HostReviewCountDTO {
   @Property({ apiProperty: { type: 'number', description: '개수' } })
   count: number;
 
-  constructor(props: ReportCountDTOProps) {
+  constructor(props: HostReviewCountDTOProps) {
     this.count = props.count;
   }
 }
