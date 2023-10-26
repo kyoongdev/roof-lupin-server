@@ -71,7 +71,7 @@ export class HostReviewController {
     });
   }
 
-  @Get(':spaceId/count')
+  @Get('spaces/:spaceId/count')
   @RequestApi({
     summary: {
       description: '미답변 리뷰 개수 조회',

@@ -6,16 +6,14 @@ export class HostFindReviewCountQuery {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '답변여부' } })
   isAnswered?: boolean;
 
-  generateQuery(): Prisma.SpaceReviewFindManyArgs {
+  generateQuery(): Prisma.SpaceReviewWhereInput {
     return {
-      where: {
-        ...(typeof this.isAnswered === 'boolean' &&
-          !this.isAnswered && {
-            answers: {
-              none: {},
-            },
-          }),
-      },
+      ...(typeof this.isAnswered === 'boolean' &&
+        !this.isAnswered && {
+          answers: {
+            none: {},
+          },
+        }),
     };
   }
 }
