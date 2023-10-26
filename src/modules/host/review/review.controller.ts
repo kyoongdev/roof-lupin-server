@@ -10,7 +10,7 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { HostFindReviewsQuery } from '../dto/query';
+import { HostFindReviewCountQuery, HostFindReviewsQuery } from '../dto/query';
 import { HostReviewCountDTO } from '../dto/review';
 
 import { HostReviewService } from './review.service';
@@ -71,7 +71,7 @@ export class HostReviewController {
     });
   }
 
-  @Get(':spaceId/not-answered/count')
+  @Get(':spaceId/count')
   @RequestApi({
     summary: {
       description: '미답변 리뷰 개수 조회',
@@ -81,37 +81,18 @@ export class HostReviewController {
   @ResponseApi({
     type: HostReviewCountDTO,
   })
-  async getNotAnsweredReviewsCount(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
+  async getNotAnsweredReviewsCount(
+    @Param('spaceId') spaceId: string,
+    @ReqUser() user: RequestHost,
+    @Query() query: HostFindReviewCountQuery
+  ) {
     return await this.reviewService.countReviews({
       where: {
         space: {
           hostId: user.id,
         },
         spaceId,
-        answers: {
-          none: {},
-        },
-      },
-    });
-  }
-
-  @Get(':spaceId/total-count')
-  @RequestApi({
-    summary: {
-      description: '전체 리뷰 개수 조회',
-      summary: '전체 리뷰 개수 조회',
-    },
-  })
-  @ResponseApi({
-    type: HostReviewCountDTO,
-  })
-  async getReviewsCount(@Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
-    return await this.reviewService.countReviews({
-      where: {
-        space: {
-          hostId: user.id,
-        },
-        spaceId,
+        ...query.generateQuery(),
       },
     });
   }

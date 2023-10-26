@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { QnACountDTO } from '../dto/qna';
+import { HostFindQnACountQuery } from '../dto/query';
 import { HostFindQnAsQuery } from '../dto/query/qna/find-qnas.query';
 
 import { HostQnAService } from './qna.service';
@@ -92,23 +93,28 @@ export class HostQnAController {
     });
   }
 
-  @Get('/spaces/:spaceId/not-answered/count')
+  @Get('/spaces/:spaceId/count')
   @RequestApi({
     summary: {
-      description: '미답변 QnA 개수 조회',
-      summary: '미답변 QnA 개수 조회',
+      description: 'QnA 개수 조회',
+      summary: 'QnA 개수 조회',
     },
   })
   @ResponseApi({
     type: QnACountDTO,
   })
-  async getNotAnsweredQnACount(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
+  async getNotAnsweredQnACount(
+    @ReqUser() user: RequestHost,
+    @Param('spaceId') spaceId: string,
+    @Query() query: HostFindQnACountQuery
+  ) {
     return await this.qnaService.countQnA({
       where: {
         spaceId,
         space: {
           hostId: user.id,
         },
+        ...query.generateQuery(),
       },
     });
   }
