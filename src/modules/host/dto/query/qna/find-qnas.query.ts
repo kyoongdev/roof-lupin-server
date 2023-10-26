@@ -9,15 +9,12 @@ export class HostFindQnAsQuery extends PagingDTO {
   generateQuery(): Prisma.SpaceQnAFindManyArgs {
     return {
       where: {
-        ...(typeof this.isAnswered === 'boolean' && {
-          answers: this.isAnswered
-            ? {
-                some: {},
-              }
-            : {
-                none: {},
-              },
-        }),
+        ...(typeof this.isAnswered === 'boolean' &&
+          !this.isAnswered && {
+            answers: {
+              none: {},
+            },
+          }),
       },
     };
   }

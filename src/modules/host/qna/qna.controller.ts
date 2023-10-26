@@ -113,35 +113,6 @@ export class HostQnAController {
     });
   }
 
-  @Get('/spaces/:spaceId/not-answered')
-  @RequestApi({
-    summary: {
-      description: '미답변 QnA  조회',
-      summary: '미답변 QnA  조회',
-    },
-    query: {
-      type: PagingDTO,
-    },
-  })
-  @ResponseApi({
-    type: QnADTO,
-    isPaging: true,
-  })
-  async getNotAnsweredQnAs(
-    @ReqUser() user: RequestHost,
-    @Param('spaceId') spaceId: string,
-    @Paging() paging: PagingDTO
-  ) {
-    return await this.qnaService.findPagingQnAs(paging, {
-      where: {
-        spaceId,
-        space: {
-          hostId: user.id,
-        },
-      },
-    });
-  }
-
   @Get('/spaces/:spaceId/answered')
   @RequestApi({
     summary: {

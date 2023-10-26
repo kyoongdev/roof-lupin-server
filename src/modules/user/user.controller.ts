@@ -14,7 +14,7 @@ import { CommonUserDTO } from './dto/common-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { UserService } from './user.service';
 
-// @Auth([JwtAuthGuard, RoleGuard('USER')])
+@Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('users', '유저')
 export class UserController {
   constructor(private readonly userService: UserService) {}
