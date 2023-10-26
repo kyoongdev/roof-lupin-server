@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CommonUserDTO, CreateSocialUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { CertifyUserDTO } from './dto/certify-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { USER_ERROR_CODE } from './exception/errorCode';
 import { UserException } from './exception/user.exception';
@@ -183,6 +184,18 @@ export class UserRepository {
         id,
       },
       data,
+    });
+  }
+
+  async certifyUser(id: string, data: CertifyUserDTO) {
+    await this.database.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+        isCertified: true,
+      },
     });
   }
 

@@ -18,7 +18,8 @@ export interface PortOneToken {
   expried_at: number;
   now: number;
 }
-export interface PortOneCertification {
+
+export interface Certification {
   imp_uid: string;
   merchant_uid: string;
   pg_tid: string;
@@ -35,6 +36,11 @@ export interface PortOneCertification {
   unique_in_site: string;
   origin: string;
   foreigner_v2: boolean;
+}
+export interface PortOneCertification {
+  code: number;
+  message: string | null;
+  response: Certification;
 }
 
 export interface CancelPortOnePayment {
