@@ -225,6 +225,7 @@ export class ReservationDTO extends DateDTO {
       space: SpaceDTO.generateSpaceDTO(space),
       isReviewed: reservation.spaceReviews ? reservation.spaceReviews.length > 0 : false,
       isReviewable:
+        !reservation.cancel &&
         reservation.spaceReviews.length === 0 &&
         currentDate > reservationDate &&
         getDateDiff(reservationDate, currentDate) <= 14,
