@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 import { PrismaService } from '@/database/prisma.service';
 import { REPORT_ERROR_CODE } from '@/modules/report/exception/errorCode';
 import { ReportException } from '@/modules/report/exception/report.exception';
@@ -6,6 +8,10 @@ import { HostCreateReportDTO } from '../dto/report';
 
 export class HostReportRepository {
   constructor(private readonly database: PrismaService) {}
+
+  async checkReport(args = {} as Prisma.UserReportFindFirstArgs) {
+    return this.database.userReport.findFirst(args);
+  }
 
   async createReport(userId: string, data: HostCreateReportDTO) {
     if (!data.checkIsOnlyOneTarget()) {
