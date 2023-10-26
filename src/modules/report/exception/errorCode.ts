@@ -9,9 +9,14 @@ export const REPORT_ERROR = {
   REPORT_ANSWER_NOT_FOUND: '신고 답변을 찾을 수 없습니다.',
   REPORT_ANSWER_MUTATION_FORBIDDEN: '자신의 신고 답변만 수정/삭제 가능합니다.',
   REPORT_NOT_FOUND: '신고를 찾을 수 없습니다.',
+  REPORT_TARGET_LENGTH: '신고 대상은 하나여야 합니다.',
 };
 
 export const REPORT_ERROR_CODE: ErrorCode<typeof REPORT_ERROR> = {
+  REPORT_TARGET_LENGTH: {
+    code: HttpStatus.BAD_REQUEST,
+    message: REPORT_ERROR.REPORT_TARGET_LENGTH,
+  },
   REPORT_ALREADY_EXISTS: {
     code: HttpStatus.CONFLICT,
     message: REPORT_ERROR.REPORT_ALREADY_EXISTS,

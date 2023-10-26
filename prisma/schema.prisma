@@ -466,12 +466,16 @@ model UserReport {
 
   content String @db.MediumText
 
-  spaceId       String?
-  space         Space?       @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  spaceReviewId String?
-  spaceReview   SpaceReview? @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  spaceQnAId    String?
-  spaceQnA      SpaceQnA?    @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceId             String?
+  space               Space?             @relation(fields: [spaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceReviewId       String?
+  spaceReview         SpaceReview?       @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceReviewAnswerId String?
+  spaceReviewAnswer   SpaceReviewAnswer? @relation(fields: [spaceReviewAnswerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnAId          String?
+  spaceQnA            SpaceQnA?          @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnAAnswerId    String?
+  spaceQnAAnswer      SpaceQnAAnswer?    @relation(fields: [spaceQnAAnswerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -480,6 +484,23 @@ model UserReport {
   deletedAt DateTime?
 
   answers UserReportAnswer[]
+}
+
+model HostReport {
+  id           String @id @default(uuid())
+  reportStatus Int    @default(1) @db.TinyInt // 1 = 처리중, 2 = 처리완료
+  content      String @db.MediumText
+
+  spaceReviewId String?
+  spaceReview   SpaceReview? @relation(fields: [spaceReviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnAId    String?
+  spaceQnA      SpaceQnA?    @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  hostId String
+  host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 }
 
 //INFO: 공간 신고 답변
@@ -512,9 +533,10 @@ model SpaceQnA {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  answers   SpaceQnAAnswer[]
-  histories History[]
-  reports   UserReport[]
+  answers     SpaceQnAAnswer[]
+  histories   History[]
+  reports     UserReport[]
+  hostReports HostReport[]
 }
 
 //INFO: QnA 답변은 host(공간주인)가 다는건지 Admin(통합관리자)이 다는건지
@@ -527,10 +549,11 @@ model SpaceQnAAnswer {
   deletedAt DateTime?
 
   spaceQnAId String
-  spaceQnA   SpaceQnA  @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  spaceQnA   SpaceQnA     @relation(fields: [spaceQnAId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   hostId     String
-  host       Host      @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  host       Host         @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   histories  History[]
+  reports    UserReport[]
 }
 
 //INFO: 공간 리뷰
@@ -550,10 +573,11 @@ model SpaceReview {
   reservationId String
   reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  images    SpaceReviewImage[]
-  answers   SpaceReviewAnswer[]
-  reports   UserReport[]
-  histories History[]
+  images      SpaceReviewImage[]
+  answers     SpaceReviewAnswer[]
+  reports     UserReport[]
+  histories   History[]
+  hostReports HostReport[]
 }
 
 //INFO: 공간 리뷰 이미지
@@ -574,10 +598,11 @@ model SpaceReviewAnswer {
   deletedAt DateTime?
 
   hostId    String
-  host      Host        @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  host      Host         @relation(fields: [hostId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   reviewId  String
-  review    SpaceReview @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  review    SpaceReview  @relation(fields: [reviewId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   histories History[]
+  reports   UserReport[]
 }
 
 model History {
@@ -694,6 +719,7 @@ model Host {
   settlements        Settlement[]
 
   ReservationCancel ReservationCancel[]
+  HostReport        HostReport[]
 }
 
 //INFO: 공간주 사업자 및 계좌 정보

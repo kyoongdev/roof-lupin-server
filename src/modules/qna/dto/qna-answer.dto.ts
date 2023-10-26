@@ -3,7 +3,7 @@ import { Property } from 'cumuco-nestjs';
 import { DateDTO, type DateDTOProps } from '@/common';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto/host.dto';
 
-export interface QnAAnswerProps extends DateDTOProps {
+export interface QnAAnswerDTOProps extends DateDTOProps {
   id: string;
   content: string;
   spaceQnAId: string;
@@ -23,7 +23,7 @@ export class QnAAnswerDTO extends DateDTO {
   @Property({ apiProperty: { type: HostDTO, description: '호스트' } })
   host: HostDTO;
 
-  constructor(props: QnAAnswerProps) {
+  constructor(props: QnAAnswerDTOProps) {
     super(props);
     this.id = props.id;
     this.content = props.content;

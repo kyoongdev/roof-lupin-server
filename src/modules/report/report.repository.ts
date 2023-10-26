@@ -39,8 +39,18 @@ export class ReportRepository {
         spaceReview: {
           include: ReviewDTO.generateInclude(),
         },
+        spaceReviewAnswer: {
+          include: {
+            host: true,
+          },
+        },
         spaceQnA: {
           include: QnADTO.generateInclude(),
+        },
+        spaceQnAAnswer: {
+          include: {
+            host: true,
+          },
         },
         user: {
           include: {
@@ -64,6 +74,8 @@ export class ReportRepository {
         space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
       },
       answer: report.answers.filter((answer) => !answer.deletedAt).at(-1),
+      spaceReviewAnswer: report.spaceReviewAnswer,
+      spaceQnAAnswer: report.spaceQnAAnswer,
     });
   }
 
@@ -87,8 +99,18 @@ export class ReportRepository {
         spaceReview: {
           include: ReviewDTO.generateInclude(),
         },
+        spaceReviewAnswer: {
+          include: {
+            host: true,
+          },
+        },
         spaceQnA: {
           include: QnADTO.generateInclude(),
+        },
+        spaceQnAAnswer: {
+          include: {
+            host: true,
+          },
         },
         user: {
           include: {
@@ -113,12 +135,17 @@ export class ReportRepository {
             ...report.spaceQnA,
             space: SpaceDTO.generateSpaceDTO(report.spaceQnA.space),
           },
+          spaceReviewAnswer: report.spaceReviewAnswer,
+          spaceQnAAnswer: report.spaceQnAAnswer,
         })
     );
   }
 
   async createReport(userId: string, data: CreateReportDTO) {
-    const { content, spaceId, spaceQnaId, spaceReviewId } = data;
+    if (!data.checkIsOnlyOneTarget()) {
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_TARGET_LENGTH);
+    }
+    const { content, spaceId, spaceQnaId, spaceReviewId, reviewAnswerId, qnaAnswerId } = data;
     const report = await this.database.userReport.create({
       data: {
         content,
@@ -140,6 +167,20 @@ export class ReportRepository {
           spaceReview: {
             connect: {
               id: spaceReviewId,
+            },
+          },
+        }),
+        ...(reviewAnswerId && {
+          spaceReviewAnswer: {
+            connect: {
+              id: reviewAnswerId,
+            },
+          },
+        }),
+        ...(qnaAnswerId && {
+          spaceQnAAnswer: {
+            connect: {
+              id: qnaAnswerId,
             },
           },
         }),

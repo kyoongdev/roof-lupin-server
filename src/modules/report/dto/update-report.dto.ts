@@ -1,5 +1,3 @@
-import { Property } from 'cumuco-nestjs';
-
 import { ReportStatus, ReportStatusReqDecorator } from './validation';
 
 export interface UpdateReportDTOProps {

@@ -4,10 +4,13 @@ import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { QnARepository } from '../qna/qna.repository';
+import { CreateReviewAnswerDTO } from '../review/dto';
 import { ReviewRepository } from '../review/review.repository';
 import { SpaceRepository } from '../space/space.repository';
 
-import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
+import { CreateQnAReportDTO, CreateReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
+import { CreateQnAAnswerReportDTO } from './dto/create-qna-answer-report.dto';
+import { CreateReviewAnswerReportDTO } from './dto/create-review-answer-report.dto';
 import { REPORT_ERROR_CODE } from './exception/errorCode';
 import { ReportException } from './exception/report.exception';
 import { ReportRepository } from './report.repository';
@@ -70,7 +73,7 @@ export class ReportService {
       throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
-    return await this.reportRepository.createReport(userId, data);
+    return await this.reportRepository.createReport(userId, new CreateReportDTO(data));
   }
 
   async createReviewReport(userId: string, data: CreateReviewReportDTO) {
@@ -87,7 +90,25 @@ export class ReportService {
       throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
-    return await this.reportRepository.createReport(userId, data);
+    return await this.reportRepository.createReport(userId, new CreateReportDTO(data));
+  }
+
+  async createReviewAnswerReport(userId: string, data: CreateReviewAnswerReportDTO) {
+    await this.reviewRepository.findReviewAnswer(data.reviewAnswerId);
+
+    const report = await this.reportRepository.checkReport({
+      where: {
+        userId,
+        spaceReviewAnswerId: data.reviewAnswerId,
+        deletedAt: null,
+      },
+    });
+
+    if (report) {
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
+    }
+
+    return await this.reportRepository.createReport(userId, new CreateReportDTO(data));
   }
 
   async createQnAReport(userId: string, data: CreateQnAReportDTO) {
@@ -104,6 +125,23 @@ export class ReportService {
       throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
     }
 
-    return await this.reportRepository.createReport(userId, data);
+    return await this.reportRepository.createReport(userId, new CreateReportDTO(data));
+  }
+
+  async createQnAAnswerReport(userId: string, data: CreateQnAAnswerReportDTO) {
+    await this.qnaRepository.findQnAAnswer(data.qnaAnswerId);
+    const report = await this.reportRepository.checkReport({
+      where: {
+        userId,
+        spaceQnAAnswerId: data.qnaAnswerId,
+        deletedAt: null,
+      },
+    });
+
+    if (report) {
+      throw new ReportException(REPORT_ERROR_CODE.REPORT_ALREADY_EXISTS);
+    }
+
+    return await this.reportRepository.createReport(userId, new CreateReportDTO(data));
   }
 }

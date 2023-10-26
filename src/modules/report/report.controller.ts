@@ -8,6 +8,8 @@ import { ApiController, JwtAuthGuard, ReqUser, ResponseWithIdInterceptor } from 
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { CreateQnAReportDTO, CreateReviewReportDTO, CreateSpaceReportDTO, ReportDTO } from './dto';
+import { CreateQnAAnswerReportDTO } from './dto/create-qna-answer-report.dto';
+import { CreateReviewAnswerReportDTO } from './dto/create-review-answer-report.dto';
 import { FindReportsQuery } from './dto/query';
 import { ReportService } from './report.service';
 
@@ -81,6 +83,24 @@ export class ReportController {
     return await this.reportService.createReviewReport(user.id, body);
   }
 
+  @Post('reviewAnswers')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: '리뷰 답변 신고 생성',
+      summary: '리뷰 답변 신고 생성',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createSpaceReviewAnswerReport(@ReqUser() user: RequestUser, @Body() body: CreateReviewAnswerReportDTO) {
+    return await this.reportService.createReviewAnswerReport(user.id, body);
+  }
+
   @Post('qnas')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -97,5 +117,23 @@ export class ReportController {
   )
   async createSpaceQnAReport(@ReqUser() user: RequestUser, @Body() body: CreateQnAReportDTO) {
     return await this.reportService.createQnAReport(user.id, body);
+  }
+
+  @Post('qnaAnswers')
+  @UseInterceptors(ResponseWithIdInterceptor)
+  @RequestApi({
+    summary: {
+      description: 'QnA 답변 신고 생성',
+      summary: 'QnA 답변 신고 생성',
+    },
+  })
+  @ResponseApi(
+    {
+      type: ResponseWithIdDTO,
+    },
+    201
+  )
+  async createSpaceQnAAnswerReport(@ReqUser() user: RequestUser, @Body() body: CreateQnAAnswerReportDTO) {
+    return await this.reportService.createQnAAnswerReport(user.id, body);
   }
 }
