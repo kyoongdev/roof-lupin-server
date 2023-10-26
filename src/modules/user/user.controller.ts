@@ -14,7 +14,7 @@ import { CommonUserDTO } from './dto/common-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { UserService } from './user.service';
 
-@Auth([JwtAuthGuard, RoleGuard('USER')])
+// @Auth([JwtAuthGuard, RoleGuard('USER')])
 @ApiController('users', '유저')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -123,6 +123,6 @@ export class UserController {
     type: CommonUserDTO,
   })
   async certificatePhone(@ReqUser() user: RequestUser, @Body() body: CertificatePhoneDTO) {
-    return await this.userService.certificateUser(user.id, body);
+    return await this.userService.certificateUser('user.id', body);
   }
 }

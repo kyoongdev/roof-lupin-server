@@ -1,12 +1,6 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
 
-import type {
-  AOPMetaData,
-  ApplyAOPFunction,
-  ApplyMetaData,
-  BaseAOPMetaData,
-  CreateAOPDecorator,
-} from '@/interface/aop.interface';
+import type { ApplyAOPFunction, ApplyMetaData, BaseAOPMetaData, CreateAOPDecorator } from '@/interface/aop.interface';
 
 export const AOPSymbol = Symbol('AOP_DECORATOR');
 export const AOPPrefix = ':AOP';
@@ -16,8 +10,11 @@ export const applyMetaData: ApplyMetaData = (metaDataKey, metaDataValue): Method
     if (!Reflect.hasMetadata(metaDataKey, descriptor.value)) {
       Reflect.defineMetadata(metaDataKey, [], descriptor.value);
     }
+
     const metaDataValues: any[] = Reflect.getMetadata(metaDataKey, descriptor.value);
+
     metaDataValues.push({ ...metaDataValue, originalFn: descriptor.value });
+
     return descriptor;
   };
 };
@@ -32,7 +29,7 @@ export const applyAOPFunction: ApplyAOPFunction = (_, propertyKey, descriptor) =
   };
 
   Object.defineProperty(descriptor.value, 'name', {
-    value: originalFn?.name + AOPPrefix,
+    value: propertyKey.toString(),
     writable: false,
   });
   Object.setPrototypeOf(descriptor.value, originalFn);
@@ -40,11 +37,11 @@ export const applyAOPFunction: ApplyAOPFunction = (_, propertyKey, descriptor) =
 
 export const createAOPDecorator: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>
   applyDecorators(
+    applyAOPFunction,
     applyMetaData<symbol | string, BaseAOPMetaData>(metaDataKey, {
       metadata,
       aopSymbol: AOPSymbol,
-    }),
-    applyAOPFunction
+    })
   );
 
 export const createAOPInterceptor: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>

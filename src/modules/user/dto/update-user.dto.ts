@@ -8,6 +8,7 @@ import { GenderReqDecorators, GenderValidation } from '../../../utils/validation
 export interface UpdateUserDTOProps {
   nickname?: string;
   email?: string;
+  name?: string;
   phoneNumber?: string;
   birthDay?: string;
   birthYear?: string;
@@ -17,6 +18,9 @@ export interface UpdateUserDTOProps {
 }
 
 export class UpdateUserDTO {
+  @Property({ apiProperty: { type: 'string', description: '이름', nullable: true } })
+  name?: string;
+
   @Property({ apiProperty: { type: 'string', description: '닉네임', nullable: true } })
   nickname?: string;
 

@@ -13,7 +13,7 @@ export class DynamicLinkProvider {
   createDynamicLink(endPoint: string) {
     return `${this.configService.get('DYNAMIC_LINK')}/?redirect=${endPoint}&link=${this.configService.get(
       'CLIENT_URL'
-    )}&apn=com.cumuco.rooflupin&isi=6450448648&ibi=com.cumuco.rooflupin&efr=0&imv=0&amv=0`;
+    )}&apn=com.cumuco.rooflupin&isi=6450448648&ibi=com.cumuco.rooflupin&efr=1&imv=0&amv=0`;
   }
 
   //TODO: createDynamicLink

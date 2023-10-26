@@ -111,7 +111,7 @@ export class UpdateSpaceDTO {
 
   @PeriodsValidation()
   @DayArrayReqDecorator()
-  @Property({ apiProperty: { type: UpdateOpenHourDTO, isArray: true, description: '영업시간' } })
+  @Property({ apiProperty: { type: UpdateOpenHourDTO, isArray: true, nullable: true, description: '영업시간' } })
   openHours?: UpdateOpenHourDTO[];
 
   @Property({ apiProperty: { type: UpdateSpaceHolidayDTO, isArray: true, nullable: true, description: '휴무일' } })

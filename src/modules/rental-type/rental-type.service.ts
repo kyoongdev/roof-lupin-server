@@ -510,7 +510,7 @@ export class RentalTypeService {
     } else if (rentalType.rentalType === RENTAL_TYPE_ENUM.PACKAGE) {
       const possiblePackage = new PossiblePackageDTO({
         ...rentalType,
-        isPossible: false,
+        isPossible: true,
       });
       const isAfter = checkIsAfterDate(new Date(targetDate.year, targetDate.month - 1, targetDate.day), currentDate);
       const dateDiff = getDateDiff(targetDay, currentDate);

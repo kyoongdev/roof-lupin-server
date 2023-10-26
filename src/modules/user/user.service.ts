@@ -27,8 +27,9 @@ export class UserService {
     const result = await this.portOneProvider.validateCertification(data.imp_uid);
 
     if (result.phone) {
-      await this.userRepository.updateUser(userId, { phoneNumber: result.phone });
+      await this.userRepository.certifyUser(userId, { phoneNumber: result.phone, name: result.name });
     }
+
     const user = await this.userRepository.findUser(userId);
     return user;
   }

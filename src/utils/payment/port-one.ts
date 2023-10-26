@@ -59,6 +59,6 @@ export class PortOneProvider {
       headers: { Authorization: token },
     });
 
-    return response.data;
+    return response.data.response;
   }
 }
