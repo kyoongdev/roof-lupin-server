@@ -49,3 +49,16 @@ export const checkIsAfterDate = (firstDate: Date, secondDate: Date, isOnlyMonth 
       firstDate.getDate() < secondDate.getDate())
   );
 };
+
+export const getDayWithWeek = (year: number, month: number, week: number) => {
+  const today = new Date(year, month - 1, 1);
+  const day = today.getDate() + (week - 1) * 7;
+  const target = new Date(today.setDate(day));
+
+  const startDate = new Date(target.setDate(target.getDate() - target.getDay() + 1));
+  const endDate = new Date(today.setDate(target.getDate() + 7 - target.getDay()));
+  return {
+    startDate,
+    endDate,
+  };
+};

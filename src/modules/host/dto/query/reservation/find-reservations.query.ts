@@ -1,0 +1,102 @@
+import { Prisma } from '@prisma/client';
+import { Property } from 'cumuco-nestjs';
+
+import { getDayWithWeek } from '@/common/date';
+import { RESERVATION_STATUS } from '@/interface/reservation.interface';
+import { ReservationStatusReqDecorator } from '@/modules/reservation/dto/validation/status.validation';
+
+export class HostFindReservationsQuery {
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '연' } })
+  year?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '월' } })
+  month?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '일' } })
+  day?: number;
+
+  @Property({ apiProperty: { type: 'number', nullable: true, description: '주차' } })
+  week?: number;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 id' } })
+  spaceId?: string;
+
+  @ReservationStatusReqDecorator(true)
+  status?: keyof typeof RESERVATION_STATUS;
+  generateQuery(): Prisma.ReservationFindManyArgs {
+    const reviewableDate = new Date();
+    reviewableDate.setMonth(reviewableDate.getMonth() - 1);
+    reviewableDate.setDate(0);
+    const weekDate = getDayWithWeek(this.year, this.month, this.week);
+
+    return {
+      where: {
+        ...(this.year && { year: Number(this.year) }),
+        ...(this.month && { month: Number(this.month) }),
+        ...(this.day && { day: Number(this.day) }),
+        ...(weekDate && {
+          day: {
+            gte: weekDate.startDate.getDate(),
+            lte: weekDate.endDate.getDate(),
+          },
+        }),
+        ...(this.spaceId && {
+          rentalTypes: {
+            some: {
+              rentalType: {
+                spaceId: this.spaceId,
+              },
+            },
+          },
+        }),
+        ...(this.status === RESERVATION_STATUS.APPROVED && {
+          space: {
+            isImmediateReservation: false,
+          },
+          isApproved: true,
+        }),
+        ...(this.status === RESERVATION_STATUS.APPROVED_PENDING && {
+          space: {
+            isImmediateReservation: false,
+          },
+          isApproved: false,
+        }),
+        ...(this.status === RESERVATION_STATUS.BEFORE_USAGE && {
+          OR: [
+            {
+              isApproved: true,
+              space: {
+                isImmediateReservation: false,
+              },
+              payedAt: {
+                not: null,
+              },
+            },
+            {
+              payedAt: {
+                not: null,
+              },
+              space: {
+                isImmediateReservation: true,
+              },
+            },
+          ],
+        }),
+
+        ...(this.status === RESERVATION_STATUS.CANCELED && {
+          cancel: {
+            isNot: null,
+            refundCost: null,
+          },
+        }),
+        ...(this.status === RESERVATION_STATUS.REFUND && {
+          cancel: {
+            refundCost: {
+              not: null,
+            },
+          },
+        }),
+      },
+    };
+  }
+}

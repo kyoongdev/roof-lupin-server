@@ -5,6 +5,7 @@ import AppConfig from '@/appConfig';
 import { logger } from '@/log';
 
 import { AppModule } from './app.module';
+import { getDayWithWeek } from './common/date';
 
 (async function () {
   const app = await NestFactory.create(AppModule, {
