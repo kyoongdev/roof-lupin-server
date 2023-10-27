@@ -154,7 +154,7 @@ export class HostReviewController {
     await this.reviewService.deleteBestImage(reviewImageId, user.id);
   }
 
-  @Post(':reviewId/answer')
+  @Post(':reviewId/answers')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
