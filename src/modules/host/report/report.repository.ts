@@ -12,8 +12,10 @@ import { HostCreateReportDTO } from '../dto/report';
 export class HostReportRepository {
   constructor(private readonly database: PrismaService) {}
 
-  async checkReport(args = {} as Prisma.UserReportFindFirstArgs) {
-    return this.database.userReport.findFirst(args);
+  async checkReport(args = {} as Prisma.HostReportFindFirstArgs) {
+    const report = await this.database.hostReport.findMany();
+
+    return this.database.hostReport.findFirst(args);
   }
 
   async createReport(userId: string, data: HostCreateReportDTO) {

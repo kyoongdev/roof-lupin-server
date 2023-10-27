@@ -22,9 +22,9 @@ export class HostReportService {
     await this.reviewRepository.findReview(data.spaceReviewId);
     const report = await this.reportRepository.checkReport({
       where: {
-        userId,
         spaceReviewId: data.spaceReviewId,
         deletedAt: null,
+        hostId: userId,
       },
     });
 
@@ -38,7 +38,7 @@ export class HostReportService {
     await this.qnaRepository.findQnA(data.spaceQnAId);
     const report = await this.reportRepository.checkReport({
       where: {
-        userId,
+        hostId: userId,
         spaceQnAId: data.spaceQnAId,
         deletedAt: null,
       },
