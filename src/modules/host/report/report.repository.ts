@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -6,6 +8,7 @@ import { ReportException } from '@/modules/report/exception/report.exception';
 
 import { HostCreateReportDTO } from '../dto/report';
 
+@Injectable()
 export class HostReportRepository {
   constructor(private readonly database: PrismaService) {}
 

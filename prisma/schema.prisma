@@ -812,7 +812,7 @@ model UserAlarm {
 
   title     String  @db.VarChar(50)
   content   String
-  link      String?
+  link      String? @db.MediumText
   thumbnail String?
 
   alarmAt   DateTime?

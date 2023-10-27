@@ -3,7 +3,7 @@ import { Property, ToBoolean } from 'cumuco-nestjs';
 
 export class HostFindReviewsQuery {
   @ToBoolean()
-  @Property({ apiProperty: { type: 'boolean', description: '답변 여부' } })
+  @Property({ apiProperty: { type: 'boolean', description: '답변 여부', nullable: true } })
   isAnswered?: boolean;
 
   public generateQuery(): Prisma.SpaceReviewWhereInput {

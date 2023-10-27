@@ -190,11 +190,11 @@ export class HostReviewController {
     204
   )
   async updateReviewAnswer(
-    @Param('reviewId') reviewId: string,
+    @Param('reviewAnswerId') reviewAnswerId: string,
     @ReqUser() user: RequestHost,
     @Body() data: UpdateReviewAnswerDTO
   ) {
-    return await this.reviewService.updateReviewAnswer(reviewId, user.id, data);
+    return await this.reviewService.updateReviewAnswer(reviewAnswerId, user.id, data);
   }
 
   @Delete('answers/:reviewAnswerId')

@@ -634,6 +634,7 @@ export class MessageEventProvider {
 
   async createAlarm(data: CreateAlarmDTO) {
     const { userId, ...rest } = data;
+    console.log({ data });
     return await this.database.userAlarm.create({
       data: {
         ...rest,
