@@ -6,16 +6,14 @@ export class HostFindQnACountQuery {
   @Property({ apiProperty: { type: 'boolean', nullable: true, description: '답변여부' } })
   isAnswered?: boolean;
 
-  generateQuery(): Prisma.SpaceQnAFindManyArgs {
+  generateQuery(): Prisma.SpaceQnAWhereInput {
     return {
-      where: {
-        ...(typeof this.isAnswered === 'boolean' &&
-          !this.isAnswered && {
-            answers: {
-              none: {},
-            },
-          }),
-      },
+      ...(typeof this.isAnswered === 'boolean' &&
+        !this.isAnswered && {
+          answers: {
+            none: {},
+          },
+        }),
     };
   }
 }
