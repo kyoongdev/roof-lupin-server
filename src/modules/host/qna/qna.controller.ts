@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -175,7 +175,7 @@ export class HostQnAController {
     });
   }
 
-  @Post('/answer')
+  @Post(':qnaId/answer')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -193,16 +193,16 @@ export class HostQnAController {
     },
     201
   )
-  async createQnAAnswer(@ReqUser() user: RequestHost, @Body() body: CreateQnAAnswerDTO) {
-    return await this.qnaService.createQnAAnswer(user.id, body);
+  async createQnAAnswer(@ReqUser() user: RequestHost, @Param('qnaId') qnaId: string, @Body() body: CreateQnAAnswerDTO) {
+    return await this.qnaService.createQnAAnswer(user.id, qnaId, body);
   }
 
-  @Post('/answer/:answerId')
+  @Patch('/answer/:answerId')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
-      description: 'QnA 답변 등록',
-      summary: 'QnA 답변 등록 - 호스트만 사용 가능합니다.',
+      description: 'QnA 답변 수정',
+      summary: 'QnA 답변 수정 - 호스트만 사용 가능합니다.',
     },
     params: {
       name: 'answerId',

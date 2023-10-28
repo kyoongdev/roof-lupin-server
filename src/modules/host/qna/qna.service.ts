@@ -61,9 +61,9 @@ export class HostQnAService {
     return await this.qnaRepository.findQnAAnswer(id);
   }
 
-  async createQnAAnswer(hostId: string, data: CreateQnAAnswerDTO) {
-    const qna = await this.findQnA(data.qnaId);
-    const qnaAnswerId = await this.qnaRepository.createQnAAnswer(hostId, data);
+  async createQnAAnswer(hostId: string, qnaId: string, data: CreateQnAAnswerDTO) {
+    const qna = await this.findQnA(qnaId);
+    const qnaAnswerId = await this.qnaRepository.createQnAAnswer(hostId, qnaId, data);
 
     this.messageEvent.createQnAAnswerAlarm({
       userId: qna.user.id,

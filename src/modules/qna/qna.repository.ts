@@ -158,12 +158,12 @@ export class QnARepository {
     return new QnAAnswerDTO(qnaAnswer);
   }
 
-  async createQnAAnswer(hostId: string, data: CreateQnAAnswerDTO) {
+  async createQnAAnswer(hostId: string, qnaId: string, data: CreateQnAAnswerDTO) {
     const qnaAnswer = await this.database.spaceQnAAnswer.create({
       data: {
         spaceQnA: {
           connect: {
-            id: data.qnaId,
+            id: qnaId,
           },
         },
         content: data.content,
