@@ -38,6 +38,7 @@ export class QnARepository {
       },
       orderBy: {
         createdAt: 'desc',
+
         ...args.orderBy,
       },
       skip: args.skip,

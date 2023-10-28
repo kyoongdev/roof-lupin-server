@@ -14,7 +14,13 @@ export class HostFindQnACountQuery {
               none: {},
             },
           }
-        : { answers: { some: {} } }),
+        : {
+            answers: {
+              some: {
+                deletedAt: null,
+              },
+            },
+          }),
     };
   }
 }

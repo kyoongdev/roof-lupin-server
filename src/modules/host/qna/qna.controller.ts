@@ -60,13 +60,19 @@ export class HostQnAController {
     type: QnADTO,
     isPaging: true,
   })
-  async getQnAsBySpaceID(@Paging() paging: PagingDTO, @Param('spaceId') spaceId: string, @ReqUser() user: RequestHost) {
+  async getQnAsBySpaceID(
+    @Paging() paging: PagingDTO,
+    @Param('spaceId') spaceId: string,
+    @Query() query: HostFindQnAsQuery,
+    @ReqUser() user: RequestHost
+  ) {
     return await this.qnaService.findPagingQnAs(paging, {
       where: {
         spaceId,
         space: {
           hostId: user.id,
         },
+        ...query.generateQuery(),
       },
     });
   }
@@ -147,7 +153,7 @@ export class HostQnAController {
     });
   }
 
-  @Post(':qnaId/answer')
+  @Post(':qnaId/answers')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -169,7 +175,7 @@ export class HostQnAController {
     return await this.qnaService.createQnAAnswer(user.id, qnaId, body);
   }
 
-  @Patch('/answer/:answerId')
+  @Patch('/answers/:answerId')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
@@ -200,7 +206,7 @@ export class HostQnAController {
     return await this.qnaService.updateQnAAnswer(answerId, user.id, body);
   }
 
-  @Delete('/answer/:answerId')
+  @Delete('/answers/:answerId')
   @RequestApi({
     summary: {
       description: 'QnA 답변 삭제',

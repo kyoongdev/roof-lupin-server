@@ -32,8 +32,6 @@ export class HostQnAService {
   }
 
   async countQnA(args = {} as Prisma.SpaceQnACountArgs) {
-    console.log(args.where.answers);
-
     const count = await this.qnaRepository.countQna(args);
     return new QnACountDTO({ count });
   }
@@ -44,6 +42,7 @@ export class HostQnAService {
 
   async findPagingQnAs(paging: PagingDTO, args = {} as Prisma.SpaceQnAFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
+    console.log(args.where);
     const count = await this.qnaRepository.countQna({
       where: {
         ...args.where,
@@ -56,6 +55,7 @@ export class HostQnAService {
       skip,
       take,
     });
+    console.log(qnas);
     return new PaginationDTO<QnADTO>(qnas, { count, paging });
   }
 
