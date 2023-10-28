@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { getDateDiff } from '@/common/date';
+
 import { HistoryRepository } from '../history/history.repository';
 
 import { CreateQnADTO, QnACountDTO, QnACountSummaryDTO, QnADTO, UpdateQnADTO } from './dto';
@@ -111,6 +113,12 @@ export class QnAService {
     const qna = await this.qnaRepository.findQnA(qnaId);
 
     this.checkIsUserValid(qna, userId);
+
+    const dayDiff = getDateDiff(new Date(), qna.createdAt);
+
+    if (dayDiff > 2) {
+      throw new QnAException(QNA_ERROR_CODE.QNA_UPDATE_DUE_DATE);
+    }
 
     await this.historyRepository.createHistory({
       content: qna.content,

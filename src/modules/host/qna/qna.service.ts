@@ -3,10 +3,13 @@ import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { getTimeDiff } from '@/common/date';
 import { PrismaService } from '@/database/prisma.service';
 import { MessageEvent } from '@/event/message';
 import { HistoryRepository } from '@/modules/history/history.repository';
 import { CreateQnAAnswerDTO, QnADTO, UpdateQnAAnswerDTO } from '@/modules/qna/dto';
+import { QNA_ERROR_CODE } from '@/modules/qna/exception/errorCode';
+import { QnAException } from '@/modules/qna/exception/qna.exception';
 import { QnARepository } from '@/modules/qna/qna.repository';
 import { UserRepository } from '@/modules/user/user.repository';
 
@@ -76,7 +79,13 @@ export class HostQnAService {
     const answer = await this.findQnAAnswer(qnaAnswerId);
 
     if (answer.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
+      throw new QnAException(QNA_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
+    }
+
+    const timeDiff = getTimeDiff(answer.createdAt, new Date());
+
+    if (timeDiff > 72) {
+      throw new QnAException(QNA_ERROR_CODE.QNA_ANSWER_UPDATE_DUE_DATE);
     }
 
     await this.historyRepository.createHistory({
@@ -91,7 +100,7 @@ export class HostQnAService {
     const answer = await this.findQnAAnswer(qnaAnswerId);
 
     if (answer.host.id !== hostId) {
-      throw new HostException(HOST_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
+      throw new QnAException(QNA_ERROR_CODE.QNA_ANSWER_MUTATION_FORBIDDEN);
     }
 
     await this.qnaRepository.deleteQnAAnswer(qnaAnswerId);

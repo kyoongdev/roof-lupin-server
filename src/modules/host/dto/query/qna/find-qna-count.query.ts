@@ -8,12 +8,13 @@ export class HostFindQnACountQuery {
 
   generateQuery(): Prisma.SpaceQnAWhereInput {
     return {
-      ...(typeof this.isAnswered === 'boolean' &&
-        !this.isAnswered && {
-          answers: {
-            none: {},
-          },
-        }),
+      ...(typeof this.isAnswered === 'boolean' && this.isAnswered
+        ? {
+            answers: {
+              none: {},
+            },
+          }
+        : { answers: { some: {} } }),
     };
   }
 }
