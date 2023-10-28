@@ -32,6 +32,8 @@ export class HostQnAService {
   }
 
   async countQnA(args = {} as Prisma.SpaceQnACountArgs) {
+    console.log(args.where.answers);
+
     const count = await this.qnaRepository.countQna(args);
     return new QnACountDTO({ count });
   }

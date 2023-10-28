@@ -495,6 +495,7 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                     id: space.id,
                   },
                 },
+                createdAt: new Date(2023, 3, 20),
                 ...(index % 2 === 0 && {
                   answers: {
                     create: [

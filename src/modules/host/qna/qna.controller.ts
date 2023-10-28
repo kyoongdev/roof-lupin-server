@@ -147,34 +147,6 @@ export class HostQnAController {
     });
   }
 
-  @Get('/spaces/:spaceId/answered/count')
-  @RequestApi({
-    summary: {
-      description: '답변 QnA 개수 조회',
-      summary: '답변 QnA 개수  조회',
-    },
-    query: {
-      type: PagingDTO,
-    },
-  })
-  @ResponseApi({
-    type: QnADTO,
-    isPaging: true,
-  })
-  async getAnsweredQnAsCount(@ReqUser() user: RequestHost, @Param('spaceId') spaceId: string) {
-    return await this.qnaService.countQnA({
-      where: {
-        spaceId,
-        space: {
-          hostId: user.id,
-        },
-        answers: {
-          some: {},
-        },
-      },
-    });
-  }
-
   @Post(':qnaId/answer')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
