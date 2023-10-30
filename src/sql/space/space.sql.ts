@@ -153,7 +153,11 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
           )}`
         : Prisma.empty;
 
-    return Prisma.sql`WHERE sp.isPublic = 1 AND sp.isApproved = 1 AND sp.deletedAt IS NULL AND sr.deletedAt IS NULL
+    return Prisma.sql`WHERE sp.isPublic = 1 
+                      AND sp.isApproved = 1 
+                      AND sp.deletedAt IS NULL 
+                      AND sr.deletedAt IS NULL 
+                      AND ho.deletedAt IS NULL
                       ${locationFilterWhere}
                       ${userCountWhere} 
                       ${immediateReservationWhere} 

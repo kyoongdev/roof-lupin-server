@@ -28,9 +28,15 @@ export class SpaceService {
 
   async findSpace(id: string, userId?: string) {
     const space = await this.spaceRepository.findSpace(id, userId);
+
+    if (space.host.deletedAt) {
+      throw new SpaceException(SPACE_ERROR_CODE.SPACE_NOT_FOUND);
+    }
+
     if (userId) {
       await this.searchRepository.createRecentSpace(userId, id);
     }
+
     return space;
   }
 

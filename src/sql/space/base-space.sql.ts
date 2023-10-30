@@ -29,6 +29,7 @@ export class BaseSpaceSQL {
     LEFT JOIN SpaceHashTag sh ON sp.id = sh.spaceId
     LEFT JOIN HashTag ht ON sh.hashTagId = ht.id
     LEFT JOIN RentalType rt ON sp.id = rt.spaceId
+    LEFT JOIN Host ho ON sp.hostId = ho.id
     `;
   }
 
