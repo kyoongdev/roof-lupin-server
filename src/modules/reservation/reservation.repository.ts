@@ -19,7 +19,9 @@ export class ReservationRepository {
   async findFirstReservation(args = {} as Prisma.ReservationFindFirstArgs, userId?: string) {
     const reservation = await this.database.reservation.findFirst({
       ...args,
-      where: args.where,
+      where: {
+        ...args.where,
+      },
       include: ReservationDTO.generateReservationInclude(userId),
       orderBy: args.orderBy,
     });

@@ -1,6 +1,6 @@
 import { Property } from 'cumuco-nestjs';
 
-import { type DateDTOProps } from '@/common';
+import { DateDTO, type DateDTOProps } from '@/common';
 import { ImageDTO } from '@/modules/file/dto';
 import { HostDTO, type HostDTOProps } from '@/modules/host/dto';
 import { OpenHourDTO, OpenHourDTOProps } from '@/modules/host/dto/openHour';
@@ -53,7 +53,7 @@ export interface SpaceDetailDTOProps extends DateDTOProps {
   holidays: SpaceHolidayDTOProps[];
 }
 
-export class SpaceDetailDTO {
+export class SpaceDetailDTO extends DateDTO {
   @Property({ apiProperty: { type: 'string', description: '공간 id' } })
   id: string;
 
@@ -160,6 +160,7 @@ export class SpaceDetailDTO {
   holidays: SpaceHolidayDTO[];
 
   constructor(props: SpaceDetailDTOProps) {
+    super(props);
     this.id = props.id;
     this.title = props.title;
     this.averageScore = props.averageScore ? Number(props.averageScore.toFixed(1)) : 0;

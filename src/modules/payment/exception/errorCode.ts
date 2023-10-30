@@ -29,9 +29,14 @@ export const PAYMENT_ERROR = {
   PAYMENT_ADDITIONAL_SERVICE_MAX_COUNT: '추가 서비스는 최대 개수가 넘었습니다.',
   PAYMENT_MAX_RESERVATION_DATE: '2시간 전 예약만 가능합니다.',
   PAYMENT_REFUND_AMOUNT: '환불 금액을 다시 확인해주세요.',
+  PAYMENT_WITH_DELETED_SPACE: '공간이 존재하지 않습니다.',
 } as const;
 
 export const PAYMENT_ERROR_CODE: ErrorCode<typeof PAYMENT_ERROR> = {
+  PAYMENT_WITH_DELETED_SPACE: {
+    code: HttpStatus.BAD_REQUEST,
+    message: PAYMENT_ERROR.PAYMENT_WITH_DELETED_SPACE,
+  },
   PAYMENT_FORBIDDEN: {
     code: HttpStatus.FORBIDDEN,
     message: PAYMENT_ERROR.PAYMENT_FORBIDDEN,

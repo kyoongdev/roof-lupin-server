@@ -31,6 +31,9 @@ export interface SpaceDTOProps {
   overflowUserCost: number;
   overflowUserCount: number;
   refundPolicies: RefundPolicyDTOProps[];
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 }
 
 export class SpaceDTO {
@@ -100,6 +103,15 @@ export class SpaceDTO {
   @Property({ apiProperty: { type: RefundPolicyDTO, isArray: true, description: '환불 정책' } })
   refundPolicies: RefundPolicyDTO[];
 
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '생성일' } })
+  createdAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '수정일' } })
+  updatedAt: Date;
+
+  @Property({ apiProperty: { type: 'string', format: 'date-time', description: '삭제일' } })
+  deletedAt: Date;
+
   constructor(props: SpaceDTOProps) {
     const timeRentals = props.rentalType.filter((target) => target.rentalType === 1);
     const packageRentals = props.rentalType.filter((target) => target.rentalType === 2);
@@ -126,6 +138,9 @@ export class SpaceDTO {
     this.overflowUserCost = props.overflowUserCost;
     this.overflowUserCount = props.overflowUserCount;
     this.refundPolicies = props.refundPolicies.map((refundPolicy) => new RefundPolicyDTO(refundPolicy));
+    this.createdAt = props.createdAt;
+    this.updatedAt = props.updatedAt;
+    this.deletedAt = props.deletedAt;
   }
 
   static generateSpaceDTO(space: CommonSpace, userId?: string): SpaceDTOProps {

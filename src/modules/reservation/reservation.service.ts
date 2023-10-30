@@ -23,6 +23,9 @@ export class ReservationService {
     const count = await this.reservationRepository.countReservations({
       where: {
         userId,
+        space: {
+          deletedAt: null,
+        },
         ...args.where,
       },
     });
@@ -31,6 +34,9 @@ export class ReservationService {
       {
         where: {
           userId,
+          space: {
+            deletedAt: null,
+          },
           ...args.where,
         },
         skip,
@@ -45,7 +51,7 @@ export class ReservationService {
   async findMyReservation(id: string, userId: string) {
     const reservation = await this.reservationRepository.findReservation(id);
 
-    if (reservation.user.id !== userId) {
+    if (reservation.user.id !== userId || reservation.space.deletedAt) {
       throw new ReservationException(RESERVATION_ERROR_CODE.RESERVATION_USER_FIND_FORBIDDEN);
     }
 
@@ -60,6 +66,9 @@ export class ReservationService {
         OR: FindReservationQuery.getApproachingWhere(currentDate),
         cancel: null,
         deletedAt: null,
+        space: {
+          deletedAt: null,
+        },
       },
       orderBy: [
         {

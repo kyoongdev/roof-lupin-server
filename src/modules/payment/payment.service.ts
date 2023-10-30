@@ -74,19 +74,6 @@ export class PaymentService {
     return undefined;
   }
 
-  async requestPayment(userId: string, data: CreateReservationDTO) {
-    const space = await this.spaceRepository.findSpace(data.spaceId);
-    await this.validatePayment(data, space);
-
-    if (space.isImmediateReservation) {
-      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_IMMEDIATE_PAYMENT_REQUIRED);
-    }
-    //TODO: Host 알림 추가
-
-    const reservation = await this.reservationRepository.createPayment(userId, data, false);
-    return reservation;
-  }
-
   async createPaymentPayload(data: CreatePaymentPayloadDTO) {
     const paymentData = new CreatePaymentDTO(data);
 
@@ -98,6 +85,10 @@ export class PaymentService {
 
     const result = await this.database.$transaction(async (database) => {
       const space = await this.spaceRepository.findSpace(paymentData.spaceId);
+
+      if (space.deletedAt) {
+        throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_WITH_DELETED_SPACE);
+      }
       const reservation = await this.getReservation(paymentData, space);
 
       try {
@@ -140,6 +131,9 @@ export class PaymentService {
 
       await this.database.$transaction(async (database) => {
         const space = await this.spaceRepository.findSpace(paymentInfo.spaceId);
+        if (space.deletedAt) {
+          throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_WITH_DELETED_SPACE);
+        }
         await this.validatePayment(paymentInfo, space);
 
         const tossPayment = await this.tossPay.getPaymentByOrderId(orderId);
