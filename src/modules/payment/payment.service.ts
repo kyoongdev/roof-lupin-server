@@ -74,6 +74,18 @@ export class PaymentService {
     return undefined;
   }
 
+  async requestPayment(userId: string, data: CreateReservationDTO) {
+    const space = await this.spaceRepository.findSpace(data.spaceId);
+    await this.validatePayment(data, space);
+
+    if (space.isImmediateReservation) {
+      throw new PaymentException(PAYMENT_ERROR_CODE.PAYMENT_IMMEDIATE_PAYMENT_REQUIRED);
+    }
+
+    const reservation = await this.reservationRepository.createPayment(userId, data, false);
+    return reservation;
+  }
+
   async createPaymentPayload(data: CreatePaymentPayloadDTO) {
     const paymentData = new CreatePaymentDTO(data);
 
