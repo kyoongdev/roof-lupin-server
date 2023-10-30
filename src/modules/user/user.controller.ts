@@ -123,6 +123,6 @@ export class UserController {
     type: CommonUserDTO,
   })
   async certificatePhone(@ReqUser() user: RequestUser, @Body() body: CertificatePhoneDTO) {
-    return await this.userService.certificateUser('user.id', body);
+    return await this.userService.certificateUser(user.id, body);
   }
 }
