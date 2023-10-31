@@ -9,9 +9,6 @@ export interface UpdateUserDTOProps {
   nickname?: string;
   email?: string;
   name?: string;
-  phoneNumber?: string;
-  birthDay?: string;
-  birthYear?: string;
   gender?: number;
   profileImage?: string;
   pushToken?: string;
@@ -27,15 +24,6 @@ export class UpdateUserDTO {
   @Property({ apiProperty: { type: 'string', description: '이메일', nullable: true } })
   email?: string;
 
-  @Property({ apiProperty: { type: 'string', description: '연락처', nullable: true } })
-  phoneNumber?: string;
-
-  @Property({ apiProperty: { type: 'string', description: '생년월일', nullable: true, minLength: 4, maxLength: 4 } })
-  birthDay?: string;
-
-  @Property({ apiProperty: { type: 'string', description: '생년월일', nullable: true, minLength: 4, maxLength: 4 } })
-  birthYear?: string;
-
   @GenderReqDecorators(true)
   gender?: number;
 
@@ -49,9 +37,6 @@ export class UpdateUserDTO {
     if (props) {
       this.nickname = props.nickname;
       this.email = props.email;
-      this.phoneNumber = props.phoneNumber;
-      this.birthDay = props.birthDay;
-      this.birthYear = props.birthYear;
       this.gender = props.gender;
       this.profileImage = props.profileImage;
       this.pushToken = props.pushToken;

@@ -33,6 +33,9 @@ export class CommonUserDTO extends BaseUserDTO {
   birthDay?: string;
 
   @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
+  birthMonth?: string;
+
+  @Property({ apiProperty: { type: 'string', nullable: true, minLength: 4, maxLength: 4 } })
   birthYear?: string;
 
   @GenderResTransForm()
@@ -61,6 +64,7 @@ export class CommonUserDTO extends BaseUserDTO {
     this.phoneNumber = props.phoneNumber ?? null;
     this.birthYear = props.birthYear ?? null;
     this.birthDay = props.birthDay ?? null;
+    this.birthMonth = props.birthMonth ?? null;
     this.gender = props.gender;
     this.profileImage = props.profileImage ?? null;
     this.createdAt = props.createdAt;
