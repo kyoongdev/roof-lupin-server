@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Transform } from 'class-transformer';
 import { type ValidationArguments, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
@@ -16,6 +17,7 @@ export const GENDER_VALUE = Object.keys(GENDER);
 @ValidatorConstraint()
 export class IsGenderValidateConstraint implements ValidatorConstraintInterface {
   validate(value: number | null, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
+    console.log({ value });
     if (value !== 1 && value !== 2) return false;
 
     return true;
@@ -58,7 +60,7 @@ export const GenderReqTransForm = () =>
 export const GenderResTransForm = () => Transform(({ value }) => genderNumberToString(value));
 export const GenderReqDecorators = (nullable = false) =>
   applyDecorators(
-    Property({ apiProperty: { type: 'number', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' } }),
+    ApiProperty({ type: 'number', nullable, example: GENDER_VALUE, description: '성별 : MALE | FEMALE' }),
     GenderReqTransForm(),
     GenderValidation()
   );

@@ -79,6 +79,7 @@ export class UserService {
 
   async updateUser(id: string, data: UpdateUserDTO) {
     await this.findUser(id);
+    console.log(data);
     await this.userRepository.updateUser(id, data);
   }
 
