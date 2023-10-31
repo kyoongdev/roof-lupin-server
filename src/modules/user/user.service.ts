@@ -26,7 +26,7 @@ export class UserService {
 
   async certificateUser(userId: string, data: CertificatePhoneDTO) {
     const result = await this.portOneProvider.validateCertification(data.imp_uid);
-    console.log({ result });
+
     if (result.phone) {
       const birth = result.birthday.split('-');
       const birthYear = birth[0];
