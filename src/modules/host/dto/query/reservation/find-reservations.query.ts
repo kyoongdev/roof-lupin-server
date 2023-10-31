@@ -39,12 +39,40 @@ export class HostFindReservationsQuery {
       where: {
         ...(this.year && { year: Number(this.year) }),
         ...(this.month && { month: Number(this.month) }),
-        ...(this.day && { day: Number(this.day) }),
+        ...(this.day && {
+          OR: [
+            { day: Number(this.day) },
+            {
+              day: Number(this.day) - 1,
+              rentalTypes: {
+                some: {
+                  endAt: {
+                    gte: 24,
+                  },
+                },
+              },
+            },
+          ],
+        }),
         ...(weekDate && {
-          day: {
-            gte: weekDate.startDate.getDate(),
-            lte: weekDate.endDate.getDate(),
-          },
+          OR: [
+            {
+              day: {
+                gte: weekDate.startDate.getDate(),
+                lte: weekDate.endDate.getDate(),
+              },
+            },
+            {
+              day: weekDate.startDate.getDate() - 1,
+              rentalTypes: {
+                some: {
+                  endAt: {
+                    gte: 24,
+                  },
+                },
+              },
+            },
+          ],
         }),
         ...(this.spaceId && {
           rentalTypes: {
