@@ -288,7 +288,11 @@ export class PaymentService {
     const month = currentDate.getMonth() + 1;
     const day = currentDate.getDate();
 
-    const isExist = await this.settlementRepository.checkSettlementByDate(year, month, day, data.space.hostId);
+    const isExist = await this.settlementRepository.checkSettlementByDate(
+      year,
+      day < 16 ? month - 1 : month,
+      data.space.hostId
+    );
     const lupinCost = data.totalCost * LUPIN_CHARGE;
     const settlementCost = data.totalCost - lupinCost;
 
@@ -307,7 +311,6 @@ export class PaymentService {
       await this.settlementRepository.createSettlementWithTransaction(database, {
         year,
         month,
-        day,
         hostId: data.space.hostId,
         settlementCost,
         totalCost: data.totalCost,

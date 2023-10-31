@@ -10,7 +10,6 @@ export interface SettlementDTOProps {
   id: string;
   year: number;
   month: number;
-  day: number;
   settlementCost: number;
   totalCost: number;
   vatCost: number;
@@ -31,9 +30,6 @@ export class SettlementDTO {
 
   @Property({ apiProperty: { type: 'number', description: '정산 월' } })
   month: number;
-
-  @Property({ apiProperty: { type: 'number', description: '정산 일' } })
-  day: number;
 
   @Property({ apiProperty: { type: 'number', description: '최종 정산 금액' } })
   settlementCost: number;
@@ -66,7 +62,6 @@ export class SettlementDTO {
     this.id = props.id;
     this.year = props.year;
     this.month = props.month;
-    this.day = props.day;
     this.settlementCost = props.settlementCost;
     this.totalCost = props.totalCost;
     this.vatCost = props.vatCost;

@@ -35,12 +35,7 @@ export class AdminSettlementService {
   }
 
   async createSettlement(data: CreateSettlementDTO) {
-    const isExist = await this.settlementRepository.checkSettlementByHostAndDate(
-      data.year,
-      data.month,
-      data.day,
-      data.hostId
-    );
+    const isExist = await this.settlementRepository.checkSettlementByHostAndDate(data.year, data.month, data.hostId);
 
     if (isExist) {
       throw new AdminException(ADMIN_ERROR_CODE.ADMIN_SETTLEMENT_ALREADY_EXISTS);

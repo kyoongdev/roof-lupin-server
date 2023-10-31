@@ -422,7 +422,6 @@ model Settlement {
 
   year  Int
   month Int
-  day   Int
 
   settlementCost Int @db.MediumInt //INFO: 정산 금액
   totalCost      Int @db.MediumInt //INFO: 최종 매출 금액 (originalCost - discountCost)

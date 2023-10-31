@@ -3,7 +3,6 @@ import { Property } from 'cumuco-nestjs';
 export interface CreateSettlementDTOProps {
   year: number;
   month: number;
-  day: number;
   hostId: string;
   settlementCost: number;
   totalCost: number;
@@ -21,9 +20,6 @@ export class CreateSettlementDTO {
 
   @Property({ apiProperty: { type: 'number', description: '정산 월' } })
   month: number;
-
-  @Property({ apiProperty: { type: 'number', description: '정산 일' } })
-  day: number;
 
   @Property({ apiProperty: { type: 'string', description: '호스트 Id' } })
   hostId: string;
@@ -56,11 +52,9 @@ export class CreateSettlementDTO {
     if (props) {
       this.year = props.year;
       this.month = props.month;
-      this.day = props.day;
       this.hostId = props.hostId;
       this.settlementCost = props.settlementCost;
       this.lupinVatCost = props.lupinVatCost;
-
       this.totalCost = props.totalCost;
       this.vatCost = props.vatCost;
       this.lupinCost = props.lupinCost;
