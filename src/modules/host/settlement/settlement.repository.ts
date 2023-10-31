@@ -62,6 +62,20 @@ export class HostSettlementRepository {
     });
   }
 
+  async findSettlementMonths(args: Prisma.SettlementFindManyArgs) {
+    const settlements = await this.database.settlement.findMany({
+      where: args.where,
+      orderBy: [
+        {
+          year: 'asc',
+        },
+        {
+          month: 'asc',
+        },
+      ],
+    });
+  }
+
   async findSettlementByDate(year: number, month: number, hostId: string) {
     const settlement = await this.database.settlement.findFirst({
       where: {

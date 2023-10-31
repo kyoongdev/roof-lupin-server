@@ -285,14 +285,10 @@ export class PaymentService {
   async createSettlement(database: TransactionPrisma, data: ReservationDetailDTO) {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
     const day = currentDate.getDate();
+    const month = day < 16 ? currentDate.getMonth() : currentDate.getMonth() + 1;
 
-    const isExist = await this.settlementRepository.checkSettlementByDate(
-      year,
-      day < 16 ? month - 1 : month,
-      data.space.hostId
-    );
+    const isExist = await this.settlementRepository.checkSettlementByDate(year, month, data.space.hostId);
     const lupinCost = data.totalCost * LUPIN_CHARGE;
     const settlementCost = data.totalCost - lupinCost;
 
