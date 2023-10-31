@@ -175,6 +175,11 @@ export class FindReservationQuery extends PagingDTO {
                 deletedAt: null,
               }),
         }),
+        ...(this.status === 'PAYED' && {
+          payedAt: {
+            not: null,
+          },
+        }),
       },
     };
   }

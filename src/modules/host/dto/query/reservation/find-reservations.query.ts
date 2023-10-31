@@ -21,8 +21,14 @@ export class HostFindReservationsQuery {
   @Property({ apiProperty: { type: 'string', nullable: true, description: '공간 id' } })
   spaceId?: string;
 
+  @Property({
+    apiProperty: { type: 'string', nullable: true, description: '결제수단', enum: ['TOSS', 'NAVER', 'KAKAO'] },
+  })
+  payMethod?: string;
+
   @ReservationStatusReqDecorator(true)
   status?: keyof typeof RESERVATION_STATUS;
+
   generateQuery(): Prisma.ReservationFindManyArgs {
     const reviewableDate = new Date();
     reviewableDate.setMonth(reviewableDate.getMonth() - 1);
@@ -96,7 +102,22 @@ export class HostFindReservationsQuery {
             },
           },
         }),
+        ...(this.status === 'PAYED' && {
+          payedAt: {
+            not: null,
+          },
+        }),
+        ...(this.payMethod && {
+          payMethod: this.getPayMethod(),
+        }),
       },
     };
+  }
+
+  getPayMethod() {
+    if (this.payMethod === 'TOSS') return '토스';
+    if (this.payMethod === 'NAVER') return '네이버페이';
+    if (this.payMethod === 'KAKAO') return '카카오페이';
+    else return undefined;
   }
 }
