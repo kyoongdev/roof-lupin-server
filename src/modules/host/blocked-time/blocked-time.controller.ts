@@ -44,7 +44,7 @@ export class HostBlockedTimeController {
     isPaging: true,
   })
   async getBlockedTimes(@Paging() paging: PagingDTO, @Query() query: FindBlockedTimesQuery) {
-    return await this.blockedTimeService.findPagingBlockedTimes(paging, FindBlockedTimesQuery.generateQuery(query));
+    return await this.blockedTimeService.findPagingBlockedTimes(paging, query.generateQuery(query));
   }
 
   @Post()
