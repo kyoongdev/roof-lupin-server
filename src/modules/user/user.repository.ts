@@ -188,13 +188,19 @@ export class UserRepository {
   }
 
   async certifyUser(id: string, data: CertifyUserDTO) {
+    const { isAdult, ...props } = data;
     await this.database.user.update({
       where: {
         id,
       },
       data: {
-        ...data,
+        ...props,
         isCertified: true,
+        setting: {
+          update: {
+            isAdult,
+          },
+        },
       },
     });
   }
