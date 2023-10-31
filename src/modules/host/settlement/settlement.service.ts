@@ -15,6 +15,14 @@ export class HostSettlementService {
     return this.settlementRepository.findSettlement(id);
   }
 
+  async findSettlementMonth(hostId: string) {
+    return await this.settlementRepository.findSettlementMonths({
+      where: {
+        hostId,
+      },
+    });
+  }
+
   async findMySettlements(hostId: string, paging: PagingDTO, args = {} as Prisma.SettlementFindManyArgs) {
     const { skip, take } = paging.getSkipTake();
 

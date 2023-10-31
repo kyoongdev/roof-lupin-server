@@ -7,7 +7,7 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { SettlementDetailDTO, SettlementDTO } from '../dto/settlement';
+import { SettlementDetailDTO, SettlementDTO, SettlementMonthDTO } from '../dto/settlement';
 import { FindSettlementsQuery } from '../dto/settlement/query';
 
 import { HostSettlementService } from './settlement.service';
@@ -17,7 +17,7 @@ import { HostSettlementService } from './settlement.service';
 export class HostSettlementController {
   constructor(private readonly settlementService: HostSettlementService) {}
 
-  @Get(':settlementId')
+  @Get(':settlementId/detail')
   @RequestApi({
     summary: {
       description: '정산 상세 조회',
@@ -29,6 +29,21 @@ export class HostSettlementController {
   })
   async findSettlement(@Param('settlementId') id: string) {
     return await this.settlementService.findSettlement(id);
+  }
+
+  @Get('months')
+  @RequestApi({
+    summary: {
+      description: '정산 월 조회',
+      summary: '정산 월 조회 - 호스트만 이용 가능합니다.',
+    },
+  })
+  @ResponseApi({
+    type: SettlementMonthDTO,
+    isArray: true,
+  })
+  async findSettlementMonths(@ReqUser() host: RequestHost) {
+    return await this.settlementService.findSettlementMonth(host.id);
   }
 
   @Get()

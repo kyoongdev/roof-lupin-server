@@ -5,7 +5,13 @@ import { Prisma } from '@prisma/client';
 import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 import { ReservationDTO } from '@/modules/reservation/dto';
 
-import { CreateSettlementDTO, SettlementDetailDTO, SettlementDTO, UpdateSettlementDTO } from '../dto/settlement';
+import {
+  CreateSettlementDTO,
+  SettlementDetailDTO,
+  SettlementDTO,
+  SettlementMonthDTO,
+  UpdateSettlementDTO,
+} from '../dto/settlement';
 
 import { SETTLEMENT_ERROR_CODE } from './exception/errorCode';
 import { SettlementException } from './exception/settlement.exception';
@@ -74,6 +80,8 @@ export class HostSettlementRepository {
         },
       ],
     });
+
+    return settlements.map((settlement) => new SettlementMonthDTO(settlement));
   }
 
   async findSettlementByDate(year: number, month: number, hostId: string) {
