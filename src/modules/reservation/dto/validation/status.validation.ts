@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
@@ -39,12 +40,10 @@ export const ReservationStatusValidation = BaseValidator(
 export const ReservationStatusReqDecorator = (nullable = false) =>
   applyDecorators(
     ReservationStatusValidation,
-    Property({
-      apiProperty: {
-        type: 'string',
-        enum: Object.values(RESERVATION_STATUS),
-        example: Object.values(RESERVATION_STATUS).join(' | '),
-        nullable,
-      },
+    ApiProperty({
+      type: 'string',
+      enum: Object.values(RESERVATION_STATUS),
+      example: Object.values(RESERVATION_STATUS).join(' | '),
+      nullable,
     })
   );

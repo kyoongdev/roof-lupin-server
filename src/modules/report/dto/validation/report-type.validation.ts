@@ -1,4 +1,5 @@
 import { applyDecorators } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
@@ -31,13 +32,11 @@ export const ReportTypeValidation = BaseValidator(
 export const ReportTypeReqDecorator = (nullable = false) =>
   applyDecorators(
     ReportTypeValidation(),
-    Property({
-      apiProperty: {
-        type: 'string',
-        description: '신고 종류 (공간, QnA, 리뷰)',
-        enum: REPORT_TYPE_VALUES,
-        example: REPORT_TYPE_VALUES.join(' | '),
-        nullable,
-      },
+    ApiProperty({
+      type: 'string',
+      description: '신고 종류 (공간, QnA, 리뷰)',
+      enum: REPORT_TYPE_VALUES,
+      example: REPORT_TYPE_VALUES.join(' | '),
+      nullable,
     })
   );

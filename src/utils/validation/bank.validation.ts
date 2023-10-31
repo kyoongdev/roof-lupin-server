@@ -1,4 +1,5 @@
 import { applyDecorators, mixin } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { Property } from 'cumuco-nestjs';
@@ -43,13 +44,11 @@ export const bankNameToCode = (name: string) => {
 export const BankCodeReqDecorator = (nullable = false) =>
   applyDecorators(
     BankCodeValidation(nullable)(),
-    Property({
-      apiProperty: {
-        description: '은행명',
-        type: 'string',
-        enum: BANK_NAMES,
-        nullable,
-        example: BANK_NAMES.join(' | '),
-      },
+    ApiProperty({
+      description: '은행명',
+      type: 'string',
+      enum: BANK_NAMES,
+      nullable,
+      example: BANK_NAMES.join(' | '),
     })
   );
