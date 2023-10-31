@@ -760,7 +760,8 @@ model User {
   email          String?
   phoneNumber    String?   @db.Char(11)
   birthYear      String?   @db.Char(4)
-  birthDay       String?   @db.Char(4)
+  birthMonth     String?   @db.Char(2)
+  birthDay       String?   @db.Char(2)
   gender         Int?      @db.TinyInt
   profileImage   String?
   isBlocked      Boolean   @default(false)

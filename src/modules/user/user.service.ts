@@ -9,6 +9,7 @@ import { ReviewRepository } from '../review/review.repository';
 
 import { CountInfoDTO, UpdateUserDTO } from './dto';
 import { CertificatePhoneDTO } from './dto/certificate-phone.dto';
+import { CertifyUserDTO } from './dto/certify-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { UserRepository } from './user.repository';
 
@@ -25,9 +26,23 @@ export class UserService {
 
   async certificateUser(userId: string, data: CertificatePhoneDTO) {
     const result = await this.portOneProvider.validateCertification(data.imp_uid);
-
+    console.log({ result });
     if (result.phone) {
-      await this.userRepository.certifyUser(userId, { phoneNumber: result.phone, name: result.name });
+      const birth = result.birthday.split('-');
+      const birthYear = birth[0];
+      const birthMonth = birth[1];
+      const birthDay = birth[2];
+
+      await this.userRepository.certifyUser(
+        userId,
+        new CertifyUserDTO({
+          phoneNumber: result.phone,
+          name: result.name,
+          birthDay,
+          birthMonth,
+          birthYear,
+        })
+      );
     }
 
     const user = await this.userRepository.findUser(userId);
@@ -79,7 +94,7 @@ export class UserService {
 
   async updateUser(id: string, data: UpdateUserDTO) {
     await this.findUser(id);
-    console.log(data);
+
     await this.userRepository.updateUser(id, data);
   }
 
