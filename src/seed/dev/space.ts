@@ -1,6 +1,8 @@
 import { PrismaClient, Space, User } from '@prisma/client';
 
+import { LUPIN_CHARGE } from '@/common/constants';
 import { EncryptProvider } from '@/common/encrypt';
+import { getVatCost } from '@/common/vat';
 
 import { getRentalType } from '../prod/rental-type';
 
@@ -566,7 +568,61 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 },
               },
             });
-            await database.reservation.create({
+            const settlementExists = await database.settlement.findFirst({
+              where: {
+                year: 2023,
+                month: (spIdx % 29) + 1 > 16 ? 10 : 9,
+              },
+            });
+            const lupinCost = 10000 * LUPIN_CHARGE;
+            const settlementCost = 10000 - lupinCost;
+            if (settlementExists) {
+              await database.settlement.update({
+                where: {
+                  id: settlementExists.id,
+                },
+                data: {
+                  discountCost: settlementExists.discountCost + 0,
+                  originalCost: settlementExists.originalCost + 10000,
+                  settlementCost: settlementExists.settlementCost + settlementCost,
+                  totalCost: settlementExists.totalCost + 10000,
+                  vatCost: settlementExists.vatCost + 10000,
+                  lupinCost: settlementExists.lupinCost + lupinCost,
+                  lupinVatCost: settlementExists.lupinVatCost + getVatCost(lupinCost),
+                  reservations: {
+                    connect: {
+                      id: reservation.id,
+                    },
+                  },
+                },
+              });
+            } else {
+              await database.settlement.create({
+                data: {
+                  discountCost: 0,
+                  originalCost: 10000,
+                  settlementCost: settlementCost,
+                  totalCost: 10000,
+                  vatCost: 10000,
+                  lupinCost: lupinCost,
+                  lupinVatCost: getVatCost(lupinCost),
+                  year: 2023,
+                  month: (spIdx % 29) + 1 > 16 ? 10 : 9,
+                  host: {
+                    connect: {
+                      id: realHost.id,
+                    },
+                  },
+                  reservations: {
+                    connect: {
+                      id: reservation.id,
+                    },
+                  },
+                },
+              });
+            }
+
+            const reservation2 = await database.reservation.create({
               data: {
                 year: 2023,
                 month: 9,
@@ -607,7 +663,58 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 },
               },
             });
-            await database.reservation.create({
+            const settlementExists2 = await database.settlement.findFirst({
+              where: {
+                year: 2023,
+                month: (spIdx % 29) + 2 > 16 ? 10 : 9,
+              },
+            });
+            if (settlementExists2) {
+              await database.settlement.update({
+                where: {
+                  id: settlementExists2.id,
+                },
+                data: {
+                  discountCost: settlementExists2.discountCost + 0,
+                  originalCost: settlementExists2.originalCost + 10000,
+                  settlementCost: settlementExists2.settlementCost + settlementCost,
+                  totalCost: settlementExists2.totalCost + 10000,
+                  vatCost: settlementExists2.vatCost + 10000,
+                  lupinCost: settlementExists2.lupinCost + lupinCost,
+                  lupinVatCost: settlementExists2.lupinVatCost + getVatCost(lupinCost),
+                  reservations: {
+                    connect: {
+                      id: reservation2.id,
+                    },
+                  },
+                },
+              });
+            } else {
+              await database.settlement.create({
+                data: {
+                  discountCost: 0,
+                  originalCost: 10000,
+                  settlementCost: settlementCost,
+                  totalCost: 10000,
+                  vatCost: 10000,
+                  lupinCost: lupinCost,
+                  lupinVatCost: getVatCost(lupinCost),
+                  year: 2023,
+                  month: (spIdx % 29) + 1 > 16 ? 10 : 9,
+                  host: {
+                    connect: {
+                      id: realHost.id,
+                    },
+                  },
+                  reservations: {
+                    connect: {
+                      id: reservation2.id,
+                    },
+                  },
+                },
+              });
+            }
+            const reservation3 = await database.reservation.create({
               data: {
                 year: 2023,
                 month: 10,
@@ -647,7 +754,58 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
                 },
               },
             });
+            const settlementExists3 = await database.settlement.findFirst({
+              where: {
+                year: 2023,
+                month: (spIdx % 10) + 1 > 16 ? 10 : 9,
+              },
+            });
 
+            if (settlementExists3) {
+              await database.settlement.update({
+                where: {
+                  id: settlementExists3.id,
+                },
+                data: {
+                  discountCost: settlementExists3.discountCost + 0,
+                  originalCost: settlementExists3.originalCost + 10000,
+                  settlementCost: settlementExists3.settlementCost + settlementCost,
+                  totalCost: settlementExists3.totalCost + 10000,
+                  vatCost: settlementExists3.vatCost + 10000,
+                  lupinCost: settlementExists3.lupinCost + lupinCost,
+                  lupinVatCost: settlementExists3.lupinVatCost + getVatCost(lupinCost),
+                  reservations: {
+                    connect: {
+                      id: reservation3.id,
+                    },
+                  },
+                },
+              });
+            } else {
+              await database.settlement.create({
+                data: {
+                  discountCost: 0,
+                  originalCost: 10000,
+                  settlementCost: settlementCost,
+                  totalCost: 10000,
+                  vatCost: 10000,
+                  lupinCost: lupinCost,
+                  lupinVatCost: getVatCost(lupinCost),
+                  year: 2023,
+                  month: (spIdx % 29) + 1 > 16 ? 10 : 9,
+                  host: {
+                    connect: {
+                      id: realHost.id,
+                    },
+                  },
+                  reservations: {
+                    connect: {
+                      id: reservation3.id,
+                    },
+                  },
+                },
+              });
+            }
             await database.spaceReview.create({
               data: {
                 content: '좋아요!!',
