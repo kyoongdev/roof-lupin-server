@@ -35,7 +35,6 @@ export class CertifyUserDTO {
       this.birthMonth = props.birthMonth;
       this.birthDay = props.birthDay;
       this.isAdult = this.checkIsAdult();
-      console.log(this.isAdult);
     }
   }
 

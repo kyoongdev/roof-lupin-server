@@ -776,7 +776,6 @@ export const seedSpace = async (users: User[], database: PrismaClient): Promise<
     }
   }
   const settlements = await database.settlement.findMany({});
-  console.log(settlements);
 
   const space1 = await database.space.create({
     data: {
