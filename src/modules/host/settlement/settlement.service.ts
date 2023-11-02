@@ -35,7 +35,15 @@ export class HostSettlementService {
         settlementId,
       },
     });
-    const settlement = await this.settlementRepository.findSettlement(settlementId);
+    const settlement = await this.settlementRepository.findSettlement(settlementId, {
+      where: {
+        settlementId,
+      },
+      skip,
+      take,
+    });
+
+    // return new PaginationDTO<SettlementDTO>(settlement, { count: reservationCount, paging });
   }
 
   async findMySettlements(hostId: string, paging: PagingDTO, args = {} as Prisma.SettlementFindManyArgs) {
