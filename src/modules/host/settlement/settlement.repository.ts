@@ -44,7 +44,7 @@ export class HostSettlementRepository {
     return !!settlement;
   }
 
-  async findSettlement(id: string) {
+  async findSettlement(id: string, args = {} as Prisma.ReservationFindManyArgs) {
     const settlement = await this.database.settlement.findUnique({
       where: {
         id,
@@ -52,6 +52,9 @@ export class HostSettlementRepository {
       include: {
         reservations: {
           include: ReservationDTO.generateReservationInclude(),
+          where: args.where,
+          skip: args.skip,
+          take: args.take,
         },
         host: true,
       },

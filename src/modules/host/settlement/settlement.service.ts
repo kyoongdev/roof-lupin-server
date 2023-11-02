@@ -3,13 +3,18 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
+import { ReservationRepository } from '@/modules/reservation/reservation.repository';
+
 import { SettlementDTO } from '../dto/settlement';
 
 import { HostSettlementRepository } from './settlement.repository';
 
 @Injectable()
 export class HostSettlementService {
-  constructor(private readonly settlementRepository: HostSettlementRepository) {}
+  constructor(
+    private readonly settlementRepository: HostSettlementRepository,
+    private readonly reservationRepository: ReservationRepository
+  ) {}
 
   async findSettlement(id: string) {
     return this.settlementRepository.findSettlement(id);
@@ -21,6 +26,16 @@ export class HostSettlementService {
         hostId,
       },
     });
+  }
+
+  async findSettlementWithReservations(settlementId: string, paging: PagingDTO) {
+    const { skip, take } = paging.getSkipTake();
+    const reservationCount = await this.reservationRepository.countReservations({
+      where: {
+        settlementId,
+      },
+    });
+    const settlement = await this.settlementRepository.findSettlement(settlementId);
   }
 
   async findMySettlements(hostId: string, paging: PagingDTO, args = {} as Prisma.SettlementFindManyArgs) {
