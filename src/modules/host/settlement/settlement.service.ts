@@ -5,7 +5,7 @@ import { PaginationDTO, PagingDTO } from 'cumuco-nestjs';
 
 import { ReservationRepository } from '@/modules/reservation/reservation.repository';
 
-import { SettlementDTO } from '../dto/settlement';
+import { SettlementDetailReservationPagingDTO, SettlementDTO } from '../dto/settlement';
 
 import { HostSettlementRepository } from './settlement.repository';
 
@@ -43,7 +43,7 @@ export class HostSettlementService {
       take,
     });
 
-    // return new PaginationDTO<SettlementDTO>(settlement, { count: reservationCount, paging });
+    return new SettlementDetailReservationPagingDTO(settlement, { paging, count: reservationCount });
   }
 
   async findMySettlements(hostId: string, paging: PagingDTO, args = {} as Prisma.SettlementFindManyArgs) {

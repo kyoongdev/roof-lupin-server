@@ -7,7 +7,12 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { SettlementDetailDTO, SettlementDTO, SettlementMonthDTO } from '../dto/settlement';
+import {
+  SettlementDetailDTO,
+  SettlementDetailReservationPagingDTO,
+  SettlementDTO,
+  SettlementMonthDTO,
+} from '../dto/settlement';
 import { FindSettlementsQuery } from '../dto/settlement/query';
 
 import { HostSettlementService } from './settlement.service';
@@ -29,6 +34,23 @@ export class HostSettlementController {
   })
   async findSettlement(@Param('settlementId') id: string) {
     return await this.settlementService.findSettlement(id);
+  }
+
+  @Get(':settlementId/detail/reservations/paging')
+  @RequestApi({
+    summary: {
+      description: '정산 상세 조회 - 예약 페이징',
+      summary: '정산 상세 조회 - 예약 페이징',
+    },
+    query: {
+      type: PagingDTO,
+    },
+  })
+  @ResponseApi({
+    type: SettlementDetailReservationPagingDTO,
+  })
+  async findSettlementWithReservationPaging(@Param('settlementId') id: string, @Paging() paging: PagingDTO) {
+    return await this.settlementService.findSettlementWithReservationsPaging(id, paging);
   }
 
   @Get('months')
