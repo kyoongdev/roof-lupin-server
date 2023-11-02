@@ -9,7 +9,6 @@ import { ReservationDTO, type ReservationDTOProps } from './reservation.dto';
 export interface ReservationDetailDTOProps extends ReservationDTOProps {
   orderId?: string;
   orderResultId?: string;
-  payMethod?: string;
   approvedAt?: Date;
   settlementId: string;
 }
@@ -20,9 +19,6 @@ export class ReservationDetailDTO extends ReservationDTO {
 
   @Property({ apiProperty: { type: 'string', nullable: true, description: '주문결과번호' } })
   orderResultId?: string;
-
-  @Property({ apiProperty: { type: 'string', nullable: true, description: '결제방식' } })
-  payMethod?: string;
 
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
@@ -37,7 +33,6 @@ export class ReservationDetailDTO extends ReservationDTO {
     super(props);
     this.orderId = props.orderId;
     this.orderResultId = props.orderResultId;
-    this.payMethod = props.payMethod;
     this.isApproved = props.isApproved;
     this.approvedAt = props.approvedAt;
     this.settlementId = props.settlementId;
