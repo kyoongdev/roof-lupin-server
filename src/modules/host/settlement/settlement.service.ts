@@ -28,7 +28,7 @@ export class HostSettlementService {
     });
   }
 
-  async findSettlementWithReservations(settlementId: string, paging: PagingDTO) {
+  async findSettlementWithReservationsPaging(settlementId: string, paging: PagingDTO) {
     const { skip, take } = paging.getSkipTake();
     const reservationCount = await this.reservationRepository.countReservations({
       where: {

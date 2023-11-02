@@ -27,6 +27,7 @@ export interface ReservationDTOProps extends DateDTOProps {
   receiptUrl: string;
   userPhoneNumber: string;
   payedAt?: Date;
+  payMethod?: string;
   createdAt: Date;
   updatedAt: Date;
   user: CommonUserDTOProps;
@@ -86,6 +87,11 @@ export class ReservationDTO extends DateDTO {
   })
   payedAt?: Date;
 
+  @Property({
+    apiProperty: { type: 'string', enum: ['토스페이', '네이버페이', '카카오페이'], description: '결제 수단' },
+  })
+  payMethod: string;
+
   @Property({ apiProperty: { type: 'string', description: '유저 이름' } })
   userName: string;
 
@@ -94,6 +100,7 @@ export class ReservationDTO extends DateDTO {
 
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
+
   @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
   user: CommonUserDTO;
 
@@ -148,6 +155,7 @@ export class ReservationDTO extends DateDTO {
     this.isApproved = props.isApproved;
     this.isReviewed = props.isReviewed;
     this.isReviewable = props.isReviewable;
+    this.payMethod = props.payMethod;
     this.user = new CommonUserDTO(props.user);
     this.rentalTypes = props.rentalTypes.map((rentalType) => new ReservationRentalTypeDTO(rentalType));
     this.space = new SpaceDTO(props.space);
