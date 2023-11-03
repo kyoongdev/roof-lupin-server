@@ -40,6 +40,7 @@ export class HostSettlementService {
         ...args.where,
       },
     });
+    console.log(args.where);
     const settlement = await this.settlementRepository.findSettlement(settlementId, {
       where: {
         settlementId,

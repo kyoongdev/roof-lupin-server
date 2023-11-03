@@ -88,6 +88,6 @@ export class HostSettlementController {
     @Query() query: FindSettlementsQuery,
     @ReqUser() host: RequestHost
   ) {
-    return await this.settlementService.findMySettlements(host.id, paging, SettlementDTO.generateQuery(query));
+    return await this.settlementService.findMySettlements(host.id, paging, query.generateQuery());
   }
 }

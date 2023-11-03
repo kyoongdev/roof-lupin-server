@@ -4,7 +4,7 @@ import { Property } from 'cumuco-nestjs';
 import { LUPIN_CHARGE } from '@/common/constants';
 import { getVatCost } from '@/common/vat';
 
-import { FindSettlementsQuery } from './query';
+import { FindSettlementsQuery } from '../query';
 
 export interface SettlementDTOProps {
   id: string;
@@ -71,22 +71,6 @@ export class SettlementDTO {
     this.lupinCost = props.lupinCost;
     this.lupinVatCost = props.lupinVatCost;
     this.deletedAt = props.deletedAt;
-  }
-
-  static generateQuery(query: FindSettlementsQuery): Prisma.SettlementFindManyArgs {
-    return {
-      where: {
-        ...(query.year && {
-          year: query.year,
-        }),
-        ...(query.month && {
-          month: query.month,
-        }),
-        ...(query.day && {
-          day: query.day,
-        }),
-      },
-    };
   }
 
   getNewSettlementCostInfo(oldTotalCost: number, newTotalCost: number, refundCost?: number) {
