@@ -28,16 +28,22 @@ export class HostSettlementService {
     });
   }
 
-  async findSettlementWithReservationsPaging(settlementId: string, paging: PagingDTO) {
+  async findSettlementWithReservationsPaging(
+    settlementId: string,
+    paging: PagingDTO,
+    args = {} as Prisma.ReservationFindManyArgs
+  ) {
     const { skip, take } = paging.getSkipTake();
     const reservationCount = await this.reservationRepository.countReservations({
       where: {
         settlementId,
+        ...args.where,
       },
     });
     const settlement = await this.settlementRepository.findSettlement(settlementId, {
       where: {
         settlementId,
+        ...args.where,
       },
       skip,
       take,

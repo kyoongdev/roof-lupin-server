@@ -143,7 +143,7 @@ export class HostFindReservationsQuery {
   }
 
   getPayMethod() {
-    if (this.payMethod === 'TOSS') return '토스';
+    if (this.payMethod === 'TOSS') return '토스페이';
     if (this.payMethod === 'NAVER') return '네이버페이';
     if (this.payMethod === 'KAKAO') return '카카오페이';
     else return undefined;
