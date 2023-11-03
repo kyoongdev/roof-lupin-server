@@ -20,10 +20,11 @@ export class HostSettlementService {
     return this.settlementRepository.findSettlement(id);
   }
 
-  async findSettlementMonth(hostId: string) {
+  async findSettlementMonth(hostId: string, args = {} as Prisma.SettlementFindManyArgs) {
     return await this.settlementRepository.findSettlementMonths({
       where: {
         hostId,
+        ...args.where,
       },
     });
   }

@@ -7,7 +7,11 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { FindSettlementsQuery, HostFindSettlementWithReservationQuery } from '../dto/query';
+import {
+  FindSettlementsQuery,
+  HostFindSettlementMonthQuery,
+  HostFindSettlementWithReservationQuery,
+} from '../dto/query';
 import {
   SettlementDetailDTO,
   SettlementDetailReservationPagingDTO,
@@ -65,8 +69,8 @@ export class HostSettlementController {
     type: SettlementMonthDTO,
     isArray: true,
   })
-  async findSettlementMonths(@ReqUser() host: RequestHost) {
-    return await this.settlementService.findSettlementMonth(host.id);
+  async findSettlementMonths(@ReqUser() host: RequestHost, @Query() query: HostFindSettlementMonthQuery) {
+    return await this.settlementService.findSettlementMonth(host.id, query.generateQuery());
   }
 
   @Get()
