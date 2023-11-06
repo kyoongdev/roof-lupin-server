@@ -71,9 +71,7 @@ export class SpaceController {
     isArray: true,
   })
   async getSpaceIds() {
-    const spaces = await this.spaceService.findSpaceIds();
-    console.log({ spaces });
-    return spaces;
+    return await this.spaceService.findSpaceIds();
   }
 
   @Get('paging')

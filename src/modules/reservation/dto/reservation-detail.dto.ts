@@ -48,6 +48,11 @@ export class ReservationDetailDTO extends ReservationDTO {
       Number(reservation.day),
       9
     );
+    const maxStartAt = Math.max(...rentalTypes.map((rentalType) => rentalType.startAt));
+
+    if (maxStartAt > 24) {
+      reservationDate.setDate(reservationDate.getDate() + 1);
+    }
 
     return {
       ...rest,
