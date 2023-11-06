@@ -158,6 +158,7 @@ export class UserRepository {
     if (isExist) {
       throw new UserException(USER_ERROR_CODE.USER_ALREADY_EXIST);
     }
+
     const newUser = await this.database.user.create({
       data: {
         ...rest,

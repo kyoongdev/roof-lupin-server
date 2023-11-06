@@ -70,8 +70,6 @@ export class CreateSocialUserDTO {
     this.nickname = socialUser.properties.nickname ?? '';
     this.socialId = `${socialUser.id}`;
     this.socialType = socialTypeToNumber('kakao');
-    this.birthDay = account.birthday;
-    this.birthYear = account.birthyear;
     this.email = account.email;
     this.gender = account.gender ?? account.gender === 'male' ? 1 : account.gender === 'female' ? 2 : undefined;
     this.phoneNumber = account.phone_number.replace(/-/g, '').replace('+82 ', '0').trim();

@@ -45,7 +45,7 @@ export class BaseSpaceSQL {
     sp.minSize  as minSize, sp.isImmediateReservation as isImmediateReservation, sp.isRoofOnly as isRoofOnly, sp.createdAt as createdAt, 
     sp.updatedAt as updatedAt, sp.deletedAt as deletedAt, sp.isApproved as isApproved, sp.isPublic as isPublic, sp.orderNo as orderNo,
     sl.id as slId, sl.lat as lat, sl.lng as lng, sl.roadAddress as roadAddress, sl.jibunAddress as jibunAddress,sl.detailAddress as detailAddress,
-    COUNT(sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(DISTINCT si.spaceId, si.userId) as interestCount, COUNT(sr.spaceId) as reviewCount,
+    COUNT(DISTINCT sr.id) as reviewCount , AVG(sr.score) as averageScore, COUNT(DISTINCT si.spaceId, si.userId) as interestCount,
     min(rt.baseCost) as baseCost,  sp.hostId as hostId ${userIdSelect}
   `;
   };

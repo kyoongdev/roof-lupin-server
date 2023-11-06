@@ -77,6 +77,11 @@ export class SpaceRepository {
           FROM RefundPolicy rp
           WHERE rp.spaceId = ${space.id}
         `);
+        const review = await this.database.spaceReview.count({
+          where: {
+            spaceId: space.id,
+          },
+        });
 
         return new SpaceDTO({
           ...space,

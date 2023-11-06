@@ -71,7 +71,7 @@ export class AuthService {
 
   async socialCallback(props: CreateSocialUserDTO, socialId: string, path: SocialType, token: string, res: Response) {
     const isExistUser = await this.userRepository.checkUserBySocialId(socialId);
-
+    console.log(props);
     if (!isExistUser) {
       const userId = await this.userRepository.createSocialUser(props);
       await this.registerNewUserCoupon(userId);
@@ -94,6 +94,7 @@ export class AuthService {
       [`${path}Token`]: token,
     });
 
+    console.log(query);
     res.redirect(`${this.configService.get('CLIENT_URL')}/auth/${path}?${query}`);
   }
 
