@@ -12,6 +12,7 @@ import { CommonUserDTO } from '../user/dto';
 import { CertificatePhoneDTO } from '../user/dto/certificate-phone.dto';
 
 import {
+  CertificationDTO,
   CheckHostDTO,
   CreateHostAccountDTO,
   HostAccountDTO,
@@ -233,9 +234,9 @@ export class HostController {
     },
   })
   @ResponseApi({
-    type: HostDTO,
+    type: CertificationDTO,
   })
-  async certificatePhone(@ReqUser() user: RequestHost, @Body() body: CertificatePhoneDTO) {
-    return await this.hostService.certificateUser(user.id, body);
+  async certificatePhone(@Body() body: CertificatePhoneDTO) {
+    return await this.hostService.certificateUser(body);
   }
 }

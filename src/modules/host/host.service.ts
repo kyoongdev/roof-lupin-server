@@ -8,6 +8,7 @@ import { PortOneProvider } from '@/utils';
 import { CertificatePhoneDTO } from '../user/dto/certificate-phone.dto';
 
 import {
+  CertificationDTO,
   CheckHostDTO,
   CreateHostAccountDTO,
   IsHostCheckedDTO,
@@ -28,21 +29,9 @@ export class HostService {
     private readonly portOneProvider: PortOneProvider
   ) {}
 
-  async certificateUser(userId: string, data: CertificatePhoneDTO) {
+  async certificateUser(data: CertificatePhoneDTO) {
     const result = await this.portOneProvider.validateCertification(data.imp_uid);
-
-    if (result.phone) {
-      await this.hostRepository.updateHost(
-        userId,
-
-        {
-          phoneNumber: result.phone,
-          name: result.name,
-        }
-      );
-    }
-
-    return await this.hostRepository.findHost(userId);
+    return new CertificationDTO(result);
   }
 
   async findHostBySpaceId(spaceId: string) {
