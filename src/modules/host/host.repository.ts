@@ -134,6 +134,13 @@ export class HostRepository {
         ...data,
         salt,
         password,
+        hostAccount: {
+          create: {
+            account: '',
+            accountOwner: '',
+            bankCode: '',
+          },
+        },
       },
     });
 
