@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -252,7 +252,7 @@ export class HostController {
   @ResponseApi({
     type: IsHostExistsDTO,
   })
-  async checkIsHostExists(@Body() body: IsHostExistsQuery) {
-    return await this.hostService.checkHostWithEmail(body);
+  async checkIsHostExists(@Query() query: IsHostExistsQuery) {
+    return await this.hostService.checkHostWithEmail(query);
   }
 }
