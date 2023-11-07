@@ -7,6 +7,7 @@ export interface IsHostCheckedDTOProps {
 export class IsHostCheckedDTO {
   @Property({ apiProperty: { type: 'boolean' } })
   isChecked: boolean;
+
   constructor(props: IsHostCheckedDTOProps) {
     this.isChecked = props.isChecked;
   }

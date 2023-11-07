@@ -18,12 +18,14 @@ import {
   HostAccountDTO,
   HostDTO,
   IsHostCheckedDTO,
+  IsHostExistsDTO,
   NewPasswordDTO,
   UpdateHostAccountDTO,
   UpdateHostDTO,
   UpdateHostPasswordDTO,
 } from './dto';
 import { HostDetailDTO } from './dto/host-detail.dto';
+import { IsHostExistsQuery } from './dto/query';
 import { HostService } from './host.service';
 
 @ApiController('', '호스트')
@@ -238,5 +240,19 @@ export class HostController {
   })
   async certificatePhone(@Body() body: CertificatePhoneDTO) {
     return await this.hostService.certificateUser(body);
+  }
+
+  @Get('/exists')
+  @RequestApi({
+    summary: {
+      description: '이메일 중복 확인',
+      summary: '이메일 중복 확인',
+    },
+  })
+  @ResponseApi({
+    type: IsHostExistsDTO,
+  })
+  async checkIsHostExists(@Body() body: IsHostExistsQuery) {
+    return await this.hostService.checkHostWithEmail(body);
   }
 }

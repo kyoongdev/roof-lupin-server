@@ -12,11 +12,13 @@ import {
   CheckHostDTO,
   CreateHostAccountDTO,
   IsHostCheckedDTO,
+  IsHostExistsDTO,
   NewPasswordDTO,
   UpdateHostAccountDTO,
   UpdateHostDTO,
   UpdateHostPasswordDTO,
 } from './dto';
+import { IsHostExistsQuery } from './dto/query';
 import { HOST_ERROR_CODE } from './exception/errorCode';
 import { HostException } from './exception/host.exception';
 import { HostRepository } from './host.repository';
@@ -61,6 +63,12 @@ export class HostService {
     }
 
     return new IsHostCheckedDTO({ isChecked: true });
+  }
+
+  async checkHostWithEmail(data: IsHostExistsQuery) {
+    const host = await this.hostRepository.checkHostByEmail(data.email);
+
+    return new IsHostExistsDTO({ isExists: Boolean(host) });
   }
 
   async updateHostPassword(data: UpdateHostPasswordDTO) {

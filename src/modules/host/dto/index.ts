@@ -10,3 +10,4 @@ export * from './update-password.dto';
 export * from './new-password.dto';
 export * from './block-host.dto';
 export * from './certification.dto';
+export * from './is-host-exists.dto';
