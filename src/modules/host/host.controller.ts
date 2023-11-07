@@ -8,6 +8,9 @@ import { ApiController, ReqUser, ResponseWithIdInterceptor } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
+import { CommonUserDTO } from '../user/dto';
+import { CertificatePhoneDTO } from '../user/dto/certificate-phone.dto';
+
 import {
   CheckHostDTO,
   CreateHostAccountDTO,
@@ -220,5 +223,19 @@ export class HostController {
   )
   async deleteAccount(@ReqUser() user: RequestHost) {
     await this.hostService.deleteHostAccountByHostId(user.id);
+  }
+
+  @Post('certificate/phone')
+  @RequestApi({
+    summary: {
+      description: '휴대폰 인증',
+      summary: '휴대폰 인증',
+    },
+  })
+  @ResponseApi({
+    type: HostDTO,
+  })
+  async certificatePhone(@ReqUser() user: RequestHost, @Body() body: CertificatePhoneDTO) {
+    return await this.hostService.certificateUser(user.id, body);
   }
 }

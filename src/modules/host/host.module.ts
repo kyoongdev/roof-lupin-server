@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { PortOneProvider } from '@/utils';
 
 import { HostAnnouncementModule } from './announcement/announcement.module';
 import { HostAuthModule } from './auth/auth.module';
@@ -40,7 +41,7 @@ export const HostModules = [
 ];
 
 @Module({
-  providers: [HostService, HostRepository, EncryptProvider],
+  providers: [HostService, HostRepository, EncryptProvider, PortOneProvider],
   controllers: [HostController],
   imports: [...HostModules],
 })

@@ -3,6 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { nanoid } from 'nanoid';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { PortOneProvider } from '@/utils';
+
+import { CertificatePhoneDTO } from '../user/dto/certificate-phone.dto';
 
 import {
   CheckHostDTO,
@@ -19,7 +22,28 @@ import { HostRepository } from './host.repository';
 
 @Injectable()
 export class HostService {
-  constructor(private readonly hostRepository: HostRepository, private readonly encrypt: EncryptProvider) {}
+  constructor(
+    private readonly hostRepository: HostRepository,
+    private readonly encrypt: EncryptProvider,
+    private readonly portOneProvider: PortOneProvider
+  ) {}
+
+  async certificateUser(userId: string, data: CertificatePhoneDTO) {
+    const result = await this.portOneProvider.validateCertification(data.imp_uid);
+
+    if (result.phone) {
+      await this.hostRepository.updateHost(
+        userId,
+
+        {
+          phoneNumber: result.phone,
+          name: result.name,
+        }
+      );
+    }
+
+    return await this.hostRepository.findHost(userId);
+  }
 
   async findHostBySpaceId(spaceId: string) {
     return await this.hostRepository.findHostBySpaceId(spaceId);
