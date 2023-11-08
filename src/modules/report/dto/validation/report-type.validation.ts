@@ -24,10 +24,11 @@ export class ReportTypeConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export const ReportTypeValidation = BaseValidator(
-  ReportTypeConstraint,
-  'reportType 옵션은 다음 중 하나여야 합니다: ' + REPORT_TYPE_VALUES.join(', ') + '.'
-);
+export const ReportTypeValidation = () =>
+  BaseValidator(
+    ReportTypeConstraint,
+    'reportType 옵션은 다음 중 하나여야 합니다: ' + REPORT_TYPE_VALUES.join(', ') + '.'
+  );
 
 export const ReportTypeReqDecorator = (nullable = false) =>
   applyDecorators(
