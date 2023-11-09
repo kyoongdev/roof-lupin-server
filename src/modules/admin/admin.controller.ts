@@ -37,8 +37,14 @@ export class AdminController {
     type: AdminDTO,
     isPaging: true,
   })
-  async getAdmins(@Paging() paging: PagingDTO) {
-    return await this.adminService.findPagingAdmins(paging);
+  async getAdmins(@Paging() paging: PagingDTO, @ReqUser() user: RequestAdmin) {
+    return await this.adminService.findPagingAdmins(paging, {
+      where: {
+        id: {
+          not: user.id,
+        },
+      },
+    });
   }
 
   @Get('me')
@@ -163,6 +169,27 @@ export class AdminController {
   )
   async updateAdmin(@Param('adminId') adminId: string, @Body() data: UpdateAdminDTO) {
     return await this.adminService.updateAdmin(adminId, data);
+  }
+
+  @Patch()
+  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
+  @RequestApi({
+    summary: {
+      description: '통합관리자 내 정보 수정',
+      summary: '통합관리자 내 정보 수정',
+    },
+    body: {
+      type: UpdateAdminDTO,
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    204
+  )
+  async updateMe(@ReqUser() user: RequestAdmin, @Body() data: UpdateAdminDTO) {
+    return await this.adminService.updateAdmin(user.id, data);
   }
 
   @Delete(':adminId')

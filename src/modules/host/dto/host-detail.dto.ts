@@ -8,11 +8,11 @@ export interface HostDetailDTOProps extends HostDTOProps {
 }
 
 export class HostDetailDTO extends HostDTO {
-  @Property({ apiProperty: { type: HostAccountDTO, description: '호스트 계좌 정보' } })
+  @Property({ apiProperty: { type: HostAccountDTO, description: '호스트 계좌 정보', nullable: true } })
   account: HostAccountDTO;
 
   constructor(props: HostDetailDTOProps) {
     super(props);
-    this.account = new HostAccountDTO(props.hostAccount);
+    this.account = props.hostAccount ? new HostAccountDTO(props.hostAccount) : null;
   }
 }
