@@ -10,7 +10,7 @@ import {
   AdminDTO,
   CheckAdminDTO,
   CreateAdminDTO,
-  IsAdminCheckedDTO,
+  IsAdminExistsDTO,
   UpdateAdminDTO,
   UpdateAdminPasswordDTO,
 } from './dto';
@@ -46,7 +46,7 @@ export class AdminService {
   async checkAdminWithUserId(data: CheckAdminDTO) {
     const isChecked = await this.adminRepository.checkAdminByUserId(data.userId);
 
-    return new IsAdminCheckedDTO({ isChecked: Boolean(isChecked) });
+    return new IsAdminExistsDTO({ isExists: Boolean(isChecked) });
   }
 
   async createAdmin(data: CreateAdminDTO, byAdmin = false) {

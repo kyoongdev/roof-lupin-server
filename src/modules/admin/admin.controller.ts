@@ -13,7 +13,7 @@ import {
   AdminDTO,
   CheckAdminDTO,
   CreateAdminDTO,
-  IsAdminCheckedDTO,
+  IsAdminExistsDTO,
   UpdateAdminDTO,
   UpdateAdminPasswordDTO,
 } from './dto';
@@ -116,7 +116,7 @@ export class AdminController {
   })
   @ResponseApi(
     {
-      type: IsAdminCheckedDTO,
+      type: IsAdminExistsDTO,
     },
     200
   )

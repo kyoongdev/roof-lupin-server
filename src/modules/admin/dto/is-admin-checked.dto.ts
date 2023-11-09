@@ -1,14 +1,14 @@
 import { Property } from 'cumuco-nestjs';
 
-export interface IsAdminCheckedDTOProps {
-  isChecked: boolean;
+export interface IsAdminExistsDTOProps {
+  isExists: boolean;
 }
 
-export class IsAdminCheckedDTO {
+export class IsAdminExistsDTO {
   @Property({ apiProperty: { type: 'boolean' } })
-  isChecked: boolean;
+  isExists: boolean;
 
-  constructor(props: IsAdminCheckedDTOProps) {
-    this.isChecked = props.isChecked;
+  constructor(props: IsAdminExistsDTOProps) {
+    this.isExists = props.isExists;
   }
 }
