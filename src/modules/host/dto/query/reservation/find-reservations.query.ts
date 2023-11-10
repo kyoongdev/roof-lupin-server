@@ -26,6 +26,9 @@ export class HostFindReservationsQuery {
   })
   payMethod?: string;
 
+  @Property({ apiProperty: { type: 'string', nullable: true } })
+  code: string;
+
   @ReservationStatusReqDecorator(true)
   status?: keyof typeof RESERVATION_STATUS;
 
@@ -37,6 +40,9 @@ export class HostFindReservationsQuery {
 
     return {
       where: {
+        ...(this.code && {
+          code: this.code,
+        }),
         ...(this.year && { year: Number(this.year) }),
         ...(this.month && { month: Number(this.month) }),
         ...(this.day && {
