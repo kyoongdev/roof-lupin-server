@@ -29,7 +29,14 @@ export class HostFindReservationsQuery {
   @Property({ apiProperty: { type: 'string', nullable: true } })
   code: string;
 
-  @ReservationStatusReqDecorator(true)
+  @Property({
+    apiProperty: {
+      type: 'string',
+      enum: Object.values(RESERVATION_STATUS),
+      example: Object.values(RESERVATION_STATUS).join(' | '),
+      nullable: true,
+    },
+  })
   status?: keyof typeof RESERVATION_STATUS;
 
   generateQuery(): Prisma.ReservationFindManyArgs {
@@ -122,11 +129,9 @@ export class HostFindReservationsQuery {
             },
           ],
         }),
-
         ...(this.status === RESERVATION_STATUS.CANCELED && {
           cancel: {
             isNot: null,
-            refundCost: null,
           },
         }),
         ...(this.status === RESERVATION_STATUS.REFUND && {
