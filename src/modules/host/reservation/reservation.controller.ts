@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { HostFindReservationsQuery } from '../dto/query/reservation';
+import { HostFindReservationsPagingQuery } from '../dto/query/reservation/find-reservations-paging.query';
 import { HostCancelReservationDTO } from '../dto/reservation';
 
 import { HostReservationService } from './reservation.service';
@@ -47,7 +48,7 @@ export class HostReservationController {
   async getPagingReservationList(
     @ReqUser() user: RequestHost,
     @Paging() paging: PagingDTO,
-    @Query() query: HostFindReservationsQuery
+    @Query() query: HostFindReservationsPagingQuery
   ) {
     return await this.reservationService.findPagingReservations(paging, user.id, query.generateQuery());
   }

@@ -67,7 +67,6 @@ export const RESERVATION_STATUS = {
   CANCELED: 'CANCELED',
   REFUND: 'REFUND',
   BEFORE_USAGE: 'BEFORE_USAGE',
-  PAYED: 'PAYED',
 } as const;
 
 export type ReservationStatus = keyof typeof RESERVATION_STATUS;

@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
-import { Property } from 'cumuco-nestjs';
+import { PagingDTO, Property } from 'cumuco-nestjs';
 
 import { getDayWithWeek } from '@/common/date';
 import { RESERVATION_STATUS } from '@/interface/reservation.interface';
 import { ReservationStatusReqDecorator } from '@/modules/reservation/dto/validation/status.validation';
 
-export class HostFindReservationsQuery {
+export class HostFindReservationsPagingQuery extends PagingDTO {
   @Property({ apiProperty: { type: 'number', nullable: true, description: '연' } })
   year?: number;
 
@@ -26,9 +26,6 @@ export class HostFindReservationsQuery {
   })
   payMethod?: string;
 
-  @Property({ apiProperty: { type: 'string', nullable: true } })
-  code: string;
-
   @ReservationStatusReqDecorator(true)
   status?: keyof typeof RESERVATION_STATUS;
 
@@ -40,9 +37,6 @@ export class HostFindReservationsQuery {
 
     return {
       where: {
-        ...(this.code && {
-          code: this.code,
-        }),
         ...(this.year && { year: Number(this.year) }),
         ...(this.month && { month: Number(this.month) }),
         ...(this.day && {
@@ -136,7 +130,6 @@ export class HostFindReservationsQuery {
             },
           },
         }),
-
         ...(this.payMethod && {
           payMethod: this.getPayMethod(),
         }),
