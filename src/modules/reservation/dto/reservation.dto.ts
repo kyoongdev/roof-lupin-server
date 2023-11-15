@@ -5,7 +5,7 @@ import { getDateDiff } from '@/common/date';
 import { CheckIsTargetDay } from '@/interface/common.interface';
 import { type CommonReservation, RESERVATION_STATUS, type ReservationStatus } from '@/interface/reservation.interface';
 import { SpaceDTO, type SpaceDTOProps } from '@/modules/space/dto';
-import { CommonUserDTO, type CommonUserDTOProps } from '@/modules/user/dto';
+import { CommonUserDTO, type CommonUserDTOProps, MeDTO, MeDTOProps } from '@/modules/user/dto';
 
 import { ReservationAdditionalServiceDTO, type ReservationAdditionalServiceDTOProps } from './additional-service';
 import { ReservationCancelDTO, type ReservationCancelDTOProps } from './cancel';
@@ -30,7 +30,7 @@ export interface ReservationDTOProps extends DateDTOProps {
   payMethod?: string;
   createdAt: Date;
   updatedAt: Date;
-  user: CommonUserDTOProps;
+  user: MeDTOProps;
   rentalTypes: ReservationRentalTypeDTOProps[];
   space: SpaceDTOProps;
   isReviewed: boolean;
@@ -101,8 +101,8 @@ export class ReservationDTO extends DateDTO {
   @Property({ apiProperty: { type: 'boolean', description: '승인 여부' } })
   isApproved: boolean;
 
-  @Property({ apiProperty: { type: CommonUserDTO, description: '유저 정보' } })
-  user: CommonUserDTO;
+  @Property({ apiProperty: { type: MeDTO, description: '유저 정보' } })
+  user: MeDTO;
 
   @Property({ apiProperty: { type: ReservationRentalTypeDTO, isArray: true, description: '대여 정보' } })
   rentalTypes: ReservationRentalTypeDTO[];
@@ -156,7 +156,7 @@ export class ReservationDTO extends DateDTO {
     this.isReviewed = props.isReviewed;
     this.isReviewable = props.isReviewable;
     this.payMethod = props.payMethod ?? null;
-    this.user = new CommonUserDTO(props.user);
+    this.user = new MeDTO(props.user);
     this.rentalTypes = props.rentalTypes.map((rentalType) => new ReservationRentalTypeDTO(rentalType));
     this.space = new SpaceDTO(props.space);
     this.cancel = props.cancel ? new ReservationCancelDTO(props.cancel) : null;

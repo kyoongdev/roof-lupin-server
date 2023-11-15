@@ -8,7 +8,7 @@ import { ApiController, ReqUser } from '@/utils';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
-import { CountInfoDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { CountInfoDTO, MeDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CertificatePhoneDTO } from './dto/certificate-phone.dto';
 import { CommonUserDTO } from './dto/common-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
@@ -41,7 +41,7 @@ export class UserController {
     },
   })
   @ResponseApi({
-    type: CommonUserDTO,
+    type: MeDTO,
   })
   async getMe(@ReqUser() user: RequestUser) {
     return await this.userService.findUser(user.id);

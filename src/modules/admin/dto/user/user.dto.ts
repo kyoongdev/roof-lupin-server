@@ -1,7 +1,7 @@
 import { Property } from 'cumuco-nestjs';
 
-import { SOCIAL_TYPE, SocialType } from '@/interface/user.interface';
-import { CommonUserDTO, CommonUserDTOProps } from '@/modules/user/dto';
+import { SocialType } from '@/interface/user.interface';
+import { CommonUserDTOProps, MeDTO } from '@/modules/user/dto';
 
 export interface AdminUserDTOProps extends Omit<CommonUserDTOProps, 'socialType'> {
   isBlocked: boolean;
@@ -10,7 +10,7 @@ export interface AdminUserDTOProps extends Omit<CommonUserDTOProps, 'socialType'
   socialType?: SocialType;
   pushToken?: string;
 }
-export class AdminUserDTO extends CommonUserDTO {
+export class AdminUserDTO extends MeDTO {
   @Property({ apiProperty: { type: 'boolean', description: '차단 여부' } })
   isBlocked: boolean;
 

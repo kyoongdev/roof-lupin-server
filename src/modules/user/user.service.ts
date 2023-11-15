@@ -85,7 +85,7 @@ export class UserService {
   }
 
   async findUser(id: string) {
-    return await this.userRepository.findUser(id);
+    return await this.userRepository.findMe(id);
   }
 
   async findMyPushToken(id: string) {

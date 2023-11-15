@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { CommonUserDTO, CreateSocialUserDTO, PushTokenDTO, UpdateUserDTO } from './dto';
+import { CommonUserDTO, CreateSocialUserDTO, MeDTO, PushTokenDTO, UpdateUserDTO } from './dto';
 import { CertifyUserDTO } from './dto/certify-user.dto';
 import { UpdateUserSettingDTO } from './dto/setting';
 import { USER_ERROR_CODE } from './exception/errorCode';
@@ -11,6 +11,24 @@ import { UserException } from './exception/user.exception';
 @Injectable()
 export class UserRepository {
   constructor(private readonly database: PrismaService) {}
+
+  async findMe(id: string) {
+    const user = await this.database.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        socials: true,
+        setting: true,
+      },
+    });
+
+    if (!user) {
+      throw new UserException(USER_ERROR_CODE.USER_NOT_FOUND);
+    }
+
+    return new MeDTO(user);
+  }
 
   async findUser(id: string) {
     const user = await this.database.user.findUnique({
