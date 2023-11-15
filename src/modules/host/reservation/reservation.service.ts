@@ -29,7 +29,6 @@ export class HostReservationService {
   }
 
   async findReservations(hostId: string, args = {} as Prisma.ReservationFindManyArgs) {
-    console.log(args);
     return await this.reservationRepository.findReservations({
       ...args,
       where: {

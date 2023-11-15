@@ -65,7 +65,6 @@ export class HostReservationController {
     isArray: true,
   })
   async getReservationList(@ReqUser() user: RequestHost, @Query() query: HostFindReservationsQuery) {
-    console.log(query, query.generateQuery());
     return await this.reservationService.findReservations(user.id, query.generateQuery());
   }
 
