@@ -6,6 +6,7 @@ export interface ServiceDTOProps {
   id: string;
   icons: ServiceIconDTOProps[];
   name: string;
+  serviceTitleId: string;
 }
 
 export class ServiceDTO {
@@ -18,9 +19,13 @@ export class ServiceDTO {
   @Property({ apiProperty: { type: 'string', description: '이름' } })
   name: string;
 
+  @Property({ apiProperty: { type: 'string', description: '제목 id' } })
+  titleId: string;
+
   constructor(props: ServiceDTOProps) {
     this.id = props.id;
     this.icons = props.icons.map((icon) => new ServiceIconDTO(icon));
     this.name = props.name;
+    this.titleId = props.serviceTitleId;
   }
 }

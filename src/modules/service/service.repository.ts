@@ -50,7 +50,7 @@ export class ServiceRepository {
     return services.map((service) => new ServiceDTO(service));
   }
   async createService(data: CreateServiceDTO) {
-    await this.database.service.create({
+    return await this.database.service.create({
       data: {
         name: data.name,
         icons: {

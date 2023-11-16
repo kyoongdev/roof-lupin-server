@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, Request, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, Request, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -10,6 +10,8 @@ import { UpdateServiceTitleDTO } from '@/modules/service/dto/update-service-titl
 import { ServiceDTO } from '@/modules/space/dto/service';
 import { ApiController, JwtAuthGuard, ResponseWithIdInterceptor } from '@/utils';
 import { RoleGuard } from '@/utils/guards/role.guard';
+
+import { AdminFindServicesQuery } from '../dto/query/service';
 
 import { AdminServiceService } from './service.service';
 
@@ -29,8 +31,9 @@ export class AdminServiceController {
     type: ServiceDTO,
     isArray: true,
   })
-  async findServices() {
-    return this.serviceService.findServices();
+  async findServices(@Query() query: AdminFindServicesQuery) {
+    console.log(query.generateQuery());
+    return this.serviceService.findServices(query.generateQuery());
   }
 
   @Get(':serviceId/detail')

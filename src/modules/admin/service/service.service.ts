@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { Prisma } from '@prisma/client';
+
 import { CreateServiceDTO, UpdateServiceDTO } from '@/modules/service/dto';
 import { CreateServiceTitleDTO } from '@/modules/service/dto/create-service-title.dto';
 import { UpdateServiceTitleDTO } from '@/modules/service/dto/update-service-title.dto';
@@ -14,8 +16,8 @@ export class AdminServiceService {
     return await this.serviceRepository.findService(id);
   }
 
-  async findServices() {
-    return await this.serviceRepository.findServices();
+  async findServices(args = {} as Prisma.ServiceFindManyArgs) {
+    return await this.serviceRepository.findServices(args);
   }
 
   async findServiceTitle(id: string) {
@@ -31,7 +33,7 @@ export class AdminServiceService {
 
     if (data.notSelectedIcon) {
       const notSelectedIcon = service.icons.find((icon) => !icon.isSelected);
-      if (notSelectedIcon) {
+      if (notSelectedIcon && notSelectedIcon.iconId !== data.notSelectedIcon.iconId) {
         const icon = await this.iconRepository.findIcon(notSelectedIcon.iconId);
         await this.iconRepository.deleteIcon(icon.id);
       }
@@ -39,7 +41,7 @@ export class AdminServiceService {
 
     if (data.selectedIcon) {
       const selectedIcon = service.icons.find((icon) => icon.isSelected);
-      if (selectedIcon) {
+      if (selectedIcon && selectedIcon.iconId !== data.selectedIcon.iconId) {
         const icon = await this.iconRepository.findIcon(selectedIcon.iconId);
         await this.iconRepository.deleteIcon(icon.id);
       }
