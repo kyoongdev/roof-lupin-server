@@ -83,6 +83,27 @@ export class ServiceRepository {
   }
 
   async updateService(id: string, data: UpdateServiceDTO) {
+    await this.database.serviceIcon.deleteMany({
+      where: {
+        serviceId: id,
+      },
+    });
+
+    if (data.titleId) {
+      await this.database.serviceTitle.update({
+        where: {
+          id: data.titleId,
+        },
+        data: {
+          services: {
+            disconnect: {
+              id,
+            },
+          },
+        },
+      });
+    }
+
     await this.database.service.update({
       where: {
         id,
@@ -111,7 +132,6 @@ export class ServiceRepository {
         },
         ...(data.titleId && {
           serviceTitle: {
-            disconnect: true,
             connect: {
               id: data.titleId,
             },

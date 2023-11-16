@@ -86,13 +86,17 @@ export class IconRepository {
       },
       data: {
         building: {
-          deleteMany: {},
+          delete: {},
         },
         categoryIcon: {
-          deleteMany: {},
+          deleteMany: {
+            iconId: id,
+          },
         },
         serviceIcons: {
-          deleteMany: {},
+          deleteMany: {
+            iconId: id,
+          },
         },
       },
     });

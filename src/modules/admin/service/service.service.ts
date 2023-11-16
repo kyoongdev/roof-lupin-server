@@ -17,6 +17,7 @@ export class AdminServiceService {
   }
 
   async findServices(args = {} as Prisma.ServiceFindManyArgs) {
+    console.log(await this.serviceRepository.findServices());
     return await this.serviceRepository.findServices(args);
   }
 
@@ -29,24 +30,7 @@ export class AdminServiceService {
   }
 
   async updateService(id: string, data: UpdateServiceDTO) {
-    const service = await this.findService(id);
-
-    if (data.notSelectedIcon) {
-      const notSelectedIcon = service.icons.find((icon) => !icon.isSelected);
-      if (notSelectedIcon) {
-        const icon = await this.iconRepository.findIcon(notSelectedIcon.iconId);
-        await this.iconRepository.deleteIcon(icon.id);
-      }
-    }
-
-    if (data.selectedIcon) {
-      const selectedIcon = service.icons.find((icon) => icon.isSelected);
-      if (selectedIcon) {
-        const icon = await this.iconRepository.findIcon(selectedIcon.iconId);
-        await this.iconRepository.deleteIcon(icon.id);
-      }
-    }
-
+    await this.findService(id);
     return await this.serviceRepository.updateService(id, data);
   }
 
