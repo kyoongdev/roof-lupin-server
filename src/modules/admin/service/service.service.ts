@@ -17,7 +17,6 @@ export class AdminServiceService {
   }
 
   async findServices(args = {} as Prisma.ServiceFindManyArgs) {
-    console.log(await this.serviceRepository.findServices());
     return await this.serviceRepository.findServices(args);
   }
 

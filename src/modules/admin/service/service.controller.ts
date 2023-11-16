@@ -32,7 +32,6 @@ export class AdminServiceController {
     isArray: true,
   })
   async findServices(@Query() query: AdminFindServicesQuery) {
-    console.log(query.generateQuery());
     return this.serviceService.findServices(query.generateQuery());
   }
 
@@ -166,7 +165,7 @@ export class AdminServiceController {
     await this.serviceService.updateServiceTitle(id, body);
   }
 
-  @Delete(':serviceTitleId')
+  @Delete('titles/:serviceTitleId')
   @RequestApi({
     summary: {
       description: '서비스 타이틀 삭제',
