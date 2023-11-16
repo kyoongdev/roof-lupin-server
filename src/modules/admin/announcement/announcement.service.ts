@@ -43,6 +43,6 @@ export class AdminAnnouncementService {
 
   async deleteAnnouncement(id: string) {
     await this.findAnnouncement(id);
-    await this.announcementRepository.deleteAnnouncement(id);
+    await this.announcementRepository.hardDeleteAnnouncement(id);
   }
 }

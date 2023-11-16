@@ -87,6 +87,43 @@ export class AdminFileController {
     return this.fileService.uploadFile(file);
   }
 
+  @Post('')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 1024 * 1024 * 10 },
+    })
+  )
+  @RequestApi({
+    summary: {
+      description: '이미지 업로드',
+      summary: '이미지 업로드',
+    },
+    body: {
+      schema: {
+        type: 'object',
+        properties: {
+          file: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
+  @ResponseApi(
+    {
+      type: UploadedFileDTO,
+    },
+    201
+  )
+  async uploadFile(
+    @UploadedFile()
+    file: Express.Multer.File
+  ) {
+    return this.fileService.uploadFile(file);
+  }
+
   @Post('/image/resize')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(

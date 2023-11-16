@@ -92,18 +92,10 @@ export class AdminAnnouncementController {
   }
 
   @Delete(':announcementId')
-  @Auth([JwtAuthGuard, RoleGuard('ADMIN')])
-  @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
     summary: {
       description: '공지사항 삭제',
       summary: '공지사항 삭제 ',
-    },
-    params: {
-      name: 'announcementIdCreateAnnouncementDTO',
-      description: '공지사항 아이디',
-      required: true,
-      type: 'string',
     },
   })
   @ResponseApi(
