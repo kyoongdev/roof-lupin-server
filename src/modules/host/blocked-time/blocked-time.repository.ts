@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Prisma } from '@prisma/client';
 
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService, TransactionPrisma } from '@/database/prisma.service';
 
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
 
@@ -38,6 +38,13 @@ export class HostBlockedTimeRepository {
 
   async createBlockedTime(data: CreateBlockedTimeDTO) {
     const blockedTime = await this.database.blockedTime.create({
+      data,
+    });
+    return blockedTime;
+  }
+
+  async createBlockedTimeWithTransaction(database: TransactionPrisma, data: CreateBlockedTimeDTO) {
+    const blockedTime = await database.blockedTime.create({
       data,
     });
     return blockedTime;

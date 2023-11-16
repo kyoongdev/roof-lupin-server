@@ -227,7 +227,7 @@ export class SpaceSQL extends BaseSpaceSQL implements BaseSQLInterface {
           ? Prisma.sql`OR (bt.year = ${date.year} 
                             AND bt.month = ${date.month} 
                             AND bt.day = ${date.day}
-                            AND (${date.startAt} < bt.endAt AND bt.startAt < ${date.endAt})
+                            AND (${date.startAt} < bt.endAt AND bt.startAt <= ${date.endAt})
                           )`
           : Prisma.empty;
 

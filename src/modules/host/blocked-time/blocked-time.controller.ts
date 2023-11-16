@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
 import { BlockedTimeDTO, CreateBlockedTimeDTO, UpdateBlockedTimeDTO } from '../dto/blocked-time';
+import { CreateBlockedTimesDTO } from '../dto/blocked-time/create-block-times.dto';
 import { FindBlockedTimesQuery } from '../dto/blocked-time/query';
 
 import { HostBlockedTimeService } from './blocked-time.service';
@@ -63,6 +64,23 @@ export class HostBlockedTimeController {
   )
   async createBlockedTime(@ReqUser() user: RequestHost, @Body() body: CreateBlockedTimeDTO) {
     return await this.blockedTimeService.createBlockedTime(user.id, body);
+  }
+
+  @Post('many')
+  @RequestApi({
+    summary: {
+      description: '공간 시간 차단하기',
+      summary: '공간 시간 차단하기 - 호스트만 사용 가능합니다.',
+    },
+  })
+  @ResponseApi(
+    {
+      type: EmptyResponseDTO,
+    },
+    200
+  )
+  async createBlockedTimes(@ReqUser() user: RequestHost, @Body() body: CreateBlockedTimesDTO) {
+    await this.blockedTimeService.createBlockedTimes(user.id, body);
   }
 
   @Patch(':blockTimeId')
