@@ -86,13 +86,13 @@ export class IconRepository {
       },
       data: {
         building: {
-          set: [],
+          deleteMany: {},
         },
         categoryIcon: {
-          set: [],
+          deleteMany: {},
         },
         serviceIcons: {
-          set: [],
+          deleteMany: {},
         },
       },
     });

@@ -33,7 +33,7 @@ export class AdminServiceService {
 
     if (data.notSelectedIcon) {
       const notSelectedIcon = service.icons.find((icon) => !icon.isSelected);
-      if (notSelectedIcon && notSelectedIcon.iconId !== data.notSelectedIcon.iconId) {
+      if (notSelectedIcon) {
         const icon = await this.iconRepository.findIcon(notSelectedIcon.iconId);
         await this.iconRepository.deleteIcon(icon.id);
       }
@@ -41,7 +41,7 @@ export class AdminServiceService {
 
     if (data.selectedIcon) {
       const selectedIcon = service.icons.find((icon) => icon.isSelected);
-      if (selectedIcon && selectedIcon.iconId !== data.selectedIcon.iconId) {
+      if (selectedIcon) {
         const icon = await this.iconRepository.findIcon(selectedIcon.iconId);
         await this.iconRepository.deleteIcon(icon.id);
       }
