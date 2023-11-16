@@ -11,6 +11,7 @@ export const seedDatabase = async (database: PrismaClient) => {
   const salt = encrypt.createSalt();
 
   const adminPassword = encrypt.hashPassword(salt, 'admin1234');
+
   await database.admin.create({
     data: {
       name: '통합관리자',
