@@ -153,7 +153,7 @@ export class HostRepository {
     if (data.password) {
       const salt = this.encrypt.createSalt();
       updateArgs.salt = salt;
-      updateArgs.password = this.encrypt.hashPassword(data.password, salt);
+      const password = this.encrypt.hashPassword(salt, data.password);
     }
 
     await this.database.host.update({
