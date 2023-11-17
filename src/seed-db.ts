@@ -9,5 +9,5 @@ import { seedDatabase as seedProd } from './seed/prod';
   const database = new PrismaClient();
   const configService = new ConfigService();
 
-  (configService.get('NODE_ENV') === 'dev' || configService.get('NODE_ENV') === 'prod') && (await seedDev(database));
+  (configService.get('NODE_ENV') === 'dev' || configService.get('NODE_ENV') === 'local') && (await seedDev(database));
 })();
