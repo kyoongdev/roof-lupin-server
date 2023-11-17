@@ -60,7 +60,7 @@ export class ReservationService {
 
   async findMyCloseReservation(userId: string) {
     const currentDate = new Date();
-    return await this.reservationRepository.findFirstReservation({
+    const reservations = await this.reservationRepository.findFirstReservation({
       where: {
         userId,
         OR: FindReservationQuery.getApproachingWhere(currentDate),
@@ -76,6 +76,8 @@ export class ReservationService {
         },
       ],
     });
+
+    return reservations;
   }
 
   async deleteMyReservation(id: string, userId: string, reason?: string) {

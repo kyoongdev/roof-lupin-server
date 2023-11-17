@@ -199,6 +199,11 @@ export class FindReservationQuery extends PagingDTO {
           gt: currentDate.getMonth() + 1,
         },
       },
+      {
+        year: {
+          gt: currentDate.getFullYear(),
+        },
+      },
     ];
   }
 
