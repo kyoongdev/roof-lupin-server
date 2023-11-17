@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { EncryptProvider } from '@/common/encrypt';
+import { AdminAOPModule } from '@/utils/aop/aop.module';
 
 import { AdminController } from './admin.controller';
 import { AdminRepository } from './admin.repository';
@@ -70,6 +71,6 @@ export const AdminModules = [
 @Module({
   providers: [AdminService, AdminRepository, EncryptProvider],
   controllers: [AdminController],
-  imports: AdminModules,
+  imports: [...AdminModules, AdminAOPModule],
 })
 export class AdminModule {}

@@ -5,21 +5,16 @@ import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
 import { AOPMetaData } from '@/interface/aop.interface';
 
 import { AOP_KEY } from './aop.decorator';
-import { AOPPrefix } from './utils';
-
 @Injectable()
-export class AOPProvider implements OnModuleInit {
+export class BaseAOPProvider {
   constructor(
     private readonly discovery: DiscoveryService,
     private readonly scanner: MetadataScanner,
     private readonly reflect: Reflector
   ) {}
 
-  onModuleInit() {
-    this.getInstance();
-  }
-  getInstance(): void {
-    const providers = this.discovery.getProviders();
+  getInstance(providerFilter: (provider: InstanceWrapper<any>) => boolean): void {
+    const providers = this.discovery.getProviders().filter(providerFilter);
     const controllers = this.discovery.getControllers();
 
     const singletonInstances = providers
@@ -33,7 +28,6 @@ export class AOPProvider implements OnModuleInit {
       const methodNames = this.scanner.getAllMethodNames(instance);
       methodNames
         .filter((methodName) => Boolean(instance[methodName]))
-        .filter((methodName) => instance[methodName].name.includes(AOPPrefix))
         .forEach((methodName) => {
           aopDecorators.forEach((aopInstance) => {
             const metadataKey = this.reflect.get(AOP_KEY, aopInstance.constructor);
@@ -42,7 +36,6 @@ export class AOPProvider implements OnModuleInit {
             if (!metadataList) {
               return;
             }
-
             for (const { originalFn, metadata, aopSymbol } of metadataList) {
               const wrappedMethod = aopInstance.execute({
                 instance,

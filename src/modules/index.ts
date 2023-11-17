@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { AOPModule } from '@/utils/aop/aop.module';
+
 import { AlarmModule } from './alarm/alarm.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AuthModule } from './auth/auth.module';
@@ -56,8 +58,9 @@ export const Modules = [
   RentalTypeModule,
   ServiceModule,
   LocationFilterModule,
+  AOPModule,
 ];
 @Module({
-  imports: [...Modules],
+  imports: Modules,
 })
 export class V1Module {}

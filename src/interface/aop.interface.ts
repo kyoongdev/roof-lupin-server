@@ -35,3 +35,18 @@ export interface AOPDecorator<T extends Function = Function, M = unknown> {
 export interface AOPInterceptorDecorator<T extends Function = Function, M = unknown> extends NestInterceptor {
   execute(params: AOPParams<T, M>): T;
 }
+
+/* eslint-disable @typescript-eslint/ban-types */
+export type WrapParams<T extends Function = Function, M = unknown> = {
+  instance: any;
+  methodName: string;
+  method: T;
+  metadata: M;
+};
+
+/**
+ * Aspect 선언시 구현이 필요합니다.
+ */
+export interface LazyDecorator<T extends Function = Function, M = unknown> {
+  wrap(params: WrapParams<T, M>): T;
+}

@@ -5,7 +5,6 @@ import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
-import { CreateCache } from '@/utils/cache';
 import { JwtNullableAuthGuard } from '@/utils/guards';
 
 import { CategoryService } from '../category/category.service';
@@ -13,7 +12,6 @@ import { CategoryDTO } from '../category/dto';
 import { CurationService } from '../curation/curation.service';
 import { CurationDTO } from '../curation/dto';
 
-import { HOME_CATEGORY_CACHE, HOME_CURATION_CACHE } from './cache';
 import { HomeContentsDTO } from './dto';
 import { HomeService } from './home.service';
 

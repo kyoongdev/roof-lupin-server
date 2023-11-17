@@ -6,6 +6,7 @@ import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from '@/modules/category/dto';
 import { FindCategoriesQuery } from '@/modules/category/dto/query';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -42,6 +43,7 @@ export class AdminCategoryController {
     return await this.categoryService.findPagingCategories(paging, query.generateQuery());
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -56,10 +58,11 @@ export class AdminCategoryController {
     },
     201
   )
-  async createCategory(@Body() body: CreateCategoryDTO) {
+  async adminCreateCategory(@Body() body: CreateCategoryDTO) {
     return await this.categoryService.createCategory(body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':categoryId')
   @RequestApi({
     summary: {
@@ -73,7 +76,7 @@ export class AdminCategoryController {
     },
     204
   )
-  async updateCategory(@Param('categoryId') id: string, @Body() body: UpdateCategoryDTO) {
+  async adminUpdateCategory(@Param('categoryId') id: string, @Body() body: UpdateCategoryDTO) {
     await this.categoryService.updateCategory(id, body);
   }
 

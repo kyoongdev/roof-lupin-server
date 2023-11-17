@@ -5,6 +5,7 @@ import { Auth, Paging, PagingDTO, RequestApi, ResponseApi } from 'cumuco-nestjs'
 import { EmptyResponseDTO } from '@/common';
 import { RequestUser } from '@/interface/role.interface';
 import { ApiController, ReqUser } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard, JwtNullableAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -59,6 +60,7 @@ export class SpaceController {
     return await this.spaceService.findSpaceIsInterested(user?.id, id);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Get('ids')
   @RequestApi({
     summary: {

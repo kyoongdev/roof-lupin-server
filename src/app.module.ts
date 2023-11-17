@@ -14,20 +14,11 @@ import { EventProviders } from './event';
 import { AdminModule, AdminModules } from './modules/admin/admin.module';
 import { GlobalModule } from './modules/global';
 import { HostModule, HostModules } from './modules/host/host.module';
-import { AOPProvider } from './utils/aop';
+import { AOPModule } from './utils/aop/aop.module';
 import { MessageProvider } from './utils/fcm';
 import { DynamicLinkProvider } from './utils/link';
 
-const providers: Provider[] = [
-  ...Filters,
-  ...Interceptors,
-  ...EventProviders,
-  DiscoveryService,
-  MetadataScanner,
-  AOPProvider,
-  MessageProvider,
-  DynamicLinkProvider,
-];
+const providers: Provider[] = [...Filters, ...Interceptors, ...EventProviders, MessageProvider, DynamicLinkProvider];
 
 @Module({
   imports: [
@@ -48,19 +39,17 @@ const providers: Provider[] = [
       {
         path: '/api/v1',
         module: V1Module,
-        children: [
-          ...Modules,
-          {
-            path: '/admins',
-            module: AdminModule,
-            children: AdminModules,
-          },
-          {
-            path: '/hosts',
-            module: HostModule,
-            children: HostModules,
-          },
-        ],
+        children: Modules,
+      },
+      {
+        path: '/api/v1/admins',
+        module: AdminModule,
+        children: AdminModules,
+      },
+      {
+        path: '/api/v1/hosts',
+        module: HostModule,
+        children: HostModules,
       },
     ] as Routes),
   ],

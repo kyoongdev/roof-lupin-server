@@ -1,9 +1,8 @@
-import { applyDecorators, UseInterceptors } from '@nestjs/common';
+import { applyDecorators } from '@nestjs/common';
 
 import type { ApplyAOPFunction, ApplyMetaData, BaseAOPMetaData, CreateAOPDecorator } from '@/interface/aop.interface';
 
-export const AOPSymbol = Symbol('AOP_DECORATOR');
-export const AOPPrefix = ':AOP';
+const AOPSymbol = Symbol('AOPSymbol');
 
 export const applyMetaData: ApplyMetaData = (metaDataKey, metaDataValue): MethodDecorator => {
   return (_: any, __: string | symbol, descriptor: PropertyDescriptor) => {
@@ -35,20 +34,12 @@ export const applyAOPFunction: ApplyAOPFunction = (_, propertyKey, descriptor) =
   Object.setPrototypeOf(descriptor.value, originalFn);
 };
 
-export const createAOPDecorator: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>
-  applyDecorators(
-    applyAOPFunction,
-    applyMetaData<symbol | string, BaseAOPMetaData>(metaDataKey, {
-      metadata,
-      aopSymbol: AOPSymbol,
-    })
-  );
-
-export const createAOPInterceptor: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator =>
-  applyDecorators(
+export const createAOPDecorator: CreateAOPDecorator = (metaDataKey, metadata): MethodDecorator => {
+  return applyDecorators(
     applyMetaData<symbol | string, BaseAOPMetaData>(metaDataKey, {
       metadata,
       aopSymbol: AOPSymbol,
     }),
-    UseInterceptors(applyAOPFunction)
+    applyAOPFunction
   );
+};
