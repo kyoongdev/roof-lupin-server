@@ -3,7 +3,7 @@ import { DiscoveryService, MetadataScanner } from '@nestjs/core';
 
 import { EncryptProvider } from '@/common/encrypt';
 import { PortOneProvider } from '@/utils';
-import { AOPModule } from '@/utils/aop/aop.module';
+import { AOPModule, HostAOPModule } from '@/utils/aop/aop.module';
 
 import { HostAnnouncementModule } from './announcement/announcement.module';
 import { HostAuthModule } from './auth/auth.module';
@@ -45,6 +45,6 @@ export const HostModules = [
 @Module({
   providers: [HostService, HostRepository, EncryptProvider, PortOneProvider],
   controllers: [HostController],
-  imports: [...HostModules, AOPModule],
+  imports: [...HostModules, HostAOPModule],
 })
 export class HostModule {}
