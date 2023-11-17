@@ -6,7 +6,7 @@ export interface CreateCurationDTOProps {
   title: string;
   subTitle: string;
   content: string;
-  spaceTitle: string;
+  spaceTitle?: string;
   thumbnail: string;
   spaces?: CreateCurationSpaceDTOProps[];
 }
@@ -21,8 +21,8 @@ export class CreateCurationDTO {
   @Property({ apiProperty: { type: 'string', description: '큐레이션 내용' } })
   content: string;
 
-  @Property({ apiProperty: { type: 'string', description: '큐레이션 공간 제목' } })
-  spaceTitle: string;
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '큐레이션 공간 제목' } })
+  spaceTitle?: string;
 
   @Property({ apiProperty: { type: 'string', description: '큐레이션 썸네일' } })
   thumbnail: string;
