@@ -96,7 +96,7 @@ model Curation {
   isMain    Boolean @default(false)
 
   orderNo    Int?
-  spaceTitle String @db.VarChar(80)
+  spaceTitle String? @db.VarChar(80)
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -699,7 +699,7 @@ model Host {
   name         String    @db.VarChar(20)
   email        String    @unique
   profileImage String?
-  phoneNumber  String    @db.Char(11)
+  phoneNumber  String?   @db.Char(11)
   password     String
   salt         String
   isBlocked    Boolean   @default(false)

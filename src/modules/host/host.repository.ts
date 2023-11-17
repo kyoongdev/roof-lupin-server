@@ -127,7 +127,7 @@ export class HostRepository {
 
   async createHost(data: CreateHostDTO) {
     const salt = this.encrypt.createSalt();
-    const password = this.encrypt.hashPassword(data.password, salt);
+    const password = this.encrypt.hashPassword(salt, data.password);
 
     const host = await this.database.host.create({
       data: {

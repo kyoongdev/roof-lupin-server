@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import crypto from 'crypto';
+import { has } from 'lodash';
 
 import { CommonException } from './exception/common.exception';
 import { COMMON_ERROR_CODE } from './exception/errorCode';

@@ -22,6 +22,7 @@ export class HostAuthService {
     const host = await this.hostRepository.findHostByEmail(props.email);
 
     const isMatch = this.encrypt.comparePassword(host.salt, props.password, host.password);
+
     if (!isMatch) {
       throw new AuthException(AUTH_ERROR_CODE.WRONG_PASSWORD);
     }
