@@ -235,6 +235,7 @@ export class ServiceRepository {
       data: {
         name: data.name,
         services: data.services && {
+          deleteMany: {},
           create: data.services.map((service) => ({
             name: service.name,
             icons: {
@@ -258,7 +259,6 @@ export class ServiceRepository {
               ],
             },
           })),
-          deleteMany: {},
         },
       },
     });
