@@ -442,8 +442,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           holidays: {
-            create: holidays.map((holiday) => holiday),
             deleteMany: {},
+            create: holidays.map((holiday) => holiday),
           },
         };
       }
@@ -452,8 +452,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           openHours: {
-            create: openHours.map((openHour) => openHour),
             deleteMany: {},
+            create: openHours.map((openHour) => openHour),
           },
         };
       }
@@ -462,6 +462,7 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           images: {
+            deleteMany: {},
             create: images.map((url) => ({
               image: {
                 create: {
@@ -469,7 +470,6 @@ export class SpaceRepository {
                 },
               },
             })),
-            deleteMany: {},
           },
         };
       }
@@ -478,8 +478,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           refundPolicies: {
-            create: refundPolicies.map((refundPolicy) => refundPolicy),
             deleteMany: {},
+            create: refundPolicies.map((refundPolicy) => refundPolicy),
           },
         };
       }
@@ -511,10 +511,10 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           buildings: {
+            deleteMany: {},
             create: buildings.map((building) => ({
               buildingId: building.id,
             })),
-            deleteMany: {},
           },
         };
       }
@@ -523,10 +523,10 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           services: {
+            deleteMany: {},
             create: servicesProps.map((service) => ({
               serviceId: service,
             })),
-            deleteMany: {},
           },
         };
       }
@@ -535,8 +535,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           categories: {
-            create: categoryProps.map((category) => category),
             deleteMany: {},
+            create: categoryProps.map((category) => category),
           },
         };
       }
@@ -547,10 +547,10 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           hashTags: {
+            deleteMany: {},
             create: hashTags.map((hashTag) => ({
               hashTagId: hashTag.id,
             })),
-            deleteMany: {},
           },
         };
       }
@@ -559,8 +559,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           publicTransportations: {
-            create: publicTransportations.map((publicTransportation) => publicTransportation),
             deleteMany: {},
+            create: publicTransportations.map((publicTransportation) => publicTransportation),
           },
         };
       }
@@ -569,8 +569,8 @@ export class SpaceRepository {
         updateArgs.data = {
           ...updateArgs.data,
           sizes: {
-            create: sizes.map((size) => size),
             deleteMany: {},
+            create: sizes.map((size) => size),
           },
         };
       }
