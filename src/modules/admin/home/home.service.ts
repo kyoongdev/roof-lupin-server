@@ -4,6 +4,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { CategoryRepository } from '@/modules/category/category.repository';
 import { ExhibitionRepository } from '@/modules/exhibition/exhibition.repository';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';
+import { DeleteHomeContentsDTO } from '@/modules/home/dto/delete-home-content.dto';
 import { HOME_ERROR_CODE } from '@/modules/home/exception/errorCode';
 import { HomeException } from '@/modules/home/exception/home.exception';
 import { RankingRepository } from '@/modules/ranking/ranking.repository';
@@ -221,7 +222,7 @@ export class AdminHomeService {
       });
   }
 
-  async deleteHomeContent(data: UpdateHomeContentsDTO) {
+  async deleteHomeContent(data: DeleteHomeContentsDTO) {
     const homeContent = await this.database.homeContents.findFirst({
       where: {
         ...(data.contentCategoryId && {

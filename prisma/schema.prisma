@@ -135,7 +135,7 @@ model Ranking {
   deletedAt DateTime?
 
   spaces         RankingSpaces[]
-  homeContents   HomeContents?   @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  homeContents   HomeContents?   @relation(fields: [homeContentsId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   homeContentsId String?         @unique
 }
 
@@ -955,7 +955,7 @@ model ContentCategory {
   name           String                 @db.VarChar(80)
   highlight      String?                @db.VarChar(80)
   spaces         ContentCategorySpace[]
-  homeContents   HomeContents?          @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  homeContents   HomeContents?          @relation(fields: [homeContentsId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   homeContentsId String?                @unique
 
   deletedAt DateTime?
@@ -1066,6 +1066,6 @@ model Exhibition {
   images         ExhibitionImage[]
   spaces         ExhibitionSpace[]
   coupons        ExhibitionCoupon[]
-  homeContents   HomeContents?      @relation(fields: [homeContentsId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  homeContents   HomeContents?      @relation(fields: [homeContentsId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   homeContentsId String?            @unique
 }

@@ -4,6 +4,7 @@ import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
 import { EmptyResponseDTO, ResponseWithIdDTO } from '@/common';
 import { CreateHomeContentsDTO, UpdateHomeContentsDTO } from '@/modules/home/dto';
+import { DeleteHomeContentsDTO } from '@/modules/home/dto/delete-home-content.dto';
 import { ApiController, JwtAuthGuard, ResponseWithIdInterceptor } from '@/utils';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -66,7 +67,7 @@ export class AdminHomeController {
     await this.homeService.updateHomeContent(id, body);
   }
 
-  @Delete('')
+  @Delete('content')
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠 삭제하기',
@@ -79,7 +80,7 @@ export class AdminHomeController {
     },
     204
   )
-  async deleteHomeContent(@Query() query: UpdateHomeContentsDTO) {
+  async deleteHomeContent(@Query() query: DeleteHomeContentsDTO) {
     await this.homeService.deleteHomeContent(query);
   }
 }
