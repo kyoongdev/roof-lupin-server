@@ -27,6 +27,7 @@ export class RevalidateApiDecorator implements AOPDecorator {
             await axios.get(`${this.configService.get('CLIENT_REVALIDATE_URL')}?tag=${path}`);
           })
         );
+
         return originResult;
       } catch (err) {
         return originResult;

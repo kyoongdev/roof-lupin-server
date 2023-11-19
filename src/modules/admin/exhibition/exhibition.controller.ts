@@ -14,6 +14,7 @@ import {
 } from '@/modules/exhibition/dto';
 import { FindExhibitionsQuery } from '@/modules/exhibition/dto/query';
 import { ApiController, ResponseWithId, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 import { JwtAuthGuard } from '@/utils/guards';
 import { RoleGuard } from '@/utils/guards/role.guard';
 
@@ -68,6 +69,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.findExhibitions();
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -86,6 +88,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.createExhibition(body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post(':exhibitionId/spaces')
   @RequestApi({
     summary: {
@@ -103,6 +106,7 @@ export class AdminExhibitionController {
     await this.exhibitionService.createExhibitionSpace(id, body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':exhibitionId')
   @RequestApi({
     summary: {
@@ -120,6 +124,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.updateExhibition(id, body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':exhibitionId/spaces')
   @RequestApi({
     summary: {
@@ -137,6 +142,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.updateExhibitionSpace(id, body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Delete(':exhibitionId')
   @RequestApi({
     summary: {
@@ -154,6 +160,7 @@ export class AdminExhibitionController {
     return await this.exhibitionService.deleteExhibition(id);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Delete(':exhibitionId/spaces/:spaceId')
   @RequestApi({
     summary: {

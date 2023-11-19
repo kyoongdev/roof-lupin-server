@@ -9,7 +9,7 @@ export interface CreateExhibitionDTOProps {
   content: string;
   startAt: Date;
   endAt: Date;
-  spaceTitle: string;
+  spaceTitle?: string;
   isShow?: boolean;
   images: string[];
   spaces: CreateExhibitionSpaceDTOProps[];
@@ -29,8 +29,8 @@ export class CreateExhibitionDTO {
   @Property({ apiProperty: { type: 'string', description: '기획전 내용' } })
   content: string;
 
-  @Property({ apiProperty: { type: 'string', description: '기획전 공간 제목' } })
-  spaceTitle: string;
+  @Property({ apiProperty: { type: 'string', nullable: true, description: '기획전 공간 제목' } })
+  spaceTitle?: string;
 
   @Property({ apiProperty: { type: 'string', description: '기획전 시작날짜' } })
   startAt: Date;

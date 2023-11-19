@@ -74,7 +74,7 @@ export class ExhibitionRepository {
   }
 
   async createExhibition(data: CreateExhibitionDTO) {
-    const { spaces, couponIds, images, ...rest } = data;
+    const { spaces, couponIds, images, isShow, ...rest } = data;
     const exhibition = await this.database.exhibition.create({
       data: {
         ...rest,

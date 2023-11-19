@@ -108,7 +108,7 @@ export class AdminExhibitionService {
 
   async deleteExhibition(id: string) {
     await this.findExhibition(id);
-    await this.exhibitionRepository.deleteExhibition(id);
+    await this.exhibitionRepository.hardDeleteExhibition(id);
   }
 
   async deleteExhibitionSpace(id: string, spaceId: string) {

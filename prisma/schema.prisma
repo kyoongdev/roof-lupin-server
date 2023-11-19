@@ -1052,8 +1052,8 @@ model Exhibition {
   thumbnail   String
   description String @db.VarChar(120)
 
-  content    String @db.MediumText
-  spaceTitle String @db.VarChar(80)
+  content    String  @db.MediumText
+  spaceTitle String? @db.VarChar(80)
 
   startAt DateTime @db.DateTime
   endAt   DateTime @db.DateTime

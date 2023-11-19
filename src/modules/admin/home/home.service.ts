@@ -70,6 +70,7 @@ export class AdminHomeService {
         orderNo: 'asc',
       },
     });
+
     return contents.map(
       (content) =>
         new AdminHomeContentDTO({
@@ -127,82 +128,97 @@ export class AdminHomeService {
   async updateHomeContent(id: string, data: UpdateHomeContentsDTO) {
     const isExist = await this.findHomeContent(id);
     await this.validateMutatingHomeContent(data);
+    const isExistOrderNo = await this.database.homeContents.findFirst({
+      orderBy: {
+        orderNo: 'desc',
+      },
+    });
 
-    await this.database.$transaction(async (prisma) => {
-      await prisma.homeContents.updateMany({
-        where: {
-          ...(isExist.orderNo > data.orderNo
-            ? {
-                AND: [
-                  {
-                    orderNo: {
-                      lt: isExist.orderNo,
-                    },
-                  },
-                  {
-                    orderNo: {
-                      gte: data.orderNo,
-                    },
-                  },
-                ],
-              }
-            : {
-                AND: [
-                  {
-                    orderNo: {
-                      lte: data.orderNo,
-                    },
-                  },
-                  {
-                    orderNo: {
-                      gt: isExist.orderNo,
-                    },
-                  },
-                ],
-              }),
-        },
-        data: {
-          orderNo: {
-            ...(isExist.orderNo > data.orderNo
-              ? {
-                  increment: 1,
-                }
-              : {
-                  decrement: 1,
-                }),
-          },
-        },
-      });
-      await prisma.homeContents.update({
+    if (!isExistOrderNo) {
+      await this.database.homeContents.update({
         where: {
           id,
         },
         data: {
-          orderNo: data.orderNo,
-          ...(data.contentCategoryId && {
-            contentsCategory: {
-              connect: {
-                id: data.contentCategoryId,
-              },
-            },
-          }),
-          ...(data.exhibitionId && {
-            exhibition: {
-              connect: {
-                id: data.exhibitionId,
-              },
-            },
-          }),
-          ...(data.rankingId && {
-            ranking: {
-              connect: {
-                id: data.rankingId,
-              },
-            },
-          }),
+          orderNo: 1,
         },
       });
-    });
+    } else
+      await this.database.$transaction(async (prisma) => {
+        await prisma.homeContents.updateMany({
+          where: {
+            ...(isExist.orderNo > data.orderNo
+              ? {
+                  AND: [
+                    {
+                      orderNo: {
+                        lt: isExist.orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gte: data.orderNo,
+                      },
+                    },
+                  ],
+                }
+              : {
+                  AND: [
+                    {
+                      orderNo: {
+                        lte: data.orderNo,
+                      },
+                    },
+                    {
+                      orderNo: {
+                        gt: isExist.orderNo,
+                      },
+                    },
+                  ],
+                }),
+          },
+          data: {
+            orderNo: {
+              ...(isExist.orderNo > data.orderNo
+                ? {
+                    increment: 1,
+                  }
+                : {
+                    decrement: 1,
+                  }),
+            },
+          },
+        });
+        await prisma.homeContents.update({
+          where: {
+            id,
+          },
+          data: {
+            orderNo: data.orderNo,
+            ...(data.contentCategoryId && {
+              contentsCategory: {
+                connect: {
+                  id: data.contentCategoryId,
+                },
+              },
+            }),
+            ...(data.exhibitionId && {
+              exhibition: {
+                connect: {
+                  id: data.exhibitionId,
+                },
+              },
+            }),
+            ...(data.rankingId && {
+              ranking: {
+                connect: {
+                  id: data.rankingId,
+                },
+              },
+            }),
+          },
+        });
+      });
   }
 
   async deleteHomeContent(id: string) {

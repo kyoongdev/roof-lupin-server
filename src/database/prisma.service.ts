@@ -10,15 +10,13 @@ export type TransactionPrisma = Omit<PrismaService, '$connect' | '$disconnect' |
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  private slaveDatabase =
-    this.configService.get('NODE_ENV') !== 'stage' &&
-    new PrismaClient({
-      datasources: {
-        db: {
-          url: this.configService.get('SLAVE_DATABASE_URL'),
-        },
+  private slaveDatabase = new PrismaClient({
+    datasources: {
+      db: {
+        url: this.configService.get('SLAVE_DATABASE_URL'),
       },
-    });
+    },
+  });
 
   constructor(private readonly configService: ConfigService) {
     super({
@@ -29,14 +27,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         { emit: 'stdout', level: 'error' },
       ],
     });
-    this.configService.get('NODE_ENV') !== 'stage' && this.routeDatabase();
+    this.routeDatabase();
     this.softDeleteInterceptors();
   }
 
   async onModuleInit() {
     try {
       await this.$connect();
-      this.configService.get('NODE_ENV') !== 'stage' && (await this.slaveDatabase.$connect());
+      await this.slaveDatabase.$connect();
       this.$on<any>('query', (event: Prisma.QueryEvent) => {
         // logger.log('Query: ' + event.query);
         // logger.log('Duration: ' + event.duration + 'ms');
