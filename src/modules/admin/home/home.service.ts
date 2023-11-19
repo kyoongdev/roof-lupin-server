@@ -97,6 +97,11 @@ export class AdminHomeService {
 
   async createHomeContent(data: CreateHomeContentsDTO) {
     this.validateMutatingHomeContent(data);
+    const orderNo = await this.database.homeContents.findFirst({
+      orderBy: {
+        orderNo: 'desc',
+      },
+    });
 
     const content = await this.database.homeContents.create({
       data: {
@@ -121,6 +126,7 @@ export class AdminHomeService {
             },
           },
         }),
+        orderNo: orderNo.orderNo ? orderNo.orderNo + 1 : 1,
       },
     });
     return content;
