@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 
 import { Auth, RequestApi, ResponseApi } from 'cumuco-nestjs';
 
@@ -66,7 +66,7 @@ export class AdminHomeController {
     await this.homeService.updateHomeContent(id, body);
   }
 
-  @Delete(':homeContentId')
+  @Delete('')
   @RequestApi({
     summary: {
       description: '홈 화면 컨텐츠 삭제하기',
@@ -79,7 +79,7 @@ export class AdminHomeController {
     },
     204
   )
-  async deleteHomeContent(@Param('homeContentId') id: string) {
-    await this.homeService.deleteHomeContent(id);
+  async deleteHomeContent(@Query() query: UpdateHomeContentsDTO) {
+    await this.homeService.deleteHomeContent(query);
   }
 }

@@ -221,8 +221,29 @@ export class AdminHomeService {
       });
   }
 
-  async deleteHomeContent(id: string) {
-    const homeContent = await this.findHomeContent(id);
+  async deleteHomeContent(data: UpdateHomeContentsDTO) {
+    const homeContent = await this.database.homeContents.findFirst({
+      where: {
+        ...(data.contentCategoryId && {
+          contentsCategory: {
+            id: data.contentCategoryId,
+          },
+        }),
+        ...(data.exhibitionId && {
+          exhibition: {
+            id: data.exhibitionId,
+          },
+        }),
+        ...(data.rankingId && {
+          ranking: {
+            id: data.rankingId,
+          },
+        }),
+      },
+    });
+    if (!homeContent) {
+      throw new HomeException(HOME_ERROR_CODE.HOME_CONTENTS_NOT_FOUND);
+    }
     await this.database.homeContents.updateMany({
       where: {
         orderNo: {
@@ -237,7 +258,7 @@ export class AdminHomeService {
     });
     await this.database.homeContents.delete({
       where: {
-        id,
+        id: homeContent.id,
       },
     });
   }
