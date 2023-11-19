@@ -63,6 +63,8 @@ export class AdminContentController {
   async getContentCategories() {
     return await this.contentService.findContentCategories();
   }
+
+  @RevalidateApi([{ key: '/home' }])
   @Post('')
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -81,6 +83,7 @@ export class AdminContentController {
     return await this.contentService.createContentCategory(body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post(':contentCategoryId/spaces')
   @RequestApi({
     summary: {

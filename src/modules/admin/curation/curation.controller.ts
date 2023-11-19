@@ -7,6 +7,7 @@ import { CreateCurationSpaceDTO, CurationDetailDTO, CurationDTO } from '@/module
 import { FindCurationsQuery } from '@/modules/curation/dto/query';
 import { UpdateCurationSpaceDTO } from '@/modules/curation/dto/update-curation-space.dto';
 import { ApiController, ResponseWithIdInterceptor } from '@/utils';
+import { RevalidateApi } from '@/utils/aop/revalidate';
 
 import {
   AdminCreateCurationDTO,
@@ -64,6 +65,7 @@ export class AdminCurationController {
     return await this.curationService.countCurations();
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post()
   @UseInterceptors(ResponseWithIdInterceptor)
   @RequestApi({
@@ -82,6 +84,7 @@ export class AdminCurationController {
     return await this.curationService.createCuration(body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Post(':curationId/spaces')
   @RequestApi({
     summary: {
@@ -99,6 +102,7 @@ export class AdminCurationController {
     await this.curationService.createCurationSpace(id, body);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':curationId')
   @RequestApi({
     summary: {
@@ -116,6 +120,7 @@ export class AdminCurationController {
     await this.curationService.updateCuration(id, data);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':curationId/spaces')
   @RequestApi({
     summary: {
@@ -133,6 +138,7 @@ export class AdminCurationController {
     await this.curationService.updateCurationSpace(id, data);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Patch(':curationId/order')
   @RequestApi({
     summary: {
@@ -150,6 +156,7 @@ export class AdminCurationController {
     await this.curationService.updateCurationOrder(id, data.orderNo);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Delete(':curationId')
   @RequestApi({
     summary: {
@@ -167,6 +174,7 @@ export class AdminCurationController {
     await this.curationService.deleteCuration(id);
   }
 
+  @RevalidateApi([{ key: '/home' }])
   @Delete(':curationId/spaces/:spaceId')
   @RequestApi({
     summary: {

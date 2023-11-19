@@ -191,5 +191,5 @@ export const seedDatabase = async (database: PrismaClient) => {
 
   const spaces: Space[] = await seedSpace(users, database);
 
-  await seedHome(database, spaces);
+  // await seedHome(database, spaces);
 };
