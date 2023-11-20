@@ -126,7 +126,7 @@ export class AdminHomeService {
             },
           },
         }),
-        orderNo: orderNo.orderNo ? orderNo.orderNo + 1 : 1,
+        orderNo: orderNo?.orderNo ? orderNo.orderNo + 1 : 1,
       },
     });
     return content;

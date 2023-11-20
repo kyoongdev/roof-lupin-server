@@ -12,6 +12,7 @@
     "local": "rm -rf logs && yarn config:local && nest start --watch",
     "stage": "yarn config:stage && nest start --watch",
     "dev": "yarn config:dev &&  nest start --watch",
+    "prod": "yarn config:prod &&  nest start --watch",
     "start:prod": "node dist/main",
     "deploy:docker": "yarn prisma db push && node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
