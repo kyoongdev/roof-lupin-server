@@ -49,24 +49,26 @@ export class AuthService {
 
   async registerNewUserCoupon(userId: string) {
     const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
-    const usageDateStartAt = new Date();
-    usageDateStartAt.setUTCHours(0, 0, 0, 0);
-    const current = new Date();
-    current.setUTCHours(0, 0, 0, 0);
-    const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
-    const user = await this.userRepository.findUser(userId);
-    this.messageEvent.createCouponDurationAlarm({
-      dueDate: usageDateEndAt,
-      userId,
-      jobId: nanoid(),
-      nickname: user.nickname,
-    });
+    if (coupon) {
+      const usageDateStartAt = new Date();
+      usageDateStartAt.setUTCHours(0, 0, 0, 0);
+      const current = new Date();
+      current.setUTCHours(0, 0, 0, 0);
+      const usageDateEndAt = new Date(current.setUTCDate(current.getUTCDate() + coupon.defaultDueDay));
+      const user = await this.userRepository.findUser(userId);
+      this.messageEvent.createCouponDurationAlarm({
+        dueDate: usageDateEndAt,
+        userId,
+        jobId: nanoid(),
+        nickname: user.nickname,
+      });
 
-    await this.couponRepository.createUserCoupon(coupon.id, {
-      userId,
-      usageDateEndAt,
-      usageDateStartAt,
-    });
+      await this.couponRepository.createUserCoupon(coupon.id, {
+        userId,
+        usageDateEndAt,
+        usageDateStartAt,
+      });
+    }
   }
 
   async socialCallback(props: CreateSocialUserDTO, socialId: string, path: SocialType, token: string, res: Response) {
