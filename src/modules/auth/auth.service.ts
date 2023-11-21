@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async registerNewUserCoupon(userId: string) {
-    const coupon = await this.couponRepository.findCouponByCode(COUPON_CODE.REGISTER);
+    const coupon = await this.couponRepository.checkCouponByCode(COUPON_CODE.REGISTER);
     if (coupon) {
       const usageDateStartAt = new Date();
       usageDateStartAt.setUTCHours(0, 0, 0, 0);

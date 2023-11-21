@@ -42,6 +42,20 @@ export class CouponRepository {
     return new CouponDTO(coupon);
   }
 
+  async checkCouponByCode(code: string) {
+    const coupon = await this.database.coupon.findUnique({
+      where: {
+        code,
+      },
+    });
+
+    if (!coupon) {
+      return false;
+    }
+
+    return new CouponDTO(coupon);
+  }
+
   async countCoupons(args = {} as Prisma.CouponCountArgs) {
     return this.database.coupon.count(args);
   }
