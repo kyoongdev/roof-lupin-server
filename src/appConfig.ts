@@ -127,9 +127,8 @@ class AppConfig {
 
   private configureSwagger() {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('🖕RoofLupin API🖕')
+      .setTitle('RoofLupin API')
       .setDescription('RoofLupin 루프루팡의 API 문서입니다.')
-      .setContact("RoofLupin's Developer", '', 'dev@cumuco.net')
       .setVersion('1.0.0')
       .addServer(this.configService.get('API_URL'))
 

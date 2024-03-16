@@ -15,30 +15,4 @@ export class DynamicLinkProvider {
       'CLIENT_URL'
     )}&apn=com.cumuco.rooflupin&isi=6450448648&ibi=com.cumuco.rooflupin&efr=1&imv=0&amv=0`;
   }
-
-  //TODO: createDynamicLink
-  async createDynamicShortLink(endPoint: string) {
-    const response = await this.apiClient.post(
-      '/shortLinks',
-      {
-        dynamicLinkInfo: {
-          domainUriPrefix: 'https://rooflupin.page.link',
-          link: `https://rooflupin.page.link/to?redirect=${endPoint}`,
-          androidInfo: {
-            androidPackageName: 'com.cumuco.rooflupin',
-          },
-          iosInfo: {
-            iosBundleId: 'com.cumuco.rooflupin',
-          },
-        },
-      },
-      {
-        params: {
-          key: 'api_key',
-        },
-      }
-    );
-
-    return 'link';
-  }
 }

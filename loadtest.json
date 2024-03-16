@@ -1,0 +1,22 @@
+{
+  "config": {
+    "target": "http://localhost:8000",
+    "phases": [
+      {
+        "duration": 60,
+        "arrivalRate": 10
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "flow": [
+        {
+          "get": {
+            "url": "/api/v1/spaces/paging/sql?page=1&limit=50"
+          }
+        }
+      ]
+    }
+  ]
+}
